@@ -31,7 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.network
+package com.android.virgilsecurity.twiliodemo.data.remote.twilio
+
+import android.content.Context
+import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
+import com.twilio.chat.CallbackListener
+import com.twilio.chat.ChatClient
+import com.twilio.chat.ErrorInfo
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -39,7 +49,33 @@ package com.android.virgilsecurity.twiliodemo.data.remote.network
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
+
+/**
+ * TwilioRx
+ */
+class TwilioRx {
+    fun getToken(identity: String) = Single.create<String> { e ->
+
+    }.subscribeOn(Schedulers.io())
+
+    fun createClient(context: Context, token: String) = Single.create<ChatClient> { e ->
+        val props = ChatClient.Properties.Builder().createProperties()
+
+        ChatClient.create(context.applicationContext,
+                token,
+                props,
+                object : CallbackListener<ChatClient>() {
+                    override fun onSuccess(chatClient: ChatClient) {
+                        e.onSuccess(chatClient)
+                    }
+
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        e.onError(ErrorInfoWrapper(errorInfo))
+                    }
+                })
+    }.subscribeOn(Schedulers.io())
+}

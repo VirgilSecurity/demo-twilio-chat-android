@@ -33,6 +33,19 @@
 
 package com.android.virgilsecurity.twiliodemo.data.local
 
+import android.content.Context
+import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.edit
+import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.get
+import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.set
+import com.android.virgilsecurity.twiliodemo.data.model.Token
+import com.android.virgilsecurity.twiliodemo.data.model.VirgilToken
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
+import java.util.*
+
 /**
  * . _  _
  * .| || | _
@@ -43,3 +56,67 @@ package com.android.virgilsecurity.twiliodemo.data.local
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
+
+class UserManager(context: Context) {
+
+    companion object {
+        private const val USER_CARDS = "USER_CARDS"
+        private const val VIRGIL_TOKEN = "VIRGIL_TOKEN"
+        private const val TWILIO_TOKEN = "TWILIO_TOKEN"
+    }
+
+    private val preferences = PreferenceHelper.defaultPrefs(context)
+
+    fun setUserCards(cards: List<Card>) {
+        val rawSignedModels = ArrayList<RawSignedModel>()
+        cards.forEach { rawSignedModels.add(it.rawCard) }
+
+        val serialized = Gson().toJson(rawSignedModels)
+
+        preferences[USER_CARDS] = serialized
+    }
+
+    fun getUserCards(): List<Card> {
+        val serialized: String? = preferences[USER_CARDS]
+
+        val rawSignedModels = Gson().fromJson<List<RawSignedModel>>(serialized,
+                object : TypeToken<List<RawSignedModel>>() {}.type)
+
+        val cards = ArrayList<Card>()
+        val cardCrypto = VirgilCardCrypto()
+
+        rawSignedModels.forEach { cards.add(Card.parse(cardCrypto, it)) }
+
+        return cards
+    }
+
+    fun clearUserCards() {
+        preferences.edit { it.remove(USER_CARDS) }
+    }
+
+    fun setVigilToken(token: Token) {
+        preferences[VIRGIL_TOKEN] = Gson().toJson(token)
+    }
+
+    fun getVirgilToken(): VirgilToken {
+        val serialized: String? = preferences[VIRGIL_TOKEN]
+        return Gson().fromJson<VirgilToken>(serialized, VirgilToken::class.java)
+    }
+
+    fun clearVirgilToken() {
+        preferences.edit { it.remove(VIRGIL_TOKEN) }
+    }
+
+    fun setTwilioToken(token: Token) {
+        preferences[TWILIO_TOKEN] = Gson().toJson(token)
+    }
+
+    fun getTwilioToken(): VirgilToken {
+        val serialized: String? = preferences[TWILIO_TOKEN]
+        return Gson().fromJson<VirgilToken>(serialized, VirgilToken::class.java)
+    }
+
+    fun clearTwilioToken() {
+        preferences.edit { it.remove(TWILIO_TOKEN) }
+    }
+}

@@ -34,6 +34,11 @@
 package com.android.virgilsecurity.twiliodemo
 
 import android.app.Application
+import com.android.virgilsecurity.twiliodemo.di.networkModule
+import com.android.virgilsecurity.twiliodemo.di.twilioModule
+import com.android.virgilsecurity.twiliodemo.di.utilsModule
+import com.android.virgilsecurity.twiliodemo.di.virgilModule
+import org.koin.android.ext.android.startKoin
 
 /**
  * . _  _
@@ -51,6 +56,6 @@ class TwilioApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-
+        startKoin(this, listOf(utilsModule, networkModule, virgilModule, twilioModule))
     }
 }

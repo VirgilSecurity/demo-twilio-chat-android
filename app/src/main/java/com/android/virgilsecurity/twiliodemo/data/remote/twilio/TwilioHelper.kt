@@ -31,12 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.thread
+package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import android.content.Context
+import com.twilio.accessmanager.AccessManager
+import com.twilio.chat.CallbackListener
+import com.twilio.chat.ChatClient
+import com.twilio.chat.ErrorInfo
+import io.reactivex.rxkotlin.subscribeBy
+import java.util.function.BiConsumer
 
 /**
  * . _  _
@@ -44,27 +47,33 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class ThreadActivity : BaseActivity() {
+/**
+ * TwilioHelper
+ */
 
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ThreadActivity::class.java))
-            from.finish()
-        }
+class TwilioHelper(private val context: Context,
+                   private val twilioRx: TwilioRx) {
+
+    fun initClient(identity: String,
+                   chatCreatedSuccess: (chatClient: ChatClient) -> Unit,
+                   chatCreatedError: (chatClient: Throwable) -> Unit) {
+
+        twilioRx.getToken(identity)
+                .flatMap {
+                    twilioRx.createClient(context, token = it)
+                }
+                .subscribeBy(
+                        onSuccess = {
+                            chatCreatedSuccess(it)
+                        },
+                        onError = {
+                            chatCreatedError(it)
+                        })
     }
 
-    override fun provideLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 }

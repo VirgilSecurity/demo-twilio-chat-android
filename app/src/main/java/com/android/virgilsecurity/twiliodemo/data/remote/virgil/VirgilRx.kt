@@ -31,12 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.thread
+package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.client.exceptions.VirgilServiceException
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException
+
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -44,27 +45,52 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class ThreadActivity : BaseActivity() {
+class VirgilRx(private val virgilHelper: VirgilHelper) {
 
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ThreadActivity::class.java))
-            from.finish()
+    fun publishCard(identity: String): Single<Card> {
+        return Single.create { e ->
+            try {
+                e.onSuccess(virgilHelper.publishCard(identity))
+            } catch (exception: CryptoException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            } catch (exception: VirgilServiceException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            }
         }
     }
 
-    override fun provideLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun getCard(cardId: String): Single<Card> {
+        return Single.create { e ->
+            try {
+                e.onSuccess(virgilHelper.getCard(cardId))
+            } catch (exception: CryptoException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            } catch (exception: VirgilServiceException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            }
+        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
+    fun searchCards(identity: String): Single<List<Card>> {
+        return Single.create { e ->
+            try {
+                e.onSuccess(virgilHelper.searchCards(identity))
+            } catch (exception: CryptoException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            } catch (exception: VirgilServiceException) {
+                exception.printStackTrace()
+                e.onError(exception)
+            }
+        }
     }
 }

@@ -31,12 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.thread
+package com.android.virgilsecurity.twiliodemo.data.model.exception
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.twilio.chat.ErrorInfo
 
 /**
  * . _  _
@@ -44,27 +41,12 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class ThreadActivity : BaseActivity() {
-
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ThreadActivity::class.java))
-            from.finish()
-        }
-    }
-
-    override fun provideLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
-}
+/**
+ * TwilioExceptions
+ */
+class ErrorInfoWrapper(val errorInfo: ErrorInfo?) : Throwable()

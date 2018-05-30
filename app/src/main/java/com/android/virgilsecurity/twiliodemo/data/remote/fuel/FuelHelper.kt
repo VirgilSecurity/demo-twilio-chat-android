@@ -31,15 +31,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    5/29/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-class SplashActivity : AppCompatActivity() {
+/**
+ * FuelHelper
+ */
+class FuelHelper {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
-    }
 }

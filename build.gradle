@@ -8,7 +8,12 @@ buildscript {
         constraintLayout = "1.1.0"
         fuel = "1.13.0"
         rxKotlin = "2.2.0"
+        rxAndroid = "2.0.2"
         koin = "0.9.3"
+        twilioSdk = "3.0.0"
+        twilioAccessManager = "0.1.0"
+        virgilSdk = "5.0.2"
+        virgilCrypto = "5.0.2@aar"
     }
 
     repositories {

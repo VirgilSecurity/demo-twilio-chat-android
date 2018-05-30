@@ -31,12 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.thread
+package com.android.virgilsecurity.twiliodemo.ui
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.ThreadsListActivity
+import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
 
 /**
  * . _  _
@@ -49,22 +49,23 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * ....|_|-
  */
 
-class ThreadActivity : BaseActivity() {
-
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ThreadActivity::class.java))
-            from.finish()
-        }
-    }
-
-    override fun provideLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class SplashActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (isAuthenticated())
+            ThreadsListActivity.startWithFinish(this)
+        else
+            LoginActivity.startWithFinish(this)
+
+    }
+
+    private fun isAuthenticated(): Boolean {
+        return true
+    }
+
+    override fun onBackPressed() {
 
     }
 }
