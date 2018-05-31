@@ -33,6 +33,15 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
+import com.android.virgilsecurity.twiliodemo.data.model.SignUpRequest
+import com.android.virgilsecurity.twiliodemo.data.model.SignUpResponse
+import com.android.virgilsecurity.twiliodemo.data.model.TokenRequest
+import com.android.virgilsecurity.twiliodemo.data.model.TokenResponse
+import com.android.virgilsecurity.twiliodemo.util.toObject
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FuelManager
+import com.google.gson.Gson
+
 /**
  * . _  _
  * .| || | _
@@ -45,8 +54,43 @@ package com.android.virgilsecurity.twiliodemo.data.remote.fuel
  */
 
 /**
- * FuelHelper
+ * FuelHelper helps to work with network requests.
+ * @constructor If [baseUrl] is `null` - localhost address will be used (http://10.0.2.2:3000)
  */
-class FuelHelper {
+class FuelHelper(baseUrl: String?) {
 
+    private val baseUrl = baseUrl ?: "http://10.0.2.2:3000"
+    private val virgilTokenPath = "get-virgil-jwt"
+    private val twilioTokenPath = "get-twilio-jwt"
+    private val signUpPath = "signup"
+
+    private val gson: Gson
+
+    init {
+        FuelManager.instance.basePath = baseUrl
+        gson = Gson()
+    }
+
+    fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
+            .header("Authorization" to "Bearer $authHeader")
+            .body(gson.toJson(TokenRequest(identity)))
+            .responseString()
+            .third
+            .get()
+            .toObject(TokenResponse::class.java)
+
+    fun getTwilioTokenSync(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
+            .header("Authorization" to "Bearer $authHeader")
+            .body(gson.toJson(TokenRequest(identity)))
+            .responseString()
+            .third
+            .get()
+            .toObject(TokenResponse::class.java)
+
+    fun signUp(rawCard: String) = Fuel.post(signUpPath)
+            .body(gson.toJson(SignUpRequest(rawCard)))
+            .responseString()
+            .third
+            .get()
+            .toObject(SignUpResponse::class.java)
 }

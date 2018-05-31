@@ -26,6 +26,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // Compat
     implementation "com.android.support:appcompat-v7:$appCompat"
@@ -43,11 +44,14 @@ dependencies {
 
     // Twilio
     implementation("com.twilio:chat-android:$twilioSdk") {
-        exclude group: "com.android.support", module: "appcompat-v7"
+        exclude group: "com.android.support", module: "support-v4"
     }
     implementation "com.twilio:accessmanager-android:$twilioAccessManager"
 
     // Virgil Security
     implementation "com.virgilsecurity.sdk:crypto-android:$virgilCrypto"
     implementation "com.virgilsecurity.sdk:sdk:$virgilSdk"
+
+    // Gson
+    implementation "com.google.code.gson:gson:$gson"
 }

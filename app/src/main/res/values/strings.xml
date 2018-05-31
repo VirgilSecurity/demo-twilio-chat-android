@@ -1,3 +1,15 @@
 <resources>
+
+    <!-- General -->
     <string name="app_name">TwilioDemo</string>
+    <string name="plus_twilio">+ Twilio</string>
+    <string name="virgil_securiry_copyright">Copyright © 2015–2018 Virgil Security Inc.</string>
+
+
+    <!-- LogIn -->
+    <string name="signin">SignIn</string>
+    <string name="please_enter_creds">Please enter your credentials</string>
+    <string name="identity">Identity</string>
+
+
 </resources>

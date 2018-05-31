@@ -33,10 +33,8 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import android.app.Activity
-import android.content.Intent
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 
 /**
  * . _  _
@@ -44,21 +42,18 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class LoginActivity : BaseActivity() {
+/**
+ * LoginFragment
+ */
 
-    override fun provideLayoutId() = R.layout.activity_login
+class LoginFragment : BaseFragment<LoginActivity>() {
 
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java))
-            from.finish()
-        }
-    }
+    override fun provideLayoutId() = R.layout.fragment_login
 
-    // TODO Add search before publish card to allow only 1 card for 1 identity
+
 }

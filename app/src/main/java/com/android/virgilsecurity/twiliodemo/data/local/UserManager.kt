@@ -38,6 +38,8 @@ import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.edit
 import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.get
 import com.android.virgilsecurity.twiliodemo.data.local.PreferenceHelper.set
 import com.android.virgilsecurity.twiliodemo.data.model.Token
+import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
+import com.android.virgilsecurity.twiliodemo.data.model.User
 import com.android.virgilsecurity.twiliodemo.data.model.VirgilToken
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -60,6 +62,7 @@ import java.util.*
 class UserManager(context: Context) {
 
     companion object {
+        private const val CURRENT_USER = "CURRENT_USER"
         private const val USER_CARDS = "USER_CARDS"
         private const val VIRGIL_TOKEN = "VIRGIL_TOKEN"
         private const val TWILIO_TOKEN = "TWILIO_TOKEN"
@@ -67,30 +70,33 @@ class UserManager(context: Context) {
 
     private val preferences = PreferenceHelper.defaultPrefs(context)
 
-    fun setUserCards(cards: List<Card>) {
-        val rawSignedModels = ArrayList<RawSignedModel>()
-        cards.forEach { rawSignedModels.add(it.rawCard) }
+    fun setCurrentUser(user: User) {
+        preferences[CURRENT_USER] = Gson().toJson(user)
+    }
 
-        val serialized = Gson().toJson(rawSignedModels)
+    fun getCurrentUser(): TwilioUser {
+        val serialized: String? = preferences[CURRENT_USER]
+        return Gson().fromJson(serialized, TwilioUser::class.java)
+    }
 
+    fun clearCurrentUser() {
+        preferences.edit { it.remove(CURRENT_USER) }
+    }
+
+    fun setUserCard(card: Card) {
+        val serialized = Gson().toJson(card.rawCard)
         preferences[USER_CARDS] = serialized
     }
 
-    fun getUserCards(): List<Card> {
+    fun getUserCard(): Card {
         val serialized: String? = preferences[USER_CARDS]
+        val rawSignedModel = Gson().fromJson<RawSignedModel>(serialized,
+                object : TypeToken<RawSignedModel>() {}.type)
 
-        val rawSignedModels = Gson().fromJson<List<RawSignedModel>>(serialized,
-                object : TypeToken<List<RawSignedModel>>() {}.type)
-
-        val cards = ArrayList<Card>()
-        val cardCrypto = VirgilCardCrypto()
-
-        rawSignedModels.forEach { cards.add(Card.parse(cardCrypto, it)) }
-
-        return cards
+        return Card.parse(VirgilCardCrypto(), rawSignedModel)
     }
 
-    fun clearUserCards() {
+    fun clearUserCard() {
         preferences.edit { it.remove(USER_CARDS) }
     }
 

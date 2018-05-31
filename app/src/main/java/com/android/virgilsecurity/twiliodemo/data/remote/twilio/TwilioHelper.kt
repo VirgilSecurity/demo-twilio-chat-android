@@ -34,12 +34,10 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.twilio.accessmanager.AccessManager
-import com.twilio.chat.CallbackListener
 import com.twilio.chat.ChatClient
-import com.twilio.chat.ErrorInfo
+import com.twilio.chat.ChatClientListener
+import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
-import java.util.function.BiConsumer
 
 /**
  * . _  _
@@ -59,21 +57,39 @@ import java.util.function.BiConsumer
 class TwilioHelper(private val context: Context,
                    private val twilioRx: TwilioRx) {
 
-    fun initClient(identity: String,
-                   chatCreatedSuccess: (chatClient: ChatClient) -> Unit,
-                   chatCreatedError: (chatClient: Throwable) -> Unit) {
+    private var chatClient: ChatClient? = null
 
-        twilioRx.getToken(identity)
-                .flatMap {
-                    twilioRx.createClient(context, token = it)
-                }
-                .subscribeBy(
-                        onSuccess = {
-                            chatCreatedSuccess(it)
-                        },
-                        onError = {
-                            chatCreatedError(it)
-                        })
+    fun createChatClient(identity: String,
+                         authHeader: String,
+                         chatCreatedSuccess: (chatClient: ChatClient) -> Unit,
+                         chatCreatedError: (chatClient: Throwable) -> Unit) {
+
+        if (this.chatClient == null)
+            twilioRx.getToken(identity, authHeader)
+                    .flatMap { token ->
+                        twilioRx.createClient(context, token = token).flatMap { chatClient ->
+                            Single.create<Pair<ChatClient, String>> {
+                                it.onSuccess(chatClient to token)
+                            }
+                        }
+                    }
+                    .flatMap { pair ->
+                        twilioRx.createAccessManager(pair.second, identity, authHeader, pair.first)
+                                .andThen(Single.create<ChatClient> {
+                                    it.onSuccess(pair.first)
+                                })
+                    }
+                    .subscribeBy(
+                            onSuccess = {
+                                this.chatClient = it
+                                chatCreatedSuccess(it)
+                            },
+                            onError = {
+                                chatCreatedError(it)
+                            })
     }
 
+    fun setChatListener(chatClientListener: ChatClientListener) {
+        chatClient?.setListener(chatClientListener)
+    }
 }

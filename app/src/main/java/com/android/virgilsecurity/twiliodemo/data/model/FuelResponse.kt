@@ -31,12 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.twiliodemo.data.model
 
-import android.app.Activity
-import android.content.Intent
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.google.gson.annotations.SerializedName
 
 /**
  * . _  _
@@ -44,21 +41,14 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class LoginActivity : BaseActivity() {
+/**
+ * FuelResponse
+ */
+data class TokenResponse(val token: String)
 
-    override fun provideLayoutId() = R.layout.activity_login
-
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java))
-            from.finish()
-        }
-    }
-
-    // TODO Add search before publish card to allow only 1 card for 1 identity
-}
+data class SignUpResponse(@SerializedName("virgil_card") val virgilCard: String)

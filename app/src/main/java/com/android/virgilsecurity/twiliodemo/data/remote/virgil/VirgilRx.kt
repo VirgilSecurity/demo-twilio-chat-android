@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
+import com.android.virgilsecurity.twiliodemo.R.string.identity
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.client.exceptions.VirgilServiceException
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException
@@ -52,45 +53,15 @@ import io.reactivex.Single
 
 class VirgilRx(private val virgilHelper: VirgilHelper) {
 
-    fun publishCard(identity: String): Single<Card> {
-        return Single.create { e ->
-            try {
-                e.onSuccess(virgilHelper.publishCard(identity))
-            } catch (exception: CryptoException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            } catch (exception: VirgilServiceException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            }
+    fun publishCard(identity: String) = Single.create<Card> { e ->
+            e.onSuccess(virgilHelper.publishCard(identity))
         }
-    }
 
-    fun getCard(cardId: String): Single<Card> {
-        return Single.create { e ->
-            try {
-                e.onSuccess(virgilHelper.getCard(cardId))
-            } catch (exception: CryptoException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            } catch (exception: VirgilServiceException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            }
+    fun getCard(cardId: String)= Single.create<Card> { e ->
+            e.onSuccess(virgilHelper.getCard(cardId))
         }
-    }
 
-    fun searchCards(identity: String): Single<List<Card>> {
-        return Single.create { e ->
-            try {
-                e.onSuccess(virgilHelper.searchCards(identity))
-            } catch (exception: CryptoException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            } catch (exception: VirgilServiceException) {
-                exception.printStackTrace()
-                e.onError(exception)
-            }
+    fun searchCards(identity: String) = Single.create<List<Card>> { e ->
+            e.onSuccess(virgilHelper.searchCards(identity))
         }
-    }
 }

@@ -35,12 +35,13 @@ package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
+import com.twilio.accessmanager.AccessManager
 import com.twilio.chat.CallbackListener
 import com.twilio.chat.ChatClient
 import com.twilio.chat.ErrorInfo
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.twilio.chat.StatusListener
+import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -57,12 +58,12 @@ import io.reactivex.schedulers.Schedulers
 /**
  * TwilioRx
  */
-class TwilioRx {
-    fun getToken(identity: String) = Single.create<String> { e ->
-
+class TwilioRx(private val fuelHelper: FuelHelper) {
+    fun getToken(identity: String, authHeader: String): Single<String> = Single.create<String> {
+        it.onSuccess(fuelHelper.getTwilioTokenSync(identity, authHeader).token)
     }.subscribeOn(Schedulers.io())
 
-    fun createClient(context: Context, token: String) = Single.create<ChatClient> { e ->
+    fun createClient(context: Context, token: String): Single<ChatClient> = Single.create<ChatClient> {
         val props = ChatClient.Properties.Builder().createProperties()
 
         ChatClient.create(context.applicationContext,
@@ -70,12 +71,52 @@ class TwilioRx {
                 props,
                 object : CallbackListener<ChatClient>() {
                     override fun onSuccess(chatClient: ChatClient) {
-                        e.onSuccess(chatClient)
+                        it.onSuccess(chatClient)
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        e.onError(ErrorInfoWrapper(errorInfo))
+                        it.onError(ErrorInfoWrapper(errorInfo))
                     }
                 })
     }.subscribeOn(Schedulers.io())
+
+    fun createAccessManager(token: String,
+                            identity: String,
+                            authHeader: String,
+                            chatClient: ChatClient): Completable = Flowable.create<String>({
+        val accessManager = AccessManager(token, object : AccessManager.Listener {
+            override fun onTokenExpired(accessManager: AccessManager?) {
+                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader).token
+                accessManager?.updateToken(newToken)
+            }
+
+            override fun onTokenWillExpire(accessManager: AccessManager?) {
+                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader).token
+                accessManager?.updateToken(newToken)
+            }
+
+            override fun onError(accessManager: AccessManager?, errorMessage: String?) {
+                it.onError(Throwable(errorMessage))
+            }
+        })
+
+        accessManager.addTokenUpdateListener { token ->
+            it.onNext(token)
+        }
+        it.setCancellable { }
+    }, BackpressureStrategy.BUFFER)
+            .flatMapCompletable { newToken ->
+                Completable.create({
+                    chatClient.updateToken(newToken, object : StatusListener() {
+                        override fun onSuccess() {
+                            it.onComplete()
+                        }
+
+                        override fun onError(errorInfo: ErrorInfo?) {
+                            it.onError(ErrorInfoWrapper(errorInfo))
+                        }
+                    })
+                })
+            }.observeOn(Schedulers.io())
+
 }
