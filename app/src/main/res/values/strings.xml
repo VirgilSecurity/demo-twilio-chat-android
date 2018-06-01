@@ -5,12 +5,14 @@
     <string name="virgil_securiry_copyright">Copyright © 2015–2018 Virgil Security Inc.</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="press_exit_once_more">Press back once more to exit</string>
 
     <!-- LogIn -->
     <string name="signin">SignIn</string>
     <string name="please_enter_creds">Please enter your credentials</string>
     <string name="identity">Identity</string>
     <string name="plus_twilio">+ Twilio</string>
+    <string name="no_private_key">No private key on this device that corresponds to entered identity</string>
 
     <!-- Drawer -->
     <string name="log_out">Log out</string>

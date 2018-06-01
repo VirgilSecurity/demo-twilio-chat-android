@@ -34,16 +34,17 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.android.virgilsecurity.twiliodemo.R.string.identity
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_RECEIVER
+import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_SENDER
+import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import com.twilio.accessmanager.AccessManager
-import com.twilio.chat.CallbackListener
-import com.twilio.chat.ChatClient
-import com.twilio.chat.ErrorInfo
-import com.twilio.chat.StatusListener
+import com.twilio.chat.*
 import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -59,7 +60,9 @@ import io.reactivex.schedulers.Schedulers
 /**
  * TwilioRx
  */
-class TwilioRx(private val fuelHelper: FuelHelper) {
+class TwilioRx(private val fuelHelper: FuelHelper,
+               private val userManager: UserManager) {
+
     fun getToken(identity: String, authHeader: () -> String): Single<String> = Single.create<String> {
         it.onSuccess(fuelHelper.getTwilioTokenSync(identity, authHeader()).token)
     }.subscribeOn(Schedulers.io())
@@ -68,56 +71,145 @@ class TwilioRx(private val fuelHelper: FuelHelper) {
         val props = ChatClient.Properties.Builder().createProperties()
 
         ChatClient.create(context.applicationContext,
-                token,
-                props,
-                object : CallbackListener<ChatClient>() {
-                    override fun onSuccess(chatClient: ChatClient) {
-                        it.onSuccess(chatClient)
+                          token,
+                          props,
+                          object : CallbackListener<ChatClient>() {
+                              override fun onSuccess(chatClient: ChatClient) {
+                                  it.onSuccess(chatClient)
+                              }
+
+                              override fun onError(errorInfo: ErrorInfo?) {
+                                  it.onError(ErrorInfoWrapper(errorInfo))
+                              }
+                          })
+    }.subscribeOn(Schedulers.io())
+
+    fun createAccessManager(token: String,
+                            identity: String,
+                            authHeader: () -> String,
+                            chatClient: ChatClient): Completable =
+            Flowable.create<String>({
+                                        val accessManager = AccessManager(
+                                            token,
+                                            object : AccessManager.Listener {
+                                                override fun onTokenExpired(accessManager: AccessManager?) {
+                                                    val newToken = fuelHelper.getTwilioTokenSync(
+                                                        identity,
+                                                        authHeader()).token
+                                                    accessManager?.updateToken(newToken)
+                                                }
+
+                                                override fun onTokenWillExpire(accessManager: AccessManager?) {
+                                                    val newToken = fuelHelper.getTwilioTokenSync(
+                                                        identity,
+                                                        authHeader()).token
+                                                    accessManager?.updateToken(newToken)
+                                                }
+
+                                                override fun onError(accessManager: AccessManager?, errorMessage: String?) {
+                                                    it.onError(Throwable(errorMessage))
+                                                }
+                                            })
+
+                                        accessManager.addTokenUpdateListener { token ->
+                                            it.onNext(
+                                                token)
+                                        }
+                                        it.setCancellable { }
+                                    },
+                                    BackpressureStrategy.BUFFER)
+                    .flatMapCompletable { newToken ->
+                        Completable.create({
+                                               chatClient.updateToken(newToken,
+                                                                      object : StatusListener() {
+                                                                          override fun onSuccess() {
+                                                                              it.onComplete()
+                                                                          }
+
+                                                                          override fun onError(errorInfo: ErrorInfo?) {
+                                                                              it.onError(
+                                                                                  ErrorInfoWrapper(
+                                                                                      errorInfo))
+                                                                          }
+                                                                      })
+                                           })
+                    }.observeOn(Schedulers.io())
+
+    fun createChannel(interlocutor: String,
+                      channelName: String,
+                      chatClient: ChatClient?): Single<Channel> = Single.create<Channel> {
+        val attrs = JSONObject()
+        attrs.put(KEY_SENDER, userManager.getCurrentUser()!!.identity)
+        attrs.put(KEY_RECEIVER, interlocutor)
+
+        val builder = chatClient?.channels?.channelBuilder()
+
+        builder?.withUniqueName(channelName)
+                ?.withType(Channel.ChannelType.PRIVATE)
+                ?.withAttributes(attrs)
+                ?.build(object : CallbackListener<Channel>() {
+                    override fun onSuccess(channel: Channel) {
+                        it.onSuccess(channel)
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
                         it.onError(ErrorInfoWrapper(errorInfo))
                     }
                 })
-    }.subscribeOn(Schedulers.io())
+    }.flatMap { channel ->
+        Completable.create(
+            { e1 ->
+                channel.join(object : StatusListener() {
+                    override fun onSuccess() {
+                        e1.onComplete()
+                    }
 
-    fun createAccessManager(token: String,
-                            identity: String,
-                            authHeader: () -> String,
-                            chatClient: ChatClient): Completable = Flowable.create<String>({
-        val accessManager = AccessManager(token, object : AccessManager.Listener {
-            override fun onTokenExpired(accessManager: AccessManager?) {
-                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
-                accessManager?.updateToken(newToken)
-            }
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        e1.onError(ErrorInfoWrapper(errorInfo))
+                    }
+                })
+            }).doOnError { throwable ->
+            channel.destroy(object : StatusListener() {
+                override fun onSuccess() {
+                    UiUtils.log(this.javaClass.simpleName,
+                                "Remove channel success after join")
+                }
 
-            override fun onTokenWillExpire(accessManager: AccessManager?) {
-                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
-                accessManager?.updateToken(newToken)
-            }
+                override fun onError(errorInfo: ErrorInfo?) {
+                    UiUtils.log(this.javaClass.simpleName,
+                                "Remove channel error after join")
+                }
+            })
+        }.andThen(
+            {
+                Completable.create(
+                    { e2 ->
+                        channel.members
+                                .inviteByIdentity(interlocutor,
+                                                  object : StatusListener() {
+                                                      override fun onSuccess() {
+                                                          e2.onComplete()
+                                                      }
 
-            override fun onError(accessManager: AccessManager?, errorMessage: String?) {
-                it.onError(Throwable(errorMessage))
-            }
-        })
-
-        accessManager.addTokenUpdateListener { token ->
-            it.onNext(token)
-        }
-        it.setCancellable { }
-    }, BackpressureStrategy.BUFFER)
-            .flatMapCompletable { newToken ->
-                Completable.create({
-                    chatClient.updateToken(newToken, object : StatusListener() {
+                                                      override fun onError(errorInfo: ErrorInfo?) {
+                                                          e2.onError(ErrorInfoWrapper(errorInfo))
+                                                      }
+                                                  })
+                    }).doOnError { throwable ->
+                    channel.destroy(object : StatusListener() {
                         override fun onSuccess() {
-                            it.onComplete()
+                            UiUtils.log(this.javaClass.simpleName,
+                                        "Remove channel success")
                         }
 
                         override fun onError(errorInfo: ErrorInfo?) {
-                            it.onError(ErrorInfoWrapper(errorInfo))
+                            UiUtils.log(this.javaClass.simpleName,
+                                        "Remove channel error")
                         }
                     })
-                })
-            }.observeOn(Schedulers.io())
+                }
+            }).toSingle { channel }
+
+    }.observeOn(Schedulers.io())
 
 }

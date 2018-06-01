@@ -59,6 +59,10 @@ object Validator {
                 if (text.isEmpty())
                     return "Password should not be empty"
             }
+            Validator.FieldType.IDENTITY -> {
+                if (text.isEmpty())
+                    return "Identity should not be empty"
+            }
 
             Validator.FieldType.PASSWORD -> if (text.isEmpty())
                 return "Password should not be empty"
@@ -69,6 +73,7 @@ object Validator {
 
     enum class FieldType {
         EMAIL,
-        PASSWORD
+        PASSWORD,
+        IDENTITY
     }
 }

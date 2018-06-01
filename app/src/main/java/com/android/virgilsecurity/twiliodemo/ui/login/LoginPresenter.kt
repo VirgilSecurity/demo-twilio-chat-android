@@ -38,19 +38,15 @@ import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
 import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
-import com.github.kittinunf.fuel.android.core.Json
 import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONObject
 
 /**
  * . _  _
@@ -68,7 +64,8 @@ import org.json.JSONObject
  */
 class LoginPresenter(private val virgilHelper: VirgilHelper,
                      private val fuelHelper: FuelHelper,
-                     private val userManager: UserManager) : BasePresenter {
+                     private val userManager: UserManager,
+                     private val virgilRx: VirgilRx) : BasePresenter {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -78,29 +75,75 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
         val keyPair = virgilHelper.generateKeyPair()
         val rawCard = virgilHelper.generateRawCard(keyPair, identity)
 
+        virgilHelper.storePrivateKey(keyPair.privateKey, identity)
 
         val signUpDisposable =
-        Single.create<SignInResponse> {
-            it.onSuccess(fuelHelper.signUp(rawCard))
-        }.observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribeBy(
-                    onSuccess = {
-                        userManager.setCurrentUser(TwilioUser(identity))
+                Single.create<SignInResponse> {
+                    it.onSuccess(fuelHelper.signUp(rawCard))
+                }.observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribeBy(
+                            onSuccess = {
+                                userManager.setCurrentUser(TwilioUser(identity))
 
-                        val rawCardModel = it.virgilCard
-                        userManager.setUserCard(Card.parse(virgilHelper.cardCrypto, rawCardModel))
+                                val rawCardModel = it.virgilCard
+                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
+                                                                   rawCardModel))
 
-                        onSignInSuccess(it)
-                    },
-                    onError = {
-                        onSignInError(it)
-                    })
+                                onSignInSuccess(it)
+                            },
+                            onError = {
+                                virgilHelper.deletePrivateKey(identity)
+                                onSignInError(it)
+                            })
 
         compositeDisposable += signUpDisposable
     }
 
+    fun requestSearchCards(identity: String,
+                           onSearchCardSuccess: (List<Card>) -> Unit,
+                           onSearchCardError: (Throwable) -> Unit) {
+        val searchCardDisposable = virgilRx.searchCards(identity)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ cards, throwable ->
+                               if (throwable == null && cards.isNotEmpty())
+                                   onSearchCardSuccess(cards)
+                               else
+                                   onSearchCardError(throwable)
+                           })
+
+        compositeDisposable += searchCardDisposable
+    }
+
+    fun requestPublishCard(identity: String,
+                           onPublishCardSuccess: (Card) -> Unit,
+                           onPublishCardError: (Throwable) -> Unit) {
+        val publishCardDisposable = virgilRx.publishCard(identity)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ card, throwable ->
+                               if (throwable == null) {
+                                   onPublishCardSuccess(card)
+                               } else {
+                                   virgilHelper.deletePrivateKey(identity)
+                                   onPublishCardError(throwable)
+                               }
+                           })
+
+        compositeDisposable += publishCardDisposable
+    }
+
+    fun requestIfKeyExists(keyName: String,
+                           onKeyExists: () -> Unit,
+                           onKeyNotExists: () -> Unit) {
+        if (virgilHelper.ifExistsPrivateKey(keyName))
+            onKeyExists()
+        else
+            onKeyNotExists()
+    }
+
     override fun disposeAll() {
-        // TODO Implement body or it will be empty ):
+        compositeDisposable.clear()
     }
 }

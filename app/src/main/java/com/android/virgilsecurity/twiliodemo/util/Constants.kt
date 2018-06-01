@@ -31,16 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
-
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
-import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
-import kotlinx.android.synthetic.main.activity_login.*
+package com.android.virgilsecurity.twiliodemo.util
 
 /**
  * . _  _
@@ -48,50 +39,16 @@ import kotlinx.android.synthetic.main.activity_login.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/1/186/1/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class LoginActivity : BaseActivity() {
-
-    private var secondPress: Boolean = false
-
-    override fun provideLayoutId() = R.layout.activity_login
-
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java))
-            from.finish()
-        }
-
-        fun startClearTop(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java)
-                                       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                                         Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        UiUtils.replaceFragmentNoTag(supportFragmentManager, flBaseContainer.id, LoginFragment.newInstance())
-    }
-
-    override fun onBackPressed() {
-        hideKeyboard()
-
-        if (secondPress)
-            super.onBackPressed()
-        else
-            UiUtils.toast(this, getString(R.string.press_exit_once_more))
-
-        secondPress = true
-
-        object : OnFinishTimer(2000, 100) {
-            override fun onFinish() {
-                secondPress = false
-            }
-        }.start()
-    }
+/**
+ * Constants
+ */
+object Constants {
+    const val KEY_SENDER = "sender"
+    const val KEY_RECEIVER = "receiver"
+    const val KEY_CHANNEL = "KEY_CHANNEL"
 }

@@ -31,12 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.thread
+package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.android.virgilsecurity.twiliodemo.util.Constants
+import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.twilio.chat.Channel
+import kotlinx.android.synthetic.main.activity_channel.*
 
 /**
  * . _  _
@@ -49,22 +55,32 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
  * ....|_|-
  */
 
-class ThreadActivity : BaseActivity() {
+class ChannelActivity : BaseActivity() {
+
+    private lateinit var channel: Channel
 
     companion object {
         fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ThreadActivity::class.java))
+            from.startActivity(Intent(from, ChannelActivity::class.java))
             from.finish()
+        }
+
+        fun startWithExtras(from: Activity, key: String, parcelable: Parcelable) {
+            val openChannel = Intent(from, ChannelActivity::class.java)
+            openChannel.putExtra(key, parcelable)
+            from.startActivity(openChannel)
         }
     }
 
-    override fun provideLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun provideLayoutId() = R.layout.activity_channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        channel = intent.extras.getParcelable(Constants.KEY_CHANNEL)
 
+        UiUtils.replaceFragmentNoTag(supportFragmentManager,
+                                     flBaseContainer.id,
+                                     ChannelFragment.newInstance(Constants.KEY_CHANNEL, channel))
     }
 }

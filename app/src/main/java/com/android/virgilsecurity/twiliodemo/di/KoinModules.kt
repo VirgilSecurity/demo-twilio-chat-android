@@ -33,9 +33,14 @@
 
 package com.android.virgilsecurity.twiliodemo.di
 
+import android.content.Context
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioRx
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
+import com.android.virgilsecurity.twiliodemo.di.Keys.STORAGE_PATH
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
 import com.virgilsecurity.sdk.crypto.CardCrypto
@@ -62,6 +67,10 @@ import org.koin.dsl.module.applicationContext
 /**
  * Modules
  */
+object Keys {
+    const val STORAGE_PATH = "storagePath"
+}
+
 val utilsModule : Module = applicationContext {
     bean { UserManager(get())}
 }
@@ -74,10 +83,17 @@ val virgilModule : Module = applicationContext {
     bean { VirgilCardCrypto() as CardCrypto }
     bean { VirgilCardVerifier(get()) as CardVerifier }
     bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    bean { JsonFileKeyStorage() as KeyStorage }
+    bean { JsonFileKeyStorage(get(Keys.STORAGE_PATH)) as KeyStorage }
     bean { PrivateKeyStorage(get(), get()) }
     bean { VirgilHelper(get(), get(), get(), get(), get()) }
+    bean { VirgilRx(get()) }
 }
 
 val twilioModule : Module = applicationContext {
+    bean { TwilioRx(get(), get()) }
+    bean { TwilioHelper(get(), get()) }
+}
+
+val paramsModule : Module = applicationContext {
+    bean(Keys.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
 }

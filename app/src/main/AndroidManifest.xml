@@ -58,11 +58,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.chat.threadsList.ThreadsListActivity"
+            android:name=".ui.chat.channelsList.ChannelsListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.chat.thread.ThreadActivity"
+            android:name=".ui.chat.channel.ChannelActivity"
             android:screenOrientation="portrait" />
     </application>
 

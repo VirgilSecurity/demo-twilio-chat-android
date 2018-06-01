@@ -35,6 +35,8 @@ package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.twiliodemo.R.string.identity
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.twilio.chat.*
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -59,9 +61,6 @@ import org.json.JSONObject
 class TwilioHelper(private val context: Context,
                    private val twilioRx: TwilioRx) {
 
-    private val keySender = "sender"
-    private val keyReceiver = "receiver"
-
     private var chatClient: ChatClient? = null
 
     fun createChatClient(identity: String,
@@ -76,17 +75,15 @@ class TwilioHelper(private val context: Context,
                             }
                         }
                     }
-                    .flatMap { pair ->
+                    .map { pair ->
                         twilioRx.createAccessManager(pair.second, identity, authHeader, pair.first)
                                 .andThen(Single.create<ChatClient> {
                                     it.onSuccess(pair.first)
                                 })
-                    }
-                    .map {
-                        this.chatClient = it
-                        it
-                    }
-                    .toCompletable()
+
+                        this.chatClient = pair.first
+                        pair.first
+                    }.toCompletable()
         } else {
             return Completable.complete()
         }
@@ -96,27 +93,7 @@ class TwilioHelper(private val context: Context,
         chatClient?.setListener(chatClientListener)
     }
 
-//    fun createChannel(interlocutor: String) {
-//        val attrs = JSONObject()
-//        attrs.put(keySender, "testing channel creation with options ${value}")
-//        attrs.put("topic", "testing channel creation with options ${value}")
-//
-//        val builder = chatClient?.channels?.channelBuilder()
-//
-//        builder?.withFriendlyName("${typ}_TestChannelF_${value}")
-//                ?.withUniqueName("${typ}_TestChannelU_${value}")
-//                ?.withType(type)
-//                ?.withAttributes(attrs)
-//                ?.build(object : CallbackListener<Channel>() {
-//                    override fun onSuccess(newChannel: Channel) {
-//                        debug { "Successfully created a channel with options." }
-//                        channels.put(newChannel.sid, ChannelModel(newChannel))
-//                        refreshChannelList()
-//                    }
-//
-//                    override fun onError(errorInfo: ErrorInfo?) {
-//                        error { "Error creating a channel" }
-//                    }
-//                })
-//    }
+    fun createChannel(interlocutor: String,
+                      channelName: String) =
+        twilioRx.createChannel(interlocutor, channelName, chatClient)
 }

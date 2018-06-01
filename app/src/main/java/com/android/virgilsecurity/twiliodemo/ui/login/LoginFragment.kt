@@ -37,7 +37,8 @@ import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
-import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.ThreadsListActivity
+import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
+import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
@@ -75,21 +76,40 @@ class LoginFragment : BaseFragment<LoginActivity>() {
 
     private fun initViewCallbacks() {
         btnSignIn.setOnClickListener {
-            showProgress(true)
-            presenter.requestSingIn(etIdentity.text.toString(),
-                                    {
-                                        ThreadsListActivity.startWithFinish(rootActivity!!)
-                                        showProgress(false)
-                                    },
-                                    {
-                                        UiUtils.toast(this, "SignIn Error.\nMessage: ${it.message}")
-                                        showProgress(false)
-                                    })
+            val identity = etIdentity.text.toString()
+            if (identity.isNotEmpty()) {
+                showProgress(true)
+                presenter.requestSingIn(etIdentity.text.toString(),
+                                        {
+                                            checkPrivateKey()
+                                        },
+                                        {
+                                            UiUtils.toast(this,
+                                                          "SignIn Error.\nMessage: ${it.message}")
+                                            showProgress(false)
+                                            // if card not exists - publish one
+                                        })
+            }
         }
+    }
+
+    private fun checkPrivateKey() {
+        if (etIdentity.text.toString().isNotEmpty())
+            presenter.requestIfKeyExists(etIdentity.text.toString(),
+                                         onKeyExists = {
+                                             showProgress(false)
+                                             ChannelsListActivity.startWithFinish(rootActivity!!)
+                                         },
+                                         onKeyNotExists = {
+                                             showProgress(false)
+                                             UiUtils.toast(this, getString(R.string.no_private_key))
+                                         })
     }
 
     private fun showProgress(show: Boolean) {
         pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
         btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
     }
+
+
 }

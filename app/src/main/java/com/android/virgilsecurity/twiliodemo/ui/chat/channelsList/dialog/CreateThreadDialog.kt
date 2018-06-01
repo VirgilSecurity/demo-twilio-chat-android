@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.dialog
+package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.dialog
 
 import android.app.Dialog
 import android.content.Context
@@ -43,11 +43,9 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.R.id.etIdentity
 import com.android.virgilsecurity.twiliodemo.util.DefaultSymbolsInputFilter
 import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
 import com.android.virgilsecurity.twiliodemo.util.Validator
-import io.reactivex.internal.subscriptions.SubscriptionHelper.cancel
 import kotlinx.android.synthetic.main.dialog_create_thread.*
 
 /**
@@ -104,7 +102,7 @@ class CreateThreadDialog(context: Context,
         }
 
         btnOk.setOnClickListener {
-            val error: String? = Validator.validate(etIdentity, Validator.FieldType.EMAIL)
+            val error: String? = Validator.validate(etIdentity, Validator.FieldType.IDENTITY)
 
             if (error != null)
                 etIdentity.error = error

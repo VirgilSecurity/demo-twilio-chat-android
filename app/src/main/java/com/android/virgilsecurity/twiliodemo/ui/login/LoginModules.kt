@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
+import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListRVAdapter
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -51,5 +52,7 @@ import org.koin.dsl.module.applicationContext
  * LoginModules
  */
 val loginModule : Module = applicationContext {
-    bean { LoginPresenter(get(), get(), get()) }
+    bean { LoginPresenter(get(), get(), get(), get()) }
+
+    bean { ChannelsListRVAdapter(get()) }
 }

@@ -78,6 +78,7 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
     fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
             .header("Authorization" to "Bearer $authHeader")
+            .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))
             .responseString()
             .third
@@ -86,6 +87,7 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
     fun getTwilioTokenSync(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
             .header("Authorization" to "Bearer $authHeader")
+            .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))
             .responseString()
             .third

@@ -104,15 +104,19 @@ class VirgilHelper(val cardCrypto: CardCrypto,
                                         keyPair.publicKey,
                                         identity)
 
-    fun storePrivateKey(privateKey: PrivateKey, identity: String, meta: Map<String, String>?) =
+    fun storePrivateKey(privateKey: PrivateKey, identity: String, meta: Map<String, String>? = null) =
             privateKeyStorage.store(privateKey, identity, meta)
+
+    fun ifExistsPrivateKey(identity: String) = privateKeyStorage.exists(identity)
+
+    fun deletePrivateKey(identity: String) = privateKeyStorage.delete(identity)
 
     fun generateAuthHeader(identity: String = userManager.getCurrentUser()!!.identity,
                            card: Card = userManager.getUserCard()): String {
         val unixTimestamp = System.currentTimeMillis() / 1000L
         val privateKey = privateKeyStorage.load(identity).left as VirgilPrivateKey
         val rawSignature =
-                virgilCrypto.generateSignature((card.identifier + unixTimestamp).toByteArray(),
+                virgilCrypto.generateSignature((card.identifier + "." + unixTimestamp).toByteArray(),
                                                privateKey)
         val signatureB64 = ConvertionUtils.toBase64String(rawSignature)
 
