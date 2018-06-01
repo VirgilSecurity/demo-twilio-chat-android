@@ -35,6 +35,7 @@ package com.android.virgilsecurity.twiliodemo.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.ThreadsListActivity
 import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
@@ -51,7 +52,7 @@ import org.koin.android.ext.android.inject
  * ....|_|-
  */
 
-class SplashActivity : Activity() {
+class SplashActivity : AppCompatActivity() {
 
     private val userManager: UserManager by inject()
 

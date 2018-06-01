@@ -39,13 +39,18 @@ import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
+import com.github.kittinunf.fuel.android.core.Json
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -65,21 +70,25 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
                      private val fuelHelper: FuelHelper,
                      private val userManager: UserManager) : BasePresenter {
 
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     fun requestSingIn(identity: String,
                       onSignInSuccess: (SignInResponse) -> Unit,
                       onSignInError: (Throwable) -> Unit) {
         val keyPair = virgilHelper.generateKeyPair()
         val rawCard = virgilHelper.generateRawCard(keyPair, identity)
 
+
+        val signUpDisposable =
         Single.create<SignInResponse> {
-            it.onSuccess(fuelHelper.signUp(rawCard.exportAsJson()))
+            it.onSuccess(fuelHelper.signUp(rawCard))
         }.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
                     onSuccess = {
                         userManager.setCurrentUser(TwilioUser(identity))
 
-                        val rawCardModel = RawSignedModel.fromJson(it.virgilCard)
+                        val rawCardModel = it.virgilCard
                         userManager.setUserCard(Card.parse(virgilHelper.cardCrypto, rawCardModel))
 
                         onSignInSuccess(it)
@@ -87,10 +96,11 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
                     onError = {
                         onSignInError(it)
                     })
+
+        compositeDisposable += signUpDisposable
     }
 
     override fun disposeAll() {
         // TODO Implement body or it will be empty ):
     }
-
 }

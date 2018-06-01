@@ -33,6 +33,12 @@
 
 package com.android.virgilsecurity.twiliodemo.data.model
 
+import com.google.gson.JsonObject
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.JsonAdapter
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import org.json.JSONObject
+
 /**
  * . _  _
  * .| || | _
@@ -49,5 +55,5 @@ package com.android.virgilsecurity.twiliodemo.data.model
  */
 data class TokenRequest(val identity: String)
 
-data class SignUpRequest(val rawCard: String)
+data class SignUpRequest(val rawCard: RawSignedModel)
 

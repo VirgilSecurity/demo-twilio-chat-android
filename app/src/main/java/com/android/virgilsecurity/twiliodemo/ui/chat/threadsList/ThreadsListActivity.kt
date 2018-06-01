@@ -3,15 +3,20 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.threadsList
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import android.widget.TextView
 import com.android.virgilsecurity.twiliodemo.R
+import com.android.virgilsecurity.twiliodemo.R.id.dlDrawer
+import com.android.virgilsecurity.twiliodemo.R.id.nvNavigation
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
 import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.dialog.CreateThreadDialog
 import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import kotlinx.android.synthetic.main.activity_threads_list.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.ext.android.inject
 
 /**
@@ -34,7 +39,7 @@ class ThreadsListActivity : BaseActivity() {
     override fun provideLayoutId() = R.layout.activity_threads_list
 
     companion object {
-        fun startWithFinish(from: Activity) {
+        fun startWithFinish(from: AppCompatActivity) {
             from.startActivity(Intent(from, ThreadsListActivity::class.java))
             from.finish()
         }
@@ -43,7 +48,16 @@ class ThreadsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        UiUtils.replaceFragmentNoBackStack(fragmentManager,
+        initToolbar(toolbar, getString(R.string.app_name))
+        initDrawer()
+        showHamburger(true, View.OnClickListener {
+            if (!dlDrawer.isDrawerOpen(Gravity.START))
+                dlDrawer.openDrawer(Gravity.START)
+            else
+                dlDrawer.closeDrawer(Gravity.START)
+        })
+
+        UiUtils.replaceFragmentNoBackStack(supportFragmentManager,
                                            flBaseContainer.id,
                                            ThreadsListFragment.newInstance(),
                                            threadsListTag)
@@ -54,7 +68,6 @@ class ThreadsListActivity : BaseActivity() {
                 .findViewById<TextView>(R.id.tvUsernameDrawer)
         tvUsernameDrawer.text = userManager.getCurrentUser()!!.identity
 
-        actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeButtonEnabled(true)
 
         nvNavigation.setNavigationItemSelectedListener(
@@ -68,7 +81,7 @@ class ThreadsListActivity : BaseActivity() {
                                                                 getString(R.string.enter_username))
 
                         createThreadDialog.setOnClickListener(
-                            { dialog, identity ->
+                            { _, identity ->
                                 if (userManager.getCurrentUser()!!.identity == identity) {
                                     UiUtils.toast(this, R.string.no_chat_with_yourself)
                                 } else {
@@ -80,6 +93,7 @@ class ThreadsListActivity : BaseActivity() {
                             },
                             {
                                 (it as CreateThreadDialog).showProgress(false)
+                                it.cancel()
                             })
 
                         createThreadDialog.show()

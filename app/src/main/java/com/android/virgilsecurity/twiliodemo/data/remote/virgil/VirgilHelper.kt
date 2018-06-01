@@ -70,20 +70,10 @@ class VirgilHelper(val cardCrypto: CardCrypto,
 
     init {
         val tokenProvider = CallbackJwtProvider {
-            val unixTimestamp = System.currentTimeMillis() / 1000L
-            val privateKey = privateKeyStorage.load(userManager.getCurrentUser()!!.identity)
-                    .left as VirgilPrivateKey
-            val rawSignature = virgilCrypto.generateSignature((userManager.getUserCard().identifier +
-                                                               unixTimestamp)
-                                                                      .toByteArray(),
-                                                              privateKey)
-            val signatureB64 = ConvertionUtils.toBase64String(rawSignature)
-            val authHeader = userManager.getUserCard().identifier + "." +
-                             unixTimestamp + "." +
-                             signatureB64
+
 
             fuelHelper.getVirgilTokenSync(userManager.getCurrentUser()!!.identity,
-                                          authHeader).token
+                                          generateAuthHeader()).token
         }
 
         cardManager = CardManager(cardCrypto, tokenProvider, cardVerifier)
@@ -117,6 +107,17 @@ class VirgilHelper(val cardCrypto: CardCrypto,
     fun storePrivateKey(privateKey: PrivateKey, identity: String, meta: Map<String, String>?) =
             privateKeyStorage.store(privateKey, identity, meta)
 
+    fun generateAuthHeader(identity: String = userManager.getCurrentUser()!!.identity,
+                           card: Card = userManager.getUserCard()): String {
+        val unixTimestamp = System.currentTimeMillis() / 1000L
+        val privateKey = privateKeyStorage.load(identity).left as VirgilPrivateKey
+        val rawSignature =
+                virgilCrypto.generateSignature((card.identifier + unixTimestamp).toByteArray(),
+                                               privateKey)
+        val signatureB64 = ConvertionUtils.toBase64String(rawSignature)
+
+        return userManager.getUserCard().identifier + "." + unixTimestamp + "." + signatureB64
+    }
 
     fun decrypt(text: String): String {
         val cipherData = ConvertionUtils.base64ToBytes(text)

@@ -33,16 +33,17 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
-import com.android.virgilsecurity.twiliodemo.data.model.SignUpRequest
 import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
+import com.android.virgilsecurity.twiliodemo.data.model.SignUpRequest
 import com.android.virgilsecurity.twiliodemo.data.model.TokenRequest
 import com.android.virgilsecurity.twiliodemo.data.model.TokenResponse
 import com.android.virgilsecurity.twiliodemo.util.toObject
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
-import com.github.kittinunf.fuel.httpPost
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -61,6 +62,9 @@ import com.google.gson.GsonBuilder
  */
 class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
+    private val keyContentType = "Content-Type"
+    private val keyAppJson = "application/json"
+
     private val virgilTokenPath = "get-virgil-jwt"
     private val twilioTokenPath = "get-twilio-jwt"
     private val signUpPath = "signup"
@@ -69,7 +73,7 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
     init {
         FuelManager.instance.basePath = baseUrl
-        gson = GsonBuilder().disableHtmlEscaping().create()
+        gson = Gson()
     }
 
     fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
@@ -88,8 +92,9 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
             .get()
             .toObject(TokenResponse::class.java)
 
-    fun signUp(rawCard: String) = Fuel.post(signUpPath)
-            .body(gson.toJson(SignUpRequest(rawCard)))
+    fun signUp(rawCard: RawSignedModel) = Fuel.post(signUpPath)
+            .header(keyContentType to keyAppJson)
+            .body(ConvertionUtils.serializeToJson(SignUpRequest(rawCard)))
             .responseString()
             .third
             .get()

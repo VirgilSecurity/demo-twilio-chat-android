@@ -72,7 +72,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        UiUtils.replaceFragmentNoTag(fragmentManager, flBaseContainer.id, LoginFragment.newInstance())
+        UiUtils.replaceFragmentNoTag(supportFragmentManager, flBaseContainer.id, LoginFragment.newInstance())
     }
 
     // TODO Add search before publish card to allow only 1 card for 1 identity

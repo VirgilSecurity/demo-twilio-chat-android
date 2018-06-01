@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
+import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.ThreadsListActivity
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
@@ -66,7 +67,7 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         fun newInstance() = LoginFragment()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViewCallbacks()
@@ -77,11 +78,11 @@ class LoginFragment : BaseFragment<LoginActivity>() {
             showProgress(true)
             presenter.requestSingIn(etIdentity.text.toString(),
                                     {
-                                        UiUtils.toast(this, "SignIn is Ok")
+                                        ThreadsListActivity.startWithFinish(rootActivity!!)
                                         showProgress(false)
                                     },
                                     {
-                                        UiUtils.toast(this, "SignIn Error. Message: ${it.message}")
+                                        UiUtils.toast(this, "SignIn Error.\nMessage: ${it.message}")
                                         showProgress(false)
                                     })
         }

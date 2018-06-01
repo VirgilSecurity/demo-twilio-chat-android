@@ -63,7 +63,7 @@ class CreateThreadDialog(context: Context,
     private lateinit var onClickedOk: (dialog: Dialog, identity: String) -> Unit
     private lateinit var onClickedCancel: (dialog: Dialog) -> Unit
 
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)

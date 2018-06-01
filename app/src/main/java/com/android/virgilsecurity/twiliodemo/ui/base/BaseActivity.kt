@@ -36,6 +36,7 @@ package com.android.virgilsecurity.twiliodemo.ui.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -56,7 +57,7 @@ import com.android.virgilsecurity.twiliodemo.R
 /**
  *
  */
-open abstract class BaseActivity : Activity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     private var tvToolbarTitle: TextView? = null
     private var ibToolbarBack: View? = null
@@ -80,6 +81,7 @@ open abstract class BaseActivity : Activity() {
 
         tvToolbarTitle?.text = titlePage
         actionBar?.title = "" // We're using our custom title
+        actionBar?.setDisplayHomeAsUpEnabled(false) // Hide default home button
     }
 
     protected fun showBackButton(show: Boolean, listener: View.OnClickListener?) {

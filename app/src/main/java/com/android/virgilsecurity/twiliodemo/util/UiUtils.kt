@@ -33,10 +33,10 @@
 
 package com.android.virgilsecurity.twiliodemo.util
 
-import android.app.Fragment
-import android.app.FragmentManager
 import android.app.FragmentTransaction
 import android.content.Context
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.widget.Toast
 
@@ -66,7 +66,7 @@ object UiUtils {
 
     fun toast(fragment: Fragment, stringResId: Int) =
             Toast.makeText(fragment.activity,
-                           fragment.activity.getString(stringResId),
+                           fragment.activity!!.getString(stringResId),
                            Toast.LENGTH_SHORT).show()
 
     fun log(tag: String, text: String) = Log.d(tag, text)

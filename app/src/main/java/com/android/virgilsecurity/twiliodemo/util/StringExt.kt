@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.twiliodemo.util
 
 import com.google.gson.Gson
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 import java.lang.reflect.Type
 
 /**
@@ -55,5 +56,5 @@ fun <T : Type> String.toObject(type: T): T {
 }
 
 fun <T> String.toObject(type: Class<T>): T {
-    return Gson().fromJson(this, type)
+    return ConvertionUtils.deserializeFromJson(this, type)
 }

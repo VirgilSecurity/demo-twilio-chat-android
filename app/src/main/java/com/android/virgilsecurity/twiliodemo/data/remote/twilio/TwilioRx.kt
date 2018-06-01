@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
+import com.android.virgilsecurity.twiliodemo.R.string.identity
 import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.twilio.accessmanager.AccessManager
@@ -59,8 +60,8 @@ import io.reactivex.schedulers.Schedulers
  * TwilioRx
  */
 class TwilioRx(private val fuelHelper: FuelHelper) {
-    fun getToken(identity: String, authHeader: String): Single<String> = Single.create<String> {
-        it.onSuccess(fuelHelper.getTwilioTokenSync(identity, authHeader).token)
+    fun getToken(identity: String, authHeader: () -> String): Single<String> = Single.create<String> {
+        it.onSuccess(fuelHelper.getTwilioTokenSync(identity, authHeader()).token)
     }.subscribeOn(Schedulers.io())
 
     fun createClient(context: Context, token: String): Single<ChatClient> = Single.create<ChatClient> {
@@ -82,16 +83,16 @@ class TwilioRx(private val fuelHelper: FuelHelper) {
 
     fun createAccessManager(token: String,
                             identity: String,
-                            authHeader: String,
+                            authHeader: () -> String,
                             chatClient: ChatClient): Completable = Flowable.create<String>({
         val accessManager = AccessManager(token, object : AccessManager.Listener {
             override fun onTokenExpired(accessManager: AccessManager?) {
-                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader).token
+                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
                 accessManager?.updateToken(newToken)
             }
 
             override fun onTokenWillExpire(accessManager: AccessManager?) {
-                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader).token
+                val newToken = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
                 accessManager?.updateToken(newToken)
             }
 

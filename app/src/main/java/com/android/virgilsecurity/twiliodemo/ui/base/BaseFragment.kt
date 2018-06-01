@@ -34,9 +34,10 @@
 package com.android.virgilsecurity.twiliodemo.ui.base
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,9 +55,9 @@ import android.view.inputmethod.InputMethodManager
  */
 
 @Suppress("UNCHECKED_CAST")
-open abstract class BaseFragment<A> : Fragment() where A : Activity {
+abstract class BaseFragment<A> : Fragment() where A : AppCompatActivity {
 
-    private var rootActivity: A? = null
+    internal var rootActivity: A? = null
 
     protected abstract fun provideLayoutId() : Int
 

@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.twiliodemo.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 /**
  * . _  _
@@ -51,4 +52,4 @@ import com.google.gson.annotations.SerializedName
  */
 data class TokenResponse(val token: String)
 
-data class SignInResponse(@SerializedName("virgil_card") val virgilCard: String)
+data class SignInResponse(@SerializedName("virgil_card") val virgilCard: RawSignedModel)

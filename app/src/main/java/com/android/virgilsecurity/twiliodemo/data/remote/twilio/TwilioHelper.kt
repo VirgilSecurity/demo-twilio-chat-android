@@ -34,10 +34,12 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.twilio.chat.ChatClient
-import com.twilio.chat.ChatClientListener
+import com.android.virgilsecurity.twiliodemo.R.string.identity
+import com.twilio.chat.*
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -57,15 +59,16 @@ import io.reactivex.rxkotlin.subscribeBy
 class TwilioHelper(private val context: Context,
                    private val twilioRx: TwilioRx) {
 
+    private val keySender = "sender"
+    private val keyReceiver = "receiver"
+
     private var chatClient: ChatClient? = null
 
     fun createChatClient(identity: String,
-                         authHeader: String,
-                         chatCreatedSuccess: (chatClient: ChatClient) -> Unit,
-                         chatCreatedError: (chatClient: Throwable) -> Unit) {
+                         authHeader: () -> String): Completable {
 
-        if (this.chatClient == null)
-            twilioRx.getToken(identity, authHeader)
+        if (this.chatClient == null) {
+            return twilioRx.getToken(identity, authHeader)
                     .flatMap { token ->
                         twilioRx.createClient(context, token = token).flatMap { chatClient ->
                             Single.create<Pair<ChatClient, String>> {
@@ -79,17 +82,41 @@ class TwilioHelper(private val context: Context,
                                     it.onSuccess(pair.first)
                                 })
                     }
-                    .subscribeBy(
-                            onSuccess = {
-                                this.chatClient = it
-                                chatCreatedSuccess(it)
-                            },
-                            onError = {
-                                chatCreatedError(it)
-                            })
+                    .map {
+                        this.chatClient = it
+                        it
+                    }
+                    .toCompletable()
+        } else {
+            return Completable.complete()
+        }
     }
 
     fun setChatListener(chatClientListener: ChatClientListener) {
         chatClient?.setListener(chatClientListener)
     }
+
+//    fun createChannel(interlocutor: String) {
+//        val attrs = JSONObject()
+//        attrs.put(keySender, "testing channel creation with options ${value}")
+//        attrs.put("topic", "testing channel creation with options ${value}")
+//
+//        val builder = chatClient?.channels?.channelBuilder()
+//
+//        builder?.withFriendlyName("${typ}_TestChannelF_${value}")
+//                ?.withUniqueName("${typ}_TestChannelU_${value}")
+//                ?.withType(type)
+//                ?.withAttributes(attrs)
+//                ?.build(object : CallbackListener<Channel>() {
+//                    override fun onSuccess(newChannel: Channel) {
+//                        debug { "Successfully created a channel with options." }
+//                        channels.put(newChannel.sid, ChannelModel(newChannel))
+//                        refreshChannelList()
+//                    }
+//
+//                    override fun onError(errorInfo: ErrorInfo?) {
+//                        error { "Error creating a channel" }
+//                    }
+//                })
+//    }
 }
