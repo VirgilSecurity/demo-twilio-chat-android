@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -31,39 +32,42 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.twiliodemo">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlItemRoot"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="@drawable/item_list_contacts_bg"
+    android:orientation="vertical">
 
-    <application
-        android:name=".TwilioApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name="com.android.virgilsecurity.twiliodemo.ui.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <ImageView
+        android:id="@+id/ivUserPhoto"
+        android:layout_width="64dp"
+        android:layout_height="65dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
+        android:background="@drawable/user_item_grey_bg"
+        android:padding="@dimen/half_default_margin"
+        app:srcCompat="@drawable/ic_person_white_48dp" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/ivUserPhoto"
+        android:background="@drawable/bg_bottom_grey"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/default_margin">
 
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.threadsList.ThreadsListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.thread.ThreadActivity"
-            android:screenOrientation="portrait" />
-    </application>
-
-</manifest>
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:maxLines="2"
+            android:textColor="@color/black_olive"
+            android:textSize="@dimen/big_text"
+            tools:body="User Name" />
+    </LinearLayout>
+</RelativeLayout>

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -31,39 +32,18 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.twiliodemo">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <application
-        android:name=".TwilioApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name="com.android.virgilsecurity.twiliodemo.ui.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <item
+        android:id="@+id/itemNewChat"
+        android:title="@string/new_chat"
+        android:icon="@drawable/ic_group_add_black_24dp"
+        app:showAsAction="always" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.threadsList.ThreadsListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.thread.ThreadActivity"
-            android:screenOrientation="portrait" />
-    </application>
-
-</manifest>
+    <item
+        android:id="@+id/itemLogOut"
+        android:title="@string/log_out"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        app:showAsAction="always" />
+</menu>

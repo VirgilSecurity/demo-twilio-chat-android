@@ -31,39 +31,36 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.twiliodemo">
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dlDrawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <application
-        android:name=".TwilioApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name="com.android.virgilsecurity.twiliodemo.ui.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <include layout="@layout/toolbar" />
 
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait" />
+        <FrameLayout
+            android:id="@+id/flBaseContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
-        <activity
-            android:name=".ui.chat.threadsList.ThreadsListActivity"
-            android:screenOrientation="portrait" />
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nvNavigation"
+        android:layout_width="258dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/layout_drawer_header"
+        app:menu="@menu/drawer_menu" />
 
-        <activity
-            android:name=".ui.chat.thread.ThreadActivity"
-            android:screenOrientation="portrait" />
-    </application>
-
-</manifest>
+</android.support.v4.widget.DrawerLayout>

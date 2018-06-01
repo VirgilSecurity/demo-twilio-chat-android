@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
+import com.android.virgilsecurity.twiliodemo.R.string.identity
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.virgilsecurity.sdk.cards.Card
@@ -56,7 +57,7 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * ....|_|-
  */
 
-class VirgilHelper(cardCrypto: CardCrypto,
+class VirgilHelper(val cardCrypto: CardCrypto,
                    fuelHelper: FuelHelper,
                    cardVerifier: CardVerifier,
                    private val userManager: UserManager,
@@ -70,7 +71,7 @@ class VirgilHelper(cardCrypto: CardCrypto,
     init {
         val tokenProvider = CallbackJwtProvider {
             val unixTimestamp = System.currentTimeMillis() / 1000L
-            val privateKey = privateKeyStorage.load(userManager.getCurrentUser().identity)
+            val privateKey = privateKeyStorage.load(userManager.getCurrentUser()!!.identity)
                     .left as VirgilPrivateKey
             val rawSignature = virgilCrypto.generateSignature((userManager.getUserCard().identifier +
                                                                unixTimestamp)
@@ -81,7 +82,7 @@ class VirgilHelper(cardCrypto: CardCrypto,
                              unixTimestamp + "." +
                              signatureB64
 
-            fuelHelper.getVirgilTokenSync(userManager.getCurrentUser().identity,
+            fuelHelper.getVirgilTokenSync(userManager.getCurrentUser()!!.identity,
                                           authHeader).token
         }
 
@@ -91,12 +92,8 @@ class VirgilHelper(cardCrypto: CardCrypto,
 
     fun publishCard(identity: String): Card {
         val keyPair = generateKeyPair()
-
-        privateKeyStorage.store(keyPair.privateKey, identity, null)
-
-        val cardModel = cardManager.generateRawCard(keyPair.privateKey,
-                                                    keyPair.publicKey,
-                                                    identity)
+        storePrivateKey(keyPair.privateKey, identity, null)
+        val cardModel = generateRawCard(keyPair, identity)
         return cardManager.publishCard(cardModel)
     }
 
@@ -112,13 +109,22 @@ class VirgilHelper(cardCrypto: CardCrypto,
         return virgilCrypto.generateKeys()
     }
 
+    fun generateRawCard(keyPair: VirgilKeyPair, identity: String) =
+            cardManager.generateRawCard(keyPair.privateKey,
+                                        keyPair.publicKey,
+                                        identity)
+
+    fun storePrivateKey(privateKey: PrivateKey, identity: String, meta: Map<String, String>?) =
+            privateKeyStorage.store(privateKey, identity, meta)
+
+
     fun decrypt(text: String): String {
         val cipherData = ConvertionUtils.base64ToBytes(text)
 
         return try {
             val decryptedData = virgilCrypto.decrypt(cipherData,
                                                      privateKeyStorage.load(
-                                                         userManager.getCurrentUser().identity)
+                                                         userManager.getCurrentUser()!!.identity)
                                                              .left as VirgilPrivateKey)
             ConvertionUtils.toString(decryptedData)
         } catch (e: CryptoException) {

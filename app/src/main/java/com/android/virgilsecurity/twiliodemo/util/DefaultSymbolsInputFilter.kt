@@ -31,37 +31,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.twiliodemo.util
 
-import android.app.Application
-import com.android.virgilsecurity.twiliodemo.di.networkModule
-import com.android.virgilsecurity.twiliodemo.di.twilioModule
-import com.android.virgilsecurity.twiliodemo.di.utilsModule
-import com.android.virgilsecurity.twiliodemo.di.virgilModule
-import com.android.virgilsecurity.twiliodemo.ui.login.loginModule
-import org.koin.android.ext.android.startKoin
+import android.text.InputFilter
+import android.text.Spanned
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    5/29/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+class DefaultSymbolsInputFilter : InputFilter {
 
-class TwilioApp : Application() {
+    override fun filter(source: CharSequence, start: Int, end: Int,
+                        dest: Spanned, dstart: Int, dend: Int): CharSequence? {
 
-    override fun onCreate() {
-        super.onCreate()
+        val constraint = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_"
 
-        startKoin(this,
-                  listOf(utilsModule,
-                         networkModule,
-                         virgilModule,
-                         twilioModule,
-                         loginModule))
+        val builder = StringBuilder()
+        for (i in start until end) {
+            val c = source[i]
+            if (constraint.contains(c.toString())) {
+                builder.append(c)
+            }
+        }
+
+        val allCharactersValid = builder.length == end - start
+        return if (allCharactersValid) null else builder.toString()
     }
 }

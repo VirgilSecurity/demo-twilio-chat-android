@@ -51,4 +51,4 @@ import com.google.gson.annotations.SerializedName
  */
 data class TokenResponse(val token: String)
 
-data class SignUpResponse(@SerializedName("virgil_card") val virgilCard: String)
+data class SignInResponse(@SerializedName("virgil_card") val virgilCard: String)

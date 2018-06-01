@@ -4,8 +4,8 @@ buildscript {
 
     ext {
         kotlinVersion = "1.2.41"
-        appCompat = "27.1.1"
         constraintLayout = "1.1.0"
+        supportLibrary = "27.1.1"
         fuel = "1.13.0"
         rxKotlin = "2.2.0"
         rxAndroid = "2.0.2"

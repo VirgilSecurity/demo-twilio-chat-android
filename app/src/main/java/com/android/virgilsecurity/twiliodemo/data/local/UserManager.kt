@@ -74,8 +74,8 @@ class UserManager(context: Context) {
         preferences[CURRENT_USER] = Gson().toJson(user)
     }
 
-    fun getCurrentUser(): TwilioUser {
-        val serialized: String? = preferences[CURRENT_USER]
+    fun getCurrentUser(): TwilioUser? {
+        val serialized: String = preferences[CURRENT_USER] ?: return null
         return Gson().fromJson(serialized, TwilioUser::class.java)
     }
 

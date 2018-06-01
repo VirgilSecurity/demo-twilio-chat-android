@@ -35,8 +35,11 @@ package com.android.virgilsecurity.twiliodemo.ui.login
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
+import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import kotlinx.android.synthetic.main.activity_login.*
 
 /**
  * . _  _
@@ -58,6 +61,18 @@ class LoginActivity : BaseActivity() {
             from.startActivity(Intent(from, LoginActivity::class.java))
             from.finish()
         }
+
+        fun startClearTop(from: Activity) {
+            from.startActivity(Intent(from, LoginActivity::class.java)
+                                       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                                         Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        UiUtils.replaceFragmentNoTag(fragmentManager, flBaseContainer.id, LoginFragment.newInstance())
     }
 
     // TODO Add search before publish card to allow only 1 card for 1 identity

@@ -31,15 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.twiliodemo.util
 
-import android.os.Bundle
-import android.view.View
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
-import kotlinx.android.synthetic.main.fragment_login.*
-import org.koin.android.ext.android.inject
+import android.widget.EditText
 
 /**
  * . _  _
@@ -47,48 +41,34 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    5/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
+object Validator {
 
-/**
- * LoginFragment
- */
+    fun validate(editText: EditText, fieldType: FieldType): String? {
+        val text = editText.text.toString().trim { it <= ' ' }
 
-class LoginFragment : BaseFragment<LoginActivity>() {
+        when (fieldType) {
+            Validator.FieldType.EMAIL -> {
+                if (text.isEmpty())
+                    return "Email should not be empty"
+                else if (text.split("@".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size < 2)
+                    return "Wrong email format"
+                if (text.isEmpty())
+                    return "Password should not be empty"
+            }
 
-    private val presenter: LoginPresenter by inject()
-
-    override fun provideLayoutId() = R.layout.fragment_login
-
-    companion object {
-        fun newInstance() = LoginFragment()
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initViewCallbacks()
-    }
-
-    private fun initViewCallbacks() {
-        btnSignIn.setOnClickListener {
-            showProgress(true)
-            presenter.requestSingIn(etIdentity.text.toString(),
-                                    {
-                                        UiUtils.toast(this, "SignIn is Ok")
-                                        showProgress(false)
-                                    },
-                                    {
-                                        UiUtils.toast(this, "SignIn Error. Message: ${it.message}")
-                                        showProgress(false)
-                                    })
+            Validator.FieldType.PASSWORD -> if (text.isEmpty())
+                return "Password should not be empty"
         }
+
+        return null
     }
 
-    private fun showProgress(show: Boolean) {
-        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
-        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
+    enum class FieldType {
+        EMAIL,
+        PASSWORD
     }
 }

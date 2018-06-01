@@ -31,37 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.twiliodemo.util
 
-import android.app.Application
-import com.android.virgilsecurity.twiliodemo.di.networkModule
-import com.android.virgilsecurity.twiliodemo.di.twilioModule
-import com.android.virgilsecurity.twiliodemo.di.utilsModule
-import com.android.virgilsecurity.twiliodemo.di.virgilModule
-import com.android.virgilsecurity.twiliodemo.ui.login.loginModule
-import org.koin.android.ext.android.startKoin
+import android.os.CountDownTimer
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    5/29/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * Created by Danylo Oliinyk on 11/27/17 at Virgil Security.
+ * -__o
  */
 
-class TwilioApp : Application() {
+abstract class OnFinishTimer(millisInFuture: Long, countDownInterval: Long) : CountDownTimer(millisInFuture, countDownInterval) {
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onTick(l: Long) {
 
-        startKoin(this,
-                  listOf(utilsModule,
-                         networkModule,
-                         virgilModule,
-                         twilioModule,
-                         loginModule))
     }
 }

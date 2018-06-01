@@ -31,22 +31,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.di
+package com.android.virgilsecurity.twiliodemo.ui.login
 
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
+import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.virgilsecurity.sdk.cards.validation.CardVerifier
-import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
-import com.virgilsecurity.sdk.crypto.CardCrypto
-import com.virgilsecurity.sdk.crypto.PrivateKeyExporter
-import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKeyExporter
-import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
-import com.virgilsecurity.sdk.storage.KeyStorage
-import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -54,30 +53,44 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/30/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * Modules
+ * LoginPresenter
  */
-val utilsModule : Module = applicationContext {
-    bean { UserManager(get())}
-}
+class LoginPresenter(private val virgilHelper: VirgilHelper,
+                     private val fuelHelper: FuelHelper,
+                     private val userManager: UserManager) : BasePresenter {
 
-val networkModule : Module = applicationContext {
-    bean { FuelHelper() }
-}
+    fun requestSingIn(identity: String,
+                      onSignInSuccess: (SignInResponse) -> Unit,
+                      onSignInError: (Throwable) -> Unit) {
+        val keyPair = virgilHelper.generateKeyPair()
+        val rawCard = virgilHelper.generateRawCard(keyPair, identity)
 
-val virgilModule : Module = applicationContext {
-    bean { VirgilCardCrypto() as CardCrypto }
-    bean { VirgilCardVerifier(get()) as CardVerifier }
-    bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    bean { JsonFileKeyStorage() as KeyStorage }
-    bean { PrivateKeyStorage(get(), get()) }
-    bean { VirgilHelper(get(), get(), get(), get(), get()) }
-}
+        Single.create<SignInResponse> {
+            it.onSuccess(fuelHelper.signUp(rawCard.exportAsJson()))
+        }.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribeBy(
+                    onSuccess = {
+                        userManager.setCurrentUser(TwilioUser(identity))
 
-val twilioModule : Module = applicationContext {
+                        val rawCardModel = RawSignedModel.fromJson(it.virgilCard)
+                        userManager.setUserCard(Card.parse(virgilHelper.cardCrypto, rawCardModel))
+
+                        onSignInSuccess(it)
+                    },
+                    onError = {
+                        onSignInError(it)
+                    })
+    }
+
+    override fun disposeAll() {
+        // TODO Implement body or it will be empty ):
+    }
+
 }

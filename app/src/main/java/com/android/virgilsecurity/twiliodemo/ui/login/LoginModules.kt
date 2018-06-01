@@ -33,13 +33,8 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import android.os.Bundle
-import android.view.View
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
-import kotlinx.android.synthetic.main.fragment_login.*
-import org.koin.android.ext.android.inject
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -53,42 +48,8 @@ import org.koin.android.ext.android.inject
  */
 
 /**
- * LoginFragment
+ * LoginModules
  */
-
-class LoginFragment : BaseFragment<LoginActivity>() {
-
-    private val presenter: LoginPresenter by inject()
-
-    override fun provideLayoutId() = R.layout.fragment_login
-
-    companion object {
-        fun newInstance() = LoginFragment()
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initViewCallbacks()
-    }
-
-    private fun initViewCallbacks() {
-        btnSignIn.setOnClickListener {
-            showProgress(true)
-            presenter.requestSingIn(etIdentity.text.toString(),
-                                    {
-                                        UiUtils.toast(this, "SignIn is Ok")
-                                        showProgress(false)
-                                    },
-                                    {
-                                        UiUtils.toast(this, "SignIn Error. Message: ${it.message}")
-                                        showProgress(false)
-                                    })
-        }
-    }
-
-    private fun showProgress(show: Boolean) {
-        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
-        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
-    }
+val loginModule : Module = applicationContext {
+    bean { LoginPresenter(get(), get(), get()) }
 }

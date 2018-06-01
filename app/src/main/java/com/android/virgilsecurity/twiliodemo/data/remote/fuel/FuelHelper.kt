@@ -34,13 +34,15 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
 import com.android.virgilsecurity.twiliodemo.data.model.SignUpRequest
-import com.android.virgilsecurity.twiliodemo.data.model.SignUpResponse
+import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
 import com.android.virgilsecurity.twiliodemo.data.model.TokenRequest
 import com.android.virgilsecurity.twiliodemo.data.model.TokenResponse
 import com.android.virgilsecurity.twiliodemo.util.toObject
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.httpPost
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 /**
  * . _  _
@@ -57,9 +59,8 @@ import com.google.gson.Gson
  * FuelHelper helps to work with network requests.
  * @constructor If [baseUrl] is `null` - localhost address will be used (http://10.0.2.2:3000)
  */
-class FuelHelper(baseUrl: String?) {
+class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
-    private val baseUrl = baseUrl ?: "http://10.0.2.2:3000"
     private val virgilTokenPath = "get-virgil-jwt"
     private val twilioTokenPath = "get-twilio-jwt"
     private val signUpPath = "signup"
@@ -68,7 +69,7 @@ class FuelHelper(baseUrl: String?) {
 
     init {
         FuelManager.instance.basePath = baseUrl
-        gson = Gson()
+        gson = GsonBuilder().disableHtmlEscaping().create()
     }
 
     fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
@@ -92,5 +93,5 @@ class FuelHelper(baseUrl: String?) {
             .responseString()
             .third
             .get()
-            .toObject(SignUpResponse::class.java)
+            .toObject(SignInResponse::class.java)
 }

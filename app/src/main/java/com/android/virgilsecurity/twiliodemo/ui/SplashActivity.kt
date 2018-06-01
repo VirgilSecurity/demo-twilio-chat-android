@@ -35,8 +35,10 @@ package com.android.virgilsecurity.twiliodemo.ui
 
 import android.app.Activity
 import android.os.Bundle
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.chat.threadsList.ThreadsListActivity
 import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -51,6 +53,8 @@ import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
 
 class SplashActivity : Activity() {
 
+    private val userManager: UserManager by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,7 +66,7 @@ class SplashActivity : Activity() {
     }
 
     private fun isAuthenticated(): Boolean {
-        return true
+        return userManager.getCurrentUser() != null
     }
 
     override fun onBackPressed() {
