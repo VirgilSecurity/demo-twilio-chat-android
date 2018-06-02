@@ -85,14 +85,12 @@
         android:id="@+id/tilIdentity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="@dimen/fourty_margin"
-        android:layout_marginStart="@dimen/fourty_margin"
+        android:layout_marginEnd="@dimen/twenty_margin"
+        android:layout_marginStart="@dimen/twenty_margin"
         app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/etIdentity"
@@ -111,19 +109,37 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/twenty_margin"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="@dimen/twenty_margin"
+        android:layout_marginStart="@dimen/twenty_margin"
         android:background="@drawable/bg_btn_round_32"
         android:minHeight="42dp"
-        android:text="@string/signin"
+        android:text="@string/signIn"
         android:textAllCaps="false"
         android:textColor="@color/black_olive"
         android:textSize="14sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/tilIdentity"
+        app:layout_constraintEnd_toStartOf="@id/btnSignUp"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/tilIdentity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilIdentity" />
+
+    <Button
+        android:id="@+id/btnSignUp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/twenty_margin"
+        android:layout_marginEnd="@dimen/twenty_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:background="@drawable/bg_btn_round_32"
+        android:minHeight="42dp"
+        android:text="@string/signUp"
+        android:textAllCaps="false"
+        android:textColor="@color/black_olive"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnSignIn"
         app:layout_constraintTop_toBottomOf="@id/tilIdentity" />
 
     <ProgressBar

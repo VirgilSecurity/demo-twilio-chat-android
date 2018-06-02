@@ -34,12 +34,14 @@
 package com.android.virgilsecurity.twiliodemo.ui.login
 
 import android.os.Bundle
+import android.service.autofill.Validators.and
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
-import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.fuel.core.HttpException
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
 
@@ -74,41 +76,55 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         initViewCallbacks()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.disposeAll()
+    }
+
     private fun initViewCallbacks() {
+        btnSignUp.setOnClickListener {
+            val identity = etIdentity.text.toString()
+            if (identity.isNotEmpty()) {
+                showProgress(true)
+                presenter.requestSignUp(etIdentity.text.toString(),
+                                        {
+                                            ChannelsListActivity.startWithFinish(rootActivity!!)
+                                        },
+                                        {
+                                            UiUtils.toast(this,
+                                                          "SignUp Error.\nMessage: ${it.message}")
+                                            showProgress(false)
+                                        })
+            }
+        }
+
         btnSignIn.setOnClickListener {
             val identity = etIdentity.text.toString()
             if (identity.isNotEmpty()) {
                 showProgress(true)
-                presenter.requestSingIn(etIdentity.text.toString(),
+                presenter.requestSignIn(etIdentity.text.toString(),
                                         {
-                                            checkPrivateKey()
+                                            ChannelsListActivity.startWithFinish(rootActivity!!)
                                         },
                                         {
-                                            UiUtils.toast(this,
-                                                          "SignIn Error.\nMessage: ${it.message}")
+                                            if (it is FuelError && (it.response.statusCode == 400)) {
+                                                UiUtils.toast(this,
+                                                              "Identity not registered")
+                                            } else {
+                                                UiUtils.toast(this,
+                                                              "SignUp Error.\n${it.message}")
+                                            }
                                             showProgress(false)
-                                            // if card not exists - publish one
                                         })
             }
         }
     }
 
-    private fun checkPrivateKey() {
-        if (etIdentity.text.toString().isNotEmpty())
-            presenter.requestIfKeyExists(etIdentity.text.toString(),
-                                         onKeyExists = {
-                                             showProgress(false)
-                                             ChannelsListActivity.startWithFinish(rootActivity!!)
-                                         },
-                                         onKeyNotExists = {
-                                             showProgress(false)
-                                             UiUtils.toast(this, getString(R.string.no_private_key))
-                                         })
-    }
-
     private fun showProgress(show: Boolean) {
         pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
         btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
+        btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
     }
 
 

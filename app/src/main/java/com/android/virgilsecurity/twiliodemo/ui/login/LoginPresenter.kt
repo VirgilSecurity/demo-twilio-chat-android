@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
+import com.android.virgilsecurity.twiliodemo.R.string.signUp
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
 import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
@@ -69,31 +70,47 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    fun requestSingIn(identity: String,
+    fun requestSignUp(identity: String,
+                      onSignUpSuccess: (SignInResponse) -> Unit,
+                      onSignUpError: (Throwable) -> Unit) {
+
+        requestIfKeyExists(identity,
+                           onKeyExists = {
+                               onSignUpError(Throwable("Private key for this identity already exists on current device"))
+                           },
+                           onKeyNotExists = {
+                               signUp(identity, onSignUpSuccess, onSignUpError)
+                           })
+    }
+
+    fun requestSignIn(identity: String,
                       onSignInSuccess: (SignInResponse) -> Unit,
                       onSignInError: (Throwable) -> Unit) {
-        val keyPair = virgilHelper.generateKeyPair()
-        val rawCard = virgilHelper.generateRawCard(keyPair, identity)
-
-        virgilHelper.storePrivateKey(keyPair.privateKey, identity)
-
         val signUpDisposable =
                 Single.create<SignInResponse> {
-                    it.onSuccess(fuelHelper.signUp(rawCard))
+                    it.onSuccess(fuelHelper.signIn(identity))
                 }.observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribeBy(
                             onSuccess = {
-                                userManager.setCurrentUser(TwilioUser(identity))
 
-                                val rawCardModel = it.virgilCard
-                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
-                                                                   rawCardModel))
+                                requestIfKeyExists(identity,
+                                                   onKeyExists = {
+                                                       userManager.setCurrentUser(TwilioUser(
+                                                           identity))
 
-                                onSignInSuccess(it)
+                                                       val rawCardModel = it.virgilCard
+                                                       userManager.setUserCard(Card.parse(
+                                                           virgilHelper.cardCrypto,
+                                                           rawCardModel))
+
+                                                       onSignInSuccess(it)
+                                                   },
+                                                   onKeyNotExists = {
+                                                       onSignInError(Throwable("No private key for this identity on device"))
+                                                   })
                             },
                             onError = {
-                                virgilHelper.deletePrivateKey(identity)
                                 onSignInError(it)
                             })
 
@@ -141,6 +158,38 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
             onKeyExists()
         else
             onKeyNotExists()
+    }
+
+    private fun signUp(identity: String,
+                       onSignUpSuccess: (SignInResponse) -> Unit,
+                       onSignUpError: (Throwable) -> Unit) {
+
+        val keyPair = virgilHelper.generateKeyPair()
+        val rawCard = virgilHelper.generateRawCard(keyPair, identity)
+
+        virgilHelper.storePrivateKey(keyPair.privateKey, identity)
+
+        val signUpDisposable =
+                Single.create<SignInResponse> {
+                    it.onSuccess(fuelHelper.signUp(rawCard))
+                }.observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribeBy(
+                            onSuccess = {
+                                userManager.setCurrentUser(TwilioUser(identity))
+
+                                val rawCardModel = it.virgilCard
+                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
+                                                                   rawCardModel))
+
+                                onSignUpSuccess(it)
+                            },
+                            onError = {
+                                virgilHelper.deletePrivateKey(identity)
+                                onSignUpError(it)
+                            })
+
+        compositeDisposable += signUpDisposable
     }
 
     override fun disposeAll() {

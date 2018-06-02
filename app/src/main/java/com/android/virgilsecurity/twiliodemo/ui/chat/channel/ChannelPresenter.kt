@@ -31,13 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.model
+package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import com.google.gson.JsonObject
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.JsonAdapter
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import org.json.JSONObject
+import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
 
 /**
  * . _  _
@@ -45,17 +41,18 @@ import org.json.JSONObject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    6/2/186/2/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * FuelRequest
+ * ChannelPresenter
  */
-data class TokenRequest(val identity: String)
 
-data class SignUpRequest(val rawCard: RawSignedModel)
+class ChannelPresenter : BasePresenter {
 
-data class SignInRequest(val identity: String)
-
+    override fun disposeAll() {
+        // TODO Implement body or it will be empty ):
+    }
+}

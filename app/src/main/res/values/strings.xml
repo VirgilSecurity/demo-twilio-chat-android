@@ -8,7 +8,8 @@
     <string name="press_exit_once_more">Press back once more to exit</string>
 
     <!-- LogIn -->
-    <string name="signin">SignIn</string>
+    <string name="signIn">SignIn</string>
+    <string name="signUp">SignUp</string>
     <string name="please_enter_creds">Please enter your credentials</string>
     <string name="identity">Identity</string>
     <string name="plus_twilio">+ Twilio</string>

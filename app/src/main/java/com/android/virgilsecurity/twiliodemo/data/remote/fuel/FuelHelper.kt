@@ -33,10 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
-import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
-import com.android.virgilsecurity.twiliodemo.data.model.SignUpRequest
-import com.android.virgilsecurity.twiliodemo.data.model.TokenRequest
-import com.android.virgilsecurity.twiliodemo.data.model.TokenResponse
+import com.android.virgilsecurity.twiliodemo.data.model.*
 import com.android.virgilsecurity.twiliodemo.util.toObject
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
@@ -68,6 +65,7 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
     private val virgilTokenPath = "get-virgil-jwt"
     private val twilioTokenPath = "get-twilio-jwt"
     private val signUpPath = "signup"
+    private val signInPath = "signin"
 
     private val gson: Gson
 
@@ -97,6 +95,14 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
     fun signUp(rawCard: RawSignedModel) = Fuel.post(signUpPath)
             .header(keyContentType to keyAppJson)
             .body(ConvertionUtils.serializeToJson(SignUpRequest(rawCard)))
+            .responseString()
+            .third
+            .get()
+            .toObject(SignInResponse::class.java)
+
+    fun signIn(identity: String) = Fuel.post(signInPath)
+            .header(keyContentType to keyAppJson)
+            .body(ConvertionUtils.serializeToJson(SignInRequest(identity)))
             .responseString()
             .third
             .get()

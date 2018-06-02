@@ -44,6 +44,7 @@ import com.twilio.chat.ChannelListener
 import com.twilio.chat.Member
 import com.twilio.chat.Message
 import kotlinx.android.synthetic.main.fragment_channel.*
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -61,6 +62,8 @@ import kotlinx.android.synthetic.main.fragment_channel.*
  */
 
 class ChannelFragment : BaseFragment<ChannelActivity>() {
+
+    private val presenter: ChannelPresenter by inject()
 
     private lateinit var channel: Channel
 
@@ -86,6 +89,12 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
         initUi()
         initViewCallbacks()
         initData()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.disposeAll()
     }
 
     private fun initUi() {

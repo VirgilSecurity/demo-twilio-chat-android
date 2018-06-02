@@ -20,4 +20,8 @@
         <item name="colorPrimary">@color/colorAccent</item>
     </style>
 
+    <style name="ProgressBarBlack">
+        <item name="colorAccent">@color/black</item>
+    </style>
+
 </resources>

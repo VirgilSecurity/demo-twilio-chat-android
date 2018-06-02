@@ -31,13 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.model
+package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import com.google.gson.JsonObject
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.JsonAdapter
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import org.json.JSONObject
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -45,17 +42,14 @@ import org.json.JSONObject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    6/2/186/2/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * FuelRequest
+ * ChannelModules
  */
-data class TokenRequest(val identity: String)
-
-data class SignUpRequest(val rawCard: RawSignedModel)
-
-data class SignInRequest(val identity: String)
-
+val channelModule : Module = applicationContext {
+    bean { ChannelPresenter() }
+}

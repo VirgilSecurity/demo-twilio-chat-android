@@ -64,13 +64,14 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                private val userManager: UserManager) {
 
     fun getToken(identity: String, authHeader: () -> String): Single<String> = Single.create<String> {
-        it.onSuccess(fuelHelper.getTwilioTokenSync(identity, authHeader()).token)
+            val token = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
+            it.onSuccess(token)
     }.subscribeOn(Schedulers.io())
 
     fun createClient(context: Context, token: String): Single<ChatClient> = Single.create<ChatClient> {
         val props = ChatClient.Properties.Builder().createProperties()
 
-        ChatClient.create(context.applicationContext,
+        ChatClient.create(context,
                           token,
                           props,
                           object : CallbackListener<ChatClient>() {

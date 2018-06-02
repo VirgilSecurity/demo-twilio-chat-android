@@ -60,7 +60,7 @@ class ChannelsListActivity : BaseActivity() {
         })
 
         UiUtils.replaceFragmentNoBackStack(supportFragmentManager,
-                                           flBaseContainer.id,
+                                           R.id.flBaseContainer,
                                            ChannelsListFragment.newInstance(),
                                            threadsListTag)
     }
@@ -89,7 +89,7 @@ class ChannelsListActivity : BaseActivity() {
                                 } else {
                                     createThreadDialog.showProgress(true)
                                     val threadsListFragment =
-                                            fragmentManager.findFragmentByTag(threadsListTag) as ChannelsListFragment
+                                            supportFragmentManager.findFragmentByTag(threadsListTag) as ChannelsListFragment
                                     threadsListFragment.issueCreateThread(identity)
                                 }
                             },
@@ -135,5 +135,13 @@ class ChannelsListActivity : BaseActivity() {
                 secondPress = false
             }
         }.start()
+    }
+
+    fun dialogNewChannelStopLoading() {
+        createThreadDialog.showProgress(false)
+    }
+
+    fun dialogNewChannelCancel() {
+        createThreadDialog.cancel()
     }
 }

@@ -78,6 +78,12 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
         initData()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.disposeAll()
+    }
+
     private fun initUi() {
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.reverseLayout = false
@@ -95,12 +101,15 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
     }
 
     private fun initData() {
+        showProgress(true)
         presenter.startChatClient(userManager.getCurrentUser()!!.identity,
                                   {
+                                      UiUtils.log(this.javaClass.simpleName, " -> Chat client started")
                                       fetchChannels()
                                   },
                                   {
                                      UiUtils.toast(this, "Chat client start failed")
+                                      showProgress(false)
                                   })
 
         presenter.setupChatListener(object : ChatClientListener {
@@ -188,7 +197,9 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
 
     private fun fetchChannels() {
         presenter.fetchChannels(onFetchChannelsSuccess = {
+            UiUtils.log(this.javaClass.simpleName, " -> Channels fetched")
             adapter.setItems(it?.toMutableList())
+            showProgress(false)
         })
     }
 
@@ -196,10 +207,19 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
         presenter.createChannel(interlocutor,
                                 {
                                     adapter.addItem(it)
+                                    rootActivity!!.dialogNewChannelCancel()
+                                    rootActivity!!.openChannel(it)
+                                    UiUtils.log(this.javaClass.simpleName, " -> Created channel success")
+
                                 },
                                 {
                                     UiUtils.toast(this, it.message ?:
                                                         "Some error creating channel")
+                                    rootActivity!!.dialogNewChannelStopLoading()
                                 })
+    }
+
+    private fun showProgress(show: Boolean) {
+        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 }
