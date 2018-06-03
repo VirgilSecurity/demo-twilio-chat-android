@@ -279,21 +279,56 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 })
             }
 
+//    fun getMessages(channel: Channel): Single<MutableList<Message>> =
+//            Single.create<MutableList<Message>> {
+//                channel.getMessagesCount(object : CallbackListener<Long>() {
+//                    override fun onSuccess(messagesCount: Long?) {
+//                        channel.messages.getLastMessages(messagesCount!!.toInt(),
+//                                                         object : CallbackListener<MutableList<Message>>() {
+//                                                             override fun onSuccess(messages: MutableList<Message>?) {
+//                                                                 it.onSuccess(messages!!)
+//                                                             }
+//
+//                                                             override fun onError(errorInfo: ErrorInfo?) {
+//                                                                 it.onError(ErrorInfoWrapper(
+//                                                                     errorInfo))
+//                                                             }
+//                                                         })
+//                    }
+//
+//                    override fun onError(errorInfo: ErrorInfo?) {
+//                        it.onError(ErrorInfoWrapper(errorInfo))
+//                    }
+//                })
+//            }.subscribeOn(Schedulers.io())
+
     fun getMessages(channel: Channel): Single<MutableList<Message>> =
             Single.create<MutableList<Message>> {
-                val messagesCount = channel.getMessagesCount(object : CallbackListener<Long>() {
-                    override fun onSuccess(messagesCount: Long?) {
-                        channel.messages.getLastMessages(messagesCount!!.toInt(),
-                                                         object : CallbackListener<MutableList<Message>>() {
-                                                             override fun onSuccess(messages: MutableList<Message>?) {
-                                                                 it.onSuccess(messages!!)
-                                                             }
+                channel.messages.getLastMessages(50,
+                                                 object : CallbackListener<MutableList<Message>>() {
+                                                     override fun onSuccess(messages: MutableList<Message>?) {
+                                                         it.onSuccess(messages!!)
+                                                     }
 
-                                                             override fun onError(errorInfo: ErrorInfo?) {
-                                                                 it.onError(ErrorInfoWrapper(
-                                                                     errorInfo))
-                                                             }
-                                                         })
+                                                     override fun onError(errorInfo: ErrorInfo?) {
+                                                         it.onError(ErrorInfoWrapper(
+                                                             errorInfo))
+                                                     }
+                                                 })
+            }.subscribeOn(Schedulers.io())
+
+    fun sendMessage(channel: Channel,
+                    body: String,
+                    interlocutor: String): Single<Message> =
+            Single.create<Message> {
+                val attributes = JSONObject()
+                attributes.put(Constants.KEY_SENDER, userManager.getCurrentUser()!!.identity)
+                attributes.put(Constants.KEY_RECEIVER, interlocutor)
+
+                val message = Message.options().withBody(body).withAttributes(attributes)
+                channel.messages.sendMessage(message, object : CallbackListener<Message>() {
+                    override fun onSuccess(message: Message?) {
+                        it.onSuccess(message!!)
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
@@ -301,24 +336,4 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
                 })
             }.subscribeOn(Schedulers.io())
-
-    fun sendMessage(channel: Channel,
-                    body: String,
-                    interlocutor: String): Single<Message> =
-            Single.create<Message> {
-        val attributes = JSONObject()
-        attributes.put(Constants.KEY_SENDER, userManager.getCurrentUser()!!.identity)
-        attributes.put(Constants.KEY_RECEIVER, interlocutor)
-
-        val message = Message.options().withBody(body).withAttributes(attributes)
-        channel.messages.sendMessage(message, object : CallbackListener<Message>() {
-            override fun onSuccess(message: Message?) {
-                it.onSuccess(message!!)
-            }
-
-            override fun onError(errorInfo: ErrorInfo?) {
-                it.onError(ErrorInfoWrapper(errorInfo))
-            }
-        })
-    }.subscribeOn(Schedulers.io())
 }

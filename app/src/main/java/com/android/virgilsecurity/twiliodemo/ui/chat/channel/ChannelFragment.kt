@@ -40,10 +40,12 @@ import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 import com.android.virgilsecurity.twiliodemo.util.Constants
+import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelListener
 import com.twilio.chat.Member
 import com.twilio.chat.Message
+import com.virgilsecurity.sdk.cards.Card
 import kotlinx.android.synthetic.main.fragment_channel.*
 import org.koin.android.ext.android.inject
 
@@ -66,8 +68,11 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
 
     private val presenter: ChannelPresenter by inject()
     private val userManager: UserManager by inject()
+    private val adapter: ChannelRVAdapter by inject()
 
     private lateinit var channel: Channel
+    private lateinit var interlocutor: String
+    private lateinit var interlocutorCard: Card
 
     companion object {
         fun newInstance() = ChannelFragment()
@@ -90,7 +95,7 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
     }
 
     override fun preInitUi() {
-        channel = arguments!!.getParcelable(Constants.KEY_CHANNEL)
+        channel = arguments!!.getParcelable(Constants.KEY_CHANNEL) as Channel
     }
 
     override fun initUi() {
@@ -100,9 +105,11 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
         val sender = attributes[Constants.KEY_SENDER] as String
         val currentUser = userManager.getCurrentUser()!!.identity
 
-        val interlocutor = if (currentUser == sender) receiver else sender
+        interlocutor = if (currentUser == sender) receiver else sender
 
         rootActivity!!.changeToolbarTitleExposed(interlocutor)
+
+        // TODO add recyclerview
     }
 
     override fun initCallbacks() {
@@ -119,8 +126,8 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
                 // TODO Implement body or it will be empty ):
             }
 
-            override fun onMessageAdded(p0: Message?) {
-                // TODO Implement body or it will be empty ):
+            override fun onMessageAdded(message: Message) {
+                adapter.addItem(message)
             }
 
             override fun onMessageDeleted(p0: Message?) {
@@ -148,16 +155,48 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
             }
 
         })
+
+        btnSend.setOnClickListener {
+            if (etMessage.text.toString().isNotEmpty()) {
+                etMessage.text.clear()
+                presenter.requestSendMessage(channel,
+                                             interlocutor,
+                                             etMessage.text.toString(),
+                                             interlocutorCard,
+                                             {
+                                                 adapter.addItem(it)
+                                             },
+                                             {
+                                                 UiUtils.toast(this, it.message ?:
+                                                                     "Some error sending message")
+                                             })
+            }
+        }
     }
 
     override fun initData() {
         showProgress(true)
+        presenter.requestSearchCard(interlocutor,
+                                    {
+                                        interlocutorCard = it
+                                        getMessages()
+                                    },
+                                    {
+                                        UiUtils.toast(this, it.message ?:
+                                                            "Some error searching interlocutor card")
+                                    })
+
+    }
+
+    private fun getMessages() {
         presenter.requestMessages(channel,
                                   {
-
+                                      adapter.setItems(it)
+                                      showProgress(false)
                                   },
                                   {
-
+                                      UiUtils.toast(this, it.message ?:
+                                                          "Some error getting messages")
                                   })
     }
 

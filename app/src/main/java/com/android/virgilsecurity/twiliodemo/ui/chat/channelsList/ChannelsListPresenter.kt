@@ -38,6 +38,7 @@ import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapp
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
+import com.android.virgilsecurity.twiliodemo.util.Utils
 import com.twilio.chat.*
 import com.virgilsecurity.sdk.crypto.HashAlgorithm
 import com.virgilsecurity.sdk.utils.ConvertionUtils
@@ -64,7 +65,8 @@ import kotlin.collections.ArrayList
  */
 class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
                             private val virgilHelper: VirgilHelper,
-                            private val userManager: UserManager) : BasePresenter {
+                            private val userManager: UserManager,
+                            private val utils: Utils) : BasePresenter {
 
     private var chatClient: ChatClient? = null
     private val compositeDisposable = CompositeDisposable()
@@ -75,7 +77,7 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
         val startChatClientDisposable =
                 twilioHelper.createChatClient(identity,
                                               {
-                                                  virgilHelper.generateAuthHeader()
+                                                  utils.generateAuthHeader()
                                               })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(

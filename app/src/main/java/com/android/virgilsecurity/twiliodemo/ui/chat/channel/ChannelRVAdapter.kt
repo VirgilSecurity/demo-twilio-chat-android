@@ -33,16 +33,18 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import android.support.annotation.IntDef
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.twilio.chat.Message
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.layout_holder_me.*
+import kotlinx.android.synthetic.main.layout_holder_you.*
 import java.util.*
 
 /**
@@ -60,90 +62,97 @@ class ChannelRVAdapter internal constructor(private val virgilHelper: VirgilHelp
                                             private val userManager: UserManager)
     : RecyclerView.Adapter<ChannelRVAdapter.HolderMessage>() {
 
-    private var items: MutableList<Message>? = mutableListOf()
-
-    @IntDef(MessageType.ME, MessageType.YOU)
-    private annotation class MessageType {
-        companion object {
-            val ME = 0
-            val YOU = 1
-        }
-    }
-
+    private var items: MutableList<Message> = mutableListOf()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): HolderMessage {
         val viewHolder: HolderMessage
         val inflater = LayoutInflater.from(viewGroup.context)
 
         viewHolder = when (viewType) {
-            MessageType.ME -> HolderMessage(inflater.inflate(R.layout.layout_holder_me,
-                                                             viewGroup,
-                                                             false))
-            MessageType.YOU -> HolderMessage(inflater.inflate(R.layout.layout_holder_you,
-                                                              viewGroup,
-                                                              false))
+            MESSAGE_ME -> HolderMessage(inflater.inflate(R.layout.layout_holder_me,
+                                                         viewGroup,
+                                                         false),
+                                        userManager,
+                                        virgilHelper)
+            MESSAGE_YOU -> HolderMessage(inflater.inflate(R.layout.layout_holder_you,
+                                                          viewGroup,
+                                                          false),
+                                         userManager,
+                                         virgilHelper)
             else -> HolderMessage(inflater.inflate(R.layout.layout_holder_me,
                                                    viewGroup,
-                                                   false))
+                                                   false),
+                                  userManager,
+                                  virgilHelper)
         }
 
         return viewHolder
     }
 
     override fun onBindViewHolder(viewHolder: HolderMessage, position: Int) {
-        viewHolder.bind(virgilHelper.decrypt(items!![position]
-                                                     .getBody()))
+        viewHolder.bind(items[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (items!![position]
-                        .getSender()
-                        .equals(firebaseAuth.getCurrentUser()
-                                        .getEmail().toLowerCase())) {
-            MessageType.ME
+        val attributes = items[position].attributes
+
+        val sender = attributes[Constants.KEY_SENDER] as String
+        val currentUser = userManager.getCurrentUser()!!.identity
+
+        return if (sender == currentUser) {
+            MESSAGE_ME
         } else {
-            MessageType.YOU
+            MESSAGE_YOU
         }
     }
 
-    override fun getItemCount(): Int {
-        return if (items != null) items!!.size else -1
-    }
+    override fun getItemCount() = items.size
 
-    internal fun setItems(items: MutableList<DefaultMessage>?) {
+    fun setItems(items: MutableList<Message>?) {
         if (items != null) {
-            items.removeAll(this.items!!)
-            this.items = ArrayList<DefaultMessage>(items)
+            items.removeAll(this.items)
+            this.items = ArrayList(items)
         } else {
-            this.items = emptyList<DefaultMessage>()
+            this.items = mutableListOf()
         }
 
         notifyDataSetChanged()
     }
 
-    internal fun addItem(item: DefaultMessage) {
-        if (items == null || items!!.isEmpty())
-            items = ArrayList<DefaultMessage>()
+    fun addItems(channels: List<Message>) {
+        items.addAll(channels)
+        notifyDataSetChanged()
+    }
 
-        items!!.add(item)
+    fun addItem(channel: Message) {
+        items.add(channel)
         notifyDataSetChanged()
     }
 
     fun clearItems() {
-        if (items != null || !items!!.isEmpty())
-            items!!.clear()
+        items.clear()
     }
 
-    class HolderMessage(v: View) : RecyclerView.ViewHolder(v) {
+    class HolderMessage(override val containerView: View?,
+                        private val userManager: UserManager,
+                        private val virgilHelper: VirgilHelper) :
+            RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        var tvMessage: TextView? = null
+        fun bind(message: Message) {
+            val attributes = message.attributes
 
-        init {
-            ButterKnife.bind(this, v)
+            val sender = attributes[Constants.KEY_SENDER] as String
+            val currentUser = userManager.getCurrentUser()!!.identity
+
+            if (currentUser == sender)
+                tvMessageMe.text = virgilHelper.decrypt(message.messageBody)
+            else
+                tvMessageYou.text = virgilHelper.decrypt(message.messageBody)
         }
+    }
 
-        fun bind(message: String) {
-            tvMessage!!.text = message
-        }
+    companion object {
+        private const val MESSAGE_ME = 0
+        private const val MESSAGE_YOU = 1
     }
 }

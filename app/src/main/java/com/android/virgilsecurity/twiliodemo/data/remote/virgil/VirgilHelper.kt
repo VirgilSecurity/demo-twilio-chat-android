@@ -45,6 +45,7 @@ import com.virgilsecurity.sdk.crypto.exceptions.EncryptionException
 import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
 import com.virgilsecurity.sdk.utils.ConvertionUtils
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -57,42 +58,33 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * ....|_|-
  */
 
-class VirgilHelper(val cardCrypto: CardCrypto,
-                   fuelHelper: FuelHelper,
-                   cardVerifier: CardVerifier,
+class VirgilHelper(private val cardManager: CardManager,
                    private val userManager: UserManager,
-                   private val privateKeyStorage: PrivateKeyStorage) {
+                   private val privateKeyStorage: PrivateKeyStorage,
+                   private val virgilRx: VirgilRx) {
 
-    private val cardManager: CardManager
+    val cardCrypto: CardCrypto = cardManager.crypto
 
     val virgilCrypto: VirgilCrypto
         get() = (cardManager.crypto as VirgilCardCrypto).virgilCrypto
 
     init {
-        val tokenProvider = CallbackJwtProvider {
-
-
-            fuelHelper.getVirgilTokenSync(userManager.getCurrentUser()!!.identity,
-                                          generateAuthHeader()).token
-        }
-
-        cardManager = CardManager(cardCrypto, tokenProvider, cardVerifier)
         cardManager.isRetryOnUnauthorized = true
     }
 
-    fun publishCard(identity: String): Card {
+    fun publishCard(identity: String): Single<Card> {
         val keyPair = generateKeyPair()
         storePrivateKey(keyPair.privateKey, identity, null)
         val cardModel = generateRawCard(keyPair, identity)
-        return cardManager.publishCard(cardModel)
+        return virgilRx.publishCard(cardModel)
     }
 
-    fun getCard(cardId: String): Card {
-        return cardManager.getCard(cardId)
+    fun getCard(cardId: String): Single<Card> {
+        return virgilRx.getCard(cardId)
     }
 
-    fun searchCards(identity: String): List<Card> {
-        return cardManager.searchCards(identity)
+    fun searchCards(identity: String): Single<List<Card>> {
+        return virgilRx.searchCards(identity)
     }
 
     fun generateKeyPair(): VirgilKeyPair {
@@ -110,18 +102,6 @@ class VirgilHelper(val cardCrypto: CardCrypto,
     fun ifExistsPrivateKey(identity: String) = privateKeyStorage.exists(identity)
 
     fun deletePrivateKey(identity: String) = privateKeyStorage.delete(identity)
-
-    fun generateAuthHeader(identity: String = userManager.getCurrentUser()!!.identity,
-                           card: Card = userManager.getUserCard()): String {
-        val unixTimestamp = System.currentTimeMillis() / 1000L
-        val privateKey = privateKeyStorage.load(identity).left as VirgilPrivateKey
-        val rawSignature =
-                virgilCrypto.generateSignature((card.identifier + "." + unixTimestamp).toByteArray(),
-                                               privateKey)
-        val signatureB64 = ConvertionUtils.toBase64String(rawSignature)
-
-        return userManager.getUserCard().identifier + "." + unixTimestamp + "." + signatureB64
-    }
 
     fun decrypt(text: String): String {
         val cipherData = ConvertionUtils.base64ToBytes(text)

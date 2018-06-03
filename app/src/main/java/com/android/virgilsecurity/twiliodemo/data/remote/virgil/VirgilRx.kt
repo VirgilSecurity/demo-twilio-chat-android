@@ -33,12 +33,11 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import com.android.virgilsecurity.twiliodemo.R.string.identity
 import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.client.exceptions.VirgilServiceException
-import com.virgilsecurity.sdk.crypto.exceptions.CryptoException
-
+import com.virgilsecurity.sdk.cards.CardManager
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -51,17 +50,17 @@ import io.reactivex.Single
  * ....|_|-
  */
 
-class VirgilRx(private val virgilHelper: VirgilHelper) {
+class VirgilRx(private val cardManager: CardManager) {
 
-    fun publishCard(identity: String) = Single.create<Card> { e ->
-            e.onSuccess(virgilHelper.publishCard(identity))
-        }
+    fun publishCard(rawSignedModel: RawSignedModel): Single<Card> = Single.create<Card> { e ->
+            e.onSuccess(cardManager.publishCard(rawSignedModel))
+        }.subscribeOn(Schedulers.io())
 
-    fun getCard(cardId: String)= Single.create<Card> { e ->
-            e.onSuccess(virgilHelper.getCard(cardId))
-        }
+    fun getCard(cardId: String): Single<Card> = Single.create<Card> { e ->
+            e.onSuccess(cardManager.getCard(cardId))
+        }.subscribeOn(Schedulers.io())
 
-    fun searchCards(identity: String) = Single.create<List<Card>> { e ->
-            e.onSuccess(virgilHelper.searchCards(identity))
-        }
+    fun searchCards(identity: String): Single<List<Card>> = Single.create<List<Card>> { e ->
+            e.onSuccess(cardManager.searchCards(identity))
+        }.subscribeOn(Schedulers.io())
 }

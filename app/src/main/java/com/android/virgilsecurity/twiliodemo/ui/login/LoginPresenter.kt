@@ -133,24 +133,6 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
         compositeDisposable += searchCardDisposable
     }
 
-    fun requestPublishCard(identity: String,
-                           onPublishCardSuccess: (Card) -> Unit,
-                           onPublishCardError: (Throwable) -> Unit) {
-        val publishCardDisposable = virgilRx.publishCard(identity)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ card, throwable ->
-                               if (throwable == null) {
-                                   onPublishCardSuccess(card)
-                               } else {
-                                   virgilHelper.deletePrivateKey(identity)
-                                   onPublishCardError(throwable)
-                               }
-                           })
-
-        compositeDisposable += publishCardDisposable
-    }
-
     fun requestIfKeyExists(keyName: String,
                            onKeyExists: () -> Unit,
                            onKeyNotExists: () -> Unit) {

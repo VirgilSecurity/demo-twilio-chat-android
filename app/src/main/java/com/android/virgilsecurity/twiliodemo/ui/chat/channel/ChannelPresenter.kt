@@ -33,14 +33,20 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
 import com.twilio.chat.Channel
 import com.twilio.chat.Message
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 /**
  * . _  _
@@ -57,7 +63,9 @@ import io.reactivex.rxkotlin.subscribeBy
  * ChannelPresenter
  */
 
-class ChannelPresenter(private val twilioHelper: TwilioHelper) : BasePresenter {
+class ChannelPresenter(private val twilioHelper: TwilioHelper,
+                       private val virgilHelper: VirgilHelper,
+                       private val userManager: UserManager) : BasePresenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -66,7 +74,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper) : BasePresenter {
                         onGetMessagesError: (Throwable) -> Unit) {
         val getMessagesDisposable =
                 twilioHelper.getMessages(channel)
-                .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(
                             onSuccess = {
                                 onGetMessagesSuccess(it)
@@ -82,9 +90,42 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper) : BasePresenter {
     fun requestSendMessage(channel: Channel,
                            interlocutor: String,
                            body: String,
-                           onSendMessagesSuccess: () -> Unit,
+                           interlocutorCard: Card,
+                           onSendMessagesSuccess: (Message) -> Unit,
                            onSendMessagesError: (Throwable) -> Unit) {
-        twilioHelper.sendMessage(channel, body, interlocutor)
+
+        val publicKeys = ArrayList<VirgilPublicKey>()
+
+        publicKeys.add(userManager.getUserCard().publicKey as VirgilPublicKey)
+        publicKeys.add(interlocutorCard.publicKey as VirgilPublicKey)
+
+        val encryptedText = virgilHelper.encrypt(body, publicKeys)
+
+        twilioHelper.sendMessage(channel, encryptedText, interlocutor)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onSuccess = {
+                        onSendMessagesSuccess(it)
+                    },
+                    onError = {
+                        onSendMessagesError(it)
+                    }
+                )
+    }
+
+    fun requestSearchCard(identity: String,
+                          onCardSearchSuccess: (Card) -> Unit,
+                          onCardSearchError: (Throwable) -> Unit) {
+        val searchCardDisposable = virgilHelper.searchCards(identity)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ cards, throwable ->
+                               if (throwable == null && cards.isNotEmpty())
+                                   onCardSearchSuccess(cards[0])
+                               else
+                                   onCardSearchError(throwable)
+                           })
+
+        compositeDisposable.add(searchCardDisposable)
     }
 
     override fun disposeAll() {

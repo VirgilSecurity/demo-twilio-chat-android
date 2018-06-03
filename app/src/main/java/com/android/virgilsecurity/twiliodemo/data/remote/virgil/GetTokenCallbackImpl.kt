@@ -31,28 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.di
+package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import android.content.Context
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioRx
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.GetTokenCallbackImpl
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
 import com.android.virgilsecurity.twiliodemo.util.Utils
-import com.virgilsecurity.sdk.cards.CardManager
-import com.virgilsecurity.sdk.cards.validation.CardVerifier
-import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
-import com.virgilsecurity.sdk.crypto.*
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.crypto.VirgilCrypto
+import com.virgilsecurity.sdk.crypto.VirgilPrivateKey
+import com.virgilsecurity.sdk.jwt.TokenContext
 import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
-import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider
-import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
-import com.virgilsecurity.sdk.storage.KeyStorage
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -60,46 +50,29 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/30/18
+ * ....|  _/    6/4/186/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * Modules
+ * GetTokenCallbackImpl
  */
-object Keys {
-    const val STORAGE_PATH = "storagePath"
+
+class GetTokenCallbackImpl(private val fuelHelper: FuelHelper,
+                           private val userManager: UserManager,
+                           private val utils: Utils) :
+        CallbackJwtProvider.GetTokenCallback {
+
+    override fun onGetToken(tokenContext: TokenContext?): String {
+        return fuelHelper.getVirgilTokenSync(userManager.getCurrentUser()!!.identity,
+                                             utils.generateAuthHeader()).token
+    }
 }
 
-val utilsModule : Module = applicationContext {
-    bean { UserManager(get())}
-    bean { Utils(get(), get(), get())}
-}
+object GetTok : CallbackJwtProvider.GetTokenCallback {
+    override fun onGetToken(tokenContext: TokenContext?): String {
+        return ""
+    }
 
-val networkModule : Module = applicationContext {
-    bean { FuelHelper() }
-}
-
-val virgilModule : Module = applicationContext {
-    bean { VirgilCardCrypto() as CardCrypto }
-    bean { VirgilCrypto() }
-    bean { VirgilCardVerifier(get()) as CardVerifier }
-    bean { GetTokenCallbackImpl(get(), get(), get()) as CallbackJwtProvider.GetTokenCallback }
-    bean { CallbackJwtProvider(get()) as AccessTokenProvider }
-    bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    bean { JsonFileKeyStorage(get(Keys.STORAGE_PATH)) as KeyStorage }
-    bean { PrivateKeyStorage(get(), get()) }
-    bean { VirgilHelper(get(), get(), get(), get()) }
-    bean { CardManager(get(), get(), get()) }
-    bean { VirgilRx(get()) }
-}
-
-val twilioModule : Module = applicationContext {
-    bean { TwilioRx(get(), get()) }
-    bean { TwilioHelper(get(), get()) }
-}
-
-val paramsModule : Module = applicationContext {
-    bean(Keys.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
 }

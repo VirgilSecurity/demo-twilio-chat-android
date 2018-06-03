@@ -119,7 +119,6 @@ class TwilioHelper(private val context: Context,
 
     fun getMessages(channel: Channel) = twilioRx.getMessages(channel)
 
-    fun sendMessage(channel: Channel, body: String, interlocutor: String) {
+    fun sendMessage(channel: Channel, body: String, interlocutor: String) =
         twilioRx.sendMessage(channel, body, interlocutor)
-    }
 }
