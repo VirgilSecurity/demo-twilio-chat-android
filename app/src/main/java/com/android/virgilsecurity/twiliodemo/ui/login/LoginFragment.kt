@@ -64,16 +64,22 @@ class LoginFragment : BaseFragment<LoginActivity>() {
 
     private val presenter: LoginPresenter by inject()
 
-    override fun provideLayoutId() = R.layout.fragment_login
-
     companion object {
         fun newInstance() = LoginFragment()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun provideLayoutId() = R.layout.fragment_login
 
-        initViewCallbacks()
+    override fun preInitUi() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initUi() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initData() {
+        // TODO Implement body or it will be empty ):
     }
 
     override fun onDestroyView() {
@@ -82,7 +88,7 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         presenter.disposeAll()
     }
 
-    private fun initViewCallbacks() {
+    override fun initCallbacks() {
         btnSignUp.setOnClickListener {
             val identity = etIdentity.text.toString()
             if (identity.isNotEmpty()) {
@@ -126,6 +132,4 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
         btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
     }
-
-
 }

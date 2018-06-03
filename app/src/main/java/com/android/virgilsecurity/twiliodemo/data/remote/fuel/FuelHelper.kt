@@ -34,13 +34,19 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
 import com.android.virgilsecurity.twiliodemo.data.model.*
+import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import com.android.virgilsecurity.twiliodemo.util.toObject
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.Request
+import com.github.kittinunf.fuel.core.Response
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.utils.ConvertionUtils
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import org.xml.sax.Parser
 
 /**
  * . _  _
@@ -71,8 +77,19 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
     init {
         FuelManager.instance.basePath = baseUrl
+        FuelManager.instance.addResponseInterceptor(responseInterceptor<Any>())
         gson = Gson()
     }
+
+    inline fun <reified T> responseInterceptor() =
+            { next: (Request, Response) -> Response ->
+                { req: Request, res: Response ->
+                    UiUtils.log(this.javaClass.simpleName, " -> Request\n${req.parameters}")
+                    UiUtils.log(this.javaClass.simpleName, " -> Response\n${res.data}")
+
+                    next(req, res)
+                }
+            }
 
     fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
             .header("Authorization" to "Bearer $authHeader")

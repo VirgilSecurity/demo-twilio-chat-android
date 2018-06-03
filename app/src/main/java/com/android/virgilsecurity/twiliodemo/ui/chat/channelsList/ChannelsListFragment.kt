@@ -33,7 +33,6 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
@@ -70,45 +69,49 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
 
     override fun provideLayoutId() = R.layout.fragment_channels_list
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initUi()
-        initViewCallbacks()
-        initData()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
 
         presenter.disposeAll()
     }
 
-    private fun initUi() {
+    fun clearAdapter() {
+        adapter.clearItems()
+    }
+
+    override fun preInitUi() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initUi() {
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.reverseLayout = false
         rvThreads.layoutManager = layoutManager
         rvThreads.adapter = adapter
     }
 
-    private fun initViewCallbacks() {
+    override fun initCallbacks() {
         adapter.setClickListener { _, channel ->
             rootActivity!!.openChannel(channel)
         }
         srlRefresh.setOnRefreshListener {
+            adapter.clearItems()
+            showProgress(true)
+            fetchChannels()
             srlRefresh.isRefreshing = false
         }
     }
 
-    private fun initData() {
+    override fun initData() {
         showProgress(true)
         presenter.startChatClient(userManager.getCurrentUser()!!.identity,
                                   {
-                                      UiUtils.log(this.javaClass.simpleName, " -> Chat client started")
+                                      UiUtils.log(this.javaClass.simpleName,
+                                                  " -> Chat client started")
                                       fetchChannels()
                                   },
                                   {
-                                     UiUtils.toast(this, "Chat client start failed")
+                                      UiUtils.toast(this, "Chat client start failed")
                                       showProgress(false)
                                   })
 
@@ -152,7 +155,8 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
             override fun onChannelAdded(channel: Channel?) {
                 channel?.join(object : StatusListener() {
                     override fun onSuccess() {
-                        UiUtils.log(this.javaClass.simpleName, " -> successfully autojoined channel")
+                        UiUtils.log(this.javaClass.simpleName,
+                                    " -> successfully autojoined channel")
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
@@ -196,11 +200,59 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
     }
 
     private fun fetchChannels() {
-        presenter.fetchChannels(onFetchChannelsSuccess = {
-            UiUtils.log(this.javaClass.simpleName, " -> Channels fetched")
-            adapter.setItems(it?.toMutableList())
-            showProgress(false)
-        })
+        presenter.getPublicChannelsFirstPage(
+            { paginator, channels ->
+                UiUtils.log(this.javaClass.simpleName, " -> Channels first page fetched")
+                adapter.setItems(channels)
+
+                if (paginator.hasNextPage())
+                    getChannelsNextPage(paginator)
+                else
+                    showProgress(false)
+            },
+            {
+                UiUtils.toast(this, "Channels first page fetch error.\n${it.message}")
+                showProgress(false)
+            }
+        )
+
+        presenter.getUserChannelsFirstPage(
+            { paginator, channels ->
+                UiUtils.log(this.javaClass.simpleName, " -> Channels first page fetched")
+                adapter.setItems(channels)
+
+                if (paginator.hasNextPage())
+                    getChannelsNextPage(paginator)
+                else
+                    showProgress(false)
+            },
+            {
+                UiUtils.toast(this, "Channels first page fetch error.\n${it.message}")
+                showProgress(false)
+            }
+        )
+    }
+
+    private fun getChannelsNextPage(paginator: Paginator<ChannelDescriptor>) {
+        presenter.getChannelsNextPage(paginator,
+                                      { paginatorInner, channels ->
+                                          UiUtils.log(this.javaClass.simpleName, " -> Channels first page fetched")
+                                          adapter.setItems(channels)
+
+                                          if (paginator.hasNextPage()) {
+                                              getChannelsNextPage(paginatorInner)
+                                          } else {
+                                              showProgress(false)
+                                              presenter.getSubscribedChannels({
+                                                                                  adapter.addItems(it)
+                                                                              })
+                                          }
+                                      },
+                                      {
+                                          UiUtils.toast(this,
+                                                        "Channels next page fetch error.\n${it.message}")
+                                          showProgress(false)
+                                      })
     }
 
     fun issueCreateThread(interlocutor: String) {
@@ -209,17 +261,16 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                                     adapter.addItem(it)
                                     rootActivity!!.dialogNewChannelCancel()
                                     rootActivity!!.openChannel(it)
-                                    UiUtils.log(this.javaClass.simpleName, " -> Created channel success")
-
+                                    UiUtils.log(this.javaClass.simpleName,
+                                                " -> Created channel success")
                                 },
                                 {
-                                    UiUtils.toast(this, it.message ?:
-                                                        "Some error creating channel")
+                                    UiUtils.toast(this, it.message ?: "Some error creating channel")
                                     rootActivity!!.dialogNewChannelStopLoading()
                                 })
     }
 
     private fun showProgress(show: Boolean) {
-        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
+        pbLoading?.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 }

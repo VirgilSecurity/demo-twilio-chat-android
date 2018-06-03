@@ -34,18 +34,19 @@
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
-import com.twilio.chat.Channel
-import com.twilio.chat.ChatClient
-import com.twilio.chat.ChatClientListener
+import com.twilio.chat.*
 import com.virgilsecurity.sdk.crypto.HashAlgorithm
 import com.virgilsecurity.sdk.utils.ConvertionUtils
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import kotlin.collections.ArrayList
 
 /**
  * . _  _
@@ -98,17 +99,155 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
     fun createChannel(interlocutor: String,
                       onCreateChannelSuccess: (Channel) -> Unit,
                       onCreateChannelError: (Throwable) -> Unit) {
-        twilioHelper.createChannel(interlocutor, generateNewChannelId(interlocutor))
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                    onSuccess = {
-                        onCreateChannelSuccess(it)
-                    },
-                    onError = {
-                        onCreateChannelError(it)
-                    })
+        val createChannelDisposable =
+                twilioHelper.createChannel(interlocutor, generateNewChannelId(interlocutor))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                onCreateChannelSuccess(it)
+                            },
+                            onError = {
+                                onCreateChannelError(it)
+                            })
+
+        compositeDisposable += createChannelDisposable
     }
 
+    fun getPublicChannelsFirstPage(onGetChannelsSuccess: (Paginator<ChannelDescriptor>, MutableList<Channel>) -> Unit,
+                                   onGetChannelsError: (Throwable) -> Unit) {
+        val getPublicChannelsFirstPageDisposable =
+                twilioHelper.getPublicChannelsFirstPage()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                val channelsDescriptors = ArrayList<ChannelDescriptor>()
+                                it.items.forEach { channel -> channelsDescriptors.add(channel) }
+                                val channels = ArrayList<Channel>()
+
+                                Observable.fromIterable(channelsDescriptors)
+                                        .flatMap {
+                                            twilioHelper.getChannelFromChannelDescriptor(it)
+                                        }.flatMap {
+                                            channels.add(it)
+
+                                            Observable.create<Unit>({ e ->
+                                                                        it.join(object : StatusListener() {
+                                                                            override fun onSuccess() {
+                                                                                e.onComplete()
+                                                                            }
+
+                                                                            override fun onError(errorInfo: ErrorInfo?) {
+                                                                                if (it.status == Channel.ChannelStatus.JOINED) {
+                                                                                    e.onComplete()
+                                                                                } else {
+                                                                                    e.onError(
+                                                                                        ErrorInfoWrapper(
+                                                                                            errorInfo))
+                                                                                }
+                                                                            }
+                                                                        })
+                                                                    })
+                                        }.subscribeBy(
+                                            onComplete = {
+                                                onGetChannelsSuccess(it, channels)
+                                            },
+                                            onError = {
+                                                onGetChannelsError(it)
+                                            }
+                                        )
+                            },
+                            onError = {
+                                onGetChannelsError(it)
+                            }
+                        )
+
+        compositeDisposable += getPublicChannelsFirstPageDisposable
+    }
+
+    fun getUserChannelsFirstPage(onGetChannelsSuccess: (Paginator<ChannelDescriptor>, MutableList<Channel>) -> Unit,
+                                 onGetChannelsError: (Throwable) -> Unit) {
+        val getUserChannelsFirstPageDisposable =
+                twilioHelper.getUserChannelsFirstPage()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                val channelsDescriptors = ArrayList<ChannelDescriptor>()
+                                it.items.forEach { channel -> channelsDescriptors.add(channel) }
+                                val channels = ArrayList<Channel>()
+
+                                Observable.fromIterable(channelsDescriptors)
+                                        .flatMap {
+                                            twilioHelper.getChannelFromChannelDescriptor(it)
+                                        }.flatMap {
+                                            channels.add(it)
+
+                                            Observable.create<Unit>({ e ->
+                                                                        it.join(object : StatusListener() {
+                                                                            override fun onSuccess() {
+                                                                                e.onComplete()
+                                                                            }
+
+                                                                            override fun onError(errorInfo: ErrorInfo?) {
+                                                                                if (it.status == Channel.ChannelStatus.JOINED) {
+                                                                                    e.onComplete()
+                                                                                } else {
+                                                                                    e.onError(
+                                                                                        ErrorInfoWrapper(
+                                                                                            errorInfo))
+                                                                                }
+                                                                            }
+                                                                        })
+                                                                    })
+                                        }.subscribeBy(
+                                            onComplete = {
+                                                onGetChannelsSuccess(it, channels)
+                                            },
+                                            onError = {
+                                                onGetChannelsError(it)
+                                            }
+                                        )
+                            },
+                            onError = {
+                                onGetChannelsError(it)
+                            }
+                        )
+
+        compositeDisposable += getUserChannelsFirstPageDisposable
+    }
+
+    fun getChannelsNextPage(paginator: Paginator<ChannelDescriptor>,
+                            onGetNextChannelsSuccess: (Paginator<ChannelDescriptor>, MutableList<Channel>) -> Unit,
+                            onGetNextChannelsError: (Throwable) -> Unit) {
+        val getChannelsNextPageDisposable =
+                twilioHelper.getChannelsNextPage(paginator)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                val channelsDescriptors = ArrayList<ChannelDescriptor>()
+                                it.items.forEach { channel -> channelsDescriptors.add(channel) }
+                                val channels = ArrayList<Channel>()
+
+                                Observable.fromIterable(channelsDescriptors)
+                                        .flatMap {
+                                            twilioHelper.getChannelFromChannelDescriptor(it)
+                                        }.map {
+                                            channels.add(it)
+                                        }.subscribeBy(
+                                            onComplete = {
+                                                onGetNextChannelsSuccess(it, channels)
+                                            },
+                                            onError = {
+                                                onGetNextChannelsError(it)
+                                            }
+                                        )
+                            },
+                            onError = {
+                                onGetNextChannelsError(it)
+                            }
+                        )
+
+        compositeDisposable += getChannelsNextPageDisposable
+    }
 
     private fun generateNewChannelId(interlocutor: String): String {
         val userMe = userManager.getCurrentUser()!!.identity
@@ -128,11 +267,13 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
     }
 
     override fun disposeAll() {
+        twilioHelper.shutdownChatClient()
         compositeDisposable.clear()
     }
 
-    fun setupChatListener(chatClientListener: ChatClientListener) {
-        twilioHelper.setChatListener(chatClientListener)
-    }
+    fun setupChatListener(chatClientListener: ChatClientListener) =
+            twilioHelper.setChatListener(chatClientListener)
 
+    fun getSubscribedChannels(onGetSubscribedChannels: (MutableList<Channel>) -> Unit) =
+            twilioHelper.getSubscribedChannels(onGetSubscribedChannels)
 }

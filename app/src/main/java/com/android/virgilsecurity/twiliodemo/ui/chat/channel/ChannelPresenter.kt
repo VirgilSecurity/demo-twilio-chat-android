@@ -33,7 +33,14 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
+import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
+import com.twilio.chat.Channel
+import com.twilio.chat.Message
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * . _  _
@@ -50,9 +57,37 @@ import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
  * ChannelPresenter
  */
 
-class ChannelPresenter : BasePresenter {
+class ChannelPresenter(private val twilioHelper: TwilioHelper) : BasePresenter {
+
+    private val compositeDisposable = CompositeDisposable()
+
+    fun requestMessages(channel: Channel,
+                        onGetMessagesSuccess: (MutableList<Message>) -> Unit,
+                        onGetMessagesError: (Throwable) -> Unit) {
+        val getMessagesDisposable =
+                twilioHelper.getMessages(channel)
+                .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onSuccess = {
+                                onGetMessagesSuccess(it)
+                            },
+                            onError = {
+                                onGetMessagesError(it)
+                            }
+                        )
+
+        compositeDisposable += getMessagesDisposable
+    }
+
+    fun requestSendMessage(channel: Channel,
+                           interlocutor: String,
+                           body: String,
+                           onSendMessagesSuccess: () -> Unit,
+                           onSendMessagesError: (Throwable) -> Unit) {
+        twilioHelper.sendMessage(channel, body, interlocutor)
+    }
 
     override fun disposeAll() {
-        // TODO Implement body or it will be empty ):
+        compositeDisposable.clear()
     }
 }

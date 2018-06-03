@@ -35,6 +35,7 @@ package com.android.virgilsecurity.twiliodemo
 
 import android.app.Application
 import com.android.virgilsecurity.twiliodemo.di.*
+import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
 import com.android.virgilsecurity.twiliodemo.ui.login.loginModule
 import org.koin.android.ext.android.startKoin
@@ -62,6 +63,7 @@ class TwilioApp : Application() {
                          twilioModule,
                          paramsModule,
                          loginModule,
-                         threadsListModule))
+                         threadsListModule,
+                         channelModule))
     }
 }

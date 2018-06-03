@@ -38,8 +38,6 @@ class ChannelsListActivity : BaseActivity() {
     private lateinit var createThreadDialog: CreateThreadDialog
     private var secondPress: Boolean = false
 
-    override fun provideLayoutId() = R.layout.activity_channels_list
-
     companion object {
         fun startWithFinish(from: AppCompatActivity) {
             from.startActivity(Intent(from, ChannelsListActivity::class.java))
@@ -47,22 +45,33 @@ class ChannelsListActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun provideLayoutId() = R.layout.activity_channels_list
 
+    override fun preInitUi() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initUi() {
         initToolbar(toolbar, getString(R.string.app_name))
         initDrawer()
+
+        UiUtils.replaceFragmentNoBackStack(supportFragmentManager,
+                                           R.id.flBaseContainer,
+                                           ChannelsListFragment.newInstance(),
+                                           threadsListTag)
+    }
+
+    override fun initViewCallbacks() {
         showHamburger(true, View.OnClickListener {
             if (!dlDrawer.isDrawerOpen(Gravity.START))
                 dlDrawer.openDrawer(Gravity.START)
             else
                 dlDrawer.closeDrawer(Gravity.START)
         })
+    }
 
-        UiUtils.replaceFragmentNoBackStack(supportFragmentManager,
-                                           R.id.flBaseContainer,
-                                           ChannelsListFragment.newInstance(),
-                                           threadsListTag)
+    override fun initData() {
+        // TODO Implement body or it will be empty ):
     }
 
     private fun initDrawer() {
@@ -104,6 +113,10 @@ class ChannelsListActivity : BaseActivity() {
                     }
                     R.id.itemLogOut -> {
                         dlDrawer.closeDrawer(Gravity.START)
+
+                        val threadsListFragment =
+                                supportFragmentManager.findFragmentByTag(threadsListTag) as ChannelsListFragment
+                        threadsListFragment.clearAdapter()
 
                         userManager.clearCurrentUser()
                         userManager.clearUserCard()

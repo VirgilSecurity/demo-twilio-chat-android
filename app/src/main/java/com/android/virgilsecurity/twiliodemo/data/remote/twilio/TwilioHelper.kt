@@ -34,14 +34,10 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.android.virgilsecurity.twiliodemo.R.string.identity
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.twilio.chat.*
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.subscribeBy
-import org.json.JSONObject
 
 /**
  * . _  _
@@ -89,6 +85,11 @@ class TwilioHelper(private val context: Context,
         }
     }
 
+    fun shutdownChatClient() {
+        chatClient?.shutdown()
+        chatClient = null
+    }
+
     fun setChatListener(chatClientListener: ChatClientListener) {
         chatClient?.setListener(chatClientListener)
     }
@@ -96,4 +97,29 @@ class TwilioHelper(private val context: Context,
     fun createChannel(interlocutor: String,
                       channelName: String) =
         twilioRx.createChannel(interlocutor, channelName, chatClient)
+
+    fun getPublicChannelsFirstPage() =
+        twilioRx.getPublicChannelsFirstPaginator(chatClient)
+
+    fun getUserChannelsFirstPage() =
+        twilioRx.getUserChannelsFirstPaginator(chatClient)
+
+
+    fun getChannelsNextPage(paginator: Paginator<ChannelDescriptor>) =
+        twilioRx.getChannelsNextPaginator(paginator)
+
+    fun getChannelFromChannelDescriptor(channelDescriptor: ChannelDescriptor): Observable<Channel> =
+            twilioRx.getChannelFromChannelDescriptor(channelDescriptor).toObservable()
+
+    fun getSubscribedChannels(onGetSubscribedChannels: (MutableList<Channel>) -> Unit) {
+        val channels = ArrayList<Channel>()
+        chatClient?.channels?.subscribedChannels?.forEach { channels.add(it) }
+        onGetSubscribedChannels(channels)
+    }
+
+    fun getMessages(channel: Channel) = twilioRx.getMessages(channel)
+
+    fun sendMessage(channel: Channel, body: String, interlocutor: String) {
+        twilioRx.sendMessage(channel, body, interlocutor)
+    }
 }

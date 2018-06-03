@@ -49,4 +49,4 @@ import com.twilio.chat.ErrorInfo
 /**
  * TwilioExceptions
  */
-class ErrorInfoWrapper(val errorInfo: ErrorInfo?) : Throwable()
+class ErrorInfoWrapper(val errorInfo: ErrorInfo?) : Throwable(errorInfo?.message)

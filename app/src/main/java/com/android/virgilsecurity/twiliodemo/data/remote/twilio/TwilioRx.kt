@@ -37,6 +37,7 @@ import android.content.Context
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_RECEIVER
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_SENDER
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
@@ -63,9 +64,11 @@ import org.json.JSONObject
 class TwilioRx(private val fuelHelper: FuelHelper,
                private val userManager: UserManager) {
 
+    private val channelExistsCode = 50307
+
     fun getToken(identity: String, authHeader: () -> String): Single<String> = Single.create<String> {
-            val token = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
-            it.onSuccess(token)
+        val token = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
+        it.onSuccess(token)
     }.subscribeOn(Schedulers.io())
 
     fun createClient(context: Context, token: String): Single<ChatClient> = Single.create<ChatClient> {
@@ -80,6 +83,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                               }
 
                               override fun onError(errorInfo: ErrorInfo?) {
+                                  UiUtils.log(this.javaClass.simpleName + "_log",
+                                              " -> ${errorInfo?.message}")
                                   it.onError(ErrorInfoWrapper(errorInfo))
                               }
                           })
@@ -134,7 +139,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                                                                           }
                                                                       })
                                            })
-                    }.observeOn(Schedulers.io())
+                    }.subscribeOn(Schedulers.io())
 
     fun createChannel(interlocutor: String,
                       channelName: String,
@@ -145,7 +150,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
         val builder = chatClient?.channels?.channelBuilder()
 
-        builder?.withUniqueName(channelName)
+        builder?.withFriendlyName(interlocutor + "-" + userManager.getCurrentUser()!!.identity)
+                ?.withUniqueName(channelName)
                 ?.withType(Channel.ChannelType.PRIVATE)
                 ?.withAttributes(attrs)
                 ?.build(object : CallbackListener<Channel>() {
@@ -154,7 +160,10 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
+                        if (errorInfo?.code == channelExistsCode)
+                            it.onError(Throwable("Channel already exists"))
+                        else
+                            it.onError(ErrorInfoWrapper(errorInfo))
                     }
                 })
     }.flatMap { channel ->
@@ -181,36 +190,135 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                                 "Remove channel error after join")
                 }
             })
-        }.andThen(
-            {
-                Completable.create(
-                    { e2 ->
-                        channel.members
-                                .inviteByIdentity(interlocutor,
-                                                  object : StatusListener() {
-                                                      override fun onSuccess() {
-                                                          e2.onComplete()
-                                                      }
+        }.doOnComplete {
+            Completable.create(
+                { e2 ->
+                    channel.members
+                            .inviteByIdentity(interlocutor,
+                                              object : StatusListener() {
+                                                  override fun onSuccess() {
+                                                      e2.onComplete()
+                                                  }
 
-                                                      override fun onError(errorInfo: ErrorInfo?) {
-                                                          e2.onError(ErrorInfoWrapper(errorInfo))
-                                                      }
-                                                  })
-                    }).doOnError { throwable ->
-                    channel.destroy(object : StatusListener() {
-                        override fun onSuccess() {
-                            UiUtils.log(this.javaClass.simpleName,
-                                        "Remove channel success")
-                        }
+                                                  override fun onError(errorInfo: ErrorInfo?) {
+                                                      e2.onError(ErrorInfoWrapper(
+                                                          errorInfo))
+                                                  }
+                                              })
+                }).doOnError { throwable ->
+                channel.destroy(object : StatusListener() {
+                    override fun onSuccess() {
+                        UiUtils.log(this.javaClass.simpleName,
+                                    "Remove channel success")
+                    }
 
-                        override fun onError(errorInfo: ErrorInfo?) {
-                            UiUtils.log(this.javaClass.simpleName,
-                                        "Remove channel error")
-                        }
-                    })
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        UiUtils.log(this.javaClass.simpleName,
+                                    "Remove channel error")
+                    }
+                })
+            }.subscribe()
+        }.toSingle {
+            channel
+        }
+
+    }.subscribeOn(Schedulers.io())
+
+    fun getPublicChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
+        return Single.create<Paginator<ChannelDescriptor>> {
+            chatClient?.channels?.getPublicChannelsList(object : CallbackListener<Paginator<ChannelDescriptor>>() {
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
+                    it.onSuccess(paginator)
                 }
-            }).toSingle { channel }
 
-    }.observeOn(Schedulers.io())
+                override fun onError(errorInfo: ErrorInfo?) {
+                    it.onError(ErrorInfoWrapper(errorInfo))
+                }
+            })
+        }.subscribeOn(Schedulers.io())
+    }
 
+    fun getUserChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
+        return Single.create<Paginator<ChannelDescriptor>> {
+            chatClient?.channels?.getUserChannelsList(object : CallbackListener<Paginator<ChannelDescriptor>>() {
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
+                    it.onSuccess(paginator)
+                }
+
+                override fun onError(errorInfo: ErrorInfo?) {
+                    it.onError(ErrorInfoWrapper(errorInfo))
+                }
+            })
+        }.subscribeOn(Schedulers.io())
+    }
+
+    fun getChannelsNextPaginator(paginator: Paginator<ChannelDescriptor>): Single<Paginator<ChannelDescriptor>> {
+        return Single.create<Paginator<ChannelDescriptor>> {
+            paginator.requestNextPage(object : CallbackListener<Paginator<ChannelDescriptor>>() {
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
+                    it.onSuccess(paginator)
+                }
+
+                override fun onError(errorInfo: ErrorInfo?) {
+                    it.onError(ErrorInfoWrapper(errorInfo))
+                }
+            })
+        }.subscribeOn(Schedulers.io())
+    }
+
+    fun getChannelFromChannelDescriptor(channelDescriptor: ChannelDescriptor): Single<Channel> =
+            Single.create<Channel> {
+                channelDescriptor.getChannel(object : CallbackListener<Channel>() {
+                    override fun onSuccess(channel: Channel?) {
+                        it.onSuccess(channel!!)
+                    }
+
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        it.onError(ErrorInfoWrapper(errorInfo))
+                    }
+                })
+            }
+
+    fun getMessages(channel: Channel): Single<MutableList<Message>> =
+            Single.create<MutableList<Message>> {
+                val messagesCount = channel.getMessagesCount(object : CallbackListener<Long>() {
+                    override fun onSuccess(messagesCount: Long?) {
+                        channel.messages.getLastMessages(messagesCount!!.toInt(),
+                                                         object : CallbackListener<MutableList<Message>>() {
+                                                             override fun onSuccess(messages: MutableList<Message>?) {
+                                                                 it.onSuccess(messages!!)
+                                                             }
+
+                                                             override fun onError(errorInfo: ErrorInfo?) {
+                                                                 it.onError(ErrorInfoWrapper(
+                                                                     errorInfo))
+                                                             }
+                                                         })
+                    }
+
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        it.onError(ErrorInfoWrapper(errorInfo))
+                    }
+                })
+            }.subscribeOn(Schedulers.io())
+
+    fun sendMessage(channel: Channel,
+                    body: String,
+                    interlocutor: String): Single<Message> =
+            Single.create<Message> {
+        val attributes = JSONObject()
+        attributes.put(Constants.KEY_SENDER, userManager.getCurrentUser()!!.identity)
+        attributes.put(Constants.KEY_RECEIVER, interlocutor)
+
+        val message = Message.options().withBody(body).withAttributes(attributes)
+        channel.messages.sendMessage(message, object : CallbackListener<Message>() {
+            override fun onSuccess(message: Message?) {
+                it.onSuccess(message!!)
+            }
+
+            override fun onError(errorInfo: ErrorInfo?) {
+                it.onError(ErrorInfoWrapper(errorInfo))
+            }
+        })
+    }.subscribeOn(Schedulers.io())
 }

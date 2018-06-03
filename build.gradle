@@ -15,6 +15,8 @@ buildscript {
         virgilSdk = "5.0.2"
         virgilCrypto = "5.0.2@aar"
         gson = "2.7"
+        okHttp = "3.10.0"
+        loggingInterceptor = "3.10.0"
     }
 
     repositories {

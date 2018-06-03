@@ -60,6 +60,10 @@ abstract class BaseFragment<A> : Fragment() where A : AppCompatActivity {
     internal var rootActivity: A? = null
 
     protected abstract fun provideLayoutId() : Int
+    protected abstract fun preInitUi()
+    protected abstract fun initUi()
+    protected abstract fun initCallbacks()
+    protected abstract fun initData()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -75,6 +79,15 @@ abstract class BaseFragment<A> : Fragment() where A : AppCompatActivity {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(provideLayoutId(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        preInitUi()
+        initUi()
+        initCallbacks()
+        initData()
     }
 
     protected fun hideKeyboard() {

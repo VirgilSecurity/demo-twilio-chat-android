@@ -85,6 +85,11 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
         notifyDataSetChanged()
     }
 
+    fun addItems(channels: List<Channel>) {
+        items.addAll(channels)
+        notifyDataSetChanged()
+    }
+
     fun addItem(channel: Channel) {
         items.add(channel)
         notifyDataSetChanged()
@@ -101,6 +106,10 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
         }
 
         return null
+    }
+
+    fun clearItems() {
+        items.clear()
     }
 
     class ChannelHolder(override val containerView: View?,

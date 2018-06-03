@@ -124,7 +124,7 @@ class CreateThreadDialog(context: Context,
             TransitionManager.beginDelayedTransition(flRoot)
             llLoadingRoot.visibility = View.VISIBLE
         } else {
-            object : OnFinishTimer(1000, 100) {
+            object : OnFinishTimer(500, 100) {
                 override fun onFinish() {
                     setCancelable(true)
                     llLoadingRoot.visibility = View.GONE

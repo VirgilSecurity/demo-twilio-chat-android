@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.twilio.chat.Channel
@@ -64,6 +65,7 @@ import org.koin.android.ext.android.inject
 class ChannelFragment : BaseFragment<ChannelActivity>() {
 
     private val presenter: ChannelPresenter by inject()
+    private val userManager: UserManager by inject()
 
     private lateinit var channel: Channel
 
@@ -81,33 +83,33 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
 
     override fun provideLayoutId() = R.layout.fragment_channel
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        channel = arguments!!.getParcelable<Channel>(Constants.KEY_CHANNEL)
-
-        initUi()
-        initViewCallbacks()
-        initData()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
         presenter.disposeAll()
     }
 
-    private fun initUi() {
-        // TODO Implement body or it will be empty ):
+    override fun preInitUi() {
+        channel = arguments!!.getParcelable(Constants.KEY_CHANNEL)
     }
 
-    private fun initViewCallbacks() {
+    override fun initUi() {
+        val attributes = channel.attributes
+
+        val receiver = attributes[Constants.KEY_RECEIVER] as String
+        val sender = attributes[Constants.KEY_SENDER] as String
+        val currentUser = userManager.getCurrentUser()!!.identity
+
+        val interlocutor = if (currentUser == sender) receiver else sender
+
+        rootActivity!!.changeToolbarTitleExposed(interlocutor)
+    }
+
+    override fun initCallbacks() {
         srlRefresh.setOnRefreshListener {
             srlRefresh.isRefreshing = false
         }
-    }
 
-    private fun initData() {
         channel.addListener(object : ChannelListener {
             override fun onMemberDeleted(p0: Member?) {
                 // TODO Implement body or it will be empty ):
@@ -146,5 +148,20 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
             }
 
         })
+    }
+
+    override fun initData() {
+        showProgress(true)
+        presenter.requestMessages(channel,
+                                  {
+
+                                  },
+                                  {
+
+                                  })
+    }
+
+    private fun showProgress(show: Boolean) {
+        pbLoading?.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 }

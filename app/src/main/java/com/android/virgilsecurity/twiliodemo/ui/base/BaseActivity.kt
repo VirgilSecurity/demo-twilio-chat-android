@@ -42,6 +42,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toolbar
 import com.android.virgilsecurity.twiliodemo.R
+import com.android.virgilsecurity.twiliodemo.R.id.ibToolbarBack
+import com.android.virgilsecurity.twiliodemo.R.id.ibToolbarHamburger
 
 /**
  * . _  _
@@ -65,10 +67,19 @@ abstract class BaseActivity : AppCompatActivity() {
     private var toolbar: Toolbar? = null
 
     protected abstract fun provideLayoutId(): Int
+    protected abstract fun preInitUi()
+    protected abstract fun initUi()
+    protected abstract fun initViewCallbacks()
+    protected abstract fun initData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutInflater.inflate(provideLayoutId(), null))
+
+        preInitUi()
+        initUi()
+        initViewCallbacks()
+        initData()
     }
 
     protected fun initToolbar(toolbar: Toolbar, titlePage: String) {
@@ -82,6 +93,10 @@ abstract class BaseActivity : AppCompatActivity() {
         tvToolbarTitle?.text = titlePage
         actionBar?.title = "" // We're using our custom title
         actionBar?.setDisplayHomeAsUpEnabled(false) // Hide default home button
+    }
+
+    protected fun changeToolbarTitle(title: String) {
+        tvToolbarTitle?.text = title
     }
 
     protected fun showBackButton(show: Boolean, listener: View.OnClickListener?) {

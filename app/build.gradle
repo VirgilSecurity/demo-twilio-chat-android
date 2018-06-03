@@ -18,6 +18,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
     }
     productFlavors {
     }
@@ -59,4 +63,10 @@ dependencies {
 
     // Gson
     implementation "com.google.code.gson:gson:$gson"
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$okHttp"
+
+    // Logging Interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptor"
 }
