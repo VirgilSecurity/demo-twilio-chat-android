@@ -22,7 +22,7 @@ To build this sample were used next third-party frameworks
 
 * [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
 * [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-x) - encrypting, decrypting messages and passwordless authentication.
-* As well with well known libraries as: Fuel, RxKotlin/RxAndroid, Koin, Gson.
+* And some popular libraries: Fuel, RxKotlin/RxAndroid, Koin, Gson.
 
 ## Documentation
 
