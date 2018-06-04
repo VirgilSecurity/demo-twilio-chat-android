@@ -51,6 +51,9 @@ import android.widget.Toast
  * ....|_|-
  */
 
+/**
+ * UiUtils
+ */
 object UiUtils {
 
     fun toast(context: Context, text: String) =
@@ -70,6 +73,10 @@ object UiUtils {
                            Toast.LENGTH_SHORT).show()
 
     fun log(tag: String, text: String) = Log.d(tag, text)
+
+//    fun logd(clazz: Any, body: () -> String) {
+//        Log.d(clazz::class.java.simpleName, " -> ${body()}")
+//    }
 
     fun replaceFragmentNoTag(fm: FragmentManager, containerId: Int, fragment: Fragment) =
             fm.beginTransaction()

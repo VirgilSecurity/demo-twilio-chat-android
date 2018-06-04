@@ -102,8 +102,16 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
                       onCreateChannelSuccess: (Channel) -> Unit,
                       onCreateChannelError: (Throwable) -> Unit) {
         val createChannelDisposable =
-                twilioHelper.createChannel(interlocutor, generateNewChannelId(interlocutor))
-                        .observeOn(AndroidSchedulers.mainThread())
+                virgilHelper.searchCards(interlocutor)
+                        .flatMap {
+                            when {
+                                it.size == 1 -> twilioHelper.createChannel(interlocutor,
+                                                                           generateNewChannelId(interlocutor))
+                                it.isEmpty() -> throw Throwable("This user does not exists")
+                                else -> throw Throwable("Cards count by identity \'$interlocutor\' " +
+                                                        "is: ${it.size}. Must be 1")
+                            }
+                        }.observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(
                             onSuccess = {
                                 onCreateChannelSuccess(it)
@@ -111,6 +119,7 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
                             onError = {
                                 onCreateChannelError(it)
                             })
+
 
         compositeDisposable += createChannelDisposable
     }
@@ -269,8 +278,11 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
     }
 
     override fun disposeAll() {
-        twilioHelper.shutdownChatClient()
         compositeDisposable.clear()
+    }
+
+    fun shutdownChatClient() {
+        twilioHelper.shutdownChatClient()
     }
 
     fun setupChatListener(chatClientListener: ChatClientListener) =

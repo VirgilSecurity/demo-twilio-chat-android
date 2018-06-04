@@ -51,5 +51,6 @@ import org.koin.dsl.module.applicationContext
  * ThreadsListModules
  */
 val threadsListModule: Module = applicationContext {
-    bean { ChannelsListPresenter(get(), get(), get(), get()) }
+    factory { ChannelsListPresenter(get(), get(), get(), get()) }
+    factory { ChannelsListRVAdapter(get()) }
 }

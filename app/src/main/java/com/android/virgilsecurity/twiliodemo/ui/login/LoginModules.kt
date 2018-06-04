@@ -53,6 +53,4 @@ import org.koin.dsl.module.applicationContext
  */
 val loginModule : Module = applicationContext {
     bean { LoginPresenter(get(), get(), get(), get()) }
-
-    bean { ChannelsListRVAdapter(get()) }
 }

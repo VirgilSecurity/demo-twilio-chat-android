@@ -1,7 +1,6 @@
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
 import android.content.Intent
-import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -116,7 +115,7 @@ class ChannelsListActivity : BaseActivity() {
 
                         val threadsListFragment =
                                 supportFragmentManager.findFragmentByTag(threadsListTag) as ChannelsListFragment
-                        threadsListFragment.clearAdapter()
+                        threadsListFragment.onLogOut()
 
                         userManager.clearCurrentUser()
                         userManager.clearUserCard()

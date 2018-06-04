@@ -51,6 +51,6 @@ import org.koin.dsl.module.applicationContext
  * ChannelModules
  */
 val channelModule : Module = applicationContext {
-    bean { ChannelPresenter(get(), get(), get()) }
-    bean { ChannelRVAdapter(get(), get()) }
+    factory { ChannelPresenter(get(), get(), get()) }
+    factory { ChannelRVAdapter(get(), get()) }
 }

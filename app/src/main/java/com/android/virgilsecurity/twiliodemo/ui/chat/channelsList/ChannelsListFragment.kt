@@ -75,8 +75,9 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
         presenter.disposeAll()
     }
 
-    fun clearAdapter() {
+    fun onLogOut() {
         adapter.clearItems()
+        presenter.shutdownChatClient()
     }
 
     override fun preInitUi() {

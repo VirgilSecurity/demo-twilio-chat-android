@@ -96,6 +96,7 @@
             android:id="@+id/etIdentity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
             android:hint="@string/identity"
             android:inputType="textEmailAddress"
             android:maxLength="32"

@@ -41,6 +41,7 @@ import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
 import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
+import com.github.kittinunf.fuel.core.FuelError
 import com.virgilsecurity.sdk.cards.Card
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -168,7 +169,11 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
                             },
                             onError = {
                                 virgilHelper.deletePrivateKey(identity)
-                                onSignUpError(it)
+
+                                if (it is FuelError)
+                                    onSignUpError(Throwable(String(it.response.data)))
+                                else
+                                    onSignUpError(it)
                             })
 
         compositeDisposable += signUpDisposable

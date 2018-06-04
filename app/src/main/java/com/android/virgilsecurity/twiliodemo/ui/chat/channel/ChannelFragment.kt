@@ -35,6 +35,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
@@ -65,6 +66,8 @@ import org.koin.android.ext.android.inject
  */
 
 class ChannelFragment : BaseFragment<ChannelActivity>() {
+
+    private val thresholdScroll = 1
 
     private val presenter: ChannelPresenter by inject()
     private val userManager: UserManager by inject()
@@ -109,56 +112,60 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
 
         rootActivity!!.changeToolbarTitleExposed(interlocutor)
 
-        // TODO add recyclerview
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.reverseLayout = false
+        rvChat.layoutManager = layoutManager
+        rvChat.adapter = adapter
     }
 
     override fun initCallbacks() {
         srlRefresh.setOnRefreshListener {
             srlRefresh.isRefreshing = false
         }
+        UiUtils.log(this::class.java.simpleName, " -> Ui init")
 
         channel.addListener(object : ChannelListener {
             override fun onMemberDeleted(p0: Member?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberDeleted")
             }
 
             override fun onTypingEnded(p0: Channel?, p1: Member?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onTypingEnded")
             }
 
             override fun onMessageAdded(message: Message) {
                 adapter.addItem(message)
+                if (rvChat.adapter.itemCount > thresholdScroll)
+                    rvChat.smoothScrollToPosition(adapter.itemCount - 1)
             }
 
             override fun onMessageDeleted(p0: Message?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMessageDeleted")
             }
 
             override fun onMemberAdded(p0: Member?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberAdded")
             }
 
             override fun onTypingStarted(p0: Channel?, p1: Member?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onTypingStarted")
             }
 
             override fun onSynchronizationChanged(p0: Channel?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onSynchronizationChanged")
             }
 
             override fun onMessageUpdated(p0: Message?, p1: Message.UpdateReason?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMessageUpdated")
             }
 
             override fun onMemberUpdated(p0: Member?, p1: Member.UpdateReason?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberUpdated")
             }
-
         })
 
         btnSend.setOnClickListener {
             if (etMessage.text.toString().isNotEmpty()) {
-                etMessage.text.clear()
                 presenter.requestSendMessage(channel,
                                              interlocutor,
                                              etMessage.text.toString(),
@@ -170,6 +177,7 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
                                                  UiUtils.toast(this, it.message ?:
                                                                      "Some error sending message")
                                              })
+                etMessage.text.clear()
             }
         }
     }
@@ -192,6 +200,10 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
         presenter.requestMessages(channel,
                                   {
                                       adapter.setItems(it)
+                                      if (rvChat.adapter.itemCount > thresholdScroll)
+                                        rvChat.smoothScrollToPosition(adapter.itemCount - 1)
+//                                      rvChat.postDelayed({ rvChat.smoothScrollToPosition(adapter.itemCount - 1) },
+//                                                         400)
                                       showProgress(false)
                                   },
                                   {

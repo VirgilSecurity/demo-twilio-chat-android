@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.service.autofill.Validators.and
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
+import com.android.virgilsecurity.twiliodemo.R.id.*
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
@@ -68,6 +69,12 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         fun newInstance() = LoginFragment()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.disposeAll()
+    }
+
     override fun provideLayoutId() = R.layout.fragment_login
 
     override fun preInitUi() {
@@ -82,12 +89,6 @@ class LoginFragment : BaseFragment<LoginActivity>() {
         // TODO Implement body or it will be empty ):
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        presenter.disposeAll()
-    }
-
     override fun initCallbacks() {
         btnSignUp.setOnClickListener {
             val identity = etIdentity.text.toString()
@@ -98,8 +99,7 @@ class LoginFragment : BaseFragment<LoginActivity>() {
                                             ChannelsListActivity.startWithFinish(rootActivity!!)
                                         },
                                         {
-                                            UiUtils.toast(this,
-                                                          "SignUp Error.\nMessage: ${it.message}")
+                                            UiUtils.toast(this, it.message ?: "SignUp Error")
                                             showProgress(false)
                                         })
             }
@@ -119,7 +119,7 @@ class LoginFragment : BaseFragment<LoginActivity>() {
                                                               "Identity not registered")
                                             } else {
                                                 UiUtils.toast(this,
-                                                              "SignUp Error.\n${it.message}")
+                                                              it.message ?: "SignIn Error")
                                             }
                                             showProgress(false)
                                         })
