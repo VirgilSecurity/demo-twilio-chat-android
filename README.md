@@ -8,7 +8,7 @@ Start Android Studio and choose *File -> New -> Project from Version Control -> 
 ```
 https://github.com/VirgilSecurity/demo-twilio-chat-android.git
 ```
-Press Done - you're good to go!
+Press *Done* - you're good to go!
 
 ### Set Up Backend
 Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/v5) for setting up your own backend.
