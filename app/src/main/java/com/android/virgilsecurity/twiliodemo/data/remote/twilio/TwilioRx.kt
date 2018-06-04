@@ -327,14 +327,14 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
     fun getChannelBySid(chatClient: ChatClient?, channelSid: String): Single<Channel> =
             Single.create<Channel> {
-        chatClient?.channels?.getChannel(channelSid, object : CallbackListener<Channel>() {
-            override fun onSuccess(channel: Channel?) {
-                it.onSuccess(channel!!)
-            }
+                chatClient?.channels?.getChannel(channelSid, object : CallbackListener<Channel>() {
+                    override fun onSuccess(channel: Channel?) {
+                        it.onSuccess(channel!!)
+                    }
 
-            override fun onError(errorInfo: ErrorInfo?) {
-                it.onError(ErrorInfoWrapper(errorInfo))
-            }
-        })
-    }.subscribeOn(Schedulers.io())
+                    override fun onError(errorInfo: ErrorInfo?) {
+                        it.onError(ErrorInfoWrapper(errorInfo))
+                    }
+                })
+            }.subscribeOn(Schedulers.io())
 }

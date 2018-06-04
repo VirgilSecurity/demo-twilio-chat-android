@@ -109,55 +109,77 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                                   {
                                       UiUtils.log(this.javaClass.simpleName,
                                                   " -> Chat client started")
+                                      setupChatClientListener()
                                       fetchChannels()
                                   },
                                   {
                                       UiUtils.toast(this, "Chat client start failed")
                                       showProgress(false)
                                   })
+    }
 
+    private fun setupChatClientListener() {
         presenter.setupChatListener(object : ChatClientListener {
             override fun onChannelDeleted(p0: Channel?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelDeleted")
             }
 
             override fun onInvitedToChannelNotification(p0: String?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onInvitedToChannelNotification")
             }
 
             override fun onClientSynchronization(p0: ChatClient.SynchronizationStatus?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onClientSynchronization")
             }
 
             override fun onNotificationSubscribed() {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onNotificationSubscribed")
             }
 
             override fun onUserSubscribed(p0: User?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onUserSubscribed")
             }
 
             override fun onChannelUpdated(p0: Channel?, p1: Channel.UpdateReason?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelUpdated")
             }
 
             override fun onRemovedFromChannelNotification(p0: String?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onRemovedFromChannelNotification")
             }
 
             override fun onNotificationFailed(p0: ErrorInfo?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onNotificationFailed")
             }
 
             override fun onChannelJoined(p0: Channel?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelJoined")
             }
 
             override fun onChannelAdded(channel: Channel?) {
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelAdded")
+            }
+
+            override fun onChannelSynchronizationChange(p0: Channel?) {
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelSynchronizationChange")
+            }
+
+            override fun onUserUnsubscribed(p0: User?) {
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onUserUnsubscribed")
+            }
+
+            override fun onAddedToChannelNotification(p0: String?) {
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onAddedToChannelNotification")
+            }
+
+            override fun onChannelInvited(channel: Channel?) {
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelInvited")
+
                 channel?.join(object : StatusListener() {
                     override fun onSuccess() {
                         UiUtils.log(this.javaClass.simpleName,
                                     " -> successfully autojoined channel")
+                        adapter.addItem(channel)
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
@@ -166,36 +188,20 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                 })
             }
 
-            override fun onChannelSynchronizationChange(p0: Channel?) {
-                // TODO Implement body or it will be empty ):
-            }
-
-            override fun onUserUnsubscribed(p0: User?) {
-                // TODO Implement body or it will be empty ):
-            }
-
-            override fun onAddedToChannelNotification(p0: String?) {
-                // TODO Implement body or it will be empty ):
-            }
-
-            override fun onChannelInvited(p0: Channel?) {
-                // TODO Implement body or it will be empty ):
-            }
-
             override fun onNewMessageNotification(p0: String?, p1: String?, p2: Long) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onNewMessageNotification")
             }
 
             override fun onConnectionStateChange(p0: ChatClient.ConnectionState?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onConnectionStateChange")
             }
 
             override fun onError(p0: ErrorInfo?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onError")
             }
 
             override fun onUserUpdated(p0: User?, p1: User.UpdateReason?) {
-                // TODO Implement body or it will be empty ):
+                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onUserUpdated")
             }
         })
     }
@@ -256,7 +262,7 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                                       })
     }
 
-    fun issueCreateThread(interlocutor: String) {
+    fun issueCreateChannel(interlocutor: String) {
         presenter.createChannel(interlocutor,
                                 {
                                     adapter.addItem(it)

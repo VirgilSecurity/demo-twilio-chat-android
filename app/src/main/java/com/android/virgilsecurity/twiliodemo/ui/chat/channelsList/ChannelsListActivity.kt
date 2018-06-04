@@ -98,7 +98,7 @@ class ChannelsListActivity : BaseActivity() {
                                     createThreadDialog.showProgress(true)
                                     val threadsListFragment =
                                             supportFragmentManager.findFragmentByTag(threadsListTag) as ChannelsListFragment
-                                    threadsListFragment.issueCreateThread(identity)
+                                    threadsListFragment.issueCreateChannel(identity)
                                 }
                             },
                             {
