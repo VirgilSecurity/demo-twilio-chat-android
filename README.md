@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-Start Android Studio and choose File -> New -> Project from Version Control -> Git and fill in the *Git repository URL* with: 
+Start Android Studio and choose *File -> New -> Project from Version Control -> Git* and fill in the *Git repository URL* with: 
 ```
 https://github.com/VirgilSecurity/demo-twilio-chat-android.git
 ```
