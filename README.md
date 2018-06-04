@@ -4,49 +4,25 @@
 
 ## Getting Started
 
-Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
-```bash
-$ git clone https://github.com/VirgilSecurity/chat-twilio-ios.git
-
-$ cd chat-twilio-ios
+Start Android Studio and choose File -> New -> Project from Version Control -> Git and fill in the *Git repository URL* with: 
 ```
-
-## Prerequisites
-**Virgil Messenger** uses several modules, including **Virgil SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
-
-### Carthage
-
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
-
-You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
-
-```bash
-$ brew update
-$ brew install carthage
+https://github.com/VirgilSecurity/demo-twilio-chat-android.git
 ```
-
-#### Updating dependencies
-This example already has Carthage file with all required dependencies. All you need to do is to go to the project folder and update these dependencies.
-
-```bash 
-$ cd PathToProjectFolder/chat-twilio-ios
-$ carthage bootstrap --platform iOS --no-use-binaries
-```
+Press Done - you're good to go!
 
 ### Set Up Backend
 Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/v5) for setting up your own backend.
 
 ## Build and Run
-At this point you are ready to build and run the application on iPhone and/or Simulator.
+At this point you are ready to build and run the application on Android Emulator. To test the application on real device you have to provide your device with access to the local server you've recently setted up.
 
 ## Credentials
 
 To build this sample were used next third-party frameworks
 
 * [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
-* [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
 * [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-x) - encrypting, decrypting messages and passwordless authentication.
-* [PKHUD](https://github.com/pkluz/PKHUD) - reimplementing Apple's HUD.
+* As well with well known libraries as: Fuel, RxKotlin/RxAndroid, Koin, Gson.
 
 ## Documentation
 
