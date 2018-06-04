@@ -305,21 +305,6 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 })
             }.subscribeOn(Schedulers.io())
 
-//    fun getMessages(channel: Channel): Single<MutableList<Message>> =
-//            Single.create<MutableList<Message>> {
-//                channel.messages.getLastMessages(50,
-//                                                 object : CallbackListener<MutableList<Message>>() {
-//                                                     override fun onSuccess(messages: MutableList<Message>?) {
-//                                                         it.onSuccess(messages!!)
-//                                                     }
-//
-//                                                     override fun onError(errorInfo: ErrorInfo?) {
-//                                                         it.onError(ErrorInfoWrapper(
-//                                                             errorInfo))
-//                                                     }
-//                                                 })
-//            }.subscribeOn(Schedulers.io())
-
     fun sendMessage(channel: Channel,
                     body: String,
                     interlocutor: String): Single<Message> =
@@ -339,4 +324,17 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
                 })
             }.subscribeOn(Schedulers.io())
+
+    fun getChannelBySid(chatClient: ChatClient?, channelSid: String): Single<Channel> =
+            Single.create<Channel> {
+        chatClient?.channels?.getChannel(channelSid, object : CallbackListener<Channel>() {
+            override fun onSuccess(channel: Channel?) {
+                it.onSuccess(channel!!)
+            }
+
+            override fun onError(errorInfo: ErrorInfo?) {
+                it.onError(ErrorInfoWrapper(errorInfo))
+            }
+        })
+    }.subscribeOn(Schedulers.io())
 }

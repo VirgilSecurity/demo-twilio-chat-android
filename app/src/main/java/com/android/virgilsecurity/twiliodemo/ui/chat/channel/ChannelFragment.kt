@@ -95,6 +95,7 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
         super.onDestroyView()
 
         presenter.disposeAll()
+        channel.removeAllListeners()
     }
 
     override fun preInitUi() {
@@ -124,7 +125,45 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
         }
         UiUtils.log(this::class.java.simpleName, " -> Ui init")
 
-        channel.addListener(object : ChannelListener {
+        btnSend.setOnClickListener {
+            if (etMessage.text.toString().isNotEmpty()) {
+                presenter.requestSendMessage(channel,
+                                             interlocutor,
+                                             etMessage.text.toString(),
+                                             interlocutorCard,
+                                             {
+                                                 UiUtils.log(this@ChannelFragment::class.java.simpleName,
+                                                             "Message send successfully")
+                                             },
+                                             {
+                                                 UiUtils.toast(this,
+                                                               it.message
+                                                               ?: "Some error sending message")
+                                             })
+                etMessage.text.clear()
+            }
+        }
+    }
+
+    override fun initData() {
+        showProgress(true)
+        presenter.requestGetChannelBySid(channel.sid,
+                                         {
+                                             initChannelCallbacks(it)
+                                             searchCards()
+                                         },
+                                         {
+                                             showProgress(false)
+                                             UiUtils.toast(this,
+                                                           it.message
+                                                           ?: "Some error getting channel by sid")
+                                         })
+    }
+
+    private fun initChannelCallbacks(channel: Channel) {
+        this.channel = channel
+
+        this.channel.addListener(object : ChannelListener {
             override fun onMemberDeleted(p0: Member?) {
                 UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberDeleted")
             }
@@ -136,7 +175,8 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
             override fun onMessageAdded(message: Message) {
                 adapter.addItem(message)
                 if (rvChat.adapter.itemCount > thresholdScroll)
-                    rvChat.smoothScrollToPosition(adapter.itemCount - 1)
+                    rvChat.postDelayed({ rvChat.smoothScrollToPosition(adapter.itemCount - 1) },
+                                       100)
             }
 
             override fun onMessageDeleted(p0: Message?) {
@@ -152,7 +192,8 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
             }
 
             override fun onSynchronizationChanged(p0: Channel?) {
-                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onSynchronizationChanged")
+                UiUtils.log(this@ChannelFragment::class.java.simpleName,
+                            " -> onSynchronizationChanged")
             }
 
             override fun onMessageUpdated(p0: Message?, p1: Message.UpdateReason?) {
@@ -163,37 +204,20 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
                 UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberUpdated")
             }
         })
-
-        btnSend.setOnClickListener {
-            if (etMessage.text.toString().isNotEmpty()) {
-                presenter.requestSendMessage(channel,
-                                             interlocutor,
-                                             etMessage.text.toString(),
-                                             interlocutorCard,
-                                             {
-                                                 adapter.addItem(it)
-                                             },
-                                             {
-                                                 UiUtils.toast(this, it.message ?:
-                                                                     "Some error sending message")
-                                             })
-                etMessage.text.clear()
-            }
-        }
     }
 
-    override fun initData() {
-        showProgress(true)
+    private fun searchCards() {
         presenter.requestSearchCard(interlocutor,
                                     {
                                         interlocutorCard = it
                                         getMessages()
                                     },
                                     {
-                                        UiUtils.toast(this, it.message ?:
-                                                            "Some error searching interlocutor card")
+                                        showProgress(false)
+                                        UiUtils.toast(this,
+                                                      it.message
+                                                      ?: "Some error searching interlocutor card")
                                     })
-
     }
 
     private fun getMessages() {
@@ -201,14 +225,14 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
                                   {
                                       adapter.setItems(it)
                                       if (rvChat.adapter.itemCount > thresholdScroll)
-                                        rvChat.smoothScrollToPosition(adapter.itemCount - 1)
-//                                      rvChat.postDelayed({ rvChat.smoothScrollToPosition(adapter.itemCount - 1) },
-//                                                         400)
+                                          rvChat.postDelayed({ rvChat.smoothScrollToPosition(adapter.itemCount - 1) },
+                                                             400)
                                       showProgress(false)
                                   },
                                   {
-                                      UiUtils.toast(this, it.message ?:
-                                                          "Some error getting messages")
+                                      showProgress(false)
+                                      UiUtils.toast(this,
+                                                    it.message ?: "Some error getting messages")
                                   })
     }
 

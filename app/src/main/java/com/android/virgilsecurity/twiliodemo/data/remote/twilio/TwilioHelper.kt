@@ -121,4 +121,7 @@ class TwilioHelper(private val context: Context,
 
     fun sendMessage(channel: Channel, body: String, interlocutor: String) =
         twilioRx.sendMessage(channel, body, interlocutor)
+
+    fun getChannelBySid(channelSid: String) =
+            twilioRx.getChannelBySid(chatClient, channelSid)
 }

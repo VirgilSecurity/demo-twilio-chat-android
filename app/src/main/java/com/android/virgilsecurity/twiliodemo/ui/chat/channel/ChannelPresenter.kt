@@ -131,4 +131,19 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
     override fun disposeAll() {
         compositeDisposable.clear()
     }
+
+    fun requestGetChannelBySid(sid: String,
+                               onGetChannelSuccess: (Channel) -> Unit,
+                               onGetChannelError: (Throwable) -> Unit) {
+        twilioHelper.getChannelBySid(sid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onSuccess = {
+                        onGetChannelSuccess(it)
+                    },
+                    onError = {
+                        onGetChannelError(it)
+                    }
+                )
+    }
 }
