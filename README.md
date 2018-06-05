@@ -21,33 +21,29 @@ At this point you are ready to build and run the application on Android Emulator
 To build this sample were used next third-party frameworks
 
 * [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
-* [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-x) - encrypting, decrypting messages and passwordless authentication.
+* [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-java-android) - encrypting, decrypting messages and passwordless authentication.
 * And some popular libraries: Fuel, RxKotlin/RxAndroid, Koin, Gson.
 
 ## Documentation
 
 Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
 
-* [Get Started][_getstarted_root] documentation
-  * [Initialize the SDK][_guide_initialization]
-  * [Encrypted storage][_getstarted_storage]
-  * [Encrypted communication][_getstarted_encryption]
-  * [Data integrity][_getstarted_data_integrity]
-* [Guides][_guides]
-  * [Virgil Cards][_guide_virgil_cards]
+* [Configure the SDK][_getstarted_root] documentation
+* [Usage examples][_guides]
+  * [Create & publish a Card][_create_card] on Virgil Cards Service
+  * [Search user's Card by user's identity][_search_card]
+  * [Get user's Card by its ID][_get_card]
+  * [Use Card for crypto operations][_use_card]
 * [Reference API][_reference_api]
 
 ## Support
 
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) or send us email support@virgilsecurity.com
 
-[_getstarted_root]: https://developer.virgilsecurity.com/docs/swift/get-started
-[_getstarted_encryption]: https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication
-[_getstarted_storage]: https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-storage
-[_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/swift/get-started/data-integrity
-[_guides]: https://developer.virgilsecurity.com/docs/swift/guides
-[_guide_initialization]: https://developer.virgilsecurity.com/docs/swift/how-to/setup/v5/install-sdk
-[_guide_virgil_cards]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
-[_guide_virgil_keys]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
-[_guide_encryption]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/use-card-for-crypto-operation
+[_getstarted_root]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
+[_guides]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
+[_use_card]: https://developer.virgilsecurity.com/docs/java/how-to/public-key-management/v5/use-card-for-crypto-operation
+[_get_card]: https://developer.virgilsecurity.com/docs/java/how-to/public-key-management/v5/get-card
+[_search_card]: https://developer.virgilsecurity.com/docs/java/how-to/public-key-management/v5/search-card
+[_create_card]: https://developer.virgilsecurity.com/docs/java/how-to/public-key-management/v5/create-card
 [_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
