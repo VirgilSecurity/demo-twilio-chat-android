@@ -46,14 +46,13 @@ dependencies {
 
     // Reactiveness
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlin"
-    implementation "io.reactiKvex.rxjava2:rxandroid:$rxAndroid"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
 
     // Koin
     implementation "org.koin:koin-android:$koin"
 
     // Twilio
-    implementation("com.twilio:chat-android:$twilioSdk") {CONTRIBUTING.md
-        LICENSE
+    implementation("com.twilio:chat-android:$twilioSdk") {
         exclude group: "com.android.support", module: "support-v4"
     }
     implementation "com.twilio:accessmanager-android:$twilioAccessManager"
