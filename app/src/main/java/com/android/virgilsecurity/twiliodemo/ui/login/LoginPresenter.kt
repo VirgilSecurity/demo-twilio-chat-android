@@ -118,25 +118,9 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
         compositeDisposable += signUpDisposable
     }
 
-    fun requestSearchCards(identity: String,
-                           onSearchCardSuccess: (List<Card>) -> Unit,
-                           onSearchCardError: (Throwable) -> Unit) {
-        val searchCardDisposable = virgilRx.searchCards(identity)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ cards, throwable ->
-                               if (throwable == null && cards.isNotEmpty())
-                                   onSearchCardSuccess(cards)
-                               else
-                                   onSearchCardError(throwable)
-                           })
-
-        compositeDisposable += searchCardDisposable
-    }
-
-    fun requestIfKeyExists(keyName: String,
-                           onKeyExists: () -> Unit,
-                           onKeyNotExists: () -> Unit) {
+    private fun requestIfKeyExists(keyName: String,
+                                   onKeyExists: () -> Unit,
+                                   onKeyNotExists: () -> Unit) {
         if (virgilHelper.ifExistsPrivateKey(keyName))
             onKeyExists()
         else

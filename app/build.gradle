@@ -23,7 +23,8 @@ android {
             minifyEnabled false
         }
     }
-    productFlavors {
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -64,9 +65,15 @@ dependencies {
     // Gson
     implementation "com.google.code.gson:gson:$gson"
 
-    // OkHttp
-    implementation "com.squareup.okhttp3:okhttp:$okHttp"
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
 
-    // Logging Interceptor
-    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptor"
+    // Room
+    implementation "android.arch.persistence.room:runtime:$room"
+    kapt "android.arch.persistence.room:compiler:$room"
+    implementation "android.arch.persistence.room:rxjava2:$room"
+
+    // Data Binding
+    kapt "com.android.databinding:compiler:$dataBindingVersion"
 }
