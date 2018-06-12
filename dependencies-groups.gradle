@@ -31,41 +31,73 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.feature'
-
-android {
-    compileSdkVersion 27
-
-
-    baseFeature true
-
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
+def Group(Closure closure) {
+    closure.delegate = dependencies
+    return closure
 }
 
-dependencies {
-//    kotlin()
-//    support()
-//    networking()
-//    reactiveness()
-//    koin()
-//    twilio()
-//    virgil()
-//    glide()
-//    architectureComponents()
+ext {
+
+    kotlin = Group {
+        implementation deps.kotlin.stdlibJdk7
+        implementation deps.kotlin.stdlib
+    }
+
+    support = Group {
+        implementation deps.support.compatV7
+        implementation deps.support.cardView
+        implementation deps.support.constraintLayout
+        implementation deps.support.design
+    }
+
+    koin = Group {
+        implementation deps.koin.koinAndroid
+    }
+
+    reactiveness = Group {
+        implementation deps.rx.kotlin
+        implementation deps.rx.android
+    }
+
+    architectureComponents = Group {
+        implementation deps.ac.viewModel
+        implementation deps.ac.liveData
+        implementation deps.ac.lifecycleCompiler
+        implementation deps.ac.extensions
+        implementation deps.ac.streams
+
+        kapt deps.ac.databinding
+
+        implementation deps.ac.roomRuntime
+        kapt deps.ac.roomCompiler
+        implementation deps.ac.roomRxJava2
+    }
+
+    glide = Group {
+        implementation deps.glide.glide
+        kapt deps.glide.glideCompiler
+    }
+
+    twilio = Group {
+        implementation(deps.twilio.chatAndroid) {
+            exclude group: "com.android.support", module: "support-v4"
+        }
+        implementation deps.twilio.accessManager
+    }
+
+    networking = Group {
+        implementation deps.fuel
+        implementation deps.gson
+    }
+
+    virgil = Group {
+        implementation deps.fuel
+        implementation deps.gson
+    }
+
+    testing = Group {
+        testImplementation(deps.jUnit) {
+            exclude group: 'org.hamcrest'
+        }
+    }
 }

@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+apply from: '../config-android.gradle'
+
+// App name and version
+
+enum BuildType {
+    DEBUG
+}
+
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+
+static def getAppName(BuildType buildType) {
+    String APP_NAME = "Twilio-Virgil-Full"
+    switch (buildType) {
+        case BuildType.DEBUG:
+            return APP_NAME + BuildType.DEBUG.name()
+    }
+}
+
+// Android configurations
+
+android {
+    defaultConfig {
+        applicationId 'com.android.virgilsecurity.twiliodemo'
+        versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+            resValue "string", "app_name", getAppName(BuildType.DEBUG) + "_" + "v" +
+                    versionMajor + "." +
+                    versionMinor + "." +
+                    versionPatch + "_"
+        }
+    }
+    compileSdkVersion 27
+}
+
+dependencies {
+
+    kotlin()
+    support()
+    networking()
+    reactiveness()
+    koin()
+    twilio()
+    virgil()
+    glide()
+    architectureComponents()
+}

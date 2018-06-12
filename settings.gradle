@@ -1,1 +1,1 @@
-include ':app', ':base', ':feature-login', ':feature-channels-list', ':feature-channel'
+include ':application', ':base', ':feature-login', ':feature-channels-list', ':feature-channel'

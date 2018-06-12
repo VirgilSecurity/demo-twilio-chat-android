@@ -31,41 +31,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.feature'
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+// Android common configurations
 
 android {
-    compileSdkVersion 27
-
-
-    baseFeature true
+    compileSdkVersion versions.targetSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    dataBinding {
+        enabled = true
     }
-
 }
 
-dependencies {
-//    kotlin()
-//    support()
-//    networking()
-//    reactiveness()
-//    koin()
-//    twilio()
-//    virgil()
-//    glide()
-//    architectureComponents()
+// Common flags
+
+androidExtensions {
+    experimental = true
+}
+
+kapt {
+    mapDiagnosticLocations = true
 }

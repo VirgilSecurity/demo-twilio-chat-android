@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">TwilioDemo</string>
+    <!--<string name="app_name">TwilioDemo</string>-->
     <string name="virgil_securiry_copyright">Copyright © 2015–2018 Virgil Security Inc.</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
