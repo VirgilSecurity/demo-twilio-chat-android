@@ -11,7 +11,7 @@ https://github.com/VirgilSecurity/demo-twilio-chat-android.git
 Press *Done* - you're good to go!
 
 ### Set Up Backend
-Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/v5) for setting up your own backend.
+Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/master) for setting up your own backend.
 
 ## Build and Run
 At this point you are ready to build and run the application on Android Emulator. To test the application on real device you have to provide your device with access to the local server you've recently setted up.
