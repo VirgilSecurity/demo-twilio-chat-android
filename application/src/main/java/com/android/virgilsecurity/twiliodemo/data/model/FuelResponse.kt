@@ -50,6 +50,6 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
 /**
  * FuelResponse
  */
-data class TokenResponse(val token: String)
+
 
 data class SignInResponse(@SerializedName("virgil_card") val virgilCard: RawSignedModel)

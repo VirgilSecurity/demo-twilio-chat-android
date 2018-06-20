@@ -31,14 +31,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.network.adapter
+package com.android.virgilsecurity.base.data.model.response
 
-import com.squareup.moshi.JsonAdapter
-import se.ansman.kotshi.KotshiJsonAdapterFactory
-
-@KotshiJsonAdapterFactory
-abstract class ApplicationJsonAdapterFactory : JsonAdapter.Factory {
-    companion object {
-        val INSTANCE: ApplicationJsonAdapterFactory = KotshiApplicationJsonAdapterFactory()
-    }
-}
+data class TokenResponse(val token: String)

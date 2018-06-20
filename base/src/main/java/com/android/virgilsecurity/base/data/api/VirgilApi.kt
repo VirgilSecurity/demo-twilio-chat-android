@@ -31,13 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.domain
+package com.android.virgilsecurity.base.data.api
 
-import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
-interface UseCase<T> {
+interface VirgilApi {
 
-    fun getLiveData(): LiveData<T>
-
-    fun cleanUp()
+    fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse>
 }

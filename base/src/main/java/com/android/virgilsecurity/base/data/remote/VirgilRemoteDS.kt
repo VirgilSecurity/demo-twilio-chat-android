@@ -31,19 +31,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.model
+package com.android.virgilsecurity.base.data.remote
 
-import android.annotation.SuppressLint
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.android.virgilsecurity.base.data.api.VirgilApi
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
-const val EXTRA_MEME = "extra_meme"
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/20/186/20/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-@SuppressLint("ParcelCreator")
-@Parcelize
-data class Meme(
-        val name: String = "",
-        val imageUrl: String = "",
-        val imageWidth: Int = 0,
-        val imageHeight: Int = 0
-) : Parcelable
+/**
+ * VirgilRemoteDS
+ */
+class VirgilRemoteDS : VirgilApi {
+
+    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
+            Single.create {
+
+            }
+}

@@ -35,11 +35,13 @@ package com.android.virgilsecurity.base.domain
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
-abstract class BaseUseCase<T>(
+abstract class BaseDo<T>(
         private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
         protected val liveData: MutableLiveData<T> = MutableLiveData()
-) : UseCase<T> {
+) : Do<T> {
 
     protected fun Disposable.track() {
         compositeDisposable.add(this)

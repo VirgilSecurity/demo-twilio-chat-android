@@ -31,11 +31,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.injection.qualifiers
+package com.android.virgilsecurity.base.data.local
 
-import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.RUNTIME
+import com.android.virgilsecurity.base.data.api.VirgilApi
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
-@Qualifier
-@Retention(RUNTIME)
-annotation class ForActivity
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/20/186/20/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * VirgilLocalDS
+ */
+class VirgilLocalDS : VirgilApi {
+
+    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
+            Single.create {
+
+            }
+}

@@ -31,11 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.injection.qualifiers
+package com.android.virgilsecurity.base.data.model
 
-import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.RUNTIME
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-@Qualifier
-@Retention(RUNTIME)
-annotation class ForApplication
+const val EXTRA_MEME = "extra_meme"
+
+@Parcelize
+data class Meme(
+        val name: String = "",
+        val imageUrl: String = "",
+        val imageWidth: Int = 0,
+        val imageHeight: Int = 0
+) : Parcelable

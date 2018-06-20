@@ -56,7 +56,7 @@ ext.deps = [
 
         'gson'           : "com.google.code.gson:gson:$versions.gson",
 
-        'virgil-security': [
+        'virgilSecurity': [
                 'sdk'          : "com.virgilsecurity.sdk:sdk:$versions.virgil",
                 'cryptoAndroid': "com.virgilsecurity.sdk:crypto-android:$versions.virgilCrypto",
         ],

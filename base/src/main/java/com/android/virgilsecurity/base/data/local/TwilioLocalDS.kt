@@ -31,11 +31,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.injection.scopes
+package com.android.virgilsecurity.base.data.local
 
-import javax.inject.Scope
-import kotlin.annotation.AnnotationRetention.RUNTIME
+import com.android.virgilsecurity.base.data.api.TwilioApi
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
-@Scope
-@Retention(RUNTIME)
-annotation class PerApplication
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/20/186/20/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * TwilioLocalDS
+ */
+class TwilioLocalDS : TwilioApi {
+
+    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
+            Single.create {
+
+            }
+}

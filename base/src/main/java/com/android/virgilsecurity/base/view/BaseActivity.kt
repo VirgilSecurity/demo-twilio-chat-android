@@ -36,14 +36,11 @@ package com.android.virgilsecurity.base.view
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
-import dagger.android.AndroidInjection
-import kotlin.text.Typography.dagger
 
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
         setContentView(layoutResourceId)
     }
 

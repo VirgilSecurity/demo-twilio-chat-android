@@ -34,9 +34,8 @@
 package com.android.virgilsecurity.base.view.adapter
 
 import android.support.v7.util.DiffUtil
-import javax.inject.Inject
 
-open class DiffCallback @Inject constructor() : DiffUtil.Callback() {
+open class DiffCallback : DiffUtil.Callback() {
 
     private var oldList: List<Any> = emptyList()
     private var newList: List<Any> = emptyList()

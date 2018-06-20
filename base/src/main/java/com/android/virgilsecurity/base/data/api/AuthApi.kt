@@ -31,14 +31,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.network.api
+package com.android.virgilsecurity.base.data.api
 
-import io.reactivex.Single
-import com.android.virgilsecurity.base.network.model.MemesDto
-import retrofit2.http.GET
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
-interface ImgFlipApi {
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/20/186/20/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-    @GET("get_memes")
-    fun fetchMemes(): Single<MemesDto>
+/**
+ * AuthApi
+ */
+interface AuthApi {
+
+    fun signIn(identity: String)
+
+    fun signUp(rawCard: RawSignedModel)
 }

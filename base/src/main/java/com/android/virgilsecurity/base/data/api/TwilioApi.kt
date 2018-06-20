@@ -31,27 +31,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.network.model
+package com.android.virgilsecurity.base.data.api
 
-import com.squareup.moshi.Json
-import se.ansman.kotshi.JsonSerializable
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
-@JsonSerializable
-data class MemesDto(
-        @Json(name = "success") val success: Boolean,
-        @Json(name = "data") val data: Memes
-)
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/20/186/20/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-@JsonSerializable
-data class Memes(
-        @Json(name = "memes") val memes: List<Meme>
-)
+/**
+ * TwilioApi
+ */
 
-@JsonSerializable
-data class Meme(
-        @Json(name = "id") val id: String,
-        @Json(name = "name") val name: String,
-        @Json(name = "url") val imageUrl: String,
-        @Json(name = "height") val imageHeight: Int,
-        @Json(name = "width") val imageWidth: Int
-)
+interface TwilioApi {
+
+    fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse>
+}

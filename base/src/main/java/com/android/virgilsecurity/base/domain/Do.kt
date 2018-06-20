@@ -31,30 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.injection
+package com.android.virgilsecurity.base.domain
 
-import android.app.Application
-import android.content.Context
-import dagger.Module
-import dagger.Provides
-import com.android.virgilsecurity.base.injection.qualifiers.ForApplication
-import com.android.virgilsecurity.base.injection.scopes.PerApplication
-import com.android.virgilsecurity.base.view.adapter.DiffCallback
-import timber.log.Timber
+import android.arch.lifecycle.LiveData
 
-@Module
-class BaseModule {
+interface Do<T> {
 
-    @Provides
-    @PerApplication
-    @ForApplication
-    fun provideContext(application: Application): Context = application
+    fun getLiveData(): LiveData<T>
 
-    @Provides
-    @PerApplication
-    fun provideLogger(): Timber.Tree = Timber.DebugTree()
-
-    @Provides
-    @PerApplication
-    fun provideDiffCallback(): DiffCallback = DiffCallback()
+    fun cleanUp()
 }

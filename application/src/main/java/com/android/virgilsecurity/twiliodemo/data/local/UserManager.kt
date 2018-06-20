@@ -43,7 +43,6 @@ import com.android.virgilsecurity.twiliodemo.data.model.User
 import com.android.virgilsecurity.twiliodemo.data.model.VirgilToken
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
 import java.util.*
