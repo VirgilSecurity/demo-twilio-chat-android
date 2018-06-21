@@ -31,30 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.local
+package com.android.virgilsecurity.common;
 
-import com.android.virgilsecurity.base.data.api.TwilioApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import org.junit.Test;
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+import static org.junit.Assert.*;
 
 /**
- * TwilioLocalDS
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-class TwilioLocalDS : TwilioApi {
-
-    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
-
-            }
+public class ExampleUnitTest {
+    @Test
+    public void addition_isCorrect() {
+        assertEquals(4, 2 + 2);
+    }
 }

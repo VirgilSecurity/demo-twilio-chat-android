@@ -39,12 +39,21 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 
-abstract class BaseViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+abstract class BaseViewHolder<T>(itemView: View)
+    : RecyclerView.ViewHolder(itemView), LayoutContainer {
+
+    override val containerView: View = itemView
 
     protected val context: Context = itemView.context
     protected val resources: Resources = itemView.resources
 
-    abstract fun bind(data: T)
+    private var listener: ((viewType: T, view: View) -> Unit)? = null
 
-    override val containerView: View = itemView
+    fun setListener(listener: (viewType: T, view: View) -> Unit) {
+        this.listener = listener
+    }
+
+    fun bind(item: T) {
+        listener?.invoke(item, itemView)
+    }
 }

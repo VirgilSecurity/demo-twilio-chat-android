@@ -31,18 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
+package com.android.virgilsecurity.base.view
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.LayoutRes
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toolbar
-import com.android.virgilsecurity.twiliodemo.R
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -50,31 +50,51 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-/**
- *
- */
-abstract class BaseActivity : AppCompatActivity() {
+@Suppress("UNCHECKED_CAST")
+abstract class BaseFragment<A> : Fragment() where A : Activity {
 
-    protected abstract fun provideLayoutId(): Int
-    protected abstract fun preInitUi()
-    protected abstract fun initUi()
-    protected abstract fun initViewCallbacks()
-    protected abstract fun initData()
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutInflater.inflate(provideLayoutId(), null))
+    internal var rootActivity: A? = null
 
-        preInitUi()
-        initUi()
-        initViewCallbacks()
-        initData()
+    protected abstract fun init(view: View, savedInstanceState: Bundle?)
+    protected abstract fun initViewSlices()
+    protected abstract fun setupVSObservers()
+    protected abstract fun setupVMStateObservers()
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        rootActivity = context as A
     }
 
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
 
+        rootActivity = activity as A
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(layoutResourceId, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        init(view, savedInstanceState)
+        initViewSlices()
+        setupVSObservers()
+        setupVMStateObservers()
+    }
+
+    protected fun hideKeyboard() {
+        val imm = rootActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(rootActivity?.currentFocus?.windowToken, 0)
+    }
 }

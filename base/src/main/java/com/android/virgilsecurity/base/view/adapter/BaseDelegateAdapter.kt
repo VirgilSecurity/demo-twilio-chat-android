@@ -31,30 +31,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.remote
+package com.android.virgilsecurity.base.view.adapter
 
-import com.android.virgilsecurity.base.data.api.TwilioApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import android.support.annotation.LayoutRes
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.ViewGroup
+import com.android.virgilsecurity.base.extension.inflate
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+abstract class BaseDelegateAdapter<VH : BaseViewHolder<T>, T> : IDelegateAdapter<VH, T> {
 
-/**
- * TwilioRemoteDS
- */
-class TwilioRemoteDS : TwilioApi {
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
 
-    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
+    protected abstract fun onBindViewHolder(view: View, item: T, viewHolder: VH)
+    protected abstract fun createViewHolder(parent: View): VH
 
-            }
+    override fun onRecycled(holder: VH) {}
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+            parent.inflate(layoutResourceId, false)
+                    .let { createViewHolder(it) }
+                    .apply {
+                        setListener { objectType, view ->
+                            onBindViewHolder(view, objectType, this)
+                        }
+                    }
+
+    override fun onBindViewHolder(holder: VH, items: List<T>, position: Int) = holder.bind(items[position])
 }

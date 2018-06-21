@@ -36,7 +36,6 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
 import com.twilio.chat.Channel
 import com.twilio.chat.Message
 import com.virgilsecurity.sdk.cards.Card
@@ -45,7 +44,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -65,7 +63,7 @@ import java.util.*
 
 class ChannelPresenter(private val twilioHelper: TwilioHelper,
                        private val virgilHelper: VirgilHelper,
-                       private val userManager: UserManager) : BasePresenter {
+                       private val userManager: UserManager) {
 
     private val compositeDisposable = CompositeDisposable()
 

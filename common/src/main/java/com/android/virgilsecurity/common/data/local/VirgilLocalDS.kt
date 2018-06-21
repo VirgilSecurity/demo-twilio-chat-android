@@ -31,7 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
+package com.android.virgilsecurity.common.data.local
+
+import com.android.virgilsecurity.base.data.api.VirgilApi
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -39,12 +43,18 @@ package com.android.virgilsecurity.twiliodemo.ui.base
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/20/186/20/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-interface BasePresenter {
+/**
+ * VirgilLocalDS
+ */
+class VirgilLocalDS : VirgilApi {
 
-    fun disposeAll()
+    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
+            Single.create {
+
+            }
 }

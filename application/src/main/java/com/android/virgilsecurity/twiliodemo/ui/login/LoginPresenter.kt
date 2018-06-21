@@ -33,14 +33,12 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import com.android.virgilsecurity.twiliodemo.R.string.signUp
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
 import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
-import com.android.virgilsecurity.twiliodemo.ui.base.BasePresenter
 import com.github.kittinunf.fuel.core.FuelError
 import com.virgilsecurity.sdk.cards.Card
 import io.reactivex.Single
@@ -67,7 +65,7 @@ import io.reactivex.schedulers.Schedulers
 class LoginPresenter(private val virgilHelper: VirgilHelper,
                      private val fuelHelper: FuelHelper,
                      private val userManager: UserManager,
-                     private val virgilRx: VirgilRx) : BasePresenter {
+                     private val virgilRx: VirgilRx) {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 

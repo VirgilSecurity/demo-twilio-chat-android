@@ -31,50 +31,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
+package com.android.virgilsecurity.base.view.adapter
 
-import android.content.Context
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toolbar
-import com.android.virgilsecurity.twiliodemo.R
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
+import kotlinx.android.extensions.LayoutContainer
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    5/29/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+abstract class KDelegateAdapter<T>
+    : BaseDelegateAdapter<KDelegateAdapter.KViewHolder<T>, T>() {
 
-/**
- *
- */
-abstract class BaseActivity : AppCompatActivity() {
+    open fun onCreated(view: View) = Unit
 
-    protected abstract fun provideLayoutId(): Int
-    protected abstract fun preInitUi()
-    protected abstract fun initUi()
-    protected abstract fun initViewCallbacks()
-    protected abstract fun initData()
+    abstract fun onBind(item: T, viewHolder: KViewHolder<T>)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutInflater.inflate(provideLayoutId(), null))
-
-        preInitUi()
-        initUi()
-        initViewCallbacks()
-        initData()
+    final override fun onBindViewHolder(view: View, item: T, viewHolder: KViewHolder<T>) {
+        onBind(item, viewHolder)
     }
 
+    override fun createViewHolder(parent: View): KViewHolder<T> {
+        return KViewHolder(parent, ::onCreated)
+    }
 
+    class KViewHolder<T>(override val containerView: View, onCreated: (View) -> Unit)
+        : BaseViewHolder<T>(containerView), LayoutContainer {
+
+        init {
+            onCreated(containerView)
+        }
+    }
 }

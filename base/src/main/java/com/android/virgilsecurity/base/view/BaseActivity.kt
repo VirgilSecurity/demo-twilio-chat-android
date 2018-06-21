@@ -33,17 +33,40 @@
 
 package com.android.virgilsecurity.base.view
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.support.v7.app.AppCompatActivity
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toolbar
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : Activity() {
+
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
+
+    protected abstract fun init(savedInstanceState: Bundle?)
+    protected abstract fun initViewSlices()
+    protected abstract fun setupVSObservers()
+    protected abstract fun setupVMStateObservers()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutResourceId)
+
+        init(savedInstanceState)
+        initViewSlices()
+        setupVSObservers()
+        setupVMStateObservers()
     }
 
-    @get:LayoutRes
-    protected abstract val layoutResourceId: Int
+    protected fun initToolbar(toolbar: Toolbar, title: String) {
+        setActionBar(toolbar)
+        actionBar?.title = title
+    }
+
+    protected fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
+    }
 }

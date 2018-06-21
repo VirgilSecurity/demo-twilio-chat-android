@@ -31,18 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
+package com.android.virgilsecurity.common.data.remote
 
-import android.content.Context
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toolbar
-import com.android.virgilsecurity.twiliodemo.R
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
+import com.android.virgilsecurity.base.data.api.TwilioApi
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -50,31 +43,18 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/20/186/20/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- *
+ * TwilioRemoteDS
  */
-abstract class BaseActivity : AppCompatActivity() {
+class TwilioRemoteDS : TwilioApi {
 
-    protected abstract fun provideLayoutId(): Int
-    protected abstract fun preInitUi()
-    protected abstract fun initUi()
-    protected abstract fun initViewCallbacks()
-    protected abstract fun initData()
+    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
+            Single.create {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutInflater.inflate(provideLayoutId(), null))
-
-        preInitUi()
-        initUi()
-        initViewCallbacks()
-        initData()
-    }
-
-
+            }
 }

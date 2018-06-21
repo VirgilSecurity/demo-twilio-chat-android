@@ -31,18 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
+package com.android.virgilsecurity.common.view
 
 import android.content.Context
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toolbar
-import com.android.virgilsecurity.twiliodemo.R
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
+import android.content.Intent
+import android.os.Parcelable
+import com.android.virgilsecurity.base.view.ScreenRouter
 
 /**
  * . _  _
@@ -50,31 +44,33 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/21/186/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- *
+ * ScreenRouterDefault
  */
-abstract class BaseActivity : AppCompatActivity() {
+class ScreenRouterDefault : ScreenRouter {
 
-    protected abstract fun provideLayoutId(): Int
-    protected abstract fun preInitUi()
-    protected abstract fun initUi()
-    protected abstract fun initViewCallbacks()
-    protected abstract fun initData()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutInflater.inflate(provideLayoutId(), null))
-
-        preInitUi()
-        initUi()
-        initViewCallbacks()
-        initData()
+    override fun getScreenIntent(context: Context,
+                                 screen: ScreenRouter.Screen): Intent? {
+        val c: Class<*>? = when (screen) {
+            ScreenRouter.Screen.Detail -> null // TODO
+            ScreenRouter.Screen.List -> null // TODO
+        }
+        return if (c == null) null else Intent(context, c)
     }
 
-
+    fun getScreenIntent(context: Context,
+                                 screen: ScreenRouter.Screen,
+                                 key: String,
+                                 value: Parcelable): Intent? {
+        val c: Class<*>? = when (screen) {
+            ScreenRouter.Screen.Detail -> null // TODO
+            ScreenRouter.Screen.List -> null // TODO
+        }
+        return if (c == null) null else Intent(context, c).apply { putExtra(key, value) }
+    }
 }

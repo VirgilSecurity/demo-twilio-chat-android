@@ -31,30 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.remote
+package com.android.virgilsecurity.base.view.adapter
 
-import com.android.virgilsecurity.base.data.api.VirgilApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import android.support.v7.widget.RecyclerView
+import android.view.ViewGroup
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+interface IDelegateAdapter<VH : RecyclerView.ViewHolder, T> {
 
-/**
- * VirgilRemoteDS
- */
-class VirgilRemoteDS : VirgilApi {
+    fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 
-    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
+    fun onBindViewHolder(holder: VH,
+                         items: List<T>,
+                         position: Int)
 
-            }
+    fun onRecycled(holder: VH)
+
+    fun isForViewType(items: List<T>, position: Int): Boolean
 }

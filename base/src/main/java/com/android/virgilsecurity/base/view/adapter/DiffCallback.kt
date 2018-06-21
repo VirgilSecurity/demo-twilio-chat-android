@@ -35,12 +35,12 @@ package com.android.virgilsecurity.base.view.adapter
 
 import android.support.v7.util.DiffUtil
 
-open class DiffCallback : DiffUtil.Callback() {
+open class DiffCallback<T> : DiffUtil.Callback() {
 
-    private var oldList: List<Any> = emptyList()
-    private var newList: List<Any> = emptyList()
+    private var oldList: List<T> = emptyList()
+    private var newList: List<T> = emptyList()
 
-    fun setLists(oldList: List<Any>, newList: List<Any>) {
+    fun setLists(oldList: List<T>, newList: List<T>) {
         this.oldList = oldList
         this.newList = newList
     }
@@ -49,9 +49,7 @@ open class DiffCallback : DiffUtil.Callback() {
 
     override fun getNewListSize(): Int = newList.size
 
-    /**
-     * Simplified for now, would probably want to compare against an ID.
-     */
+// TODO add good comparison with Comparable
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
             !(oldItemPosition >= oldList.size || newItemPosition >= newList.size)
                     && oldList[oldItemPosition] == newList[newItemPosition]

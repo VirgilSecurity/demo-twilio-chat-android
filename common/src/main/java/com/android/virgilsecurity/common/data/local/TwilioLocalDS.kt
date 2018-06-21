@@ -31,9 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.local
+package com.android.virgilsecurity.common.data.local
 
-import com.android.virgilsecurity.base.data.api.VirgilApi
+
+import com.android.virgilsecurity.base.data.api.TwilioApi
 import com.android.virgilsecurity.base.data.model.response.TokenResponse
 import io.reactivex.Single
 
@@ -49,11 +50,11 @@ import io.reactivex.Single
  */
 
 /**
- * VirgilLocalDS
+ * TwilioLocalDS
  */
-class VirgilLocalDS : VirgilApi {
+class TwilioLocalDS : TwilioApi {
 
-    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
+    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
             Single.create {
 
             }
