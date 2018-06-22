@@ -38,12 +38,10 @@ import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
 import android.view.ViewGroup
 
-import java.util.ArrayList
-
-class DelegateAdapter<T> protected constructor(
+class DelegateAdapter<T : Comparable<T>> constructor(
         private val diffCallback: DiffCallback<T>,
-        protected val typeToAdapterMap: SparseArray<IDelegateAdapter<RecyclerView.ViewHolder, T>>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        protected val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>>
+) : RecyclerView.Adapter<BaseViewHolder<T>>() {
 
     protected val data: MutableList<T> = mutableListOf()
 
@@ -58,11 +56,11 @@ class DelegateAdapter<T> protected constructor(
         throw NullPointerException("Can not get viewType for position $position")
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
         return typeToAdapterMap[viewType].onCreateViewHolder(parent, viewType)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
         val delegateAdapter = typeToAdapterMap[getItemViewType(position)]
 
         if (delegateAdapter != null)
@@ -71,7 +69,7 @@ class DelegateAdapter<T> protected constructor(
             throw NullPointerException("can not find adapter for position $position")
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+    override fun onViewRecycled(holder: BaseViewHolder<T>) {
         typeToAdapterMap[holder.itemViewType].onRecycled(holder)
     }
 
@@ -87,10 +85,10 @@ class DelegateAdapter<T> protected constructor(
         return data.size
     }
 
-    class Builder<T> {
+    class Builder<T : Comparable<T>> {
 
         private var count: Int = 0
-        private val typeToAdapterMap: SparseArray<IDelegateAdapter<RecyclerView.ViewHolder, T>> =
+        private val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>> =
                 SparseArray()
         private lateinit var diffCallback: DiffCallback<T>
 
@@ -98,7 +96,7 @@ class DelegateAdapter<T> protected constructor(
             this.diffCallback = diffCallback
         }
 
-        fun add(delegateAdapter: IDelegateAdapter<RecyclerView.ViewHolder, T>): Builder<T> {
+        fun add(delegateAdapter: DelegateAdapterItem<BaseViewHolder<T>, T>): Builder<T> {
             typeToAdapterMap.put(count++, delegateAdapter)
             return this
         }

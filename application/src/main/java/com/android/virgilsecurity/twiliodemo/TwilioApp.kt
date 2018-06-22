@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.twiliodemo
 
 import android.app.Application
+import android.os.StrictMode
 import com.android.virgilsecurity.twiliodemo.di.*
 import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
@@ -65,5 +66,22 @@ class TwilioApp : Application() {
                          loginModule,
                          threadsListModule,
                          channelModule))
+
+        initStrictMode()
+    }
+
+    private fun initStrictMode() {
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                                           .detectAll()
+                                           .penaltyLog()
+                                           .detectNetwork()
+                                           .penaltyFlashScreen()
+                                           .penaltyDeathOnNetwork()
+                                           .build())
+
+        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+                                       .detectAll()
+                                       .penaltyLog()
+                                       .build())
     }
 }

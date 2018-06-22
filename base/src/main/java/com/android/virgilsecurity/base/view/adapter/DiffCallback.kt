@@ -35,7 +35,7 @@ package com.android.virgilsecurity.base.view.adapter
 
 import android.support.v7.util.DiffUtil
 
-open class DiffCallback<T> : DiffUtil.Callback() {
+open class DiffCallback<T : Comparable<T>> : DiffUtil.Callback() {
 
     private var oldList: List<T> = emptyList()
     private var newList: List<T> = emptyList()
@@ -49,12 +49,9 @@ open class DiffCallback<T> : DiffUtil.Callback() {
 
     override fun getNewListSize(): Int = newList.size
 
-// TODO add good comparison with Comparable
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            !(oldItemPosition >= oldList.size || newItemPosition >= newList.size)
-                    && oldList[oldItemPosition] == newList[newItemPosition]
+            oldList[oldItemPosition].compareTo(newList[newItemPosition]) == 0
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            !(oldItemPosition >= oldList.size || newItemPosition >= newList.size)
-                    && oldList[oldItemPosition] == newList[newItemPosition]
+            (oldList[oldItemPosition] == newList[newItemPosition])
 }

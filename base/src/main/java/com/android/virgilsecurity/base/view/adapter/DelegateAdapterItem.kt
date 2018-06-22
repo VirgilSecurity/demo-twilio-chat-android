@@ -34,29 +34,31 @@
 package com.android.virgilsecurity.base.view.adapter
 
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.extension.inflate
 
-abstract class BaseDelegateAdapter<VH : BaseViewHolder<T>, T> : IDelegateAdapter<VH, T> {
+interface DelegateAdapterItem<VH : BaseViewHolder<T>, T> where T : Comparable<T> {
 
     @get:LayoutRes
-    protected abstract val layoutResourceId: Int
+    val layoutResourceId: Int
 
-    protected abstract fun onBindViewHolder(view: View, item: T, viewHolder: VH)
-    protected abstract fun createViewHolder(parent: View): VH
+    fun createViewHolder(parent: View): VH
 
-    override fun onRecycled(holder: VH) {}
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+    fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> =
             parent.inflate(layoutResourceId, false)
                     .let { createViewHolder(it) }
                     .apply {
-                        setListener { objectType, view ->
-                            onBindViewHolder(view, objectType, this)
+                        setOnInflatedListener { objectType, view ->
+                            onViewHolderInflated(view, objectType, this)
                         }
                     }
 
-    override fun onBindViewHolder(holder: VH, items: List<T>, position: Int) = holder.bind(items[position])
+    fun onBindViewHolder(holder: VH, items: List<T>, position: Int) = holder.onInflated(items[position])
+
+    fun onViewHolderInflated(view: View, item: T, viewHolder: VH)
+
+    fun onRecycled(holder: VH)
+
+    fun isForViewType(items: List<T>, position: Int): Boolean
 }

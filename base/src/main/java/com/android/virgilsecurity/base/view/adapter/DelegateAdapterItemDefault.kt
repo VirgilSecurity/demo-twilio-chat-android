@@ -33,18 +33,29 @@
 
 package com.android.virgilsecurity.base.view.adapter
 
-import android.support.v7.widget.RecyclerView
-import android.view.ViewGroup
+import android.view.View
+import kotlinx.android.extensions.LayoutContainer
 
-interface IDelegateAdapter<VH : RecyclerView.ViewHolder, T> {
+abstract class DelegateAdapterItemDefault<T>
+    : DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<T>, T> where T : Comparable<T>{
 
-    fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
+    open fun onCreated(view: View) = Unit
 
-    fun onBindViewHolder(holder: VH,
-                         items: List<T>,
-                         position: Int)
+    abstract fun onBind(item: T, viewHolder: KViewHolder<T>)
 
-    fun onRecycled(holder: VH)
+    final override fun onViewHolderInflated(view: View, item: T, viewHolder: KViewHolder<T>) {
+        onBind(item, viewHolder)
+    }
 
-    fun isForViewType(items: List<T>, position: Int): Boolean
+    override fun createViewHolder(parent: View): KViewHolder<T> {
+        return KViewHolder(parent, ::onCreated)
+    }
+
+    class KViewHolder<T>(override val containerView: View, onCreated: (View) -> Unit)
+        : BaseViewHolder<T>(containerView), LayoutContainer where T : Comparable<T> {
+
+        init {
+            onCreated(containerView)
+        }
+    }
 }

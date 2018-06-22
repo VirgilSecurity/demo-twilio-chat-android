@@ -40,7 +40,7 @@ import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 
 abstract class BaseViewHolder<T>(itemView: View)
-    : RecyclerView.ViewHolder(itemView), LayoutContainer {
+    : RecyclerView.ViewHolder(itemView), LayoutContainer where T : Comparable<T> {
 
     override val containerView: View = itemView
 
@@ -49,11 +49,11 @@ abstract class BaseViewHolder<T>(itemView: View)
 
     private var listener: ((viewType: T, view: View) -> Unit)? = null
 
-    fun setListener(listener: (viewType: T, view: View) -> Unit) {
+    fun setOnInflatedListener(listener: (viewType: T, view: View) -> Unit) {
         this.listener = listener
     }
 
-    fun bind(item: T) {
+    fun onInflated(item: T) {
         listener?.invoke(item, itemView)
     }
 }
