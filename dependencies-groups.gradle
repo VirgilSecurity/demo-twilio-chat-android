@@ -67,7 +67,9 @@ ext {
         implementation deps.ac.streams
 
         kapt deps.ac.databinding
+    }
 
+    room = Group {
         implementation deps.ac.roomRuntime
         kapt deps.ac.roomCompiler
         implementation deps.ac.roomRxJava2

@@ -39,8 +39,8 @@ android {
     baseFeature true
 }
 
+// Outer dependencies
 dependencies {
-    api 'com.android.support:appcompat-v7:27.1.1'
     kotlin()
     networking()
     reactiveness()
@@ -48,5 +48,4 @@ dependencies {
     architectureComponents()
     virgil()
     support()
-    feature project(":common")
 }

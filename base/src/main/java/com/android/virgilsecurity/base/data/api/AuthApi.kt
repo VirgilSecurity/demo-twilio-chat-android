@@ -33,7 +33,9 @@
 
 package com.android.virgilsecurity.base.data.api
 
+import com.android.virgilsecurity.base.data.model.response.TokenResponse
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -54,4 +56,6 @@ interface AuthApi {
     fun signIn(identity: String)
 
     fun signUp(rawCard: RawSignedModel)
+
+    fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse>
 }

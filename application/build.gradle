@@ -46,6 +46,13 @@ android {
     compileSdkVersion 27
 }
 
+// Inner dependencies
+dependencies {
+    implementation project(":common")
+    implementation project(":feature-login")
+}
+
+// Outer dependencies
 dependencies {
 
     kotlin()

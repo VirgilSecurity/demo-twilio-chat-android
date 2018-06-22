@@ -40,12 +40,9 @@ import android.os.Parcelable
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.R.id.flBaseContainer
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import com.twilio.chat.Channel
-import kotlinx.android.synthetic.main.activity_channel.*
-import kotlinx.android.synthetic.main.toolbar.*
 
 /**
  * . _  _

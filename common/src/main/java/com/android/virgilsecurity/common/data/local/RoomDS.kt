@@ -31,11 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.common.data.local
 
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListRVAdapter
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import android.arch.persistence.room.Database
+import com.android.virgilsecurity.common.data.model.UserVT
 
 /**
  * . _  _
@@ -43,14 +42,14 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    6/22/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginModules
+ * RoomDS
  */
-val loginModule : Module = applicationContext {
-    bean { LoginPresenter(get(), get(), get(), get()) }
+@Database(entities = [(UserVT::class)], version = 1)
+abstract class RoomDS {
 }

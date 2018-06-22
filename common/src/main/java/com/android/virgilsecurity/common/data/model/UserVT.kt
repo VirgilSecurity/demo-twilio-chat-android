@@ -31,11 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.common.data.model
 
-import com.android.virgilsecurity.base.data.api.TwilioApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.model.UserVT.Companion.KEY_USERS_TABLE_NAME
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 /**
  * . _  _
@@ -43,18 +47,26 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * TwilioRemoteDS
+ * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
  */
-class TwilioRemoteDS : TwilioApi {
+@Parcelize @Entity(tableName = KEY_USERS_TABLE_NAME)
+class UserVT(@ColumnInfo(name = KEY_IDENTITY)
+             override val identity: String,
+             @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
+             override val rawSignedModel: @RawValue RawSignedModel) : User {
 
-    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
+    override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
 
-            }
+    companion object {
+        const val EXTRA_USER = "EXTRA_USER"
+        const val KEY_IDENTITY = "identity"
+        const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
+        const val KEY_USERS_TABLE_NAME = "users"
+    }
 }

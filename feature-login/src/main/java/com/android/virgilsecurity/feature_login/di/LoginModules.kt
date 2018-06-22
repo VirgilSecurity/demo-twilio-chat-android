@@ -31,11 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
-
-import com.android.virgilsecurity.base.data.api.VirgilApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -43,18 +40,14 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * VirgilLocalDS
+ * LoginModules
  */
-class VirgilLocalDS : VirgilApi {
-
-    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
-
-            }
+val loginModule : Module = applicationContext {
+//    bean { LoginPresenter(get(), get(), get(), get()) }
 }

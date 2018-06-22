@@ -35,32 +35,15 @@ apply plugin: 'com.android.feature'
 
 apply from: '../config-android.gradle'
 
-android {
-    compileSdkVersion 27
-
-
-
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
+// Inner dependencies
+dependencies {
+    implementation project(path: ':base')
 }
 
+// Outer dependencies
 dependencies {
+    kotlin()
     reactiveness()
-
-    implementation project(path: ':base')
+    virgil()
+    room()
 }

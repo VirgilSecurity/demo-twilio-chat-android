@@ -31,18 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.base
-
-import android.content.Context
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toolbar
-import com.android.virgilsecurity.twiliodemo.R
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
+import com.android.virgilsecurity.base.data.api.UsersApi
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.repository.UsersRepository
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -50,31 +42,16 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/22/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- *
+ * UsersRepositoryDefault
  */
-abstract class BaseActivity : AppCompatActivity() {
+class UsersRepositoryDefault(private val usersApi: UsersApi) : UsersRepository {
 
-    protected abstract fun provideLayoutId(): Int
-    protected abstract fun preInitUi()
-    protected abstract fun initUi()
-    protected abstract fun initViewCallbacks()
-    protected abstract fun initData()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutInflater.inflate(provideLayoutId(), null))
-
-        preInitUi()
-        initUi()
-        initViewCallbacks()
-        initData()
-    }
-
+    override fun users(): Single<List<User>> = usersApi.users()
 
 }

@@ -31,14 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui
+package com.android.virgilsecurity.common.data.repository
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
-import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
-import org.koin.android.ext.android.inject
+import com.android.virgilsecurity.base.data.model.User
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -46,30 +42,15 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    6/22/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class SplashActivity : AppCompatActivity() {
+/**
+ * UsersRepository
+ */
+interface UsersRepository {
 
-    private val userManager: UserManager by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (isAuthenticated())
-            ChannelsListActivity.startWithFinish(this)
-        else
-            LoginActivity.startWithFinish(this)
-
-    }
-
-    private fun isAuthenticated(): Boolean {
-        return userManager.getCurrentUser() != null
-    }
-
-    override fun onBackPressed() {
-
-    }
+    fun users() : Single<List<User>>
 }

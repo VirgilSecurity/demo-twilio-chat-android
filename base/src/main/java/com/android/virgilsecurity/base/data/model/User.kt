@@ -31,20 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.util.delegateAdapter
+package com.android.virgilsecurity.base.data.model
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    6/21/186/21/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+import android.os.Parcelable
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
-/**
- * BaseDelegateAdapter
- */
-  
+interface User : Comparable<User>, Parcelable {
+
+    val identity: String
+
+    val rawSignedModel: RawSignedModel
+}

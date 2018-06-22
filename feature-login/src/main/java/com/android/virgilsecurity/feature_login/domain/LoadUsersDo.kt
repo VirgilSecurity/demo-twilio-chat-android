@@ -31,12 +31,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.api
+package com.android.virgilsecurity.feature_login.domain
 
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.repository.UsersRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
-interface VirgilApi {
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/22/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-    fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse>
+/**
+ * LoadUsersDo
+ */
+class LoadUsersDo(private val repository: UsersRepository)
+    : BaseDo<LoadUsersDo.Result>() {
+
+    sealed class Result {
+        data class OnSuccess(val users: List<User>) : Result()
+        data class OnError(val error: Throwable) : Result()
+    }
+
+    override fun execute() =
+            repository.users()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+
+    private fun success(users: List<User>) {
+        liveData.value = Result.OnSuccess(users)
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = Result.OnError(throwable)
+    }
 }

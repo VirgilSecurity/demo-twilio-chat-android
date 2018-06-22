@@ -7,17 +7,12 @@ import android.view.View
 import android.widget.TextView
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
 import com.android.virgilsecurity.twiliodemo.ui.chat.channel.ChannelActivity
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.dialog.CreateThreadDialog
-import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
 import com.twilio.chat.Channel
-import kotlinx.android.synthetic.main.activity_channels_list.*
-import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _

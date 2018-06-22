@@ -35,14 +35,10 @@ package com.android.virgilsecurity.twiliodemo.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
+import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
-import com.android.virgilsecurity.twiliodemo.ui.base.BaseActivity
 import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
 import com.android.virgilsecurity.twiliodemo.util.UiUtils
-import kotlinx.android.synthetic.main.activity_login.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -59,38 +55,11 @@ class LoginActivity : BaseActivity() {
 
     private var secondPress: Boolean = false
 
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java))
-            from.finish()
-        }
-
-        fun startClearTop(from: Activity) {
-            from.startActivity(Intent(from, LoginActivity::class.java)
-                                       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                                         Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
-    }
-
-    override fun provideLayoutId() = R.layout.activity_login
-
-    override fun preInitUi() {
-        // TODO Implement body or it will be empty ):
-    }
-
     override fun initUi() {
         UiUtils.replaceFragmentNoTag(supportFragmentManager,
                                      flBaseContainer.id,
                                      LoginFragment.newInstance())
 
-    }
-
-    override fun initViewCallbacks() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun initData() {
-        // TODO Implement body or it will be empty ):
     }
 
     override fun onBackPressed() {

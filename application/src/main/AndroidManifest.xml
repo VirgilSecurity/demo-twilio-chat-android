@@ -43,7 +43,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.android.virgilsecurity.twiliodemo.ui.SplashActivity"
+            android:name="com.android.virgilsecurity.twiliodemo.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>

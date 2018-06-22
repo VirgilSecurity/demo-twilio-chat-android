@@ -31,9 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.common.data.local
 
-import com.android.virgilsecurity.base.data.api.VirgilApi
+
+import com.android.virgilsecurity.base.data.api.UsersApi
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.data.model.response.TokenResponse
 import io.reactivex.Single
 
@@ -49,11 +51,11 @@ import io.reactivex.Single
  */
 
 /**
- * VirgilRemoteDS
+ * UsersLocalDS
  */
-class VirgilRemoteDS : VirgilApi {
+class UsersLocalDS : UsersApi {
 
-    override fun getVirgilToken(identity: String, authHeader: String): Single<TokenResponse> =
+    override fun users(): Single<List<User>> =
             Single.create {
 
             }

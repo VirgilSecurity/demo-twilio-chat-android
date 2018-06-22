@@ -31,12 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.twiliodemo
 
-
-import com.android.virgilsecurity.base.data.api.TwilioApi
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
-import io.reactivex.Single
+import android.content.Intent
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -44,18 +46,37 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    5/29/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-/**
- * TwilioLocalDS
- */
-class TwilioLocalDS : TwilioApi {
+class SplashActivity : AppCompatActivity() {
 
-    override fun getTwilioToken(identity: String, authHeader: String): Single<TokenResponse> =
-            Single.create {
+    private val userManager: UserManager by inject()
+    private val
 
-            }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (isAuthenticated())
+            ChannelsListActivity.startWithFinish(this)
+        else
+            LoginActivity.startWithFinish(this)
+
+    }
+
+    private fun isAuthenticated(): Boolean {
+        return userManager.getCurrentUser() != null
+    }
+
+    override fun onBackPressed() {
+
+    }
+
+    private fun startLoginActivity() {
+        startActivity(Intent(from, LoginActivity::class.java)
+                                   .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                                     Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
 }
