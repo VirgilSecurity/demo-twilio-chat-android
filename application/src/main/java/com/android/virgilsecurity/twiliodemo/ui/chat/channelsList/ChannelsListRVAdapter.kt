@@ -38,7 +38,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer

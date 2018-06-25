@@ -65,8 +65,8 @@ ext {
         implementation deps.ac.lifecycleCompiler
         implementation deps.ac.extensions
         implementation deps.ac.streams
-
-        kapt deps.ac.databinding
+//
+//        kapt deps.ac.databinding
     }
 
     room = Group {

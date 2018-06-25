@@ -38,17 +38,15 @@ import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
 import com.android.virgilsecurity.twiliodemo.util.Constants
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelListener
 import com.twilio.chat.Member
 import com.twilio.chat.Message
 import com.virgilsecurity.sdk.cards.Card
-import kotlinx.android.synthetic.main.fragment_channel.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -133,7 +131,7 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
                                              interlocutorCard,
                                              {
                                                  UiUtils.log(this@ChannelFragment::class.java.simpleName,
-                                                             "Message send successfully")
+                                                                                                    "Message send successfully")
                                              },
                                              {
                                                  UiUtils.toast(this,
@@ -193,7 +191,7 @@ class ChannelFragment : BaseFragment<ChannelActivity>() {
 
             override fun onSynchronizationChanged(p0: Channel?) {
                 UiUtils.log(this@ChannelFragment::class.java.simpleName,
-                            " -> onSynchronizationChanged")
+                                                                   " -> onSynchronizationChanged")
             }
 
             override fun onMessageUpdated(p0: Message?, p1: Message.UpdateReason?) {

@@ -43,9 +43,8 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.util.DefaultSymbolsInputFilter
-import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
-import com.android.virgilsecurity.twiliodemo.util.Validator
+import com.android.virgilsecurity.common.util.DefaultSymbolsInputFilter
+import com.android.virgilsecurity.common.util.Validator
 import kotlinx.android.synthetic.main.dialog_create_thread.*
 
 /**

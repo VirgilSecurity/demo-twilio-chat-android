@@ -36,8 +36,9 @@ package com.android.virgilsecurity.twiliodemo
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.ChannelsListActivity
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.view.ScreenRouter
+import com.android.virgilsecurity.common.view.ScreenRouterDefault
 import org.koin.android.ext.android.inject
 
 /**
@@ -54,29 +55,36 @@ import org.koin.android.ext.android.inject
 class SplashActivity : AppCompatActivity() {
 
     private val userManager: UserManager by inject()
-    private val
+    private val screenRouter: ScreenRouter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (isAuthenticated())
-            ChannelsListActivity.startWithFinish(this)
+            startChannelsActivity()
         else
-            LoginActivity.startWithFinish(this)
+            startLoginActivity()
 
     }
 
     private fun isAuthenticated(): Boolean {
-        return userManager.getCurrentUser() != null
+        return userManager.currentUser() != null
     }
 
     override fun onBackPressed() {
 
     }
 
+    private fun startChannelsActivity() {
+        screenRouter.getScreenIntent(this, ScreenRouterDefault.ScreenChat.ChannelsList)
+                .run { startActivity(this) }
+    }
+
     private fun startLoginActivity() {
-        startActivity(Intent(from, LoginActivity::class.java)
-                                   .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                                     Intent.FLAG_ACTIVITY_NEW_TASK))
+        screenRouter.getScreenIntent(this, ScreenRouterDefault.ScreenChat.Login)
+                .apply {
+                    this?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                .run { startActivity(this) }
     }
 }

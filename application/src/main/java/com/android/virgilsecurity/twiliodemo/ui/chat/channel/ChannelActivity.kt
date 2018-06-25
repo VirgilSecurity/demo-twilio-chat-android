@@ -41,7 +41,7 @@ import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.R.id.flBaseContainer
 import com.android.virgilsecurity.twiliodemo.util.Constants
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.chat.Channel
 
 /**
@@ -98,8 +98,8 @@ class ChannelActivity : BaseActivity() {
         channel = intent.extras.getParcelable(Constants.KEY_CHANNEL)
 
         UiUtils.replaceFragmentNoTag(supportFragmentManager,
-                                     flBaseContainer.id,
-                                     ChannelFragment.newInstance(Constants.KEY_CHANNEL, channel))
+                                                                            flBaseContainer.id,
+                                                                            ChannelFragment.newInstance(Constants.KEY_CHANNEL, channel))
     }
 
     fun changeToolbarTitleExposed(title: String) = changeToolbarTitle(title)

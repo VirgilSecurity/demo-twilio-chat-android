@@ -36,7 +36,6 @@ package com.android.virgilsecurity.common.data.local
 
 import com.android.virgilsecurity.base.data.api.UsersApi
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.data.model.response.TokenResponse
 import io.reactivex.Single
 
 /**

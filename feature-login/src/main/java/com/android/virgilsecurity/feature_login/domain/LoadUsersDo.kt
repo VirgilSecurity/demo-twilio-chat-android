@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.domain
 
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.base.domain.Do
 import com.android.virgilsecurity.common.data.repository.UsersRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -51,28 +52,12 @@ import io.reactivex.schedulers.Schedulers
  */
 
 /**
- * LoadUsersDo
+ * LoadUsersDoDefault
  */
-class LoadUsersDo(private val repository: UsersRepository)
-    : BaseDo<LoadUsersDo.Result>() {
+interface LoadUsersDo : Do<LoadUsersDo.Result> {
 
     sealed class Result {
         data class OnSuccess(val users: List<User>) : Result()
         data class OnError(val error: Throwable) : Result()
-    }
-
-    override fun execute() =
-            repository.users()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::success, ::error)
-                .track()
-
-    private fun success(users: List<User>) {
-        liveData.value = Result.OnSuccess(users)
-    }
-
-    private fun error(throwable: Throwable) {
-        liveData.value = Result.OnError(throwable)
     }
 }

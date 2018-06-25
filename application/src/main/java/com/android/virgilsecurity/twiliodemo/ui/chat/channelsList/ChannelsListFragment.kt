@@ -36,12 +36,10 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.base.BaseFragment
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.chat.*
-import kotlinx.android.synthetic.main.fragment_channels_list.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -108,7 +106,7 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
         presenter.startChatClient(userManager.getCurrentUser()!!.identity,
                                   {
                                       UiUtils.log(this.javaClass.simpleName,
-                                                  " -> Chat client started")
+                                                                                         " -> Chat client started")
                                       setupChatClientListener()
                                       fetchChannels()
                                   },
@@ -178,7 +176,7 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                 channel?.join(object : StatusListener() {
                     override fun onSuccess() {
                         UiUtils.log(this.javaClass.simpleName,
-                                    " -> successfully autojoined channel")
+                                                                           " -> successfully autojoined channel")
                         adapter.addItem(channel)
                     }
 
@@ -257,7 +255,7 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                                       },
                                       {
                                           UiUtils.toast(this,
-                                                        "Channels next page fetch error.\n${it.message}")
+                                                                                               "Channels next page fetch error.\n${it.message}")
                                           showProgress(false)
                                       })
     }
@@ -269,7 +267,7 @@ class ChannelsListFragment : BaseFragment<ChannelsListActivity>() {
                                     rootActivity!!.dialogNewChannelCancel()
                                     rootActivity!!.openChannel(it)
                                     UiUtils.log(this.javaClass.simpleName,
-                                                " -> Created channel success")
+                                                                                       " -> Created channel success")
                                 },
                                 {
                                     UiUtils.toast(this, it.message ?: "Some error creating channel")

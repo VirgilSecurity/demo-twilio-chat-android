@@ -33,9 +33,8 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
-import com.android.virgilsecurity.twiliodemo.data.model.TwilioUser
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx

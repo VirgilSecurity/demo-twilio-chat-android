@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.base.data.model
 
 import android.os.Parcelable
+import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 interface User : Comparable<User>, Parcelable {
@@ -41,4 +42,6 @@ interface User : Comparable<User>, Parcelable {
     val identity: String
 
     val rawSignedModel: RawSignedModel
+
+    fun card() : Card
 }

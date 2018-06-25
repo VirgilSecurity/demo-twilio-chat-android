@@ -33,4 +33,9 @@
 
 <resources>
 
+    <string name="user_pic">User picture</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="few_seconds">It take a few seconds</string>
+    <string name="create_new_account">Create new account</string>
+
 </resources>

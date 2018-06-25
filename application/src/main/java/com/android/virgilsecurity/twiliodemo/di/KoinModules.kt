@@ -34,14 +34,15 @@
 package com.android.virgilsecurity.twiliodemo.di
 
 import android.content.Context
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.common.data.local.UserManagerDefault
+import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioRx
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.GetTokenCallbackImpl
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
-import com.android.virgilsecurity.twiliodemo.util.Utils
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
@@ -73,8 +74,8 @@ object Keys {
 }
 
 val utilsModule : Module = applicationContext {
-    bean { UserManager(get())}
-    bean { Utils(get(), get(), get())}
+    bean { UserManagerDefault(get()) as UserManager }
+    bean { AuthUtils(get(), get(), get()) }
 }
 
 val networkModule : Module = applicationContext {

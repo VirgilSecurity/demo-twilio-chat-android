@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.twilio.chat.Channel

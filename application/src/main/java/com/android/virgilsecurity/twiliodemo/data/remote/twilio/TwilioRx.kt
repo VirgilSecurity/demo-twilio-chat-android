@@ -34,13 +34,13 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.common.data.local.UserManager
+import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_RECEIVER
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_SENDER
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.accessmanager.AccessManager
 import com.twilio.chat.*
 import io.reactivex.*
@@ -85,8 +85,9 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
                               override fun onError(errorInfo: ErrorInfo?) {
                                   UiUtils.log(this.javaClass.simpleName + "_log",
-                                              " -> ${errorInfo?.message}")
-                                  it.onError(ErrorInfoWrapper(errorInfo))
+                                                                                     " -> ${errorInfo?.message}")
+                                  it.onError(ErrorInfoWrapper(
+                                      errorInfo))
                               }
                           })
     }.subscribeOn(Schedulers.io())
@@ -164,7 +165,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                         if (errorInfo?.code == channelExistsCode)
                             it.onError(Throwable("Channel already exists"))
                         else
-                            it.onError(ErrorInfoWrapper(errorInfo))
+                            it.onError(ErrorInfoWrapper(
+                                errorInfo))
                     }
                 })
     }.flatMap { channel ->
@@ -176,19 +178,20 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        e1.onError(ErrorInfoWrapper(errorInfo))
+                        e1.onError(ErrorInfoWrapper(
+                            errorInfo))
                     }
                 })
             }).doOnError { throwable ->
             channel.destroy(object : StatusListener() {
                 override fun onSuccess() {
                     UiUtils.log(this.javaClass.simpleName,
-                                "Remove channel success after join")
+                                                                       "Remove channel success after join")
                 }
 
                 override fun onError(errorInfo: ErrorInfo?) {
                     UiUtils.log(this.javaClass.simpleName,
-                                "Remove channel error after join")
+                                                                       "Remove channel error after join")
                 }
             })
         }.doOnComplete {
@@ -211,12 +214,12 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     channel.destroy(object : StatusListener() {
                         override fun onSuccess() {
                             UiUtils.log(this.javaClass.simpleName,
-                                        "Remove channel success")
+                                                                               "Remove channel success")
                         }
 
                         override fun onError(errorInfo: ErrorInfo?) {
                             UiUtils.log(this.javaClass.simpleName,
-                                        "Remove channel error")
+                                                                               "Remove channel error")
                         }
                     })
                 }
@@ -235,7 +238,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 }
 
                 override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(errorInfo))
+                    it.onError(ErrorInfoWrapper(
+                        errorInfo))
                 }
             })
         }.subscribeOn(Schedulers.io())
@@ -249,7 +253,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 }
 
                 override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(errorInfo))
+                    it.onError(ErrorInfoWrapper(
+                        errorInfo))
                 }
             })
         }.subscribeOn(Schedulers.io())
@@ -263,7 +268,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 }
 
                 override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(errorInfo))
+                    it.onError(ErrorInfoWrapper(
+                        errorInfo))
                 }
             })
         }.subscribeOn(Schedulers.io())
@@ -277,7 +283,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
+                        it.onError(ErrorInfoWrapper(
+                            errorInfo))
                     }
                 })
             }
@@ -300,7 +307,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
+                        it.onError(ErrorInfoWrapper(
+                            errorInfo))
                     }
                 })
             }.subscribeOn(Schedulers.io())
@@ -320,7 +328,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
+                        it.onError(ErrorInfoWrapper(
+                            errorInfo))
                     }
                 })
             }.subscribeOn(Schedulers.io())
@@ -333,7 +342,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
+                        it.onError(ErrorInfoWrapper(
+                            errorInfo))
                     }
                 })
             }.subscribeOn(Schedulers.io())

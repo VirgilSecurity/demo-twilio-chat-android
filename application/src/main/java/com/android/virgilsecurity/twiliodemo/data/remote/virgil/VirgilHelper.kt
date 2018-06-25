@@ -33,16 +33,11 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import com.android.virgilsecurity.twiliodemo.R.string.identity
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.CardManager
-import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.crypto.*
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException
-import com.virgilsecurity.sdk.crypto.exceptions.EncryptionException
-import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import io.reactivex.Single

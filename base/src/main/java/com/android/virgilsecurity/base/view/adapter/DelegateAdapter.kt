@@ -40,10 +40,10 @@ import android.view.ViewGroup
 
 class DelegateAdapter<T : Comparable<T>> constructor(
         private val diffCallback: DiffCallback<T>,
-        protected val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>>
+        private val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>>
 ) : RecyclerView.Adapter<BaseViewHolder<T>>() {
 
-    protected val data: MutableList<T> = mutableListOf()
+    private val data: MutableList<T> = mutableListOf()
 
     override fun getItemViewType(position: Int): Int {
         for (i in FIRST_VIEW_TYPE until typeToAdapterMap.size()) {

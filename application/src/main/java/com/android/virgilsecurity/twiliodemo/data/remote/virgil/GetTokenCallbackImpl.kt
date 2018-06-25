@@ -33,16 +33,11 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.twiliodemo.util.Utils
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.crypto.VirgilCrypto
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKey
+import com.android.virgilsecurity.common.util.AuthUtils
 import com.virgilsecurity.sdk.jwt.TokenContext
 import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
-import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -58,21 +53,15 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
 /**
  * GetTokenCallbackImpl
  */
-
 class GetTokenCallbackImpl(private val fuelHelper: FuelHelper,
                            private val userManager: UserManager,
-                           private val utils: Utils) :
+                           private val utils: AuthUtils) :
         CallbackJwtProvider.GetTokenCallback {
+
+    // TODO use caching provider instead
 
     override fun onGetToken(tokenContext: TokenContext?): String {
         return fuelHelper.getVirgilTokenSync(userManager.getCurrentUser()!!.identity,
                                              utils.generateAuthHeader()).token
     }
-}
-
-object GetTok : CallbackJwtProvider.GetTokenCallback {
-    override fun onGetToken(tokenContext: TokenContext?): String {
-        return ""
-    }
-
 }

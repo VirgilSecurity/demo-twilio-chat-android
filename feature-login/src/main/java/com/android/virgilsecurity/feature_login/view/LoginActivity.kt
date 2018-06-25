@@ -51,7 +51,7 @@ import com.android.virgilsecurity.twiliodemo.util.UiUtils
  * ....|_|-
  */
 
-class LoginActivity : BaseActivity() {
+class LoginActivity(override val layoutResourceId: Int = R.layout.activity_login) : BaseActivity() {
 
     private var secondPress: Boolean = false
 

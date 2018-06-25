@@ -37,7 +37,10 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.model.UserVT.Companion.KEY_USERS_TABLE_NAME
+import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.virgilsecurity.sdk.crypto.CardCrypto
+import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 
@@ -62,6 +65,8 @@ class UserVT(@ColumnInfo(name = KEY_IDENTITY)
              override val rawSignedModel: @RawValue RawSignedModel) : User {
 
     override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
+
+    override fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel)
 
     companion object {
         const val EXTRA_USER = "EXTRA_USER"

@@ -48,6 +48,7 @@ android {
 
 // Inner dependencies
 dependencies {
+    implementation project(":base")
     implementation project(":common")
     implementation project(":feature-login")
 }

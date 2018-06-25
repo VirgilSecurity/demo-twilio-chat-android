@@ -46,4 +46,8 @@ dependencies {
     kotlin()
     koin()
     reactiveness()
+    networking()
+    virgil()
+    architectureComponents()
+    support()
 }

@@ -5,14 +5,16 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.data.local.UserManager
+import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.ui.chat.channel.ChannelActivity
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.dialog.CreateThreadDialog
 import com.android.virgilsecurity.twiliodemo.util.Constants
-import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.twiliodemo.ui.login.LoginActivity
+import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.chat.Channel
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -50,9 +52,9 @@ class ChannelsListActivity : BaseActivity() {
         initDrawer()
 
         UiUtils.replaceFragmentNoBackStack(supportFragmentManager,
-                                           R.id.flBaseContainer,
-                                           ChannelsListFragment.newInstance(),
-                                           threadsListTag)
+                                                                                  R.id.flBaseContainer,
+                                                                                  ChannelsListFragment.newInstance(),
+                                                                                  threadsListTag)
     }
 
     override fun initViewCallbacks() {

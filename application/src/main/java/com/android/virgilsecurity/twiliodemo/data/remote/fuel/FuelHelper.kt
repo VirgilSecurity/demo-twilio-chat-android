@@ -34,19 +34,17 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
 import com.android.virgilsecurity.twiliodemo.data.model.*
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
-import com.android.virgilsecurity.twiliodemo.util.toObject
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.base.extension.toObject
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.xml.sax.Parser
 
 /**
  * . _  _

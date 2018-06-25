@@ -36,6 +36,7 @@ package com.android.virgilsecurity.common.view
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import com.android.virgilsecurity.base.view.Screen
 import com.android.virgilsecurity.base.view.ScreenRouter
 
 /**
@@ -54,22 +55,32 @@ import com.android.virgilsecurity.base.view.ScreenRouter
  */
 class ScreenRouterDefault : ScreenRouter {
 
+    sealed class ScreenChat : Screen {
+        object Login : ScreenChat()
+        object ChannelsList : ScreenChat()
+        object Channel : ScreenChat()
+    }
+
     override fun getScreenIntent(context: Context,
-                                 screen: ScreenRouter.Screen): Intent? {
+                                 screen: Screen): Intent? {
         val c: Class<*>? = when (screen) {
-            ScreenRouter.Screen.Detail -> null // TODO
-            ScreenRouter.Screen.List -> null // TODO
+            ScreenChat.Login -> null // TODO
+            ScreenChat.ChannelsList -> null // TODO
+            ScreenChat.Channel -> null // TODO
+            else -> null
         }
         return if (c == null) null else Intent(context, c)
     }
 
     fun getScreenIntent(context: Context,
-                                 screen: ScreenRouter.Screen,
+                                 screen: Screen,
                                  key: String,
                                  value: Parcelable): Intent? {
         val c: Class<*>? = when (screen) {
-            ScreenRouter.Screen.Detail -> null // TODO
-            ScreenRouter.Screen.List -> null // TODO
+            ScreenChat.Login -> null // TODO
+            ScreenChat.ChannelsList -> null // TODO
+            ScreenChat.Channel -> null // TODO
+            else -> null
         }
         return if (c == null) null else Intent(context, c).apply { putExtra(key, value) }
     }
