@@ -123,14 +123,14 @@ class CreateThreadDialog(context: Context,
             TransitionManager.beginDelayedTransition(flRoot)
             llLoadingRoot.visibility = View.VISIBLE
         } else {
-            object : OnFinishTimer(500, 100) {
-                override fun onFinish() {
-                    setCancelable(true)
-                    llLoadingRoot.visibility = View.GONE
-                    TransitionManager.beginDelayedTransition(flRoot)
-                    llContentRoot.visibility = View.VISIBLE
-                }
-            }.start()
+//            object : OnFinishTimer(500, 100) {
+//                override fun onFinish() {
+//                    setCancelable(true)
+//                    llLoadingRoot.visibility = View.GONE
+//                    TransitionManager.beginDelayedTransition(flRoot)
+//                    llContentRoot.visibility = View.VISIBLE
+//                }
+//            }.start()
         }
     }
 }

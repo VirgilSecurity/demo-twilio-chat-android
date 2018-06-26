@@ -5,7 +5,8 @@ apply from: '../config-android.gradle'
 // App name and version
 
 enum BuildType {
-    DEBUG
+    DEBUG,
+    RELEASE
 }
 
 def versionMajor = 1
@@ -13,10 +14,12 @@ def versionMinor = 0
 def versionPatch = 0
 
 static def getAppName(BuildType buildType) {
-    String APP_NAME = "Twilio-Virgil-Full"
+    String APP_NAME = "Virgil Messenger"
     switch (buildType) {
         case BuildType.DEBUG:
             return APP_NAME + BuildType.DEBUG.name()
+        case BuildType.RELEASE:
+            return APP_NAME + BuildType.RELEASE.name()
     }
 }
 
@@ -32,6 +35,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "app_name", getAppName(BuildType.RELEASE) + "_" + "v" +
+                    versionMajor + "." +
+                    versionMinor + "." +
+                    versionPatch + "_"
         }
         debug {
             debuggable true

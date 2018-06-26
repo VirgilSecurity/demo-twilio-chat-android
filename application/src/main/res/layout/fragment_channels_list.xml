@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/no_threads"
+            android:text="No threads yet"
             android:textColor="@color/oxford_blue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/error_loading"
+            android:text="Error loading threads"
             android:textColor="@color/oxford_blue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />

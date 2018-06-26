@@ -82,7 +82,7 @@
             android:layout_marginEnd="@dimen/default_text"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="@dimen/half_default_margin"
-            android:hint="@string/identity"
+            android:hint="Identity"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:textColorHint="@color/black_coral"
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:background="@android:color/transparent"
-                android:text="@string/cancel"
+                android:text="Cancel"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent" />
 
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:background="@android:color/transparent"
-                android:text="@string/ok"
+                android:text="Ok"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
@@ -137,6 +137,6 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/half_default_margin"
             android:gravity="center"
-            android:text="@string/creating_thread" />
+            android:text="Creating thread" />
     </LinearLayout>
 </FrameLayout>

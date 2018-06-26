@@ -58,11 +58,9 @@ import android.view.inputmethod.InputMethodManager
 @Suppress("UNCHECKED_CAST")
 abstract class BaseFragment<A> : Fragment() where A : Activity {
 
-    @get:LayoutRes
-    protected abstract val layoutResourceId: Int
+    protected var rootActivity: A? = null
 
-    internal var rootActivity: A? = null
-
+    @LayoutRes protected abstract fun layoutResourceId() : Int
     protected abstract fun init(view: View, savedInstanceState: Bundle?)
     protected abstract fun initViewSlices()
     protected abstract fun setupVSObservers()
@@ -74,6 +72,7 @@ abstract class BaseFragment<A> : Fragment() where A : Activity {
         rootActivity = context as A
     }
 
+    @Suppress("OverridingDeprecatedMember", "DEPRECATION")
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
 
@@ -81,7 +80,7 @@ abstract class BaseFragment<A> : Fragment() where A : Activity {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(layoutResourceId, container, false)
+        return inflater.inflate(layoutResourceId(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

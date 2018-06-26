@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_white_rounded"
-                    android:hint="@string/enter_your_message"
+                    android:hint="Message"
                     android:imeOptions="actionNone"
                     android:inputType="textCapSentences"
                     android:maxLines="3"
@@ -83,7 +83,6 @@
                     android:background="@drawable/bg_btn_chat_send"
                     android:gravity="center"
                     android:paddingStart="2dp"
-                    android:text="@string/send"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/default_text"
                     app:srcCompat="@drawable/ic_send_white_24dp" />
@@ -113,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/no_messages"
+            android:text="No messages"
             android:textColor="@color/black_coral"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
@@ -124,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/error_loading"
+            android:text="Error loading messages"
             android:textColor="@color/oxford_blue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />

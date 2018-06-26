@@ -2,39 +2,38 @@ ext.deps = [
 
         // BUILD
 
-        'build'          : [
+        'build'         : [
                 'gradle'            : "com.android.tools.build:gradle:$versions.gradle",
                 'kotlinGradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
         ],
 
         // MAIN
 
-        'kotlin'         : [
+        'kotlin'        : [
                 'stdlibJdk7': "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlinVersion",
                 'stdlib'    : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinVersion",
         ],
 
-        'support'        : [
+        'support'       : [
                 'compatV7'        : "com.android.support:appcompat-v7:$versions.suport",
                 'cardView'        : "com.android.support:cardview-v7:$versions.suport",
                 'constraintLayout': "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
                 'design'          : "com.android.support:design:$versions.suport",
         ],
 
-        'koin'           : [
+        'koin'          : [
                 'koinAndroid': "org.koin:koin-android:$versions.koin",
         ],
 
-        'rx'             : [
+        'rx'            : [
                 'kotlin' : "io.reactivex.rxjava2:rxkotlin:$versions.rxKotlin",
                 'android': "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
         ],
 
-        'ac'             : [
+        'ac'            : [
                 'viewModel'        : "android.arch.lifecycle:viewmodel:$versions.architectureComponents",
                 'liveData'         : "android.arch.lifecycle:livedata:$versions.architectureComponents",
                 'lifecycleCompiler': "android.arch.lifecycle:compiler:$versions.architectureComponents",
-                'extensions'       : "android.arch.lifecycle:extensions:$versions.architectureComponents",
                 'streams'          : "android.arch.lifecycle:reactivestreams:$versions.architectureComponents",
                 'databinding'      : "com.android.databinding:compiler:$versions.dataBindingVersion",
                 'roomRuntime'      : "android.arch.persistence.room:runtime:$versions.room",
@@ -42,19 +41,19 @@ ext.deps = [
                 'roomRxJava2'      : "android.arch.persistence.room:rxjava2:$versions.room",
         ],
 
-        'glide'          : [
+        'glide'         : [
                 'glide'        : "com.github.bumptech.glide:glide:$versions.glide",
                 'glideCompiler': "com.github.bumptech.glide:compiler:$versions.glide",
         ],
 
-        'twilio'         : [
+        'twilio'        : [
                 'chatAndroid'  : "com.twilio:chat-android:$versions.twilioSdk",
                 'accessManager': "com.twilio:accessmanager-android:$versions.twilioAccessManager",
         ],
 
-        'fuel'           : "com.github.kittinunf.fuel:fuel-android:$versions.fuel",
+        'fuel'          : "com.github.kittinunf.fuel:fuel-android:$versions.fuel",
 
-        'gson'           : "com.google.code.gson:gson:$versions.gson",
+        'gson'          : "com.google.code.gson:gson:$versions.gson",
 
         'virgilSecurity': [
                 'sdk'          : "com.virgilsecurity.sdk:sdk:$versions.virgil",
@@ -63,5 +62,5 @@ ext.deps = [
 
         // TESTING
 
-        'jUnit'          : "junit:junit:$versions.jUnit",
+        'jUnit'         : "junit:junit:$versions.jUnit",
 ]

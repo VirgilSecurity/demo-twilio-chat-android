@@ -31,28 +31,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list
+package com.android.virgilsecurity.common.data.local
 
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
-
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import org.junit.Assert.*
+import android.arch.persistence.room.TypeConverter
+import com.google.gson.annotations.SerializedName
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/26/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
  */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.android.virgilsecurity.feature_channels_list.test",
-                     appContext.packageName)
-    }
+
+/**
+ * RawSignedModelConverter
+ */
+class RawSignedModelConverter {
+
+    @TypeConverter fun toRawSignedModelSerialized(serialized: String?): RawSignedModel? =
+            if (serialized == null)
+                null
+            else
+                RawSignedModel.fromString(serialized)
+
+    @TypeConverter fun toRawSignedModelSerialized(serializable: RawSignedModel?): String? =
+            if (serializable == null)
+                null
+            else
+                serializable.exportAsBase64String()
 }

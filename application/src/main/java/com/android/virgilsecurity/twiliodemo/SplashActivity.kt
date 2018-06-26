@@ -68,7 +68,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun isAuthenticated(): Boolean {
-        return userManager.currentUser() != null
+        return userManager.currentUser != null
     }
 
     override fun onBackPressed() {

@@ -34,16 +34,19 @@
 package com.android.virgilsecurity.twiliodemo.data.remote.twilio
 
 import android.content.Context
-import com.android.virgilsecurity.common.data.local.UserManager
+import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_RECEIVER
 import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_SENDER
-import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.accessmanager.AccessManager
 import com.twilio.chat.*
-import io.reactivex.*
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 
@@ -85,7 +88,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
                               override fun onError(errorInfo: ErrorInfo?) {
                                   UiUtils.log(this.javaClass.simpleName + "_log",
-                                                                                     " -> ${errorInfo?.message}")
+                                              " -> ${errorInfo?.message}")
                                   it.onError(ErrorInfoWrapper(
                                       errorInfo))
                               }
@@ -127,32 +130,32 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                                     },
                                     BackpressureStrategy.BUFFER)
                     .flatMapCompletable { newToken ->
-                        Completable.create({
-                                               chatClient.updateToken(newToken,
-                                                                      object : StatusListener() {
-                                                                          override fun onSuccess() {
-                                                                              it.onComplete()
-                                                                          }
+                        Completable.create {
+                            chatClient.updateToken(newToken,
+                                                   object : StatusListener() {
+                                                       override fun onSuccess() {
+                                                           it.onComplete()
+                                                       }
 
-                                                                          override fun onError(errorInfo: ErrorInfo?) {
-                                                                              it.onError(
-                                                                                  ErrorInfoWrapper(
-                                                                                      errorInfo))
-                                                                          }
-                                                                      })
-                                           })
+                                                       override fun onError(errorInfo: ErrorInfo?) {
+                                                           it.onError(
+                                                               ErrorInfoWrapper(
+                                                                   errorInfo))
+                                                       }
+                                                   })
+                        }
                     }.subscribeOn(Schedulers.io())
 
     fun createChannel(interlocutor: String,
                       channelName: String,
                       chatClient: ChatClient?): Single<Channel> = Single.create<Channel> {
         val attrs = JSONObject()
-        attrs.put(KEY_SENDER, userManager.getCurrentUser()!!.identity)
+        attrs.put(KEY_SENDER, userManager.currentUser!!.identity)
         attrs.put(KEY_RECEIVER, interlocutor)
 
         val builder = chatClient?.channels?.channelBuilder()
 
-        builder?.withFriendlyName(interlocutor + "-" + userManager.getCurrentUser()!!.identity)
+        builder?.withFriendlyName(interlocutor + "-" + userManager.currentUser!!.identity)
                 ?.withUniqueName(channelName)
                 ?.withType(Channel.ChannelType.PRIVATE)
                 ?.withAttributes(attrs)
@@ -170,56 +173,54 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
                 })
     }.flatMap { channel ->
-        Completable.create(
-            { e1 ->
-                channel.join(object : StatusListener() {
-                    override fun onSuccess() {
-                        e1.onComplete()
-                    }
+        Completable.create { e1 ->
+            channel.join(object : StatusListener() {
+                override fun onSuccess() {
+                    e1.onComplete()
+                }
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        e1.onError(ErrorInfoWrapper(
-                            errorInfo))
-                    }
-                })
-            }).doOnError { throwable ->
+                override fun onError(errorInfo: ErrorInfo?) {
+                    e1.onError(ErrorInfoWrapper(
+                        errorInfo))
+                }
+            })
+        }.doOnError { throwable ->
             channel.destroy(object : StatusListener() {
                 override fun onSuccess() {
                     UiUtils.log(this.javaClass.simpleName,
-                                                                       "Remove channel success after join")
+                                "Remove channel success after join")
                 }
 
                 override fun onError(errorInfo: ErrorInfo?) {
                     UiUtils.log(this.javaClass.simpleName,
-                                                                       "Remove channel error after join")
+                                "Remove channel error after join")
                 }
             })
         }.doOnComplete {
             Completable.defer {
-                Completable.create(
-                    { e2 ->
-                        channel.members
-                                .inviteByIdentity(interlocutor,
-                                                  object : StatusListener() {
-                                                      override fun onSuccess() {
-                                                          e2.onComplete()
-                                                      }
+                Completable.create { e2 ->
+                    channel.members
+                            .inviteByIdentity(interlocutor,
+                                              object : StatusListener() {
+                                                  override fun onSuccess() {
+                                                      e2.onComplete()
+                                                  }
 
-                                                      override fun onError(errorInfo: ErrorInfo?) {
-                                                          e2.onError(ErrorInfoWrapper(
-                                                              errorInfo))
-                                                      }
-                                                  })
-                    }).doOnError { throwable ->
+                                                  override fun onError(errorInfo: ErrorInfo?) {
+                                                      e2.onError(ErrorInfoWrapper(
+                                                          errorInfo))
+                                                  }
+                                              })
+                }.doOnError { throwable ->
                     channel.destroy(object : StatusListener() {
                         override fun onSuccess() {
                             UiUtils.log(this.javaClass.simpleName,
-                                                                               "Remove channel success")
+                                        "Remove channel success")
                         }
 
                         override fun onError(errorInfo: ErrorInfo?) {
                             UiUtils.log(this.javaClass.simpleName,
-                                                                               "Remove channel error")
+                                        "Remove channel error")
                         }
                     })
                 }
@@ -318,7 +319,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     interlocutor: String): Single<Message> =
             Single.create<Message> {
                 val attributes = JSONObject()
-                attributes.put(Constants.KEY_SENDER, userManager.getCurrentUser()!!.identity)
+                attributes.put(Constants.KEY_SENDER, userManager.currentUser!!.identity)
                 attributes.put(Constants.KEY_RECEIVER, interlocutor)
 
                 val message = Message.options().withBody(body).withAttributes(attributes)

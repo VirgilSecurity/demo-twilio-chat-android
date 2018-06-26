@@ -33,11 +33,11 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
-import com.android.virgilsecurity.common.data.local.UserManager
+import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.common.util.AuthUtils
 import com.twilio.chat.*
 import com.virgilsecurity.sdk.crypto.HashAlgorithm
 import com.virgilsecurity.sdk.utils.ConvertionUtils
@@ -46,7 +46,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
-import kotlin.collections.ArrayList
 
 /**
  * . _  _
@@ -140,23 +139,23 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
                                         }.flatMap {
                                             channels.add(it)
 
-                                            Observable.create<Unit>({ e ->
-                                                                        it.join(object : StatusListener() {
-                                                                            override fun onSuccess() {
-                                                                                e.onComplete()
-                                                                            }
+                                            Observable.create<Unit> { e ->
+                                                it.join(object : StatusListener() {
+                                                    override fun onSuccess() {
+                                                        e.onComplete()
+                                                    }
 
-                                                                            override fun onError(errorInfo: ErrorInfo?) {
-                                                                                if (it.status == Channel.ChannelStatus.JOINED) {
-                                                                                    e.onComplete()
-                                                                                } else {
-                                                                                    e.onError(
-                                                                                        ErrorInfoWrapper(
-                                                                                            errorInfo))
-                                                                                }
-                                                                            }
-                                                                        })
-                                                                    })
+                                                    override fun onError(errorInfo: ErrorInfo?) {
+                                                        if (it.status == Channel.ChannelStatus.JOINED) {
+                                                            e.onComplete()
+                                                        } else {
+                                                            e.onError(
+                                                                ErrorInfoWrapper(
+                                                                    errorInfo))
+                                                        }
+                                                    }
+                                                })
+                                            }
                                         }.subscribeBy(
                                             onComplete = {
                                                 onGetChannelsSuccess(it, channels)
@@ -191,23 +190,23 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
                                         }.flatMap {
                                             channels.add(it)
 
-                                            Observable.create<Unit>({ e ->
-                                                                        it.join(object : StatusListener() {
-                                                                            override fun onSuccess() {
-                                                                                e.onComplete()
-                                                                            }
+                                            Observable.create<Unit> { e ->
+                                                it.join(object : StatusListener() {
+                                                    override fun onSuccess() {
+                                                        e.onComplete()
+                                                    }
 
-                                                                            override fun onError(errorInfo: ErrorInfo?) {
-                                                                                if (it.status == Channel.ChannelStatus.JOINED) {
-                                                                                    e.onComplete()
-                                                                                } else {
-                                                                                    e.onError(
-                                                                                        ErrorInfoWrapper(
-                                                                                            errorInfo))
-                                                                                }
-                                                                            }
-                                                                        })
-                                                                    })
+                                                    override fun onError(errorInfo: ErrorInfo?) {
+                                                        if (it.status == Channel.ChannelStatus.JOINED) {
+                                                            e.onComplete()
+                                                        } else {
+                                                            e.onError(
+                                                                ErrorInfoWrapper(
+                                                                    errorInfo))
+                                                        }
+                                                    }
+                                                })
+                                            }
                                         }.subscribeBy(
                                             onComplete = {
                                                 onGetChannelsSuccess(it, channels)
@@ -260,7 +259,7 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
     }
 
     private fun generateNewChannelId(interlocutor: String): String {
-        val userMe = userManager.getCurrentUser()!!.identity
+        val userMe = userManager.currentUser!!.identity
         val concatenatedHashedUsersData: ByteArray
 
         concatenatedHashedUsersData = if (userMe >= interlocutor) {
@@ -276,7 +275,7 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
         return ConvertionUtils.toHex(concatenatedHashedUsersData).toLowerCase()
     }
 
-    override fun disposeAll() {
+    fun disposeAll() {
         compositeDisposable.clear()
     }
 

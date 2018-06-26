@@ -33,8 +33,8 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import com.android.virgilsecurity.common.data.local.UserManager
-import com.android.virgilsecurity.twiliodemo.data.model.SignInResponse
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.feature_login.data.model.response.SignInResponse
 import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
@@ -94,13 +94,14 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
 
                                 requestIfKeyExists(identity,
                                                    onKeyExists = {
-                                                       userManager.setCurrentUser(TwilioUser(
-                                                           identity))
+                                                       userManager.currentUser = null
+//                                                               (TwilioUser(
+//                                                           identity))
 
                                                        val rawCardModel = it.virgilCard
-                                                       userManager.setUserCard(Card.parse(
-                                                           virgilHelper.cardCrypto,
-                                                           rawCardModel))
+//                                                       userManager.setUserCard(Card.parse(
+//                                                           virgilHelper.cardCrypto,
+//                                                           rawCardModel))
 
                                                        onSignInSuccess(it)
                                                    },
@@ -140,11 +141,11 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
                         .subscribeOn(Schedulers.io())
                         .subscribeBy(
                             onSuccess = {
-                                userManager.setCurrentUser(TwilioUser(identity))
-
-                                val rawCardModel = it.virgilCard
-                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
-                                                                   rawCardModel))
+//                                userManager.setCurrentUser(TwilioUser(identity))
+//
+//                                val rawCardModel = it.virgilCard
+//                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
+//                                                                   rawCardModel))
 
                                 onSignUpSuccess(it)
                             },
@@ -160,7 +161,7 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
         compositeDisposable += signUpDisposable
     }
 
-    override fun disposeAll() {
+    fun disposeAll() {
         compositeDisposable.clear()
     }
 }

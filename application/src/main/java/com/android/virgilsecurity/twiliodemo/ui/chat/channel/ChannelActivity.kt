@@ -38,6 +38,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.twiliodemo.R.id.flBaseContainer
 import com.android.virgilsecurity.twiliodemo.util.Constants
@@ -55,52 +56,52 @@ import com.twilio.chat.Channel
  * ....|_|-
  */
 
-class ChannelActivity : BaseActivity() {
-
-    private lateinit var channel: Channel
-
-    companion object {
-        fun startWithFinish(from: Activity) {
-            from.startActivity(Intent(from, ChannelActivity::class.java))
-            from.finish()
-        }
-
-        fun startWithExtras(from: Activity, key: String, parcelable: Parcelable) {
-            val openChannel = Intent(from, ChannelActivity::class.java)
-            openChannel.putExtra(key, parcelable)
-            from.startActivity(openChannel)
-        }
-    }
-
-    override fun provideLayoutId() = R.layout.activity_channel
-
-    override fun preInitUi() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun initUi() {
-        initToolbar(toolbar, "Channel")
-    }
-
-    override fun initViewCallbacks() {
-        showBackButton(true, View.OnClickListener {
-            onBackPressed()
-        })
-    }
-
-    override fun initData() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        channel = intent.extras.getParcelable(Constants.KEY_CHANNEL)
-
-        UiUtils.replaceFragmentNoTag(supportFragmentManager,
-                                                                            flBaseContainer.id,
-                                                                            ChannelFragment.newInstance(Constants.KEY_CHANNEL, channel))
-    }
-
-    fun changeToolbarTitleExposed(title: String) = changeToolbarTitle(title)
-}
+//class ChannelActivity : BaseActivity() {
+//
+//    private lateinit var channel: Channel
+//
+//    companion object {
+//        fun startWithFinish(from: Activity) {
+//            from.startActivity(Intent(from, ChannelActivity::class.java))
+//            from.finish()
+//        }
+//
+//        fun startWithExtras(from: Activity, key: String, parcelable: Parcelable) {
+//            val openChannel = Intent(from, ChannelActivity::class.java)
+//            openChannel.putExtra(key, parcelable)
+//            from.startActivity(openChannel)
+//        }
+//    }
+//
+//    override fun provideLayoutId() = R.layout.activity_channel
+//
+//    override fun preInitUi() {
+//        // TODO Implement body or it will be empty ):
+//    }
+//
+//    override fun initUi() {
+//        initToolbar(toolbar, "Channel")
+//    }
+//
+//    override fun initViewCallbacks() {
+//        showBackButton(true, View.OnClickListener {
+//            onBackPressed()
+//        })
+//    }
+//
+//    override fun initData() {
+//        // TODO Implement body or it will be empty ):
+//    }
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        channel = intent.extras.getParcelable(Constants.KEY_CHANNEL)
+//
+//        UiUtils.replaceFragmentNoTag(supportFragmentManager,
+//                                                                            flBaseContainer.id,
+//                                                                            ChannelFragment.newInstance(Constants.KEY_CHANNEL, channel))
+//    }
+//
+//    fun changeToolbarTitleExposed(title: String) = changeToolbarTitle(title)
+//}

@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.feature'
+apply plugin: 'com.android.library'
 
 apply from: '../config-android.gradle'
 

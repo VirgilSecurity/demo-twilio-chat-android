@@ -38,7 +38,7 @@ import android.os.StrictMode
 import com.android.virgilsecurity.twiliodemo.di.*
 import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
 import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
-import com.android.virgilsecurity.twiliodemo.ui.login.loginModule
+import loginModule
 import org.koin.android.ext.android.startKoin
 
 /**

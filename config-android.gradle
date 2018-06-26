@@ -35,6 +35,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 // Android common configurations
 
 android {
@@ -49,6 +51,9 @@ android {
 //    dataBinding {
 //        enabled = true
 //    }
+    lintOptions {
+        abortOnError = false
+    }
 }
 
 // Common flags

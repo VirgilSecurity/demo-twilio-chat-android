@@ -33,12 +33,10 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.login
 
-import android.app.Activity
-import android.content.Intent
+import android.os.Bundle
 import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.util.OnFinishTimer
-import com.android.virgilsecurity.twiliodemo.util.UiUtils
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.feature_login.R
 
 /**
  * . _  _
@@ -53,29 +51,43 @@ import com.android.virgilsecurity.twiliodemo.util.UiUtils
 
 class LoginActivity(override val layoutResourceId: Int = R.layout.activity_login) : BaseActivity() {
 
-    private var secondPress: Boolean = false
-
-    override fun initUi() {
-        UiUtils.replaceFragmentNoTag(supportFragmentManager,
-                                     flBaseContainer.id,
-                                     LoginFragment.newInstance())
-
+    override fun init(savedInstanceState: Bundle?) {
+        // TODO Implement body or it will be empty ):
     }
 
-    override fun onBackPressed() {
-        hideKeyboard()
-
-        if (secondPress)
-            super.onBackPressed()
-        else
-            UiUtils.toast(this, getString(R.string.press_exit_once_more))
-
-        secondPress = true
-
-        object : OnFinishTimer(2000, 100) {
-            override fun onFinish() {
-                secondPress = false
-            }
-        }.start()
+    override fun initViewSlices() {
+        // TODO Implement body or it will be empty ):
     }
+
+    override fun setupVSObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+//    override fun initUi() {
+//        UiUtils.replaceFragmentNoTag(supportFragmentManager,
+//                                     flBaseContainer.id,
+//                                     LoginFragmentNoUsers.newInstance())
+//
+//    }
+//
+//    override fun onBackPressed() {
+//        hideKeyboard()
+//
+//        if (secondPress)
+//            super.onBackPressed()
+//        else
+//            UiUtils.toast(this, getString(R.string.press_exit_once_more))
+//
+//        secondPress = true
+//
+//        object : OnFinishTimer(2000, 100) {
+//            override fun onFinish() {
+//                secondPress = false
+//            }
+//        }.start()
+//    }
 }

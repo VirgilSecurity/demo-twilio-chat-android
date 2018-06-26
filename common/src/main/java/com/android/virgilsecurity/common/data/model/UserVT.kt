@@ -33,13 +33,14 @@
 
 package com.android.virgilsecurity.common.data.model
 
+import android.annotation.SuppressLint
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.model.UserVT.Companion.KEY_USERS_TABLE_NAME
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import com.virgilsecurity.sdk.crypto.CardCrypto
 import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
@@ -58,11 +59,15 @@ import kotlinx.android.parcel.RawValue
 /**
  * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
  */
-@Parcelize @Entity(tableName = KEY_USERS_TABLE_NAME)
-class UserVT(@ColumnInfo(name = KEY_IDENTITY)
-             override val identity: String,
-             @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
-             override val rawSignedModel: @RawValue RawSignedModel) : User {
+@Entity(tableName = KEY_USERS_TABLE_NAME)
+@Parcelize
+@SuppressLint("ParcelCreator")
+class UserVT(
+        @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
+        override val identity: String,
+        @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
+        override val rawSignedModel: @RawValue RawSignedModel
+) : User {
 
     override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
 

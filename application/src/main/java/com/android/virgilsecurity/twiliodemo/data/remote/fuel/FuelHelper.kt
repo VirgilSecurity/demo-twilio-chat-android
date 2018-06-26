@@ -33,9 +33,13 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.fuel
 
-import com.android.virgilsecurity.twiliodemo.data.model.*
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.base.extension.toObject
+import com.android.virgilsecurity.common.data.model.response.TokenResponse
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.feature_login.data.model.request.SignInRequest
+import com.android.virgilsecurity.feature_login.data.model.request.SignUpRequest
+import com.android.virgilsecurity.feature_login.data.model.request.TokenRequest
+import com.android.virgilsecurity.feature_login.data.model.response.SignInResponse
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Request
@@ -43,8 +47,6 @@ import com.github.kittinunf.fuel.core.Response
 import com.google.gson.Gson
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.utils.ConvertionUtils
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 
 /**
  * . _  _

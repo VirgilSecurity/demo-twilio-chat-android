@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.twiliodemo.data.remote.virgil
 
-import com.android.virgilsecurity.common.data.local.UserManager
+import com.android.virgilsecurity.base.data.api.UserManager
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.crypto.*
@@ -104,7 +104,7 @@ class VirgilHelper(private val cardManager: CardManager,
         return try {
             val decryptedData = virgilCrypto.decrypt(cipherData,
                                                      privateKeyStorage.load(
-                                                         userManager.getCurrentUser()!!.identity)
+                                                         userManager.currentUser!!.identity)
                                                              .left as VirgilPrivateKey)
             ConvertionUtils.toString(decryptedData)
         } catch (e: CryptoException) {

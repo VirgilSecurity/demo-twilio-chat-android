@@ -37,8 +37,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.common.data.local.UserManager
 import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer
@@ -122,7 +122,7 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
 
             val receiver = attributes[Constants.KEY_RECEIVER] as String
             val sender = attributes[Constants.KEY_SENDER] as String
-            val currentUser = userManager.getCurrentUser()!!.identity
+            val currentUser = userManager.currentUser!!.identity
 
             if (currentUser == sender)
                 tvUsername.text = receiver
