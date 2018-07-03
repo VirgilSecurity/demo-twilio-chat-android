@@ -31,36 +31,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext.versions = [
+package com.android.virgilsecurity.feature_login.view.adapter
 
-        // BUILD
+import android.graphics.Rect
+import android.support.v7.widget.RecyclerView
+import android.view.View
 
-        'gradle'                : '3.1.3',
-        'kotlinVersion'         : '1.2.50',
-        'targetSdk'             : 27,
-        'buildTools'            : '27.0.3',
-        'minSdk'                : 21,
+class IndentItemDecoration(private val left: Int,
+                           private val top: Int,
+                           private val right: Int,
+                           private val bottom: Int) : RecyclerView.ItemDecoration() {
 
-        // MAIN
+    constructor(indents: Int) : this(indents, indents, indents, indents)
 
-        'suport'                : '27.1.1',
-        'constraintLayout'      : '1.1.0',
-        'koin'                  : '0.9.3',
-        'rxKotlin'              : '2.2.0',
-        'rxAndroid'             : '2.0.2',
-        'architectureComponents': '1.1.1',
-        'dataBindingVersion'    : '2.3.3',
-        'glide'                 : '4.7.1',
-        'twilioSdk'             : '3.0.0',
-        'twilioAccessManager'   : '0.1.0',
-        'fuel'                  : '1.13.0',
-        'gson'                  : '2.7',
-        'virgil'                : '5.0.3',
-        'virgilCrypto'          : '5.0.3@aar',
-        'room'                  : '1.1.0',
-        'viewPagerIndicator'    : '1.1.0',
+    override fun getItemOffsets(outRect: Rect, view: View,
+                                parent: RecyclerView, state: RecyclerView.State?) {
+        outRect.left = left
+        outRect.right = right
+        outRect.bottom = bottom
 
-        // TESTING
-
-        'jUnit'                 : '4.12',
-]
+        // Add top margin only for the first item to avoid double space between items
+        if (parent.getChildLayoutPosition(view) == 0) {
+            outRect.top = top
+        } else {
+            outRect.top = 0
+        }
+    }
+}

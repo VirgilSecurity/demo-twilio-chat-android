@@ -31,15 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package com.android.virgilsecurity.feature_login.view
+
+import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.util.AttributeSet
 import android.view.View
-import android.widget.GridLayout
-import android.widget.LinearLayout
-import com.android.virgilsecurity.feature_login.view.adapter.IndentItemDecoration
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import com.android.virgilsecurity.base.view.BaseFragment
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
+import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.feature_login.R
+import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
+import kotlinx.android.synthetic.main.fragment_users_page.*
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -47,37 +50,45 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/3/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginModules
+ * UsersPageFragment
  */
-val loginModule : Module = applicationContext {
-    bean { IndentItemDecoration(LoginDiConst.INDENT_LEFT,
-                                  LoginDiConst.INDENT_TOP,
-                                  LoginDiConst.INDENT_RIGHT,
-                                  LoginDiConst.INDENT_BOTTOM) }
-    bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
-    bean { GridLayoutManager(get(), get(LoginDiConst.KEY_SPAN_COUNT),
-                             GridLayout.HORIZONTAL, false) }
+class UsersPageFragment : BaseFragment<AuthActivity>() {
+
+    private val adapter: DelegateAdapter<UserVT> by inject()
+    private val layoutManage: GridLayoutManager by inject()
+
+    override fun layoutResourceId(): Int = R.layout.fragment_users_page
+
+    override fun init(view: View, savedInstanceState: Bundle?) {
+        rvUsersGrid.adapter = adapter
+    }
+
+    override fun initViewSlices() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    companion object {
+        const val KEY_USERS = "KEY_USERS"
+
+        fun newInstance() = UsersPageFragment()
+
+        fun newInstance(users: ArrayList<UserVT>) =
+                UsersPageFragment().apply {
+                    arguments = Bundle().apply { putParcelableArrayList(KEY_USERS, users) }
+                }
+    }
 }
-
-object LoginDiConst {
-    const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
-
-    const val INDENT_LEFT = 57
-    const val INDENT_TOP = 40
-    const val INDENT_RIGHT = 0
-    const val INDENT_BOTTOM = 0
-    const val SPAN_COUNT = 2
-}
-
-//android:numColumns="auto_fit"
-//android:stretchMode="columnWidth"
-//android:gravity="center"
-//android:columnWidth="80dp"
-//android:horizontalSpacing="57dp"
-//android:verticalSpacing="40dp"

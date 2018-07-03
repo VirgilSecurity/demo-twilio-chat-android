@@ -60,5 +60,5 @@ interface DelegateAdapterItem<VH : BaseViewHolder<T>, T> where T : Comparable<T>
 
     fun onRecycled(holder: VH)
 
-    fun isForViewType(items: List<T>, position: Int): Boolean
+    fun isForViewType(items: List<*>, position: Int): Boolean
 }

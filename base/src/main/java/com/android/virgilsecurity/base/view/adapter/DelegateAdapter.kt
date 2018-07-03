@@ -102,7 +102,7 @@ class DelegateAdapter<T : Comparable<T>> constructor(
         }
 
         fun build(): DelegateAdapter<T> {
-            if (count == 0) throw IllegalArgumentException("Register at least one adapter")
+            if (count == 0) throw IllegalArgumentException("Register at least one adapter item")
             return DelegateAdapter(diffCallback, typeToAdapterMap)
         }
     }

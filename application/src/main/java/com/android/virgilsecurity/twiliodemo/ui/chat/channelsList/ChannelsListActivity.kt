@@ -103,7 +103,7 @@ import com.android.virgilsecurity.base.view.BaseActivity
 //                        userManager.clearCurrentUser()
 //                        userManager.clearUserCard()
 //
-//                        LoginActivity.startClearTop(this)
+//                        AuthActivity.startClearTop(this)
 //                        return@setNavigationItemSelectedListener true
 //                    }
 //                    else -> return@setNavigationItemSelectedListener false

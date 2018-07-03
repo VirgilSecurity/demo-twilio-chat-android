@@ -54,6 +54,7 @@
     <color name="virgil_gray_trans">#0fffffff</color>
     <color name="virgil_gray_middle">#42ffffff</color>
     <color name="virgil_gray_light">#64ffffff</color>
+    <color name="gray_light">#94ffffff</color>
     <color name="aqua">#80CBC4</color>
 
 </resources>

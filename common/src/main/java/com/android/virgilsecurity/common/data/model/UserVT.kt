@@ -66,7 +66,8 @@ class UserVT(
         @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
         override val identity: String,
         @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
-        override val rawSignedModel: @RawValue RawSignedModel
+        override val rawSignedModel: @RawValue RawSignedModel,
+        @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
 ) : User {
 
     override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
@@ -77,6 +78,7 @@ class UserVT(
         const val EXTRA_USER = "EXTRA_USER"
         const val KEY_IDENTITY = "identity"
         const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
+        const val KEY_USER_PIC_PATH = "user_pic_path"
         const val KEY_USERS_TABLE_NAME = "users"
     }
 }

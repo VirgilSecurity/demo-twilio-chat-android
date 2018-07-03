@@ -44,5 +44,6 @@
     <string name="next">Next</string>
     <string name="username">Username</string>
     <string name="pick_a_username">Pick a username</string>
+    <string name="error_loading_users">Error loading users</string>
 
 </resources>

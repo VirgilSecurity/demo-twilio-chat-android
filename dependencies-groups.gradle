@@ -97,6 +97,10 @@ ext {
         implementation deps.virgilSecurity.cryptoAndroid
     }
 
+    viewPagerIndicator = Group {
+        implementation deps.viewPagerIndicator
+    }
+
     testing = Group {
         testImplementation(deps.jUnit) {
             exclude group: 'org.hamcrest'

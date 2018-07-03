@@ -50,4 +50,5 @@ dependencies {
     virgil()
     architectureComponents()
     support()
+    viewPagerIndicator()
 }

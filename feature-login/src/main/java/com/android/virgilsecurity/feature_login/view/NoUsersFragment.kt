@@ -36,10 +36,7 @@ package com.android.virgilsecurity.twiliodemo.ui.login
 import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.base.view.BaseFragment
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_login.R
-import com.github.kittinunf.fuel.core.FuelError
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -53,14 +50,10 @@ import org.koin.android.ext.android.inject
  */
 
 /**
- * LoginFragmentNoUsers
+ * NoUsersFragment
  */
 
-class LoginFragmentNoUsers() : BaseFragment<LoginActivity>() {
-
-    companion object {
-        fun newInstance() = LoginFragmentNoUsers()
-    }
+class NoUsersFragment() : BaseFragment<AuthActivity>() {
 
     override fun layoutResourceId(): Int = R.layout.fragment_no_users
 
@@ -81,7 +74,7 @@ class LoginFragmentNoUsers() : BaseFragment<LoginActivity>() {
     }
 
 //    companion object {
-//        fun newInstance() = LoginFragmentNoUsers()
+//        fun newInstance() = NoUsersFragment()
 //    }
 //
 //    override fun onDestroyView() {
@@ -147,4 +140,8 @@ class LoginFragmentNoUsers() : BaseFragment<LoginActivity>() {
 //        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
 //        btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
 //    }
+
+    companion object {
+        fun newInstance() = NoUsersFragment()
+    }
 }

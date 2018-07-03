@@ -31,12 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.feature_login.view.adapter
 
-import android.os.Bundle
-import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.common.util.UiUtils
+import android.content.Context
+import android.net.Uri
+import android.view.View
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
+import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.common.util.ImageStorage
 import com.android.virgilsecurity.feature_login.R
+import kotlinx.android.synthetic.main.item_login_user.*
 
 /**
  * . _  _
@@ -44,50 +48,43 @@ import com.android.virgilsecurity.feature_login.R
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/3/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class LoginActivity(override val layoutResourceId: Int = R.layout.activity_login) : BaseActivity() {
+/**
+ * UsersPageItem
+ */
+class UsersPageItem(private val imageStorage: ImageStorage,
+                    private val context: Context,
+                    override val layoutResourceId: Int = R.layout.item_login_user)
+    : DelegateAdapterItemDefault<UserVT>() {
 
-    override fun init(savedInstanceState: Bundle?) {
+    override fun onBind(item: UserVT, viewHolder: DelegateAdapterItemDefault.KViewHolder<UserVT>) {
+        with(viewHolder) {
+            if (item.picturePath != null && imageStorage.exists(context, item.picturePath!!)) {
+                tvInitials.visibility = View.GONE
+                ivUserPic.setImageBitmap(imageStorage.get(
+                    Uri.Builder().path(item.picturePath!!).build(), context))
+            } else {
+                tvInitials.visibility = View.VISIBLE
+                item.identity.split(" ").let {
+                    if (it.size > 1)
+                        tvInitials.text = StringBuilder("$it[0]$it[1]").toString()
+                }
+                ivUserPic.background = context.getDrawable(R.drawable.rect_rounded_gradient_2)
+                // TODO get random background
+            }
+
+
+        }
+    }
+
+    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<UserVT>) {
         // TODO Implement body or it will be empty ):
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-//    override fun initUi() {
-//        UiUtils.replaceFragmentNoTag(supportFragmentManager,
-//                                     flBaseContainer.id,
-//                                     LoginFragmentNoUsers.newInstance())
-//
-//    }
-//
-//    override fun onBackPressed() {
-//        hideKeyboard()
-//
-//        if (secondPress)
-//            super.onBackPressed()
-//        else
-//            UiUtils.toast(this, getString(R.string.press_exit_once_more))
-//
-//        secondPress = true
-//
-//        object : OnFinishTimer(2000, 100) {
-//            override fun onFinish() {
-//                secondPress = false
-//            }
-//        }.start()
-//    }
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            items[position] is UserVT
 }
