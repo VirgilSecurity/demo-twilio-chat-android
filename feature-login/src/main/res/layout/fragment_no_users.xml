@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/login_left_new_user"
         android:layout_marginTop="70dp"
-        android:background="@drawable/rect_rounded_2"
+        android:background="@drawable/rect_rounded_accent_2"
         android:elevation="2dp"
         android:minHeight="36dp"
         android:paddingEnd="@dimen/default_margin"

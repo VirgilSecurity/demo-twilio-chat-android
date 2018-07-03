@@ -32,28 +32,23 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <color name="colorPrimary">#2B303B</color>
-    <color name="colorPrimaryDark">#20232B</color>
-    <color name="colorAccent">#9E3621</color>
-    <color name="colorAccentDark">#4F1B11</color>
+    <item
+        android:bottom="2dp"
+        android:left="-3dp"
+        android:right="-4dp"
+        android:top="-3dp">
 
-    <color name="snow">#ffffffff</color>
-    <color name="yesterday_snow">#c6ffffff</color>
-    <color name="black">#ff000000</color>
-    <color name="timberwolf">#dbd7d2</color>
-    <color name="oxford_blue">#002147</color>
-    <color name="black_coral">#54626F</color>
-    <color name="chinese_silver">#CCCCCC</color>
-    <color name="black_olive">#3B3C36</color>
-    <color name="baby_pink_trans">#e0f1e2e2</color>
-    <color name="virgil_light">#ae4244</color>
-    <color name="virgil_light_trans">#97ae4244</color>
-    <color name="virgil_gray">#1effffff</color>
-    <color name="virgil_gray_trans">#0fffffff</color>
-    <color name="virgil_gray_middle">#42ffffff</color>
-    <color name="virgil_gray_light">#64ffffff</color>
-    <color name="aqua">#80CBC4</color>
+        <shape android:shape="rectangle">
 
-</resources>
+            <stroke
+                android:width="2dp"
+                android:color="@color/virgil_gray_trans" />
+
+            <solid
+                android:color="@android:color/transparent" />
+        </shape>
+    </item>
+
+</layer-list>

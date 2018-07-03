@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015-2018, Virgil Security, Inc.
+  ~
+  ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+  ~
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~
+  ~     (1) Redistributions of source code must retain the above copyright notice, this
+  ~     list of conditions and the following disclaimer.
+  ~
+  ~     (2) Redistributions in binary form must reproduce the above copyright notice,
+  ~     this list of conditions and the following disclaimer in the documentation
+  ~     and/or other materials provided with the distribution.
+  ~
+  ~     (3) Neither the name of virgil nor the names of its
+  ~     contributors may be used to endorse or promote products derived from
+  ~     this software without specific prior written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  ~ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  ~ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  ~ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  ~ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  ~ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  ~ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/tvPickUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:text="@string/pick_a_username"
+        android:textColor="@color/virgil_gray_light"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/etUsername"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/username_bottomline"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:paddingBottom="12dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:textColor="@color/snow"
+        android:textColorHint="@color/virgil_gray_middle"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPickUsername" />
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/rect_rounded_gray_2"
+        android:elevation="0dp"
+        android:minHeight="36dp"
+        android:text="@string/next"
+        android:textColor="@color/snow"
+        app:layout_constraintBottom_toTopOf="@+id/tvPolicy1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etUsername" />
+
+    <TextView
+        android:id="@+id/tvPolicy1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="20dp"
+        android:text="@string/by_registering"
+        android:textColor="@color/yesterday_snow"
+        app:layout_constraintBottom_toTopOf="@id/tvPolicy3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnNext" />
+
+    <TextView
+        android:id="@+id/tvPolicy2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:autoLink="web"
+        android:text="@string/terms_of_service"
+        android:textColorLink="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tvPolicy1"
+        app:layout_constraintStart_toEndOf="@+id/tvPolicy1"
+        app:layout_constraintTop_toTopOf="@id/tvPolicy1"
+        tools:textColor="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/tvPolicy3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:text="@string/and"
+        android:textColor="@color/yesterday_snow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPolicy1" />
+
+    <TextView
+        android:id="@+id/tvPolicy4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:autoLink="web"
+        android:text="@string/privacy_policy"
+        android:textColorLink="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tvPolicy3"
+        app:layout_constraintStart_toEndOf="@id/tvPolicy3"
+        app:layout_constraintTop_toTopOf="@id/tvPolicy3"
+        tools:textColor="@color/colorAccent" />
+</android.support.constraint.ConstraintLayout>

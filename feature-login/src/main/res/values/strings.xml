@@ -37,5 +37,12 @@
     <string name="create_your_account">Create your account</string>
     <string name="few_seconds">It take a few seconds</string>
     <string name="create_new_account">Create new account</string>
+    <string name="by_registering">By registering, you agree to Virgil\'s </string>
+    <string name="and">and </string>
+    <string name="terms_of_service"><a href="https://virgilsecurity.com/terms-of-service/">Terms of Service</a></string>
+    <string name="privacy_policy"><a href="https://virgilsecurity.com/privacy-policy/">Privacy Policy</a></string>
+    <string name="next">Next</string>
+    <string name="username">Username</string>
+    <string name="pick_a_username">Pick a username</string>
 
 </resources>
