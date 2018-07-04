@@ -47,4 +47,5 @@ dependencies {
     virgil()
     room()
     twilio()
+    koin()
 }

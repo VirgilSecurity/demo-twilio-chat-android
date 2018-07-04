@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.view
 
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.android.virgilsecurity.base.view.BaseFragment
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
@@ -61,25 +62,22 @@ import org.koin.android.ext.android.inject
 class UsersPageFragment : BaseFragment<AuthActivity>() {
 
     private val adapter: DelegateAdapter<UserVT> by inject()
-    private val layoutManage: GridLayoutManager by inject()
+    private val layoutManager: GridLayoutManager by inject()
+    private val itemDecoration: RecyclerView.ItemDecoration by inject()
 
     override fun layoutResourceId(): Int = R.layout.fragment_users_page
 
     override fun init(view: View, savedInstanceState: Bundle?) {
+        rvUsersGrid.layoutManager = layoutManager
         rvUsersGrid.adapter = adapter
+        rvUsersGrid.addItemDecoration(itemDecoration)
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun initViewSlices() { }
 
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupVSObservers() { }
 
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupVMStateObservers() { }
 
     companion object {
         const val KEY_USERS = "KEY_USERS"

@@ -31,15 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.common.di
 
-import android.app.Application
-import android.os.StrictMode
-import com.android.virgilsecurity.twiliodemo.di.*
-import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
-import usersPageModule
-import org.koin.android.ext.android.startKoin
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -47,41 +42,16 @@ import org.koin.android.ext.android.startKoin
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class TwilioApp : Application() {
+/**
+ * commonModules
+ */
+val commonModules: Module = applicationContext {
+    bean {
 
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin(this,
-                  listOf(utilsModule,
-                         networkModule,
-                         virgilModule,
-                         twilioModule,
-                         paramsModule,
-                         usersPageModule,
-                         threadsListModule,
-                         channelModule))
-
-        initStrictMode()
-    }
-
-    private fun initStrictMode() {
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                                           .detectAll()
-                                           .penaltyLog()
-                                           .detectNetwork()
-                                           .penaltyFlashScreen()
-                                           .penaltyDeathOnNetwork()
-                                           .build())
-
-        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-                                       .detectAll()
-                                       .penaltyLog()
-                                       .build())
     }
 }

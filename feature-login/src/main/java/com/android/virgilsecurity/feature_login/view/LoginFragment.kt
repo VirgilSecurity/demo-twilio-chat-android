@@ -31,15 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.feature_login.view
 
-import android.app.Application
-import android.os.StrictMode
-import com.android.virgilsecurity.twiliodemo.di.*
-import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
-import usersPageModule
-import org.koin.android.ext.android.startKoin
+import android.os.Bundle
+import android.support.v4.view.PagerAdapter
+import android.view.View
+import com.android.virgilsecurity.base.view.BaseFragment
+import com.android.virgilsecurity.feature_login.R
+import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
+import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
  * . _  _
@@ -47,41 +47,32 @@ import org.koin.android.ext.android.startKoin
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class TwilioApp : Application() {
+/**
+ * LoginFragment
+ */
+class LoginFragment : BaseFragment<AuthActivity>() {
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun layoutResourceId(): Int = R.layout.fragment_login
 
-        startKoin(this,
-                  listOf(utilsModule,
-                         networkModule,
-                         virgilModule,
-                         twilioModule,
-                         paramsModule,
-                         usersPageModule,
-                         threadsListModule,
-                         channelModule))
-
-        initStrictMode()
+    override fun init(view: View, savedInstanceState: Bundle?) {
+        val pagerAdapter: PagerAdapter = PagerAdapter()
+        vpUsers.adapter
     }
 
-    private fun initStrictMode() {
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                                           .detectAll()
-                                           .penaltyLog()
-                                           .detectNetwork()
-                                           .penaltyFlashScreen()
-                                           .penaltyDeathOnNetwork()
-                                           .build())
+    override fun initViewSlices() {
+        // TODO Implement body or it will be empty ):
+    }
 
-        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-                                       .detectAll()
-                                       .penaltyLog()
-                                       .build())
+    override fun setupVSObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
     }
 }

@@ -63,10 +63,10 @@ class UsersPageItem(private val imageStorage: ImageStorage,
 
     override fun onBind(item: UserVT, viewHolder: DelegateAdapterItemDefault.KViewHolder<UserVT>) {
         with(viewHolder) {
-            if (item.picturePath != null && imageStorage.exists(context, item.picturePath!!)) {
+            if (item.picturePath != null && imageStorage.exists(item.picturePath!!)) {
                 tvInitials.visibility = View.GONE
                 ivUserPic.setImageBitmap(imageStorage.get(
-                    Uri.Builder().path(item.picturePath!!).build(), context))
+                    Uri.Builder().path(item.picturePath!!).build()))
             } else {
                 tvInitials.visibility = View.VISIBLE
                 item.identity.split(" ").let {

@@ -40,11 +40,9 @@ import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 
-object ImageStorage {
+class ImageStorage(private val context: Context) {
 
-    private const val THUMBNAIL_SIZE: Double = 80.0
-
-    fun save(context: Context, bitmap: Bitmap, filename: String): String? {
+    fun save(bitmap: Bitmap, filename: String): String? {
 
         var stored: String? = null
 
@@ -61,26 +59,25 @@ object ImageStorage {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
         out.flush()
         out.close()
-        stored = "success"
 
-        return stored
+        return file.absolutePath
     }
 
-    private fun getFile(context: Context, imagename: String): File? {
+    private fun getFile(imageName: String): File? {
         val mediaImage: File?
         val root = context.filesDir.toString()
         val myDir = File(root)
         if (!myDir.exists())
             return null
 
-        mediaImage = File(myDir.path + "/directoryName/" + imagename)
+        mediaImage = File(myDir.path + "/directoryName/" + imageName)
 
         return mediaImage
     }
 
-    fun exists(context: Context, imageName: String): Boolean {
+    fun exists(imageName: String): Boolean {
         var b: Bitmap? = null
-        val file = ImageStorage.getFile(context, "/$imageName.jpg")
+        val file = getFile("/$imageName.jpg")
         val path = file?.absolutePath
 
         if (path != null)
@@ -89,7 +86,7 @@ object ImageStorage {
         return !(b == null || b.equals(""))
     }
 
-    fun get(uri: Uri, context: Context): Bitmap? {
+    fun get(uri: Uri): Bitmap? {
 
         var input = context.contentResolver.openInputStream(uri)
 
@@ -122,5 +119,9 @@ object ImageStorage {
     private fun getPowerOfTwoForSampleRatio(ratio: Double): Int {
         val k = Integer.highestOneBit(Math.floor(ratio).toInt())
         return if (k == 0) 1 else k
+    }
+
+    companion object {
+        const val THUMBNAIL_SIZE: Double = 80.0
     }
 }

@@ -37,7 +37,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.GridLayout
 import android.widget.LinearLayout
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
+import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.feature_login.view.adapter.IndentItemDecoration
+import com.android.virgilsecurity.feature_login.view.adapter.UsersPageItem
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -55,18 +58,31 @@ import org.koin.dsl.module.applicationContext
 /**
  * LoginModules
  */
-val loginModule : Module = applicationContext {
-    bean { IndentItemDecoration(LoginDiConst.INDENT_LEFT,
-                                  LoginDiConst.INDENT_TOP,
-                                  LoginDiConst.INDENT_RIGHT,
-                                  LoginDiConst.INDENT_BOTTOM) }
+val usersPageModule: Module = applicationContext {
+    bean {
+        IndentItemDecoration(LoginDiConst.INDENT_LEFT,
+                             LoginDiConst.INDENT_TOP,
+                             LoginDiConst.INDENT_RIGHT,
+                             LoginDiConst.INDENT_BOTTOM) as RecyclerView.ItemDecoration
+    }
     bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
-    bean { GridLayoutManager(get(), get(LoginDiConst.KEY_SPAN_COUNT),
-                             GridLayout.HORIZONTAL, false) }
+    bean {
+        GridLayoutManager(get(), get(LoginDiConst.KEY_SPAN_COUNT),
+                          GridLayout.HORIZONTAL, false) as RecyclerView.LayoutManager
+    }
+    bean {
+        UsersPageItem(get(), get())
+    }
+    bean {
+        DelegateAdapter.Builder<UserVT>()
+                .add(get(LoginDiConst.KEY_USERS_PAGE_ITEM))
+                .build()
+    }
 }
 
 object LoginDiConst {
     const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
+    const val KEY_USERS_PAGE_ITEM = "KEY_USERS_PAGE_ITEM"
 
     const val INDENT_LEFT = 57
     const val INDENT_TOP = 40
