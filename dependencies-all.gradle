@@ -35,6 +35,7 @@ ext.deps = [
                 'liveData'         : "android.arch.lifecycle:livedata:$versions.architectureComponents",
                 'lifecycleCompiler': "android.arch.lifecycle:compiler:$versions.architectureComponents",
                 'streams'          : "android.arch.lifecycle:reactivestreams:$versions.architectureComponents",
+                'extensions'       : "android.arch.lifecycle:extensions:$versions.architectureComponents",
                 'databinding'      : "com.android.databinding:compiler:$versions.dataBindingVersion",
                 'roomRuntime'      : "android.arch.persistence.room:runtime:$versions.room",
                 'roomCompiler'     : "android.arch.persistence.room:compiler:$versions.room",

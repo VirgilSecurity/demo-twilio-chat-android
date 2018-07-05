@@ -34,13 +34,18 @@
 package com.android.virgilsecurity.base.view
 
 import android.app.Activity
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 
-abstract class BaseActivity : Activity() {
+abstract class BaseActivity : Activity(), LifecycleOwner {
+
+    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -52,12 +57,28 @@ abstract class BaseActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
         setContentView(layoutResourceId)
 
         init(savedInstanceState)
         initViewSlices()
         setupVSObservers()
         setupVMStateObservers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleRegistry.markState(Lifecycle.State.STARTED)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
     }
 
     protected fun initToolbar(toolbar: Toolbar, title: String) {
@@ -69,4 +90,6 @@ abstract class BaseActivity : Activity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
+
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }

@@ -31,13 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.view
+package com.android.virgilsecurity.twiliodemo.view
 
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
 import com.android.virgilsecurity.base.view.Screen
 import com.android.virgilsecurity.base.view.ScreenRouter
+import com.android.virgilsecurity.common.view.ScreenChat
+import com.android.virgilsecurity.feature_channels_list.view.ChannelsListActivity
+import com.android.virgilsecurity.feature_login.view.AuthActivity
 
 /**
  * . _  _
@@ -55,24 +58,18 @@ import com.android.virgilsecurity.base.view.ScreenRouter
  */
 class ScreenRouterDefault : ScreenRouter {
 
-    sealed class ScreenChat : Screen {
-        object Login : ScreenChat()
-        object ChannelsList : ScreenChat()
-        object Channel : ScreenChat()
-    }
-
     override fun getScreenIntent(context: Context,
                                  screen: Screen): Intent? {
         val c: Class<*>? = when (screen) {
-            ScreenChat.Login -> null // TODO
-            ScreenChat.ChannelsList -> null // TODO
+            ScreenChat.Login -> AuthActivity::class.java
+            ScreenChat.ChannelsList -> ChannelsListActivity::class.java
             ScreenChat.Channel -> null // TODO
             else -> null
         }
         return if (c == null) null else Intent(context, c)
     }
 
-    fun getScreenIntent(context: Context,
+    override fun getScreenIntent(context: Context,
                                  screen: Screen,
                                  key: String,
                                  value: Parcelable): Intent? {

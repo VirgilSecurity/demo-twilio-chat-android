@@ -37,7 +37,7 @@ apply from: '../config-android.gradle'
 
 // Inner dependencies
 dependencies {
-//    feature project(":base")
+    implementation project(":base")
 }
 
 // Outer dependencies

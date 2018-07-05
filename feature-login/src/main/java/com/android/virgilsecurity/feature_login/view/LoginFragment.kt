@@ -33,13 +33,17 @@
 
 package com.android.virgilsecurity.feature_login.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.view.PagerAdapter
 import android.view.View
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseFragment
+import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
-import kotlinx.android.synthetic.main.fragment_login.*
+import com.android.virgilsecurity.feature_login.viewmodel.LoginVM
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -55,24 +59,43 @@ import kotlinx.android.synthetic.main.fragment_login.*
 /**
  * LoginFragment
  */
-class LoginFragment : BaseFragment<AuthActivity>() {
+class LoginFragment @SuppressLint("ValidFragment") constructor(
+        override val layoutResourceId: Int = R.layout.fragment_login
+) : BaseFragment<AuthActivity>() {
 
-    override fun layoutResourceId(): Int = R.layout.fragment_login
+    private val viewPagerSlice: ViewPagerSlice by inject()
+    private val stateSlice: StateSlice by inject()
+    private val viewModel: LoginVM by inject()
 
     override fun init(view: View, savedInstanceState: Bundle?) {
-        val pagerAdapter: PagerAdapter = PagerAdapter()
-        vpUsers.adapter
+        onStateChanged(viewModel.getState().value!!)
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
+    override fun initViewSlices(view: View) {
+        viewPagerSlice.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
     }
 
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
+    override fun setupVSActionObservers() =
+            observe(viewPagerSlice.getAction()) { onActionChanged(it) }
+
+    override fun setupVMStateObservers() = observe(viewModel.getState()) {
+        onStateChanged(it)
     }
 
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+    private fun onStateChanged(state: LoginVM.State) = when (state) {
+        is LoginVM.State.UsersLoaded -> viewPagerSlice.showUsers(state.users)
+        LoginVM.State.ShowLoading -> stateSlice.showLoading()
+        LoginVM.State.ShowContent -> stateSlice.showContent()
+        LoginVM.State.ShowError -> stateSlice.showError()
+        else -> stateSlice.showError()
+    }
+
+    private fun onActionChanged(action: Action) = when (action) {
+        is Action.UserClicked -> rootActivity?.login(action.user)
+    }
+
+    companion object {
+        fun instance() = LoginFragment()
     }
 }

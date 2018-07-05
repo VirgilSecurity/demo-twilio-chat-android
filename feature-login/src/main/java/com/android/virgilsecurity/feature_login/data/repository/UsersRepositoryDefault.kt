@@ -31,8 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.android.virgilsecurity.base.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.common.data.repository.UsersRepository
 import io.reactivex.Single
 
@@ -52,6 +52,5 @@ import io.reactivex.Single
  */
 class UsersRepositoryDefault(private val usersApi: UsersApi) : UsersRepository {
 
-    override fun users(): Single<List<User>> = usersApi.users()
-
+    override fun users(): Single<List<UserVT>> = usersApi.users()
 }

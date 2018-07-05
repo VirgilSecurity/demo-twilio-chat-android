@@ -54,7 +54,7 @@
         </activity>
 
         <activity
-            android:name=".ui.login.AuthActivity"
+            android:name="com.android.virgilsecurity.feature_login.view.AuthActivity"
             android:screenOrientation="portrait" />
 
         <activity

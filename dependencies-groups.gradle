@@ -63,7 +63,7 @@ ext {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
         annotationProcessor deps.ac.lifecycleCompiler
-//        implementation deps.ac.extensions
+        implementation deps.ac.extensions
 //        implementation deps.ac.streams
 //
 //        kapt deps.ac.databinding

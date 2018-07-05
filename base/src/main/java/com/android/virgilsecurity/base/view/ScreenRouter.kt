@@ -35,8 +35,11 @@ package com.android.virgilsecurity.base.view
 
 import android.content.Context
 import android.content.Intent
+import android.os.Parcelable
 
 interface ScreenRouter {
 
     fun getScreenIntent(context: Context, screen: Screen): Intent?
+
+    fun getScreenIntent(context: Context, screen: Screen, key: String, value: Parcelable): Intent?
 }

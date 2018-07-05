@@ -31,13 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.feature_login.viewslice.state
 
-
-import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT
-import io.reactivex.Single
+import android.view.View
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.viewslice.StateSlice
+import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
  * . _  _
@@ -45,18 +44,34 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersLocalDS
+ * StateSliceDefault
  */
-class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
+class StateSliceDefault : BaseViewSlice(), StateSlice {
 
-    override fun users(): Single<List<UserVT>> =
-            roomDS.usersDao().users()
+    override fun showLoading() {
+        clContent.visibility = View.GONE
+        tvError.visibility = View.GONE
+
+        pbLoading.visibility = View.VISIBLE
+    }
+
+    override fun showContent() {
+        pbLoading.visibility = View.GONE
+        tvError.visibility = View.GONE
+
+        clContent.visibility = View.VISIBLE
+    }
+
+    override fun showError() {
+        pbLoading.visibility = View.GONE
+        clContent.visibility = View.GONE
+
+        tvError.visibility = View.VISIBLE
+    }
 }

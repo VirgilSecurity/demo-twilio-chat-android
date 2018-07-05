@@ -34,11 +34,13 @@
 package com.android.virgilsecurity.base.view
 
 import android.app.Activity
+import android.app.Fragment
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,14 +58,17 @@ import android.view.inputmethod.InputMethodManager
  */
 
 @Suppress("UNCHECKED_CAST")
-abstract class BaseFragment<A> : Fragment() where A : Activity {
+abstract class BaseFragment<A> : Fragment(), LifecycleOwner where A : Activity {
+
+    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 
     protected var rootActivity: A? = null
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
 
-    @LayoutRes protected abstract fun layoutResourceId() : Int
     protected abstract fun init(view: View, savedInstanceState: Bundle?)
-    protected abstract fun initViewSlices()
-    protected abstract fun setupVSObservers()
+    protected abstract fun initViewSlices(view: View)
+    protected abstract fun setupVSActionObservers()
     protected abstract fun setupVMStateObservers()
 
     override fun onAttach(context: Context?) {
@@ -80,20 +85,38 @@ abstract class BaseFragment<A> : Fragment() where A : Activity {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(layoutResourceId(), container, false)
+        return inflater.inflate(layoutResourceId, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
 
         init(view, savedInstanceState)
-        initViewSlices()
-        setupVSObservers()
+        initViewSlices(view)
+        setupVSActionObservers()
         setupVMStateObservers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleRegistry.markState(Lifecycle.State.STARTED)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
     }
 
     protected fun hideKeyboard() {
         val imm = rootActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(rootActivity?.currentFocus?.windowToken, 0)
     }
+
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }

@@ -31,10 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.api
+package com.android.virgilsecurity.feature_login.viewslice.list
 
-import com.android.virgilsecurity.base.data.model.User
-import io.reactivex.Single
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
+import com.android.virgilsecurity.common.data.model.UserVT
 
 /**
  * . _  _
@@ -42,16 +43,21 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersApi
+ * ViewPagerSlice
  */
+interface ViewPagerSlice : ViewSlice {
 
-interface UsersApi {
+    sealed class Action {
+        data class UserClicked(val user: UserVT) : Action()
+    }
 
-    fun users(): Single<List<User>>
+    fun getAction(): LiveData<Action>
+
+    fun showUsers(users: List<UserVT>)
 }

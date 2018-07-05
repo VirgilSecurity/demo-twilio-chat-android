@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.common.data.repository
 
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.model.UserVT
 import io.reactivex.Single
 
 /**
@@ -52,5 +52,5 @@ import io.reactivex.Single
  */
 interface UsersRepository {
 
-    fun users() : Single<List<User>>
+    fun users() : Single<List<UserVT>>
 }

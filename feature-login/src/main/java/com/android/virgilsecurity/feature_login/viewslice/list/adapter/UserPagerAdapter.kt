@@ -31,19 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view
+package com.android.virgilsecurity.feature_login.viewslice.list.adapter
 
-import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.RecyclerView
-import android.view.View
-import com.android.virgilsecurity.base.view.BaseFragment
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
 import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
-import kotlinx.android.synthetic.main.fragment_users_page.*
-import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -51,42 +43,19 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersPageFragment
+ * UserPagerAdapter
  */
-class UsersPageFragment : BaseFragment<AuthActivity>() {
+abstract class UserPagerAdapter : PagerAdapter() {
 
-    private val adapter: DelegateAdapter<UserVT> by inject()
-    private val layoutManager: GridLayoutManager by inject()
-    private val itemDecoration: RecyclerView.ItemDecoration by inject()
+    abstract fun setUsers(users: List<UserVT>)
 
-    override fun layoutResourceId(): Int = R.layout.fragment_users_page
+    abstract fun addUser(user: UserVT)
 
-    override fun init(view: View, savedInstanceState: Bundle?) {
-        rvUsersGrid.layoutManager = layoutManager
-        rvUsersGrid.adapter = adapter
-        rvUsersGrid.addItemDecoration(itemDecoration)
-    }
-
-    override fun initViewSlices() { }
-
-    override fun setupVSObservers() { }
-
-    override fun setupVMStateObservers() { }
-
-    companion object {
-        const val KEY_USERS = "KEY_USERS"
-
-        fun newInstance() = UsersPageFragment()
-
-        fun newInstance(users: ArrayList<UserVT>) =
-                UsersPageFragment().apply {
-                    arguments = Bundle().apply { putParcelableArrayList(KEY_USERS, users) }
-                }
-    }
+    abstract fun clearUsers()
 }

@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view.adapter
+package com.android.virgilsecurity.feature_login.viewslice.list.adapter
 
 import android.content.Context
 import android.net.Uri
@@ -58,33 +58,14 @@ import com.android.virgilsecurity.feature_login.R
  */
 
 /**
- * UsersPagerAdapter
+ * UsersPagerAdapterDefault
  */
-class UsersPagerAdapter(
-        private val items: List<UserVT>,
+class UsersPagerAdapterDefault(
         private val imageStorage: ImageStorage,
         private val context: Context
-) : PagerAdapter() {
+) : UserPagerAdapter() {
 
-    private lateinit var pages: MutableList<List<UserVT>>
-
-    init {
-        if (items.isNotEmpty()) {
-            pages = ArrayList()
-            val iterator = items.iterator()
-
-            while (iterator.hasNext()) {
-                val page = ArrayList<UserVT>()
-
-                for (i in 1..PAGE_SIZE) {
-                    if (iterator.hasNext())
-                        page.add(iterator.next())
-                }
-
-                pages.add(page)
-            }
-        }
-    }
+    private lateinit var pages: MutableList<MutableList<UserVT>>
 
     override fun isViewFromObject(view: View, `object`: Any) = view == (`object` as View)
 
@@ -100,6 +81,37 @@ class UsersPagerAdapter(
             inflateChildAndAttach(parent.getChildAt(i) as ViewGroup, page[i])
 
         return parent
+    }
+
+    override fun setUsers(users: List<UserVT>) {
+        if (users.isNotEmpty()) {
+            pages = ArrayList()
+            val iterator = users.iterator()
+
+            while (iterator.hasNext()) {
+                val page = ArrayList<UserVT>()
+
+                for (i in 1..PAGE_SIZE) {
+                    if (iterator.hasNext())
+                        page.add(iterator.next())
+                }
+
+                pages.add(page)
+            }
+        }
+    }
+
+    override fun addUser(user: UserVT) {
+        if (pages[pages.size - 1].size == 4) {
+            val newPage = MutableList(1) { user }
+            pages.add(newPage)
+        } else {
+            pages[pages.size - 1].add(user)
+        }
+    }
+
+    override fun clearUsers() {
+        pages.clear()
     }
 
     private fun inflateChildAndAttach(parent: ViewGroup, user: UserVT) {

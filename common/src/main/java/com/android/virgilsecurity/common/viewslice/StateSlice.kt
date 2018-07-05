@@ -31,13 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.common.viewslice
 
-
-import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT
-import io.reactivex.Single
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -45,18 +41,19 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersLocalDS
+ * StateSlice
  */
-class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
+interface StateSlice : ViewSlice {
 
-    override fun users(): Single<List<UserVT>> =
-            roomDS.usersDao().users()
+    fun showLoading()
+
+    fun showContent()
+
+    fun showError()
 }

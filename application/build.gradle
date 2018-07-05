@@ -58,6 +58,8 @@ dependencies {
     implementation project(":base")
     implementation project(":common")
     implementation project(":feature-login")
+    implementation project(":feature-channels-list")
+    implementation project(":feature-channel")
 }
 
 // Outer dependencies

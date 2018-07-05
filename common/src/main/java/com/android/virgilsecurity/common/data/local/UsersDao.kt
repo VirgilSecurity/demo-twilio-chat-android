@@ -31,16 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view.adapter
+package com.android.virgilsecurity.common.data.local
 
-import android.content.Context
-import android.net.Uri
-import android.view.View
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
+import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Query
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.common.util.ImageStorage
-import com.android.virgilsecurity.feature_login.R
-import kotlinx.android.synthetic.main.item_login_user.*
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -48,43 +47,18 @@ import kotlinx.android.synthetic.main.item_login_user.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersPageItem
+ * UsersDao
  */
-class UsersPageItem(private val imageStorage: ImageStorage,
-                    private val context: Context,
-                    override val layoutResourceId: Int = R.layout.item_login_user)
-    : DelegateAdapterItemDefault<UserVT>() {
+@Dao
+interface UsersDao {
 
-    override fun onBind(item: UserVT, viewHolder: DelegateAdapterItemDefault.KViewHolder<UserVT>) {
-        with(viewHolder) {
-            if (item.picturePath != null && imageStorage.exists(item.picturePath!!)) {
-                tvInitials.visibility = View.GONE
-                ivUserPic.setImageBitmap(imageStorage.get(
-                    Uri.Builder().path(item.picturePath!!).build()))
-            } else {
-                tvInitials.visibility = View.VISIBLE
-                item.identity.split(" ").let {
-                    if (it.size > 1)
-                        tvInitials.text = StringBuilder("$it[0]$it[1]").toString()
-                }
-                ivUserPic.background = context.getDrawable(R.drawable.rect_rounded_gradient_2)
-                // TODO get random background
-            }
+    @Query("SELECT * FROM users") fun users(): Single<List<UserVT>>
 
-
-        }
-    }
-
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<UserVT>) {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            items[position] is UserVT
+    @Insert(onConflict = OnConflictStrategy.FAIL) fun insertUser(userVT: UserVT)
 }

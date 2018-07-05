@@ -33,11 +33,11 @@
 
 package com.android.virgilsecurity.feature_login.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.base.view.BaseFragment
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
 
 /**
  * . _  _
@@ -53,19 +53,19 @@ import com.android.virgilsecurity.twiliodemo.ui.login.AuthActivity
 /**
  * RegistrationFragment
  */
-class RegistrationFragment : BaseFragment<AuthActivity>() {
-
-    override fun layoutResourceId(): Int = R.layout.fragment_register
+class RegistrationFragment @SuppressLint("ValidFragment")constructor(
+        override val layoutResourceId: Int = R.layout.fragment_register
+) : BaseFragment<AuthActivity>() {
 
     override fun init(view: View, savedInstanceState: Bundle?) {
         // TODO Implement body or it will be empty ):
     }
 
-    override fun initViewSlices() {
+    override fun initViewSlices(view: View) {
         // TODO Implement body or it will be empty ):
     }
 
-    override fun setupVSObservers() {
+    override fun setupVSActionObservers() {
         // TODO Implement body or it will be empty ):
     }
 

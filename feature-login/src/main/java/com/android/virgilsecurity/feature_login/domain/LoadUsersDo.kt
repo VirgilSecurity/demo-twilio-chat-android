@@ -36,6 +36,7 @@ package com.android.virgilsecurity.feature_login.domain
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
 import com.android.virgilsecurity.base.domain.Do
+import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.common.data.repository.UsersRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -57,7 +58,7 @@ import io.reactivex.schedulers.Schedulers
 interface LoadUsersDo : Do<LoadUsersDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val users: List<User>) : Result()
+        data class OnSuccess(val users: List<UserVT>) : Result()
         data class OnError(val error: Throwable) : Result()
     }
 }

@@ -33,6 +33,12 @@
 
 package com.android.virgilsecurity.common.di
 
+import android.arch.persistence.room.Room
+import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.common.data.local.RoomDS
+import com.android.virgilsecurity.common.data.local.UsersLocalDS
+import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
+import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -51,7 +57,17 @@ import org.koin.dsl.module.applicationContext
  * commonModules
  */
 val commonModules: Module = applicationContext {
+    bean(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
     bean {
-
+        Room.databaseBuilder(get(), RoomDS::class.java, get(KEY_ROOM_DB_NAME))
+                .fallbackToDestructiveMigration()
+                .build()
     }
+    bean { UsersLocalDS(get()) as UsersApi }
+}
+
+object CommonDiConst {
+    const val KEY_ROOM_DB_NAME = "ROOM_DB_NAME"
+
+    const val ROOM_DB_NAME = "virgil_messenger_database"
 }

@@ -31,13 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.feature_channels_list.view
 
-
-import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT
-import io.reactivex.Single
+import android.os.Bundle
+import com.android.virgilsecurity.base.view.BaseActivity
+import com.android.virgilsecurity.feature_channels_list.R
 
 /**
  * . _  _
@@ -45,18 +43,31 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersLocalDS
+ * ChannelsListActivity
  */
-class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
+class ChannelsListActivity(
+        override val layoutResourceId: Int = R.layout.activity_channels_list
+) : BaseActivity() {
 
-    override fun users(): Single<List<UserVT>> =
-            roomDS.usersDao().users()
+    override fun init(savedInstanceState: Bundle?) {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initViewSlices() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
 }

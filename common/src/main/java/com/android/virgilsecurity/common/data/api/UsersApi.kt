@@ -31,11 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.common.data.api
 
-
-import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.model.UserVT
 import io.reactivex.Single
 
@@ -51,12 +48,10 @@ import io.reactivex.Single
  */
 
 /**
- * UsersLocalDS
+ * UsersApi
  */
-class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
 
-    override fun users(): Single<List<UserVT>> =
-            roomDS.usersDao().users()
+interface UsersApi {
+
+    fun users(): Single<List<UserVT>>
 }

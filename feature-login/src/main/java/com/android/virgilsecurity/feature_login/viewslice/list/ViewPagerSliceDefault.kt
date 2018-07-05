@@ -31,30 +31,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view.adapter
+package com.android.virgilsecurity.feature_login.viewslice.list
 
-import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
-import android.view.View
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UserPagerAdapter
+import kotlinx.android.synthetic.main.fragment_login.*
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
 
-class IndentItemDecoration(private val left: Int,
-                           private val top: Int,
-                           private val right: Int,
-                           private val bottom: Int) : RecyclerView.ItemDecoration() {
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/5/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-    constructor(indents: Int) : this(indents, indents, indents, indents)
+/**
+ * ViewPagerSliceDefault
+ */
+class ViewPagerSliceDefault(
+        private val adapter: UserPagerAdapter,
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice(), ViewPagerSlice {
 
-    override fun getItemOffsets(outRect: Rect, view: View,
-                                parent: RecyclerView, state: RecyclerView.State?) {
-        outRect.left = left
-        outRect.right = right
-        outRect.bottom = bottom
-
-        // Add top margin only for the first item to avoid double space between items
-        if (parent.getChildLayoutPosition(view) == 0) {
-            outRect.top = top
-        } else {
-            outRect.top = 0
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        setupViewPager()
     }
+
+    private fun setupViewPager() {
+        vpUsers.adapter = adapter
+        vpIndicatorUsers.setupWithViewPager(vpUsers)
+    }
+
+    override fun getAction(): LiveData<Action> = actionLiveData
+
+    override fun showUsers(users: List<UserVT>) = adapter.setUsers(users)
 }

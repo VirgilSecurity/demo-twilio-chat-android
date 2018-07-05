@@ -31,12 +31,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.feature_login.view
 
+import android.app.Fragment
 import android.os.Bundle
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivity
+import com.android.virgilsecurity.base.view.ScreenRouter
+import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_login.R
+import com.android.virgilsecurity.feature_login.viewmodel.LoginVM
+import com.android.virgilsecurity.twiliodemo.ui.login.NoUsersFragment
+import kotlinx.android.synthetic.main.activity_login.*
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -49,45 +59,52 @@ import com.android.virgilsecurity.feature_login.R
  * ....|_|-
  */
 
-class AuthActivity(override val layoutResourceId: Int = R.layout.activity_login) : BaseActivity() {
+class AuthActivity(
+        override val layoutResourceId: Int = R.layout.activity_login
+) : BaseActivity() {
+
+    private val doubleBack: DoubleBack by inject()
+    private val screenRouter: ScreenRouter by inject()
+    private val loginVM: LoginVM by inject()
 
     override fun init(savedInstanceState: Bundle?) {
-        // TODO Implement body or it will be empty ):
+        loginVM.users()
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
+    override fun initViewSlices() {}
+
+    override fun setupVSObservers() {}
+
+    override fun setupVMStateObservers() = observe(loginVM.getState()) {
+        onStateChanged(it)
     }
 
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
+    private fun onStateChanged(state: LoginVM.State) = when (state) {
+        is LoginVM.State.ShowContent -> showFragment(LoginFragment.instance())
+        LoginVM.State.ShowNoUsers -> showFragment(NoUsersFragment.instance())
+        LoginVM.State.ShowError -> showFragment(LoginFragment.instance())
+        else -> showFragment(LoginFragment.instance())
     }
 
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+    private fun showFragment(fragment: Fragment) {
+        UiUtils.replaceFragmentNoTag(fragmentManager,
+                                     flContainer.id,
+                                     fragment)
     }
 
-//    override fun initUi() {
-//        UiUtils.replaceFragmentNoTag(supportFragmentManager,
-//                                     flBaseContainer.id,
-//                                     NoUsersFragment.newInstance())
-//
-//    }
-//
-//    override fun onBackPressed() {
-//        hideKeyboard()
-//
-//        if (secondPress)
-//            super.onBackPressed()
-//        else
-//            UiUtils.toast(this, getString(R.string.press_exit_once_more))
-//
-//        secondPress = true
-//
-//        object : OnFinishTimer(2000, 100) {
-//            override fun onFinish() {
-//                secondPress = false
-//            }
-//        }.start()
-//    }
+    fun login(user: UserVT) =
+            screenRouter.getScreenIntent(this,
+                                         ScreenChat.ChannelsList,
+                                         "",
+                                         user)
+                    .run { startActivity(this) }
+
+    override fun onBackPressed() {
+        hideKeyboard()
+
+        if (doubleBack.tryToPress())
+            super.onBackPressed()
+        else
+            UiUtils.toast(this, getString(R.string.press_exit_once_more))
+    }
 }

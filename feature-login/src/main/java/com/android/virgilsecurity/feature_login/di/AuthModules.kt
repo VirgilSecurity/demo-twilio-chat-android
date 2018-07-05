@@ -31,16 +31,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import LoginDiConst.KEY_AUTH_ACTIVITY
+import LoginDiConst.KEY_VM_PROVIDER_FACTORY
+import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.arch.persistence.room.Room
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.AttributeSet
-import android.view.View
 import android.widget.GridLayout
-import android.widget.LinearLayout
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
-import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.feature_login.view.adapter.IndentItemDecoration
-import com.android.virgilsecurity.feature_login.view.adapter.UsersPageItem
+import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.common.data.local.RoomDS
+import com.android.virgilsecurity.common.data.local.UsersLocalDS
+import com.android.virgilsecurity.common.data.repository.UsersRepository
+import com.android.virgilsecurity.common.util.DoubleBack
+import com.android.virgilsecurity.feature_login.domain.LoadUsersDo
+import com.android.virgilsecurity.feature_login.domain.LoadUsersDoDefault
+import com.android.virgilsecurity.feature_login.view.AuthActivity
+import com.android.virgilsecurity.feature_login.viewmodel.LoginVMFactory
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -59,35 +67,26 @@ import org.koin.dsl.module.applicationContext
  * LoginModules
  */
 val usersPageModule: Module = applicationContext {
-    bean {
-        IndentItemDecoration(LoginDiConst.INDENT_LEFT,
-                             LoginDiConst.INDENT_TOP,
-                             LoginDiConst.INDENT_RIGHT,
-                             LoginDiConst.INDENT_BOTTOM) as RecyclerView.ItemDecoration
-    }
     bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
     bean {
         GridLayoutManager(get(), get(LoginDiConst.KEY_SPAN_COUNT),
                           GridLayout.HORIZONTAL, false) as RecyclerView.LayoutManager
     }
+    bean { DoubleBack() }
+    bean(KEY_AUTH_ACTIVITY) { AuthActivity() }
+    bean { UsersRepositoryDefault(get()) as UsersRepository }
+    bean { LoadUsersDoDefault(get()) as LoadUsersDo }
+    bean { LoginVMFactory(get()) }
     bean {
-        UsersPageItem(get(), get())
-    }
-    bean {
-        DelegateAdapter.Builder<UserVT>()
-                .add(get(LoginDiConst.KEY_USERS_PAGE_ITEM))
-                .build()
+        ViewModelProviders.of(get(KEY_AUTH_ACTIVITY) as Activity,
+                              get() as ViewModelProvider.Factory)
     }
 }
 
 object LoginDiConst {
     const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
-    const val KEY_USERS_PAGE_ITEM = "KEY_USERS_PAGE_ITEM"
+    const val KEY_AUTH_ACTIVITY = "KEY_AUTH_ACTIVITY"
 
-    const val INDENT_LEFT = 57
-    const val INDENT_TOP = 40
-    const val INDENT_RIGHT = 0
-    const val INDENT_BOTTOM = 0
     const val SPAN_COUNT = 2
 }
 
