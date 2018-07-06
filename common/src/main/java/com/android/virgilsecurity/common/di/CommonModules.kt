@@ -31,20 +31,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.di
+package com.android.virgilsecurity.common.di
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.base.view.ScreenRouter
+import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.common.data.local.RoomDS
 import com.android.virgilsecurity.common.data.local.UserManagerDefault
+import com.android.virgilsecurity.common.data.local.UsersLocalDS
+import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx
+import com.android.virgilsecurity.common.data.remote.virgil.GetTokenCallbackImpl
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilRx
+import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
+import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
 import com.android.virgilsecurity.common.util.AuthUtils
-import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.twilio.TwilioRx
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.GetTokenCallbackImpl
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
-import com.android.virgilsecurity.twiliodemo.view.ScreenRouterDefault
+import com.android.virgilsecurity.common.util.ImageStorage
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
@@ -63,22 +68,28 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/30/18
+ * ....|  _/    7/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * Modules
+ * commonModules
  */
-object Keys {
-    const val STORAGE_PATH = "storagePath"
+val commonModules: Module = applicationContext {
+    bean(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
+    bean {
+        Room.databaseBuilder(get(), RoomDS::class.java, get(KEY_ROOM_DB_NAME))
+                .fallbackToDestructiveMigration()
+                .build()
+    }
+    bean { UsersLocalDS(get()) as UsersApi }
+    bean { ImageStorage(get()) }
 }
 
 val utilsModule : Module = applicationContext {
     bean { UserManagerDefault(get()) as UserManager }
     bean { AuthUtils(get(), get(), get()) }
-    bean { ScreenRouterDefault() as ScreenRouter }
 }
 
 val networkModule : Module = applicationContext {
@@ -92,7 +103,7 @@ val virgilModule : Module = applicationContext {
     bean { GetTokenCallbackImpl(get(), get(), get()) as CallbackJwtProvider.GetTokenCallback }
     bean { CallbackJwtProvider(get()) as AccessTokenProvider }
     bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    bean { JsonFileKeyStorage(get(Keys.STORAGE_PATH)) as KeyStorage }
+    bean { JsonFileKeyStorage(get(CommonDiConst.STORAGE_PATH)) as KeyStorage }
     bean { PrivateKeyStorage(get(), get()) }
     bean { VirgilHelper(get(), get(), get(), get()) }
     bean { CardManager(get(), get(), get()) }
@@ -105,5 +116,12 @@ val twilioModule : Module = applicationContext {
 }
 
 val paramsModule : Module = applicationContext {
-    bean(Keys.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
+    bean(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
+}
+
+object CommonDiConst {
+    const val KEY_ROOM_DB_NAME = "ROOM_DB_NAME"
+
+    const val STORAGE_PATH = "storagePath"
+    const val ROOM_DB_NAME = "virgil_messenger_database"
 }

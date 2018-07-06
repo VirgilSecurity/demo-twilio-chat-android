@@ -31,13 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.virgil
+package com.android.virgilsecurity.feature_login.domain.registration
 
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.cards.CardManager
+import com.android.virgilsecurity.base.data.api.AuthApi
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.repository.AuthInteractor
+import com.android.virgilsecurity.common.data.repository.UsersRepository
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -45,22 +45,28 @@ import io.reactivex.schedulers.Schedulers
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/30/18
+ * ....|  _/    7/6/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class VirgilRx(private val cardManager: CardManager) {
+/**
+ * SignUpDoDefault
+ */
+class SignUpDoDefault(
+        private val authInteractor: AuthInteractor,
+        private val usersRepository: UsersRepository
+) : BaseDo<SignUpDo.Result>(), SignUpDo {
 
-    fun publishCard(rawSignedModel: RawSignedModel): Single<Card> = Single.create<Card> { e ->
-            e.onSuccess(cardManager.publishCard(rawSignedModel))
-        }.subscribeOn(Schedulers.io())
+    override fun execute(identity: String) {
+        authInteractor.signUp(identity)
+    }
 
-    fun getCard(cardId: String): Single<Card> = Single.create<Card> { e ->
-            e.onSuccess(cardManager.getCard(cardId))
-        }.subscribeOn(Schedulers.io())
+    private fun success(rawSignedModel: RawSignedModel) {
+        liveData.value = SignUpDo.Result.OnSuccess(rawSignedModel)
+    }
 
-    fun searchCards(identity: String): Single<List<Card>> = Single.create<List<Card>> { e ->
-            e.onSuccess(cardManager.searchCards(identity))
-        }.subscribeOn(Schedulers.io())
+    private fun error(throwable: Throwable) {
+        liveData.value = SignUpDo.Result.OnError(throwable)
+    }
 }

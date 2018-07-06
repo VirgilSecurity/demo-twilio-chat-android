@@ -31,23 +31,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.common.data.remote.virgil
 
-apply from: '../config-android.gradle'
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.common.util.AuthUtils
+import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
+import com.virgilsecurity.sdk.jwt.TokenContext
+import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 
-// Inner dependencies
-dependencies {
-    implementation project(path: ':base')
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/4/186/4/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    reactiveness()
-    virgil()
-    room()
-    twilio()
-    koin()
-    architectureComponents()
-    networking()
+/**
+ * GetTokenCallbackImpl
+ */
+class GetTokenCallbackImpl(private val fuelHelper: FuelHelper,
+                           private val userManager: UserManager,
+                           private val utils: AuthUtils) :
+        CallbackJwtProvider.GetTokenCallback {
+
+    // TODO use caching provider instead
+
+    override fun onGetToken(tokenContext: TokenContext?): String {
+        return fuelHelper.getVirgilToken(userManager.currentUser!!.identity,
+                                             utils.generateAuthHeader()).token
+    }
 }

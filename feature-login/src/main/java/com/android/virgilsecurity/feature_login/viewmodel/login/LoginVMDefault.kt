@@ -31,23 +31,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_login.viewmodel.login
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
+import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 
-// Inner dependencies
-dependencies {
-    implementation project(path: ':base')
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/25/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    reactiveness()
-    virgil()
-    room()
-    twilio()
-    koin()
-    architectureComponents()
-    networking()
+/**
+ * LoginVMDefault
+ */
+
+class LoginVMDefault(
+        private val state: MediatorLiveData<State>,
+        private val loadUsersDo: LoadUsersDo
+) : LoginVM() {
+
+    init {
+        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    }
+
+    override fun onCleared() = loadUsersDo.cleanUp()
+
+    override fun getState(): LiveData<State> = state
+
+    override fun users() {
+        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
+        loadUsersDo.execute()
+    }
+
+    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
+        when (result) {
+            is LoadUsersDo.Result.OnSuccess -> {
+                if (result.users.isNotEmpty()) {
+                    state.value = State.UsersLoaded(
+                        result.users)
+                    state.value = State.ShowContent
+                } else {
+                    state.value = State.ShowNoUsers
+                }
+            }
+            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+        }
+    }
 }

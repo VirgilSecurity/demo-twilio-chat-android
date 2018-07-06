@@ -31,9 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.data.model.response
+package com.android.virgilsecurity.common.data.model.request
 
-import com.google.gson.annotations.SerializedName
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
-data class SignInResponse(@SerializedName("virgil_card") val virgilCard: RawSignedModel)
+data class SignUpRequest(val rawCard: RawSignedModel)
+
+data class SignInRequest(val identity: String)
+
+data class TokenRequest(val identity: String)

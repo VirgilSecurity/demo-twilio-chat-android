@@ -31,16 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.twilio
+package com.android.virgilsecurity.common.data.remote.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.common.util.UiUtils
-import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.twiliodemo.util.Constants
-import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_RECEIVER
-import com.android.virgilsecurity.twiliodemo.util.Constants.KEY_SENDER
 import com.twilio.accessmanager.AccessManager
 import com.twilio.chat.*
 import io.reactivex.BackpressureStrategy
@@ -70,7 +67,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     private val channelExistsCode = 50307
 
     fun getToken(identity: String, authHeader: () -> String): Single<String> = Single.create<String> {
-        val token = fuelHelper.getTwilioTokenSync(identity, authHeader()).token
+        val token = fuelHelper.getTwilioToken(identity, authHeader()).token
         it.onSuccess(token)
     }.subscribeOn(Schedulers.io())
 
@@ -104,14 +101,14 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                                             token,
                                             object : AccessManager.Listener {
                                                 override fun onTokenExpired(accessManager: AccessManager?) {
-                                                    val newToken = fuelHelper.getTwilioTokenSync(
+                                                    val newToken = fuelHelper.getTwilioToken(
                                                         identity,
                                                         authHeader()).token
                                                     accessManager?.updateToken(newToken)
                                                 }
 
                                                 override fun onTokenWillExpire(accessManager: AccessManager?) {
-                                                    val newToken = fuelHelper.getTwilioTokenSync(
+                                                    val newToken = fuelHelper.getTwilioToken(
                                                         identity,
                                                         authHeader()).token
                                                     accessManager?.updateToken(newToken)
@@ -184,7 +181,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                         errorInfo))
                 }
             })
-        }.doOnError { throwable ->
+        }.doOnError {
             channel.destroy(object : StatusListener() {
                 override fun onSuccess() {
                     UiUtils.log(this.javaClass.simpleName,
@@ -211,7 +208,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                                                           errorInfo))
                                                   }
                                               })
-                }.doOnError { throwable ->
+                }.doOnError {
                     channel.destroy(object : StatusListener() {
                         override fun onSuccess() {
                             UiUtils.log(this.javaClass.simpleName,
@@ -319,8 +316,8 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     interlocutor: String): Single<Message> =
             Single.create<Message> {
                 val attributes = JSONObject()
-                attributes.put(Constants.KEY_SENDER, userManager.currentUser!!.identity)
-                attributes.put(Constants.KEY_RECEIVER, interlocutor)
+                attributes.put(KEY_SENDER, userManager.currentUser!!.identity)
+                attributes.put(KEY_RECEIVER, interlocutor)
 
                 val message = Message.options().withBody(body).withAttributes(attributes)
                 channel.messages.sendMessage(message, object : CallbackListener<Message>() {
@@ -348,4 +345,9 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
                 })
             }.subscribeOn(Schedulers.io())
+
+    companion object {
+        const val KEY_SENDER = "sender"
+        const val KEY_RECEIVER = "receiver"
+    }
 }

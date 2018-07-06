@@ -72,4 +72,52 @@ class RegistrationFragment @SuppressLint("ValidFragment")constructor(
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
     }
+
+    //
+//    override fun initCallbacks() {
+//        btnSignUp.setOnClickListener {
+//            val identity = etIdentity.text.toString()
+//            if (identity.isNotEmpty()) {
+//                showProgress(true)
+//                presenter.requestSignUp(etIdentity.text.toString(),
+//                                        {
+//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
+//                                        },
+//                                        {
+//                                            UiUtils.toast(this, it.message ?: "SignUp Error")
+//                                            showProgress(false)
+//                                        })
+//            }
+//        }
+//
+//        btnSignIn.setOnClickListener {
+//            val identity = etIdentity.text.toString()
+//            if (identity.isNotEmpty()) {
+//                showProgress(true)
+//                presenter.requestSignIn(etIdentity.text.toString(),
+//                                        {
+//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
+//                                        },
+//                                        {
+//                                            if (it is FuelError && (it.response.statusCode == 400)) {
+//                                                UiUtils.toast(this,
+//                                                              "Identity not registered")
+//                                            } else {
+//                                                UiUtils.toast(this,
+//                                                              it.message ?: "SignIn Error")
+//                                            }
+//                                            showProgress(false)
+//                                        })
+//            }
+//        }
+//    }
+//
+//    private fun showProgress(show: Boolean) {
+//        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
+//        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
+//        btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
+//    }
+    companion object {
+        fun instance() = RegistrationFragment()
+    }
 }

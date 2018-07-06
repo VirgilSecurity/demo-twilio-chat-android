@@ -38,8 +38,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx.Companion.KEY_RECEIVER
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx.Companion.KEY_SENDER
 import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.util.Constants
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_list_channels.*
@@ -101,7 +102,7 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
 
     fun getItemById(interlocutor: String): Channel? {
         for (channel in items) {
-            if ((channel.attributes[Constants.KEY_RECEIVER] as String) == interlocutor)
+            if ((channel.attributes[KEY_RECEIVER] as String) == interlocutor)
                 return channel
         }
 
@@ -120,8 +121,8 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
         fun bind(channel: Channel) {
             val attributes = channel.attributes
 
-            val receiver = attributes[Constants.KEY_RECEIVER] as String
-            val sender = attributes[Constants.KEY_SENDER] as String
+            val receiver = attributes[KEY_RECEIVER] as String
+            val sender = attributes[KEY_SENDER] as String
             val currentUser = userManager.currentUser!!.identity
 
             if (currentUser == sender)

@@ -31,12 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.domain
+package com.android.virgilsecurity.common.data.remote.virgil
 
-import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.common.data.repository.UsersRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.virgilsecurity.sdk.cards.Card
+import com.virgilsecurity.sdk.cards.CardManager
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -45,30 +45,22 @@ import io.reactivex.schedulers.Schedulers
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/22/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-/**
- * LoadUsersDoDefault
- */
-class LoadUsersDoDefault(private val repository: UsersRepository)
-    : BaseDo<LoadUsersDo.Result>(),
-        LoadUsersDo {
+class VirgilRx(private val cardManager: CardManager) {
 
-    override fun execute() =
-            repository.users()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
-                    .track()
+    fun publishCard(rawSignedModel: RawSignedModel): Single<Card> = Single.create<Card> { e ->
+            e.onSuccess(cardManager.publishCard(rawSignedModel))
+        }.subscribeOn(Schedulers.io())
 
-    private fun success(users: List<UserVT>) {
-        liveData.value = LoadUsersDo.Result.OnSuccess(users)
-    }
+    fun getCard(cardId: String): Single<Card> = Single.create<Card> { e ->
+            e.onSuccess(cardManager.getCard(cardId))
+        }.subscribeOn(Schedulers.io())
 
-    private fun error(throwable: Throwable) {
-        liveData.value = LoadUsersDo.Result.OnError(throwable)
-    }
+    fun searchCards(identity: String): Single<List<Card>> = Single.create<List<Card>> { e ->
+            e.onSuccess(cardManager.searchCards(identity))
+        }.subscribeOn(Schedulers.io())
 }

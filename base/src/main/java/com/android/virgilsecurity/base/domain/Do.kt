@@ -37,8 +37,6 @@ import android.arch.lifecycle.LiveData
 
 interface Do<T> {
 
-    fun execute()
-
     fun getLiveData(): LiveData<T>
 
     fun cleanUp()

@@ -31,13 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.virgil
+package com.android.virgilsecurity.common.data.remote
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.common.util.AuthUtils
-import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.jwt.TokenContext
-import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
+import com.android.virgilsecurity.base.data.api.AuthApi
+import com.android.virgilsecurity.base.data.model.SignInResponse
+import com.android.virgilsecurity.base.data.model.Token
+import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -45,23 +46,29 @@ import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/4/186/4/18
+ * ....|  _/    7/6/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * GetTokenCallbackImpl
+ * AuthRemote
  */
-class GetTokenCallbackImpl(private val fuelHelper: FuelHelper,
-                           private val userManager: UserManager,
-                           private val utils: AuthUtils) :
-        CallbackJwtProvider.GetTokenCallback {
+class AuthRemote(
+        private val fuelHelper: FuelHelper
+) : AuthApi {
 
-    // TODO use caching provider instead
-
-    override fun onGetToken(tokenContext: TokenContext?): String {
-        return fuelHelper.getVirgilTokenSync(userManager.currentUser!!.identity,
-                                             utils.generateAuthHeader()).token
+    override fun signIn(identity: String): Single<SignInResponse> = Single.create {
+        it.onSuccess(fuelHelper.signIn(identity))
     }
+
+    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.create {
+        it.onSuccess(fuelHelper.signUp(rawCard))
+    }
+
+    override fun getVirgilToken(identity: String, authHeader: String): Token =
+            fuelHelper.getVirgilToken(identity, authHeader)
+
+    override fun getTwilioToken(identity: String, authHeader: String): Token =
+            fuelHelper.getTwilioToken(identity, authHeader)
 }

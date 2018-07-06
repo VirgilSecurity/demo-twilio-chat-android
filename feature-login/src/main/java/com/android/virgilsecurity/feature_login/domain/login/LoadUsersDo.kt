@@ -31,12 +31,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.data.model.request
+package com.android.virgilsecurity.feature_login.domain.login
 
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.base.domain.Do
+import com.android.virgilsecurity.common.data.model.UserVT
 
-data class SignUpRequest(val rawCard: RawSignedModel)
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    6/22/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-data class SignInRequest(val identity: String)
+/**
+ * LoadUsersDoDefault
+ */
+interface LoadUsersDo : Do<LoadUsersDo.Result> {
 
-data class TokenRequest(val identity: String)
+    sealed class Result {
+        data class OnSuccess(val users: List<UserVT>) : Result()
+        data class OnError(val error: Throwable) : Result()
+    }
+
+    fun execute()
+}

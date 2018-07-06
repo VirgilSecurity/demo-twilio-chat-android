@@ -34,12 +34,11 @@
 package com.android.virgilsecurity.twiliodemo.ui.login
 
 import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.feature_login.data.model.response.SignInResponse
-import com.android.virgilsecurity.twiliodemo.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.twiliodemo.data.remote.virgil.VirgilRx
+import com.android.virgilsecurity.common.data.model.response.SignInResponse
+import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilRx
 import com.github.kittinunf.fuel.core.FuelError
-import com.virgilsecurity.sdk.cards.Card
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -98,7 +97,7 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
 //                                                               (TwilioUser(
 //                                                           identity))
 
-                                                       val rawCardModel = it.virgilCard
+                                                       val rawCardModel = it.rawSignedModel
 //                                                       userManager.setUserCard(Card.parse(
 //                                                           virgilHelper.cardCrypto,
 //                                                           rawCardModel))
@@ -143,7 +142,7 @@ class LoginPresenter(private val virgilHelper: VirgilHelper,
                             onSuccess = {
 //                                userManager.setCurrentUser(TwilioUser(identity))
 //
-//                                val rawCardModel = it.virgilCard
+//                                val rawCardModel = it.rawSignedModel
 //                                userManager.setUserCard(Card.parse(virgilHelper.cardCrypto,
 //                                                                   rawCardModel))
 

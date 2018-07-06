@@ -31,12 +31,11 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.feature_channels_list">
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <application>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".view.ChannelsListActivity" />
-    </application>
-
-</manifest>
+    <gradient
+        android:angle="225"
+        android:endColor="@color/colorAccentDark"
+        android:startColor="@color/colorAccent" />
+</shape>

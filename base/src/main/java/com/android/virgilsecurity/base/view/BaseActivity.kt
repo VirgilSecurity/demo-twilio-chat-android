@@ -33,17 +33,17 @@
 
 package com.android.virgilsecurity.base.view
 
-import android.app.Activity
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
+import android.support.v4.app.FragmentActivity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 
-abstract class BaseActivity : Activity(), LifecycleOwner {
+abstract class BaseActivity : FragmentActivity(), LifecycleOwner {
 
     private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 

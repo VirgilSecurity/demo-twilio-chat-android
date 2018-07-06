@@ -31,6 +31,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.model.response
+package com.android.virgilsecurity.base.data.model
 
-data class TokenResponse(val token: String)
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/6/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * SignInResponse
+ */
+interface SignInResponse {
+
+    val rawSignedModel: RawSignedModel
+}

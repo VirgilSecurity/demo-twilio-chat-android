@@ -33,18 +33,6 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import android.os.Parcelable
-import android.view.View
-import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.twiliodemo.R
-import com.android.virgilsecurity.twiliodemo.R.id.flBaseContainer
-import com.android.virgilsecurity.twiliodemo.util.Constants
-import com.android.virgilsecurity.common.util.UiUtils
-import com.twilio.chat.Channel
-
 /**
  * . _  _
  * .| || | _

@@ -31,14 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.login
+package com.android.virgilsecurity.feature_login.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.base.view.BaseFragment
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.view.AuthActivity
+import kotlinx.android.synthetic.main.fragment_no_users.*
 
 /**
  * . _  _
@@ -60,64 +60,20 @@ class NoUsersFragment @SuppressLint("ValidFragment") constructor(
 ) : BaseFragment<AuthActivity>() {
 
     override fun init(view: View, savedInstanceState: Bundle?) {
-        // TODO Implement body or it will be empty ):
+        initViewCallbacks()
     }
 
-    override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+    private fun initViewCallbacks() {
+        btnCreateNewAccount.setOnClickListener {
+            rootActivity!!.registration()
+        }
     }
 
-    override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun initViewSlices(view: View) { }
 
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-//
-//    override fun initCallbacks() {
-//        btnSignUp.setOnClickListener {
-//            val identity = etIdentity.text.toString()
-//            if (identity.isNotEmpty()) {
-//                showProgress(true)
-//                presenter.requestSignUp(etIdentity.text.toString(),
-//                                        {
-//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
-//                                        },
-//                                        {
-//                                            UiUtils.toast(this, it.message ?: "SignUp Error")
-//                                            showProgress(false)
-//                                        })
-//            }
-//        }
-//
-//        btnSignIn.setOnClickListener {
-//            val identity = etIdentity.text.toString()
-//            if (identity.isNotEmpty()) {
-//                showProgress(true)
-//                presenter.requestSignIn(etIdentity.text.toString(),
-//                                        {
-//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
-//                                        },
-//                                        {
-//                                            if (it is FuelError && (it.response.statusCode == 400)) {
-//                                                UiUtils.toast(this,
-//                                                              "Identity not registered")
-//                                            } else {
-//                                                UiUtils.toast(this,
-//                                                              it.message ?: "SignIn Error")
-//                                            }
-//                                            showProgress(false)
-//                                        })
-//            }
-//        }
-//    }
-//
-//    private fun showProgress(show: Boolean) {
-//        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
-//        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
-//        btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
-//    }
+    override fun setupVSActionObservers() { }
+
+    override fun setupVMStateObservers() { }
 
     companion object {
         fun instance() = NoUsersFragment()

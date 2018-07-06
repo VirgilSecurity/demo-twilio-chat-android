@@ -35,12 +35,25 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@color/snow"/>
+        android:drawable="@drawable/dark_red_red_gradient"/>
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@drawable/icon_big"/>
+    </item>
+
+    <item>
+        <bitmap
+            android:src="@drawable/powered_by_splash"
+            android:gravity="bottom|center_horizontal"/>
+    </item>
+
+    <item
+        android:bottom="30dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
     </item>
 
 </layer-list>

@@ -46,5 +46,6 @@
     <string name="pick_a_username">Pick a username</string>
     <string name="error_loading_users">Error loading users</string>
     <string name="no_users">Error loading users</string>
+    <string name="already_registered">Already registered</string>
 
 </resources>

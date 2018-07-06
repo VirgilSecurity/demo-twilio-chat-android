@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.twilio
+package com.android.virgilsecurity.common.data.remote.twilio
 
 import android.content.Context
 import com.twilio.chat.*

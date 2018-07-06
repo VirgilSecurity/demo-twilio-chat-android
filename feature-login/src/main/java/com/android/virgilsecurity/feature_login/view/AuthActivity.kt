@@ -43,8 +43,7 @@ import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.viewmodel.LoginVM
-import com.android.virgilsecurity.twiliodemo.ui.login.NoUsersFragment
+import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 
@@ -83,13 +82,16 @@ class AuthActivity(
         is LoginVM.State.ShowContent -> showFragment(LoginFragment.instance())
         LoginVM.State.ShowNoUsers -> showFragment(NoUsersFragment.instance())
         LoginVM.State.ShowError -> showFragment(LoginFragment.instance())
-        else -> showFragment(LoginFragment.instance())
+        else -> {
+            // Waiting while users are loaded
+        }
     }
 
     private fun showFragment(fragment: Fragment) {
         UiUtils.replaceFragmentNoTag(fragmentManager,
                                      flContainer.id,
                                      fragment)
+        // TODO add nice transaction & remove white background after splash
     }
 
     fun login(user: UserVT) =
@@ -98,6 +100,10 @@ class AuthActivity(
                                          "",
                                          user)
                     .run { startActivity(this) }
+
+    fun registration() {
+        showFragment(RegistrationFragment.instance())
+    }
 
     override fun onBackPressed() {
         hideKeyboard()

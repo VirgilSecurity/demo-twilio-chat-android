@@ -31,23 +31,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_login.domain.registration
 
-apply from: '../config-android.gradle'
+import com.android.virgilsecurity.base.domain.Do
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
-// Inner dependencies
-dependencies {
-    implementation project(path: ':base')
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/6/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    reactiveness()
-    virgil()
-    room()
-    twilio()
-    koin()
-    architectureComponents()
-    networking()
+/**
+ * SignUpDo
+ */
+interface SignUpDo : Do<SignUpDo.Result> {
+
+    sealed class Result {
+        data class OnSuccess(val rawSignedModel: RawSignedModel) : Result()
+        data class OnError(val error: Throwable) : Result()
+    }
+
+    fun execute(identity: String)
 }

@@ -31,23 +31,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_login.viewmodel.registration
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
+import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
 
-// Inner dependencies
-dependencies {
-    implementation project(path: ':base')
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/6/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    reactiveness()
-    virgil()
-    room()
-    twilio()
-    koin()
-    architectureComponents()
-    networking()
+/**
+ * RegistrationVMDefault
+ */
+class RegistrationVMDefault(
+        private val state: MediatorLiveData<State>,
+        private val registrationDo: SignUpDo
+) : RegistrationVM() {
+
+    override fun getState(): LiveData<State> = state
+
+    override fun registration() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun onCleared() {
+        registrationDo.cleanUp()
+    }
 }

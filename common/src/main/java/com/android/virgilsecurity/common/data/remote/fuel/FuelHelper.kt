@@ -31,15 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.fuel
+package com.android.virgilsecurity.common.data.remote.fuel
 
+import com.android.virgilsecurity.base.data.api.AuthApi
 import com.android.virgilsecurity.base.extension.toObject
+import com.android.virgilsecurity.common.data.model.request.SignInRequest
+import com.android.virgilsecurity.common.data.model.request.SignUpRequest
+import com.android.virgilsecurity.common.data.model.request.TokenRequest
+import com.android.virgilsecurity.common.data.model.response.SignInResponse
 import com.android.virgilsecurity.common.data.model.response.TokenResponse
 import com.android.virgilsecurity.common.util.UiUtils
-import com.android.virgilsecurity.feature_login.data.model.request.SignInRequest
-import com.android.virgilsecurity.feature_login.data.model.request.SignUpRequest
-import com.android.virgilsecurity.feature_login.data.model.request.TokenRequest
-import com.android.virgilsecurity.feature_login.data.model.response.SignInResponse
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Request
@@ -77,21 +78,21 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
 
     init {
         FuelManager.instance.basePath = baseUrl
-        FuelManager.instance.addResponseInterceptor(responseInterceptor<Any>())
+        FuelManager.instance.addResponseInterceptor(responseInterceptor())
         gson = Gson()
     }
 
-    inline fun <reified T> responseInterceptor() =
+    private fun responseInterceptor() =
             { next: (Request, Response) -> Response ->
                 { req: Request, res: Response ->
-                    UiUtils.log(this.javaClass.simpleName, " -> Request\n${req.parameters}")
-                    UiUtils.log(this.javaClass.simpleName, " -> Response\n${res.data}")
+                    UiUtils.log(this.javaClass.simpleName, " -> Request\n$req")
+                    UiUtils.log(this.javaClass.simpleName, " -> Response\n$res")
 
                     next(req, res)
                 }
             }
 
-    fun getVirgilTokenSync(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
+    fun getVirgilToken(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
             .header("Authorization" to "Bearer $authHeader")
             .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))
@@ -100,7 +101,7 @@ class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
             .get()
             .toObject(TokenResponse::class.java)
 
-    fun getTwilioTokenSync(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
+    fun getTwilioToken(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
             .header("Authorization" to "Bearer $authHeader")
             .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))

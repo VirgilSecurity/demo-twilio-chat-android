@@ -32,23 +32,22 @@
  */
 
 import LoginDiConst.KEY_AUTH_ACTIVITY
-import LoginDiConst.KEY_VM_PROVIDER_FACTORY
-import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.persistence.room.Room
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.GridLayout
-import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.common.data.local.RoomDS
-import com.android.virgilsecurity.common.data.local.UsersLocalDS
+import android.arch.lifecycle.*
+import android.support.v4.app.FragmentActivity
 import com.android.virgilsecurity.common.data.repository.UsersRepository
 import com.android.virgilsecurity.common.util.DoubleBack
-import com.android.virgilsecurity.feature_login.domain.LoadUsersDo
-import com.android.virgilsecurity.feature_login.domain.LoadUsersDoDefault
+import com.android.virgilsecurity.common.viewslice.StateSlice
+import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
 import com.android.virgilsecurity.feature_login.view.AuthActivity
-import com.android.virgilsecurity.feature_login.viewmodel.LoginVMFactory
+import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
+import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVMDefault
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
+import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSliceDefault
+import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UserPagerAdapter
+import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UsersPagerAdapterDefault
+import com.android.virgilsecurity.feature_login.viewslice.state.StateSliceDefault
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -58,29 +57,35 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    5/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
-
+// TODO check dates in print above in all files
 /**
  * LoginModules
  */
-val usersPageModule: Module = applicationContext {
-    bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
-    bean {
-        GridLayoutManager(get(), get(LoginDiConst.KEY_SPAN_COUNT),
-                          GridLayout.HORIZONTAL, false) as RecyclerView.LayoutManager
-    }
-    bean { DoubleBack() }
-    bean(KEY_AUTH_ACTIVITY) { AuthActivity() }
+val authModule: Module = applicationContext {
+    bean(KEY_AUTH_ACTIVITY) { AuthActivity() as FragmentActivity }
     bean { UsersRepositoryDefault(get()) as UsersRepository }
     bean { LoadUsersDoDefault(get()) as LoadUsersDo }
-    bean { LoginVMFactory(get()) }
+    bean { MediatorLiveData<Action>() }
     bean {
-        ViewModelProviders.of(get(KEY_AUTH_ACTIVITY) as Activity,
-                              get() as ViewModelProvider.Factory)
+        LoginVMDefault(get(),
+                                                                                get()) as LoginVM
     }
+}
+
+val authActivityModule: Module = applicationContext {
+    bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
+    bean { DoubleBack() }
+}
+
+val loginFragmentModule: Module = applicationContext {
+    bean { UsersPagerAdapterDefault(get(), get()) as UserPagerAdapter }
+    bean { MutableLiveData<Action>() }
+    bean { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
+    bean { StateSliceDefault() as StateSlice }
 }
 
 object LoginDiConst {
@@ -89,10 +94,3 @@ object LoginDiConst {
 
     const val SPAN_COUNT = 2
 }
-
-//android:numColumns="auto_fit"
-//android:stretchMode="columnWidth"
-//android:gravity="center"
-//android:columnWidth="80dp"
-//android:horizontalSpacing="57dp"
-//android:verticalSpacing="40dp"

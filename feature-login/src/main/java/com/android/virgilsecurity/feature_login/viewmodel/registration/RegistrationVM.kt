@@ -31,7 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.util
+package com.android.virgilsecurity.feature_login.viewmodel.registration
+
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.ViewModel
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 /**
  * . _  _
@@ -39,16 +43,23 @@ package com.android.virgilsecurity.twiliodemo.util
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/1/186/1/18
+ * ....|  _/    7/6/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * Constants
+ * RegistrationVM
  */
-object Constants {
-    const val KEY_SENDER = "sender"
-    const val KEY_RECEIVER = "receiver"
-    const val KEY_CHANNEL = "KEY_CHANNEL"
+abstract class RegistrationVM : ViewModel() {
+
+    sealed class State {
+        data class RegisteredSuccessfully(val rawSignedModel: RawSignedModel) : State()
+        object ShowLoading : State()
+        object ShowError : State()
+    }
+
+    abstract fun getState() : LiveData<State>
+
+    abstract fun registration()
 }

@@ -40,7 +40,7 @@ import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseFragment
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.viewmodel.LoginVM
+import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice
 import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
 import org.koin.android.ext.android.inject
@@ -67,13 +67,12 @@ class LoginFragment @SuppressLint("ValidFragment") constructor(
     private val stateSlice: StateSlice by inject()
     private val viewModel: LoginVM by inject()
 
-    override fun init(view: View, savedInstanceState: Bundle?) {
-        onStateChanged(viewModel.getState().value!!)
-    }
+    override fun init(view: View, savedInstanceState: Bundle?) {}
 
     override fun initViewSlices(view: View) {
-        viewPagerSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+        viewPagerSlice.init(rootActivity!!.lifecycle, view)
+        stateSlice.init(rootActivity!!.lifecycle, view)
+        onStateChanged(viewModel.getState().value!!)
     }
 
     override fun setupVSActionObservers() =

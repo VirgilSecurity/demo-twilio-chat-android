@@ -31,11 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.domain
+package com.android.virgilsecurity.feature_login.domain.login
 
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.base.domain.Do
 import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.common.data.repository.UsersRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,10 +53,24 @@ import io.reactivex.schedulers.Schedulers
 /**
  * LoadUsersDoDefault
  */
-interface LoadUsersDo : Do<LoadUsersDo.Result> {
+class LoadUsersDoDefault(
+        private val repository: UsersRepository
+) : BaseDo<LoadUsersDo.Result>(), LoadUsersDo {
 
-    sealed class Result {
-        data class OnSuccess(val users: List<UserVT>) : Result()
-        data class OnError(val error: Throwable) : Result()
+    override fun execute() =
+            repository.users()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
+
+    private fun success(users: List<UserVT>) {
+        liveData.value = LoadUsersDo.Result.OnSuccess(
+            users)
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = LoadUsersDo.Result.OnError(
+            throwable)
     }
 }

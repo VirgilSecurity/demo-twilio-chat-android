@@ -31,13 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel
+package com.android.virgilsecurity.common.data.repository
 
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import com.android.virgilsecurity.feature_login.domain.LoadUsersDo
-import com.android.virgilsecurity.feature_login.domain.LoadUsersDoDefault
+import com.android.virgilsecurity.base.data.model.SignInResponse
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -45,19 +43,17 @@ import com.android.virgilsecurity.feature_login.domain.LoadUsersDoDefault
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/6/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMFactory
+ * AuthInteractor
  */
-class LoginVMFactory(
-        private val loadUsersDo: LoadUsersDo
-) : ViewModelProvider.Factory {
+interface AuthInteractor {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            LoginVMDefault(MediatorLiveData(), loadUsersDo) as T
+    fun signIn(identity: String): Single<SignInResponse>
+
+    fun signUp(identity: String): Single<SignInResponse>
 }

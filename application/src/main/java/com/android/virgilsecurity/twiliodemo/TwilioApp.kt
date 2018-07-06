@@ -35,10 +35,13 @@ package com.android.virgilsecurity.twiliodemo
 
 import android.app.Application
 import android.os.StrictMode
-import com.android.virgilsecurity.twiliodemo.di.*
 import com.android.virgilsecurity.twiliodemo.ui.chat.channel.channelModule
-import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.threadsListModule
-import usersPageModule
+import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.channelsListModule
+import authActivityModule
+import authModule
+import com.android.virgilsecurity.common.di.*
+import com.android.virgilsecurity.twiliodemo.di.appModule
+import loginFragmentModule
 import org.koin.android.ext.android.startKoin
 
 /**
@@ -58,14 +61,18 @@ class TwilioApp : Application() {
         super.onCreate()
 
         startKoin(this,
-                  listOf(utilsModule,
-                         networkModule,
-                         virgilModule,
-                         twilioModule,
-                         paramsModule,
-                         usersPageModule,
-                         threadsListModule,
-                         channelModule))
+                  listOf(
+                      // Base modules
+                      utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
+                      // Common modules
+                      commonModules, appModule,
+                      // Auth modules
+                      authModule, authActivityModule, loginFragmentModule,
+                      // Channels list modules
+                      channelsListModule,
+                      // Channel modules
+                      channelModule)
+        )
 
         initStrictMode()
     }

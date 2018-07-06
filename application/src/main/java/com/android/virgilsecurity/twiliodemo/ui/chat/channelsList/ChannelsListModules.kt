@@ -50,7 +50,7 @@ import org.koin.dsl.module.applicationContext
 /**
  * ThreadsListModules
  */
-val threadsListModule: Module = applicationContext {
+val channelsListModule: Module = applicationContext {
     factory { ChannelsListPresenter(get(), get(), get(), get()) }
     factory { ChannelsListRVAdapter(get()) }
 }

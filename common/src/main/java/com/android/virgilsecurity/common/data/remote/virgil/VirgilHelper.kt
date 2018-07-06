@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.data.remote.virgil
+package com.android.virgilsecurity.common.data.remote.virgil
 
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.virgilsecurity.sdk.cards.Card
