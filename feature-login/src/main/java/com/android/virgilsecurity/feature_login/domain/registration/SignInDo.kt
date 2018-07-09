@@ -31,19 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.model
+package com.android.virgilsecurity.feature_login.domain.registration
 
-import android.annotation.SuppressLint
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT.Companion.KEY_USERS_TABLE_NAME
-import com.virgilsecurity.sdk.cards.Card
+import com.android.virgilsecurity.base.domain.Do
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
 /**
  * . _  _
@@ -51,34 +42,20 @@ import kotlinx.android.parcel.RawValue
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
+ * SignInDo
  */
-@Entity(tableName = KEY_USERS_TABLE_NAME)
-@Parcelize
-@SuppressLint("ParcelCreator")
-class UserVT(
-        @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
-        override val identity: String,
-        @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
-        override val rawSignedModel: @RawValue RawSignedModel,
-        @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
-) : User {
+interface SignInDo : Do<SignInDo.Result> {
 
-    override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
-
-    override fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel)
-
-    companion object {
-        const val EXTRA_USER = "EXTRA_USER"
-        const val KEY_IDENTITY = "identity"
-        const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
-        const val KEY_USER_PIC_PATH = "user_pic_path"
-        const val KEY_USERS_TABLE_NAME = "users"
+    sealed class Result {
+        data class OnSuccess(val rawSignedModel: RawSignedModel) : Result()
+        data class OnError(val error: Throwable) : Result()
     }
+
+    fun execute(identity: String)
 }

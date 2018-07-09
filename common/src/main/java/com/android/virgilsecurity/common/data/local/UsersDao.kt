@@ -37,8 +37,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.UserVT
 import io.reactivex.Single
 
 /**

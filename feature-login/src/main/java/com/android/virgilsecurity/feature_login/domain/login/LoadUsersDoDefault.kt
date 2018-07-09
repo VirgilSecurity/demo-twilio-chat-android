@@ -33,9 +33,9 @@
 
 package com.android.virgilsecurity.feature_login.domain.login
 
+import com.android.virgilsecurity.base.data.model.UserVT
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.common.data.repository.UsersRepository
+import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

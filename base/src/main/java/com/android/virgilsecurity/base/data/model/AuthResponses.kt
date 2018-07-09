@@ -31,14 +31,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.model.response
+package com.android.virgilsecurity.base.data.model
 
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.Token
 import com.google.gson.annotations.SerializedName
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
-data class TokenResponse(override val token: String) : Token
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/9/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
+/**
+ * AuthResponse
+ */
 data class SignInResponse(@SerializedName("virgil_card")
-                          override val rawSignedModel: RawSignedModel) : SignInResponse
+                          val rawSignedModel: RawSignedModel)
+
+data class TokenResponse(val token: String)

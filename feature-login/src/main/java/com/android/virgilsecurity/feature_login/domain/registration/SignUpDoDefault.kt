@@ -33,11 +33,12 @@
 
 package com.android.virgilsecurity.feature_login.domain.registration
 
-import com.android.virgilsecurity.base.data.api.AuthApi
+import com.android.virgilsecurity.base.data.model.SignInResponse
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.repository.AuthInteractor
-import com.android.virgilsecurity.common.data.repository.UsersRepository
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.feature_login.data.repository.AuthInteractor
+import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -60,10 +61,14 @@ class SignUpDoDefault(
 
     override fun execute(identity: String) {
         authInteractor.signUp(identity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
     }
 
-    private fun success(rawSignedModel: RawSignedModel) {
-        liveData.value = SignUpDo.Result.OnSuccess(rawSignedModel)
+    private fun success(signInResponse: SignInResponse) {
+        liveData.value = SignUpDo.Result.OnSuccess(signInResponse.rawSignedModel)
     }
 
     private fun error(throwable: Throwable) {

@@ -34,7 +34,7 @@
 import LoginDiConst.KEY_AUTH_ACTIVITY
 import android.arch.lifecycle.*
 import android.support.v4.app.FragmentActivity
-import com.android.virgilsecurity.common.data.repository.UsersRepository
+import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
@@ -67,12 +67,11 @@ import org.koin.dsl.module.applicationContext
  */
 val authModule: Module = applicationContext {
     bean(KEY_AUTH_ACTIVITY) { AuthActivity() as FragmentActivity }
-    bean { UsersRepositoryDefault(get()) as UsersRepository }
+    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
     bean { LoadUsersDoDefault(get()) as LoadUsersDo }
     bean { MediatorLiveData<Action>() }
     bean {
-        LoginVMDefault(get(),
-                                                                                get()) as LoginVM
+        LoginVMDefault(get(), get()) as LoginVM
     }
 }
 

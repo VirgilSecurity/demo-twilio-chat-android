@@ -31,9 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.model
+package com.android.virgilsecurity.feature_login.data.repository
 
-import com.android.virgilsecurity.base.data.model.Token
+import com.android.virgilsecurity.base.data.model.UserVT
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -41,9 +42,21 @@ import com.android.virgilsecurity.base.data.model.Token
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/30/18
+ * ....|  _/    6/22/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class TokenDefault(override val token: String) : Token
+/**
+ * UsersRepository
+ */
+interface UsersRepository {
+
+    fun users() : Single<List<UserVT>>
+
+    fun addUser(user: UserVT)
+
+    fun currentUser() : UserVT?
+
+    fun setCurrentUser(user: UserVT)
+}

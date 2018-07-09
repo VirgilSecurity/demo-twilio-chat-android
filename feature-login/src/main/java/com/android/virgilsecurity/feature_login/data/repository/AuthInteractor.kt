@@ -31,9 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.model
+package com.android.virgilsecurity.feature_login.data.repository
 
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.base.data.model.SignInResponse
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -47,9 +48,11 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
  */
 
 /**
- * SignInResponse
+ * AuthInteractor
  */
-interface SignInResponse {
+interface AuthInteractor {
 
-    val rawSignedModel: RawSignedModel
+    fun signIn(identity: String): Single<SignInResponse>
+
+    fun signUp(identity: String): Single<SignInResponse>
 }

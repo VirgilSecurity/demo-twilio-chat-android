@@ -31,10 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.repository
-
-import com.android.virgilsecurity.common.data.model.UserVT
-import io.reactivex.Single
+package com.android.virgilsecurity.base.data.model
 
 /**
  * . _  _
@@ -42,15 +39,9 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/22/18
+ * ....|  _/    5/30/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-/**
- * UsersRepository
- */
-interface UsersRepository {
-
-    fun users() : Single<List<UserVT>>
-}
+class TokenDefault(val token: String)

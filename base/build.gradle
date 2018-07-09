@@ -44,4 +44,5 @@ dependencies {
     architectureComponents()
     virgil()
     support()
+    room()
 }

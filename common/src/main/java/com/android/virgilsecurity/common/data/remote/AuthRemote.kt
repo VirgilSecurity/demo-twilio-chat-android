@@ -35,7 +35,7 @@ package com.android.virgilsecurity.common.data.remote
 
 import com.android.virgilsecurity.base.data.api.AuthApi
 import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.Token
+import com.android.virgilsecurity.base.data.model.TokenResponse
 import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import io.reactivex.Single
@@ -66,9 +66,9 @@ class AuthRemote(
         it.onSuccess(fuelHelper.signUp(rawCard))
     }
 
-    override fun getVirgilToken(identity: String, authHeader: String): Token =
+    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
             fuelHelper.getVirgilToken(identity, authHeader)
 
-    override fun getTwilioToken(identity: String, authHeader: String): Token =
+    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
             fuelHelper.getTwilioToken(identity, authHeader)
 }

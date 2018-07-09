@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.common.data.api
 
-import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.UserVT
 import io.reactivex.Single
 
 /**
@@ -54,4 +54,6 @@ import io.reactivex.Single
 interface UsersApi {
 
     fun users(): Single<List<UserVT>>
+
+    fun addUser(user: UserVT)
 }

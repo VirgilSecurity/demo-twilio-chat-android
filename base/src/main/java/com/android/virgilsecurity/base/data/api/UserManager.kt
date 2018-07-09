@@ -33,8 +33,7 @@
 
 package com.android.virgilsecurity.base.data.api
 
-import com.android.virgilsecurity.base.data.model.User
-import com.google.gson.Gson
+import com.android.virgilsecurity.base.data.model.UserVT
 
 /**
  * . _  _
@@ -53,7 +52,7 @@ import com.google.gson.Gson
 
 interface UserManager {
 
-    var currentUser: User?
+    var currentUser: UserVT?
 
     fun clearCurrentUser()
 }

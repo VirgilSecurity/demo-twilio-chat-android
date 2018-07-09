@@ -34,9 +34,8 @@
 package com.android.virgilsecurity.common.data.local
 
 
+import com.android.virgilsecurity.base.data.model.UserVT
 import com.android.virgilsecurity.common.data.api.UsersApi
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.model.UserVT
 import io.reactivex.Single
 
 /**
@@ -57,6 +56,7 @@ class UsersLocalDS(
         private val roomDS: RoomDS
 ) : UsersApi {
 
-    override fun users(): Single<List<UserVT>> =
-            roomDS.usersDao().users()
+    override fun users(): Single<List<UserVT>> = roomDS.usersDao().users()
+
+    override fun addUser(user: UserVT) = roomDS.usersDao().insertUser(user)
 }

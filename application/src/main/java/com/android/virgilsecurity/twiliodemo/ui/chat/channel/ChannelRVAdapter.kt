@@ -142,7 +142,7 @@ class ChannelRVAdapter internal constructor(private val virgilHelper: VirgilHelp
         fun bind(message: Message) {
             val attributes = message.attributes
 
-            val sender = attributes[KEY_SENDER] as String
+            val sender = attributes[KEY_SENDER] as String // TODO get author instead of KEY_SENDER
             val currentUser = userManager.currentUser!!.identity
 
             if (currentUser == sender)

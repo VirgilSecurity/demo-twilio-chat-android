@@ -37,9 +37,8 @@ import android.content.Context
 import com.android.virgilsecurity.base.data.api.AuthApi
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.UserVT
 import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.common.data.repository.AuthInteractor
 import com.android.virgilsecurity.feature_login.R
 import io.reactivex.Single
 
@@ -61,13 +60,15 @@ class AuthInteractorDefault(
         private val authApi: AuthApi,
         private val virgilHelper: VirgilHelper,
         private val userManager: UserManager,
+        private val usersRepository: UsersRepository,
         private val context: Context
 ) : AuthInteractor {
 
     override fun signIn(identity: String): Single<SignInResponse> =
-            authApi.signIn(identity).map {
-                userManager.currentUser = UserVT(identity, it.rawSignedModel)
-                it
+            authApi.signIn(identity).flatMap { response ->
+                Single.fromCallable {
+                    userManager.currentUser = UserVT(identity, response.rawSignedModel)
+                }.map { response }
             }
 
     override fun signUp(identity: String): Single<SignInResponse> =
@@ -76,13 +77,16 @@ class AuthInteractorDefault(
                     virgilHelper.generateKeyPair().let {
                         virgilHelper.storePrivateKey(it.privateKey, identity)
                         virgilHelper.generateRawCard(it, identity)
-                    }.let {
-                        authApi.signUp(it).map {
-                            userManager.currentUser = UserVT(identity, it.rawSignedModel)
-                            it
-                        }.doOnError {
-                            virgilHelper.deletePrivateKey(identity)
-                        }
+                    }.let { rawSignedModel ->
+                        authApi.signUp(rawSignedModel)
+                                .flatMap { response ->
+                                    val newUser = UserVT(identity, response.rawSignedModel)
+                                    Single.fromCallable { usersRepository.addUser(newUser) }
+                                            .doAfterSuccess { userManager.currentUser = newUser }
+                                            .map { response }
+                                }.doOnError {
+                                    virgilHelper.deletePrivateKey(identity) // TODO handle response if user exists
+                                }
                     }
                 } else {
                     throw Throwable(context.getString(R.string.already_registered))
