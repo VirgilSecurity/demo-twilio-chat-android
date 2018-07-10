@@ -32,7 +32,7 @@
  */
 
 import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.api.UsersApi
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.Single
@@ -56,13 +56,13 @@ class UsersRepositoryDefault(
         private val userManager: UserManager
 ) : UsersRepository {
 
-    override fun users(): Single<List<UserVT>> = usersApi.users()
+    override fun users(): Single<List<User>> = usersApi.users()
 
-    override fun addUser(user: UserVT) = usersApi.addUser(user)
+    override fun addUser(user: User) = usersApi.addUser(user)
 
-    override fun currentUser(): UserVT? = userManager.currentUser
+    override fun currentUser(): User? = userManager.currentUser
 
-    override fun setCurrentUser(user: UserVT) {
+    override fun setCurrentUser(user: User) {
         userManager.currentUser = user
     }
 }

@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.feature_login.data.repository
 
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 import io.reactivex.Single
 
 /**
@@ -52,11 +52,11 @@ import io.reactivex.Single
  */
 interface UsersRepository {
 
-    fun users() : Single<List<UserVT>>
+    fun users() : Single<List<User>>
 
-    fun addUser(user: UserVT)
+    fun addUser(user: User)
 
-    fun currentUser() : UserVT?
+    fun currentUser() : User?
 
-    fun setCurrentUser(user: UserVT)
+    fun setCurrentUser(user: User)
 }

@@ -35,10 +35,10 @@ package com.android.virgilsecurity.feature_login.view
 
 import android.app.Fragment
 import android.os.Bundle
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.base.view.ScreenRouter
-import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.ScreenChat
@@ -94,10 +94,10 @@ class AuthActivity(
         // TODO add nice transaction & remove white background after splash
     }
 
-    fun login(user: UserVT) =
+    fun login(user: User) =
             screenRouter.getScreenIntent(this,
                                          ScreenChat.ChannelsList,
-                                         "",
+                                         User.EXTRA_USER,
                                          user)
                     .run { startActivity(this) }
 

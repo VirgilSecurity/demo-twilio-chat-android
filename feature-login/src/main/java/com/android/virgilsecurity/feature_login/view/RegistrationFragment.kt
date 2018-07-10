@@ -34,10 +34,22 @@
 package com.android.virgilsecurity.feature_login.view
 
 import android.annotation.SuppressLint
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseFragment
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_login.R
+import com.android.virgilsecurity.feature_login.databinding.FragmentRegisterBinding
+import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
+import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVMDefault
+import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistration
+import kotlinx.android.synthetic.main.fragment_register.*
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -57,66 +69,46 @@ class RegistrationFragment @SuppressLint("ValidFragment")constructor(
         override val layoutResourceId: Int = R.layout.fragment_register
 ) : BaseFragment<AuthActivity>() {
 
+    private val viewModel: RegistrationVM by inject()
+    private val stateSliceRegistration: StateSliceRegistration by inject()
+
     override fun init(view: View, savedInstanceState: Bundle?) {
-        // TODO Implement body or it will be empty ):
+        val binding: FragmentRegisterBinding = DataBindingUtil.inflate(LayoutInflater.from(rootActivity),
+                                                                       layoutResourceId,
+                                                                       view as ViewGroup,
+                                                                       false)
+        binding.registrationViewModel = viewModel as RegistrationVMDefault
+        initViewCallbacks()
+    }
+
+    private fun initViewCallbacks() {
+        btnNext.setOnClickListener { viewModel.registration(etUsername.text.toString()) }
     }
 
     override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+        stateSliceRegistration.init(lifecycle, view)
     }
 
-    override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupVSActionObservers() { }
 
     override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(viewModel.getState()) { onStateChanged(it) }
     }
 
-    //
-//    override fun initCallbacks() {
-//        btnSignUp.setOnClickListener {
-//            val identity = etIdentity.text.toString()
-//            if (identity.isNotEmpty()) {
-//                showProgress(true)
-//                presenter.requestSignUp(etIdentity.text.toString(),
-//                                        {
-//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
-//                                        },
-//                                        {
-//                                            UiUtils.toast(this, it.message ?: "SignUp Error")
-//                                            showProgress(false)
-//                                        })
-//            }
-//        }
-//
-//        btnSignIn.setOnClickListener {
-//            val identity = etIdentity.text.toString()
-//            if (identity.isNotEmpty()) {
-//                showProgress(true)
-//                presenter.requestSignIn(etIdentity.text.toString(),
-//                                        {
-//                                            ChannelsListActivity.startWithFinish(rootActivity!!)
-//                                        },
-//                                        {
-//                                            if (it is FuelError && (it.response.statusCode == 400)) {
-//                                                UiUtils.toast(this,
-//                                                              "Identity not registered")
-//                                            } else {
-//                                                UiUtils.toast(this,
-//                                                              it.message ?: "SignIn Error")
-//                                            }
-//                                            showProgress(false)
-//                                        })
-//            }
-//        }
-//    }
-//
-//    private fun showProgress(show: Boolean) {
-//        pbLoading.visibility = if (show) View.VISIBLE else View.INVISIBLE
-//        btnSignIn.visibility = if (show) View.INVISIBLE else View.VISIBLE
-//        btnSignUp.visibility = if (show) View.INVISIBLE else View.VISIBLE
-//    }
+    private fun onStateChanged(state: RegistrationVM.State) = when (state) {
+        is RegistrationVM.State.RegisteredSuccessfully -> startChatList(state.user)
+        RegistrationVM.State.ShowLoading -> stateSliceRegistration.showLoading()
+        is RegistrationVM.State.UsernameInvalid -> when (state.causeCode) {
+            RegistrationVM.KEY_USERNAME_EMPTY -> stateSliceRegistration.showUsernameEmpty()
+            RegistrationVM.KEY_USERNAME_SHORT -> stateSliceRegistration.showUsernameTooShort()
+            RegistrationVM.KEY_USERNAME_LONG -> stateSliceRegistration.showUsernameTooLong()
+            else -> Unit
+        }
+        RegistrationVM.State.ShowError -> stateSliceRegistration.showError()
+    }
+
+    private fun startChatList(user: User) = rootActivity?.login(user)
+
     companion object {
         fun instance() = RegistrationFragment()
     }

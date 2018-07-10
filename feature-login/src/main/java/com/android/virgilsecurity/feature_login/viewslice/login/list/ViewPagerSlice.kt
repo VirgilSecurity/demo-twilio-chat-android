@@ -31,12 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.state
+package com.android.virgilsecurity.feature_login.viewslice.login.list
 
-import android.view.View
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.common.viewslice.StateSlice
-import kotlinx.android.synthetic.main.fragment_login.*
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,28 +49,15 @@ import kotlinx.android.synthetic.main.fragment_login.*
  */
 
 /**
- * StateSliceDefault
+ * ViewPagerSlice
  */
-class StateSliceDefault : BaseViewSlice(), StateSlice {
+interface ViewPagerSlice : ViewSlice {
 
-    override fun showLoading() {
-        clContent.visibility = View.GONE
-        tvError.visibility = View.GONE
-
-        pbLoading.visibility = View.VISIBLE
+    sealed class Action {
+        data class UserClicked(val user: User) : Action()
     }
 
-    override fun showContent() {
-        pbLoading.visibility = View.GONE
-        tvError.visibility = View.GONE
+    fun getAction(): LiveData<Action>
 
-        clContent.visibility = View.VISIBLE
-    }
-
-    override fun showError() {
-        pbLoading.visibility = View.GONE
-        clContent.visibility = View.GONE
-
-        tvError.visibility = View.VISIBLE
-    }
+    fun showUsers(users: List<User>)
 }

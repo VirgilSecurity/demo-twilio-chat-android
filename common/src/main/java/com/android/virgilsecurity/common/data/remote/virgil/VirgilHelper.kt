@@ -36,6 +36,7 @@ package com.android.virgilsecurity.common.data.remote.virgil
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.CardManager
+import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.crypto.*
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
@@ -118,4 +119,6 @@ class VirgilHelper(private val cardManager: CardManager,
         val toEncrypt = ConvertionUtils.toBytes(data)
         return ConvertionUtils.toBase64String(virgilCrypto.encrypt(toEncrypt, publicKeys))
     }
+
+    fun parseCard(rawSignedModel: RawSignedModel) = Card.parse(cardCrypto, rawSignedModel)
 }

@@ -49,7 +49,7 @@ ext.versions = [
         'rxKotlin'              : '2.2.0',
         'rxAndroid'             : '2.0.2',
         'architectureComponents': '1.1.1',
-        'dataBindingVersion'    : '2.3.3',
+        'dataBindingVersion'    : '3.1.3',
         'glide'                 : '4.7.1',
         'twilioSdk'             : '3.0.0',
         'twilioAccessManager'   : '0.1.0',

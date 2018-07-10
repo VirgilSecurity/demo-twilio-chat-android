@@ -35,7 +35,7 @@ package com.android.virgilsecurity.common.data.local
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.local.PreferenceHelper.edit
 import com.android.virgilsecurity.common.data.local.PreferenceHelper.get
 import com.android.virgilsecurity.common.data.local.PreferenceHelper.set
@@ -60,10 +60,10 @@ class UserManagerDefault(context: Context) : UserManager {
 
     private val preferences = PreferenceHelper.defaultPrefs(context)
 
-    override var currentUser: UserVT?
+    override var currentUser: User?
         get() {
             val serialized: String = preferences[CURRENT_USER] ?: return null
-            return Gson().fromJson(serialized, UserVT::class.java)
+            return Gson().fromJson(serialized, User::class.java)
         }
         set(user) {
             preferences[CURRENT_USER] = Gson().toJson(user)

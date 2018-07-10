@@ -48,9 +48,9 @@ android {
         targetSdkVersion versions.targetSdk
     }
 
-//    dataBinding {
-//        enabled = true
-//    }
+    dataBinding {
+        enabled = true
+    }
     lintOptions {
         abortOnError = false
     }

@@ -34,7 +34,9 @@
 package com.android.virgilsecurity.feature_login.domain.registration
 
 import com.android.virgilsecurity.base.data.model.SignInResponse
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.feature_login.data.repository.AuthInteractor
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -56,7 +58,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class SignUpDoDefault(
         private val authInteractor: AuthInteractor,
-        private val usersRepository: UsersRepository
+        private val virgilHelper: VirgilHelper
 ) : BaseDo<SignUpDo.Result>(), SignUpDo {
 
     override fun execute(identity: String) {
@@ -68,7 +70,9 @@ class SignUpDoDefault(
     }
 
     private fun success(signInResponse: SignInResponse) {
-        liveData.value = SignUpDo.Result.OnSuccess(signInResponse.rawSignedModel)
+        virgilHelper.parseCard(signInResponse.rawSignedModel).let {
+            liveData.value = SignUpDo.Result.OnSuccess(User(it.identity, it.rawCard))
+        }
     }
 
     private fun error(throwable: Throwable) {

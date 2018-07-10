@@ -35,7 +35,7 @@ package com.android.virgilsecurity.feature_login.viewmodel.registration
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.base.data.model.User
 
 /**
  * . _  _
@@ -54,12 +54,22 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
 abstract class RegistrationVM : ViewModel() {
 
     sealed class State {
-        data class RegisteredSuccessfully(val rawSignedModel: RawSignedModel) : State()
+        data class RegisteredSuccessfully(val user: User) : State()
         object ShowLoading : State()
+        data class UsernameInvalid(val causeCode: Int) : State()
         object ShowError : State()
     }
 
     abstract fun getState() : LiveData<State>
 
-    abstract fun registration()
+    abstract fun registration(identity: String)
+
+    companion object {
+        const val KEY_USERNAME_EMPTY = 0
+        const val KEY_USERNAME_SHORT = 1
+        const val KEY_USERNAME_LONG = 2
+
+        const val MIN_LENGTH = 4
+        const val MAX_LENGTH = 24
+    }
 }

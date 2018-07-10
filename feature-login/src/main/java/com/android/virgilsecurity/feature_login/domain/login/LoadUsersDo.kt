@@ -33,8 +33,8 @@
 
 package com.android.virgilsecurity.feature_login.domain.login
 
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.Do
-import com.android.virgilsecurity.common.data.model.UserVT
 
 /**
  * . _  _
@@ -53,7 +53,7 @@ import com.android.virgilsecurity.common.data.model.UserVT
 interface LoadUsersDo : Do<LoadUsersDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val users: List<UserVT>) : Result()
+        data class OnSuccess(val users: List<User>) : Result()
         data class OnError(val error: Throwable) : Result()
     }
 

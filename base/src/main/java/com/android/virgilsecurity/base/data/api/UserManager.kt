@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.base.data.api
 
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 
 /**
  * . _  _
@@ -52,7 +52,7 @@ import com.android.virgilsecurity.base.data.model.UserVT
 
 interface UserManager {
 
-    var currentUser: UserVT?
+    var currentUser: User?
 
     fun clearCurrentUser()
 }

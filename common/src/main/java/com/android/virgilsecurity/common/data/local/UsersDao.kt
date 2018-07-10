@@ -37,7 +37,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 import io.reactivex.Single
 
 /**
@@ -57,7 +57,7 @@ import io.reactivex.Single
 @Dao
 interface UsersDao {
 
-    @Query("SELECT * FROM users") fun users(): Single<List<UserVT>>
+    @Query("SELECT * FROM users") fun users(): Single<List<User>>
 
-    @Insert(onConflict = OnConflictStrategy.FAIL) fun insertUser(userVT: UserVT)
+    @Insert(onConflict = OnConflictStrategy.FAIL) fun insertUser(user: User)
 }

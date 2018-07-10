@@ -35,7 +35,7 @@ package com.android.virgilsecurity.feature_login.viewmodel.login
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
-import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 
 /**
  * . _  _
@@ -55,7 +55,7 @@ import com.android.virgilsecurity.common.data.model.UserVT
 abstract class LoginVM : ViewModel() {
 
     sealed class State {
-        data class UsersLoaded(val users: List<UserVT>) : State()
+        data class UsersLoaded(val users: List<User>) : State()
         object ShowNoUsers : State()
         object ShowLoading : State()
         object ShowContent : State()

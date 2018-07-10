@@ -31,11 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.list.adapter
+package com.android.virgilsecurity.feature_login.viewslice.login.state
 
-import android.support.v4.view.PagerAdapter
-import android.support.v7.widget.RecyclerView
-import com.android.virgilsecurity.common.data.model.UserVT
+import android.view.View
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.viewslice.StateSlice
+import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
  * . _  _
@@ -49,13 +50,28 @@ import com.android.virgilsecurity.common.data.model.UserVT
  */
 
 /**
- * UserPagerAdapter
+ * StateSliceLogin
  */
-abstract class UserPagerAdapter : PagerAdapter() {
+class StateSliceLogin : BaseViewSlice(), StateSlice {
 
-    abstract fun setUsers(users: List<UserVT>)
+    override fun showLoading() {
+        clContent.visibility = View.GONE
+        tvError.visibility = View.GONE
 
-    abstract fun addUser(user: UserVT)
+        pbLoading.visibility = View.VISIBLE
+    }
 
-    abstract fun clearUsers()
+    override fun showContent() {
+        pbLoading.visibility = View.GONE
+        tvError.visibility = View.GONE
+
+        clContent.visibility = View.VISIBLE
+    }
+
+    override fun showError() {
+        pbLoading.visibility = View.GONE
+        clContent.visibility = View.GONE
+
+        tvError.visibility = View.VISIBLE
+    }
 }

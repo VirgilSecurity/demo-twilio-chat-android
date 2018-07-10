@@ -31,20 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.list.adapter
+package com.android.virgilsecurity.feature_login.viewslice.login.list.adapter
 
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.net.Uri
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
-import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inflate
-import com.android.virgilsecurity.common.data.model.UserVT
 import com.android.virgilsecurity.common.util.ImageStorage
 import com.android.virgilsecurity.feature_login.R
+import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
 
 /**
  * . _  _
@@ -62,10 +62,11 @@ import com.android.virgilsecurity.feature_login.R
  */
 class UsersPagerAdapterDefault(
         private val imageStorage: ImageStorage,
-        private val context: Context
+        private val context: Context,
+        private val actionLiveData: MutableLiveData<ViewPagerSlice.Action>
 ) : UserPagerAdapter() {
 
-    private lateinit var pages: MutableList<MutableList<UserVT>>
+    private lateinit var pages: MutableList<MutableList<User>>
 
     override fun isViewFromObject(view: View, `object`: Any) = view == (`object` as View)
 
@@ -83,13 +84,13 @@ class UsersPagerAdapterDefault(
         return parent
     }
 
-    override fun setUsers(users: List<UserVT>) {
+    override fun setUsers(users: List<User>) {
         if (users.isNotEmpty()) {
             pages = ArrayList()
             val iterator = users.iterator()
 
             while (iterator.hasNext()) {
-                val page = ArrayList<UserVT>()
+                val page = ArrayList<User>()
 
                 for (i in 1..PAGE_SIZE) {
                     if (iterator.hasNext())
@@ -101,7 +102,7 @@ class UsersPagerAdapterDefault(
         }
     }
 
-    override fun addUser(user: UserVT) {
+    override fun addUser(user: User) {
         if (pages[pages.size - 1].size == 4) {
             val newPage = MutableList(1) { user }
             pages.add(newPage)
@@ -114,7 +115,7 @@ class UsersPagerAdapterDefault(
         pages.clear()
     }
 
-    private fun inflateChildAndAttach(parent: ViewGroup, user: UserVT) {
+    private fun inflateChildAndAttach(parent: ViewGroup, user: User) {
         val child = parent.inflate(R.layout.item_login_user)
         child.findViewById<TextView>(R.id.tvUsername).text = user.identity
 
@@ -135,6 +136,7 @@ class UsersPagerAdapterDefault(
             // TODO get random background
         }
 
+        parent.setOnClickListener { actionLiveData.value = ViewPagerSlice.Action.UserClicked(user) }
         parent.addView(child)
     }
 
@@ -145,4 +147,5 @@ class UsersPagerAdapterDefault(
     companion object {
         const val PAGE_SIZE = 4 // TODO dynamically get size of page
     }
+    // TODO change to recyclerview-like adapter
 }

@@ -31,19 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.data.model
+package com.android.virgilsecurity.feature_login.viewslice.login.list
 
-import android.annotation.SuppressLint
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import android.os.Parcelable
-import com.android.virgilsecurity.base.data.model.UserVT.Companion.KEY_USERS_TABLE_NAME
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
+import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
+import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
  * . _  _
@@ -51,34 +49,30 @@ import kotlinx.android.parcel.RawValue
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
+ * ViewPagerSliceDefault
  */
-@Entity(tableName = KEY_USERS_TABLE_NAME)
-@Parcelize
-@SuppressLint("ParcelCreator")
-class UserVT(
-        @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
-        val identity: String,
-        @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
-        val rawSignedModel: @RawValue RawSignedModel,
-        @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
-) : Comparable<UserVT>, Parcelable {
+class ViewPagerSliceDefault(
+        private val adapter: UserPagerAdapter,
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice(), ViewPagerSlice {
 
-    override fun compareTo(other: UserVT): Int = this.identity.compareTo(other.identity)
-
-    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel)
-
-    companion object {
-        const val EXTRA_USER = "EXTRA_USER"
-        const val KEY_IDENTITY = "identity"
-        const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
-        const val KEY_USER_PIC_PATH = "user_pic_path"
-        const val KEY_USERS_TABLE_NAME = "users"
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        setupViewPager()
     }
+
+    private fun setupViewPager() {
+        vpUsers.adapter = adapter
+        vpIndicatorUsers.setupWithViewPager(vpUsers)
+    }
+
+    override fun getAction(): LiveData<Action> = actionLiveData
+
+    override fun showUsers(users: List<User>) = adapter.setUsers(users)
 }

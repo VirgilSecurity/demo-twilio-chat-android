@@ -35,6 +35,12 @@ apply plugin: 'com.android.library'
 
 apply from: '../config-android.gradle'
 
+//android {
+//    dataBinding {
+//        enabled = true
+//    }
+//}
+
 // Inner dependencies
 dependencies {
     implementation project(":base")

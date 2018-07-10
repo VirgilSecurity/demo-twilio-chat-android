@@ -42,6 +42,7 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.FragmentActivity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
+import org.koin.android.ext.android.releaseContext
 
 abstract class BaseActivity : FragmentActivity(), LifecycleOwner {
 

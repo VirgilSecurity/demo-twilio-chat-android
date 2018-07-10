@@ -43,6 +43,7 @@ import com.android.virgilsecurity.common.di.*
 import com.android.virgilsecurity.twiliodemo.di.appModule
 import loginFragmentModule
 import org.koin.android.ext.android.startKoin
+import registrationFragmentModule
 
 /**
  * . _  _
@@ -68,6 +69,7 @@ class TwilioApp : Application() {
                       commonModules, appModule,
                       // Auth modules
                       authModule, authActivityModule, loginFragmentModule,
+                      registrationFragmentModule,
                       // Channels list modules
                       channelsListModule,
                       // Channel modules

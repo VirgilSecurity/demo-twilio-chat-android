@@ -31,11 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.list
+package com.android.virgilsecurity.feature_login.viewslice.login.list.adapter
 
-import android.arch.lifecycle.LiveData
-import com.android.virgilsecurity.base.viewslice.ViewSlice
-import com.android.virgilsecurity.common.data.model.UserVT
+import android.support.v4.view.PagerAdapter
+import com.android.virgilsecurity.base.data.model.User
 
 /**
  * . _  _
@@ -49,15 +48,13 @@ import com.android.virgilsecurity.common.data.model.UserVT
  */
 
 /**
- * ViewPagerSlice
+ * UserPagerAdapter
  */
-interface ViewPagerSlice : ViewSlice {
+abstract class UserPagerAdapter : PagerAdapter() {
 
-    sealed class Action {
-        data class UserClicked(val user: UserVT) : Action()
-    }
+    abstract fun setUsers(users: List<User>)
 
-    fun getAction(): LiveData<Action>
+    abstract fun addUser(user: User)
 
-    fun showUsers(users: List<UserVT>)
+    abstract fun clearUsers()
 }

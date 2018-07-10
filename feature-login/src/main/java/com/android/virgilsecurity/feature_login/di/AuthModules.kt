@@ -32,22 +32,35 @@
  */
 
 import LoginDiConst.KEY_AUTH_ACTIVITY
-import android.arch.lifecycle.*
+import LoginDiConst.KEY_MEDIATOR_LOGIN
+import LoginDiConst.KEY_MEDIATOR_REGISTRATION
+import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.MutableLiveData
 import android.support.v4.app.FragmentActivity
-import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
+import com.android.virgilsecurity.base.data.api.AuthApi
+import com.android.virgilsecurity.common.data.remote.AuthRemote
 import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.viewslice.StateSlice
+import com.android.virgilsecurity.feature_login.data.repository.AuthInteractor
+import com.android.virgilsecurity.feature_login.data.repository.AuthInteractorDefault
+import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
+import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
+import com.android.virgilsecurity.feature_login.domain.registration.SignUpDoDefault
 import com.android.virgilsecurity.feature_login.view.AuthActivity
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVMDefault
-import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice
-import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
-import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSliceDefault
-import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UserPagerAdapter
-import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UsersPagerAdapterDefault
-import com.android.virgilsecurity.feature_login.viewslice.state.StateSliceDefault
+import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
+import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVMDefault
+import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
+import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
+import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSliceDefault
+import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
+import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UsersPagerAdapterDefault
+import com.android.virgilsecurity.feature_login.viewslice.login.state.StateSliceLogin
+import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistration
+import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistrationDefault
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -69,10 +82,8 @@ val authModule: Module = applicationContext {
     bean(KEY_AUTH_ACTIVITY) { AuthActivity() as FragmentActivity }
     bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
     bean { LoadUsersDoDefault(get()) as LoadUsersDo }
-    bean { MediatorLiveData<Action>() }
-    bean {
-        LoginVMDefault(get(), get()) as LoginVM
-    }
+    bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<Action>() }
+    bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get()) as LoginVM }
 }
 
 val authActivityModule: Module = applicationContext {
@@ -81,15 +92,26 @@ val authActivityModule: Module = applicationContext {
 }
 
 val loginFragmentModule: Module = applicationContext {
-    bean { UsersPagerAdapterDefault(get(), get()) as UserPagerAdapter }
     bean { MutableLiveData<Action>() }
+    bean { UsersPagerAdapterDefault(get(), get(), get()) as UserPagerAdapter }
     bean { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
-    bean { StateSliceDefault() as StateSlice }
+    bean { StateSliceLogin() as StateSlice }
+}
+
+val registrationFragmentModule: Module = applicationContext {
+    bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
+    bean { AuthRemote(get()) as AuthApi }
+    bean { AuthInteractorDefault(get(), get(), get(), get(), get()) as AuthInteractor }
+    bean { SignUpDoDefault(get(), get()) as SignUpDo }
+    bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
+    bean { StateSliceRegistrationDefault() as StateSliceRegistration }
 }
 
 object LoginDiConst {
     const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
     const val KEY_AUTH_ACTIVITY = "KEY_AUTH_ACTIVITY"
+    const val KEY_MEDIATOR_REGISTRATION = "KEY_MEDIATOR_REGISTRATION"
+    const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
 
     const val SPAN_COUNT = 2
 }

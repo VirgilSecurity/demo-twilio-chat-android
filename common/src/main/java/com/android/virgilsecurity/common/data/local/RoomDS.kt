@@ -36,7 +36,7 @@ package com.android.virgilsecurity.common.data.local
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
-import com.android.virgilsecurity.common.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 
 /**
  * . _  _
@@ -52,7 +52,7 @@ import com.android.virgilsecurity.common.data.model.UserVT
 /**
  * RoomDS
  */
-@Database(entities = [(UserVT::class)], version = 1, exportSchema = false)
+@Database(entities = [(User::class)], version = 1, exportSchema = false)
 @TypeConverters(RawSignedModelConverter::class)
 abstract class RoomDS : RoomDatabase() {
 

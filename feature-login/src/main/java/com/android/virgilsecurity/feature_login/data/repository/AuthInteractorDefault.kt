@@ -37,7 +37,7 @@ import android.content.Context
 import com.android.virgilsecurity.base.data.api.AuthApi
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.UserVT
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
 import com.android.virgilsecurity.feature_login.R
 import io.reactivex.Single
@@ -67,7 +67,7 @@ class AuthInteractorDefault(
     override fun signIn(identity: String): Single<SignInResponse> =
             authApi.signIn(identity).flatMap { response ->
                 Single.fromCallable {
-                    userManager.currentUser = UserVT(identity, response.rawSignedModel)
+                    userManager.currentUser = User(identity, response.rawSignedModel)
                 }.map { response }
             }
 
@@ -80,7 +80,7 @@ class AuthInteractorDefault(
                     }.let { rawSignedModel ->
                         authApi.signUp(rawSignedModel)
                                 .flatMap { response ->
-                                    val newUser = UserVT(identity, response.rawSignedModel)
+                                    val newUser = User(identity, response.rawSignedModel)
                                     Single.fromCallable { usersRepository.addUser(newUser) }
                                             .doAfterSuccess { userManager.currentUser = newUser }
                                             .map { response }

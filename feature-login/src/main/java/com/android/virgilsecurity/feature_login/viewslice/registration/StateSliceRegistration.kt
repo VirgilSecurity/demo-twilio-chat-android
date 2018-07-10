@@ -31,17 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.list
+package com.android.virgilsecurity.feature_login.viewslice.registration
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.common.data.model.UserVT
-import com.android.virgilsecurity.feature_login.viewslice.list.adapter.UserPagerAdapter
-import kotlinx.android.synthetic.main.fragment_login.*
-import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Action
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -49,30 +41,25 @@ import com.android.virgilsecurity.feature_login.viewslice.list.ViewPagerSlice.Ac
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/10/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ViewPagerSliceDefault
+ * StateSliceRegistration
  */
-class ViewPagerSliceDefault(
-        private val adapter: UserPagerAdapter,
-        private val actionLiveData: MutableLiveData<Action>
-) : BaseViewSlice(), ViewPagerSlice {
+interface StateSliceRegistration : ViewSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
-        setupViewPager()
-    }
+    fun showConsistent()
 
-    private fun setupViewPager() {
-        vpUsers.adapter = adapter
-        vpIndicatorUsers.setupWithViewPager(vpUsers)
-    }
+    fun showUsernameEmpty()
 
-    override fun getAction(): LiveData<Action> = actionLiveData
+    fun showUsernameTooShort()
 
-    override fun showUsers(users: List<UserVT>) = adapter.setUsers(users)
+    fun showUsernameTooLong()
+
+    fun showLoading()
+
+    fun showError()
 }

@@ -33,15 +33,52 @@
 
 package com.android.virgilsecurity.base.data.model
 
+import android.annotation.SuppressLint
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
+import com.android.virgilsecurity.base.data.model.User.Companion.KEY_USERS_TABLE_NAME
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
-interface User : Comparable<User>, Parcelable {
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    5/31/185/31/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-    val identity: String
+/**
+ * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
+ */
+@Entity(tableName = KEY_USERS_TABLE_NAME)
+@Parcelize
+@SuppressLint("ParcelCreator")
+class User(
+        @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
+        val identity: String,
+        @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
+        val rawSignedModel: @RawValue RawSignedModel,
+        @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
+) : Comparable<User>, Parcelable {
 
-    val rawSignedModel: RawSignedModel
+    override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
 
-    fun card() : Card
+    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel)
+
+    companion object {
+        const val EXTRA_USER = "EXTRA_USER"
+        const val KEY_IDENTITY = "identity"
+        const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
+        const val KEY_USER_PIC_PATH = "user_pic_path"
+        const val KEY_USERS_TABLE_NAME = "users"
+    }
 }

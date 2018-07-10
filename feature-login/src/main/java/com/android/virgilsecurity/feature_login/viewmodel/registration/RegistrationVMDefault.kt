@@ -35,6 +35,10 @@ package com.android.virgilsecurity.feature_login.viewmodel.registration
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
+import android.databinding.Bindable
+import android.databinding.Observable
+import android.databinding.ObservableField
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
 
 /**
@@ -53,16 +57,53 @@ import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
  */
 class RegistrationVMDefault(
         private val state: MediatorLiveData<State>,
-        private val registrationDo: SignUpDo
+        private val signUpDo: SignUpDo
 ) : RegistrationVM() {
+
+    val usernameField = ObservableField<String>()
+    private val propertyChangedCallback: Observable.OnPropertyChangedCallback
+
+    init {
+        state.addSource(signUpDo.getLiveData(), ::onRegistrationResult)
+        propertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                onUsernameChanged(usernameField.get())
+            }
+        }
+        usernameField.addOnPropertyChangedCallback(propertyChangedCallback)
+    }
 
     override fun getState(): LiveData<State> = state
 
-    override fun registration() {
-        // TODO Implement body or it will be empty ):
+    override fun registration(identity: String) {
+//        state.value = State.ShowLoading
+//        signUpDo.execute(identity)
+        UiUtils.log("tag", "reg test")
     }
 
     override fun onCleared() {
-        registrationDo.cleanUp()
+        usernameField.removeOnPropertyChangedCallback(propertyChangedCallback)
+        signUpDo.cleanUp()
+    }
+
+    private fun onRegistrationResult(result: SignUpDo.Result?) {
+        when (result) {
+            is SignUpDo.Result.OnSuccess ->
+                state.value = State.RegisteredSuccessfully(result.user)
+            is SignUpDo.Result.OnError -> state.value = State.ShowError
+        }
+    }
+
+    private fun onUsernameChanged(username: String?) {
+        if (username != null) {
+            when {
+                username.isEmpty() ->
+                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
+                username.length < RegistrationVM.MIN_LENGTH ->
+                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
+                username.length > RegistrationVM.MAX_LENGTH ->
+                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
+            }
+        }
     }
 }
