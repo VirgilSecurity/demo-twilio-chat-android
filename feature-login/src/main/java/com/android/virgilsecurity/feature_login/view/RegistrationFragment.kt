@@ -41,8 +41,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.observe
-import com.android.virgilsecurity.base.view.BaseFragment
-import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.base.view.BaseFragmentBinding
+import com.android.virgilsecurity.common.view.LinkMovementMethodNoSelection
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.databinding.FragmentRegisterBinding
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
@@ -65,19 +65,25 @@ import org.koin.android.ext.android.inject
 /**
  * RegistrationFragment
  */
-class RegistrationFragment @SuppressLint("ValidFragment")constructor(
+class RegistrationFragment @SuppressLint("ValidFragment") constructor(
         override val layoutResourceId: Int = R.layout.fragment_register
-) : BaseFragment<AuthActivity>() {
+) : BaseFragmentBinding<AuthActivity>() {
 
     private val viewModel: RegistrationVM by inject()
     private val stateSliceRegistration: StateSliceRegistration by inject()
 
-    override fun init(view: View, savedInstanceState: Bundle?) {
-        val binding: FragmentRegisterBinding = DataBindingUtil.inflate(LayoutInflater.from(rootActivity),
+    override fun initViewBinding(inflater: LayoutInflater, container: ViewGroup?, layoutResourceId: Int): View {
+        val binding: FragmentRegisterBinding = DataBindingUtil.inflate(inflater,
                                                                        layoutResourceId,
-                                                                       view as ViewGroup,
+                                                                       container,
                                                                        false)
         binding.registrationViewModel = viewModel as RegistrationVMDefault
+        return binding.root
+    }
+
+
+    override fun init(view: View, savedInstanceState: Bundle?) {
+        initViews()
         initViewCallbacks()
     }
 
@@ -85,11 +91,16 @@ class RegistrationFragment @SuppressLint("ValidFragment")constructor(
         btnNext.setOnClickListener { viewModel.registration(etUsername.text.toString()) }
     }
 
+    private fun initViews() {
+        tvPolicy2.movementMethod = LinkMovementMethodNoSelection.instance
+        tvPolicy4.movementMethod = LinkMovementMethodNoSelection.instance
+    }
+
     override fun initViewSlices(view: View) {
         stateSliceRegistration.init(lifecycle, view)
     }
 
-    override fun setupVSActionObservers() { }
+    override fun setupVSActionObservers() {}
 
     override fun setupVMStateObservers() {
         observe(viewModel.getState()) { onStateChanged(it) }
@@ -104,6 +115,7 @@ class RegistrationFragment @SuppressLint("ValidFragment")constructor(
             RegistrationVM.KEY_USERNAME_LONG -> stateSliceRegistration.showUsernameTooLong()
             else -> Unit
         }
+        RegistrationVM.State.UsernameConsistent -> stateSliceRegistration.showConsistent()
         RegistrationVM.State.ShowError -> stateSliceRegistration.showError()
     }
 

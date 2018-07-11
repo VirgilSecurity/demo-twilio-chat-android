@@ -69,16 +69,16 @@
             android:background="@drawable/username_bottomline"
             android:ems="10"
             android:hint="@string/username"
+            android:imeOptions="actionDone"
             android:inputType="textPersonName"
             android:paddingBottom="12dp"
-            android:imeOptions="actionDone"
             android:paddingEnd="0dp"
             android:paddingStart="0dp"
             android:paddingTop="0dp"
+            android:text="@={registrationViewModel.usernameField}"
             android:textColor="@color/snow"
             android:textColorHint="@color/virgil_gray_middle"
             android:textSize="16sp"
-            android:text="@={registrationViewModel.usernameField}"
             app:layout_constraintBottom_toTopOf="@+id/btnNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="40dp"
-            android:background="@drawable/rect_rounded_gray_2"
+            android:background="@drawable/btn_test"
             android:elevation="0dp"
             android:minHeight="36dp"
             android:text="@string/next"
@@ -103,25 +103,25 @@
             android:id="@+id/pbLoading"
             android:layout_width="67dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btnNext"
-            app:layout_constraintStart_toStartOf="@id/btnNext"
-            app:layout_constraintEnd_toEndOf="@id/btnNext"
             android:theme="@style/AccentProgress"
             android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNext"
+            app:layout_constraintEnd_toEndOf="@id/btnNext"
+            app:layout_constraintStart_toStartOf="@id/btnNext"
             app:layout_constraintTop_toTopOf="@id/btnNext" />
 
         <TextView
             android:id="@+id/tvTryAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/small_text"
-            app:layout_constraintBottom_toBottomOf="@id/btnNext"
-            app:layout_constraintStart_toEndOf="@id/btnNext"
             android:layout_marginBottom="1dp"
             android:layout_marginStart="@dimen/default_margin"
-            android:text="@string/try_again_please"/>
+            android:text="@string/try_again_please"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/small_text"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btnNext"
+            app:layout_constraintStart_toEndOf="@id/btnNext" />
 
         <TextView
             android:id="@+id/tvPolicy1"
@@ -135,14 +135,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnNext" />
 
-        <TextView
+        <com.android.virgilsecurity.common.view.TextViewNoUnderline
             android:id="@+id/tvPolicy2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:autoLink="web"
             android:text="@string/terms_of_service"
-            android:textColorLink="@color/colorPrimary"
+            android:textColorLink="@color/colorAccent"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/tvPolicy1"
             app:layout_constraintStart_toEndOf="@+id/tvPolicy1"
@@ -160,14 +159,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPolicy1" />
 
-        <TextView
+        <com.android.virgilsecurity.common.view.TextViewNoUnderline
             android:id="@+id/tvPolicy4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:autoLink="web"
             android:text="@string/privacy_policy"
-            android:textColorLink="@color/colorPrimary"
+            android:textColorHighlight="@android:color/transparent"
+            android:textColorLink="@color/colorAccent"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/tvPolicy3"
             app:layout_constraintStart_toEndOf="@id/tvPolicy3"

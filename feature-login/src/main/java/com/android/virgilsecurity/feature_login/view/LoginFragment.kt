@@ -35,7 +35,9 @@ package com.android.virgilsecurity.feature_login.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseFragment
 import com.android.virgilsecurity.common.viewslice.StateSlice

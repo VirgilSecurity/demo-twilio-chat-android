@@ -31,17 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view
+package com.android.virgilsecurity.common.view
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.android.virgilsecurity.base.view.BaseFragment
-import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.R.id.btnCreateNewAccount
-import kotlinx.android.synthetic.main.fragment_no_users.*
+import android.content.Context
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.URLSpan
+import android.util.AttributeSet
+import android.widget.TextView
+import android.view.MotionEvent
 
 /**
  * . _  _
@@ -49,37 +48,53 @@ import kotlinx.android.synthetic.main.fragment_no_users.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/10/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * NoUsersFragment
+ * TextViewNoUnderline
  */
+class TextViewNoUnderline @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle
+) : TextView(context, attrs, defStyleAttr) {
 
-class NoUsersFragment @SuppressLint("ValidFragment") constructor(
-        override val layoutResourceId: Int = R.layout.fragment_no_users
-) : BaseFragment<AuthActivity>() {
-
-
-    override fun init(view: View, savedInstanceState: Bundle?) {
-        initViewCallbacks()
+    init {
+        setSpannableFactory(Factory.instance)
     }
 
-    private fun initViewCallbacks() {
-        btnCreateNewAccount.setOnClickListener {
-            rootActivity!!.registration()
+//    @SuppressLint("ClickableViewAccessibility")
+//    override fun onTouchEvent(event: MotionEvent?): Boolean {
+////        if (hasOnClickListeners()) {
+//            when (event?.action) {
+//                MotionEvent.ACTION_DOWN -> isSelected = true
+//                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isSelected = false
+//            }
+////        }
+//
+//        return false
+//    }
+
+    private class Factory : Spannable.Factory() {
+
+        override fun newSpannable(source: CharSequence): Spannable {
+            return SpannableNoUnderline(source)
+        }
+
+        companion object {
+            val instance = Factory()
         }
     }
 
-    override fun initViewSlices(view: View) { }
+    private class SpannableNoUnderline(source: CharSequence) : SpannableString(source) {
 
-    override fun setupVSActionObservers() { }
+        override fun setSpan(what: Any, start: Int, end: Int, flags: Int) {
+            var spanNoUnderline = what
+            if (what is URLSpan)
+                spanNoUnderline = UrlSpanNoUnderline(what)
 
-    override fun setupVMStateObservers() { }
-
-    companion object {
-        fun instance() = NoUsersFragment()
+            super.setSpan(spanNoUnderline, start, end, flags)
+        }
     }
 }

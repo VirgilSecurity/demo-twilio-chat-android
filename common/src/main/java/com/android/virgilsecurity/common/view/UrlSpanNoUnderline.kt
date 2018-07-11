@@ -31,17 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view
+package com.android.virgilsecurity.common.view
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.android.virgilsecurity.base.view.BaseFragment
-import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.R.id.btnCreateNewAccount
-import kotlinx.android.synthetic.main.fragment_no_users.*
+import android.text.TextPaint
+import android.text.style.URLSpan
 
 /**
  * . _  _
@@ -49,37 +42,18 @@ import kotlinx.android.synthetic.main.fragment_no_users.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/10/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * NoUsersFragment
+ * UrlSpanNoUnderline
  */
+class UrlSpanNoUnderline(src: URLSpan) : URLSpan(src.url) {
 
-class NoUsersFragment @SuppressLint("ValidFragment") constructor(
-        override val layoutResourceId: Int = R.layout.fragment_no_users
-) : BaseFragment<AuthActivity>() {
-
-
-    override fun init(view: View, savedInstanceState: Bundle?) {
-        initViewCallbacks()
-    }
-
-    private fun initViewCallbacks() {
-        btnCreateNewAccount.setOnClickListener {
-            rootActivity!!.registration()
-        }
-    }
-
-    override fun initViewSlices(view: View) { }
-
-    override fun setupVSActionObservers() { }
-
-    override fun setupVMStateObservers() { }
-
-    companion object {
-        fun instance() = NoUsersFragment()
+    override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.isUnderlineText = false
     }
 }

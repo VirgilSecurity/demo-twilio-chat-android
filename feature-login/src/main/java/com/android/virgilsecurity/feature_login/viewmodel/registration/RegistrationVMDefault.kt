@@ -78,7 +78,7 @@ class RegistrationVMDefault(
     override fun registration(identity: String) {
 //        state.value = State.ShowLoading
 //        signUpDo.execute(identity)
-        UiUtils.log("tag", "reg test")
+        UiUtils.log("tag_tag", "reg test")
     }
 
     override fun onCleared() {
@@ -100,9 +100,10 @@ class RegistrationVMDefault(
                 username.isEmpty() ->
                     state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
                 username.length < RegistrationVM.MIN_LENGTH ->
-                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
+                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_SHORT)
                 username.length > RegistrationVM.MAX_LENGTH ->
-                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_EMPTY)
+                    state.value = State.UsernameInvalid(RegistrationVM.KEY_USERNAME_LONG)
+                else -> state.value = State.UsernameConsistent
             }
         }
     }
