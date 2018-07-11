@@ -43,7 +43,7 @@ import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx.Companion.K
 import com.android.virgilsecurity.twiliodemo.R
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_list_channels.*
+import kotlinx.android.synthetic.main.item_list_channels_old.*
 
 /**
  * . _  _
@@ -64,7 +64,7 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_list_channels, parent, false)
+                .inflate(R.layout.item_list_channels_old, parent, false)
 
         return ChannelHolder(view, clickListener, userManager)
     }

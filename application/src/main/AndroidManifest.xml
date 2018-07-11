@@ -56,14 +56,6 @@
         <activity
             android:name="com.android.virgilsecurity.feature_login.view.AuthActivity"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.channelsList.ChannelsListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.chat.channel.ChannelActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

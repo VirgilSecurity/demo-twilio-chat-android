@@ -38,7 +38,11 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.feature_login.R
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_register.*
+import java.util.concurrent.TimeUnit
 
 /**
  * . _  _
@@ -55,6 +59,19 @@ import kotlinx.android.synthetic.main.fragment_register.*
  * StateSliceRegistrationDefault
  */
 class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
+
+    private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
+    private val debounceDisposable: Disposable
+
+    init {
+        debounceDisposable = debounceSubject.debounce(DEBOUNCE_INTERVAL, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
+                    if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
+                }
+    }
 
     override fun showConsistent() {
         activateButton(true)
@@ -79,27 +96,31 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
     override fun showLoading() = loading(true)
 
     override fun showError() {
+        loading(false)
         if (tvTryAgain.visibility == View.INVISIBLE) {
             tvTryAgain.visibility = View.VISIBLE
             val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
             alphaAnimation.duration = ERROR_FADE_OUT_DURATION
             alphaAnimation.startOffset = ERROR_START_OFFSET
             alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) { }
+                override fun onAnimationRepeat(animation: Animation?) {}
 
                 override fun onAnimationEnd(animation: Animation?) {
                     tvTryAgain.visibility = View.INVISIBLE
                 }
 
-                override fun onAnimationStart(animation: Animation?) { }
+                override fun onAnimationStart(animation: Animation?) {}
             })
             tvTryAgain.startAnimation(alphaAnimation)
         }
     }
 
+    override fun cleanUp() {
+        debounceDisposable.dispose()
+    }
+
     private fun loading(loading: Boolean) {
-        if (loading) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
-        if (loading) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
+        debounceSubject.onNext(loading)
     }
 
     private fun activateButton(active: Boolean) {
@@ -115,5 +136,6 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
     companion object {
         const val ERROR_FADE_OUT_DURATION = 500L
         const val ERROR_START_OFFSET = 1500L
+        const val DEBOUNCE_INTERVAL = 500L
     }
 }

@@ -56,7 +56,7 @@ ext.versions = [
         'fuel'                  : '1.13.0',
         'gson'                  : '2.7',
         'virgil'                : '5.0.3',
-        'virgilCrypto'          : '5.0.3@aar',
+        'virgilCrypto'          : '5.0.2@aar',
         'room'                  : '1.1.0',
         'viewPagerIndicator'    : '1.1.0',
 

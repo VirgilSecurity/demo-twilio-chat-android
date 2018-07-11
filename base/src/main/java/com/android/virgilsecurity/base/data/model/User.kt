@@ -66,13 +66,15 @@ class User(
         @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
         val identity: String,
         @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
-        val rawSignedModel: @RawValue RawSignedModel,
+        val rawSignedModelString: String,
         @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
 ) : Comparable<User>, Parcelable {
 
     override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
 
-    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel)
+    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel())
+
+    fun rawSignedModel(): RawSignedModel = RawSignedModel.fromString(rawSignedModelString)
 
     companion object {
         const val EXTRA_USER = "EXTRA_USER"

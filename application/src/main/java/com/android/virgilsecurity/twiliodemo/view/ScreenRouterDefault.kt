@@ -60,25 +60,24 @@ class ScreenRouterDefault : ScreenRouter {
 
     override fun getScreenIntent(context: Context,
                                  screen: Screen): Intent? {
-        val c: Class<*>? = when (screen) {
-            ScreenChat.Login -> AuthActivity::class.java
-            ScreenChat.ChannelsList -> ChannelsListActivity::class.java
-            ScreenChat.Channel -> null // TODO
-            else -> null
-        }
-        return if (c == null) null else Intent(context, c)
+        val screenClass = getScreenClass(screen)
+        return if (screenClass == null) null else Intent(context, screenClass)
     }
 
     override fun getScreenIntent(context: Context,
                                  screen: Screen,
                                  key: String,
                                  value: Parcelable): Intent? {
-        val c: Class<*>? = when (screen) {
-            ScreenChat.Login -> null // TODO
-            ScreenChat.ChannelsList -> null // TODO
-            ScreenChat.Channel -> null // TODO
-            else -> null
+        val screenClass = getScreenClass(screen)
+        return if (screenClass == null) null else Intent(context, screenClass).apply {
+            putExtra(key, value)
         }
-        return if (c == null) null else Intent(context, c).apply { putExtra(key, value) }
+    }
+
+    private fun getScreenClass(screen: Screen) = when (screen) {
+        ScreenChat.Login -> AuthActivity::class.java
+        ScreenChat.ChannelsList -> ChannelsListActivity::class.java
+        ScreenChat.Channel -> null // TODO
+        else -> null
     }
 }

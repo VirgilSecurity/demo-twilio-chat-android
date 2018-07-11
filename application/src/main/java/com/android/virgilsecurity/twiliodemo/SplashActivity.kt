@@ -37,6 +37,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
 import org.koin.android.ext.android.inject
@@ -76,7 +77,8 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun startChannelsActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.ChannelsList)
+        screenRouter.getScreenIntent(this, ScreenChat.ChannelsList,
+                                     User.EXTRA_USER, userManager.currentUser!!)
                 .run { startActivity(this) }
     }
 
@@ -85,6 +87,9 @@ class SplashActivity : AppCompatActivity() {
                 .apply {
                     this?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                 }
-                .run { startActivity(this) }
+                .run {
+                    startActivity(this)
+                    finish()
+                }
     }
 }

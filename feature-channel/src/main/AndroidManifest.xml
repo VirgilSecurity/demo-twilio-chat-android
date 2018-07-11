@@ -36,7 +36,9 @@
     package="com.android.virgilsecurity.feature_channel">
 
     <application>
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".ChannelActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

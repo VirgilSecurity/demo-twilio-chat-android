@@ -33,7 +33,6 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import android.provider.SyncStateContract
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -44,8 +43,8 @@ import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
 import com.twilio.chat.Message
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.layout_holder_me.*
-import kotlinx.android.synthetic.main.layout_holder_you.*
+import kotlinx.android.synthetic.main.layout_holder_me_old.*
+import kotlinx.android.synthetic.main.layout_holder_you_old.*
 import java.util.*
 
 /**
@@ -70,17 +69,17 @@ class ChannelRVAdapter internal constructor(private val virgilHelper: VirgilHelp
         val inflater = LayoutInflater.from(viewGroup.context)
 
         viewHolder = when (viewType) {
-            MESSAGE_ME -> HolderMessage(inflater.inflate(R.layout.layout_holder_me,
+            MESSAGE_ME -> HolderMessage(inflater.inflate(R.layout.layout_holder_me_old,
                                                          viewGroup,
                                                          false),
                                         userManager,
                                         virgilHelper)
-            MESSAGE_YOU -> HolderMessage(inflater.inflate(R.layout.layout_holder_you,
+            MESSAGE_YOU -> HolderMessage(inflater.inflate(R.layout.layout_holder_you_old,
                                                           viewGroup,
                                                           false),
                                          userManager,
                                          virgilHelper)
-            else -> HolderMessage(inflater.inflate(R.layout.layout_holder_me,
+            else -> HolderMessage(inflater.inflate(R.layout.layout_holder_me_old,
                                                    viewGroup,
                                                    false),
                                   userManager,

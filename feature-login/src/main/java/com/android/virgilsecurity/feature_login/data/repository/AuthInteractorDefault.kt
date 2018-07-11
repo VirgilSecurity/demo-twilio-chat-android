@@ -67,7 +67,7 @@ class AuthInteractorDefault(
     override fun signIn(identity: String): Single<SignInResponse> =
             authApi.signIn(identity).flatMap { response ->
                 Single.fromCallable {
-                    userManager.currentUser = User(identity, response.rawSignedModel)
+                    userManager.currentUser = User(identity, response.rawSignedModel.exportAsBase64String())
                 }.map { response }
             }
 
@@ -80,16 +80,18 @@ class AuthInteractorDefault(
                     }.let { rawSignedModel ->
                         authApi.signUp(rawSignedModel)
                                 .flatMap { response ->
-                                    val newUser = User(identity, response.rawSignedModel)
+                                    val newUser = User(identity, response.rawSignedModel.exportAsBase64String())
                                     Single.fromCallable { usersRepository.addUser(newUser) }
                                             .doAfterSuccess { userManager.currentUser = newUser }
                                             .map { response }
                                 }.doOnError {
-                                    virgilHelper.deletePrivateKey(identity) // TODO handle response if user exists
+                                    virgilHelper.deletePrivateKey(identity) // TODO handle fuel response if user exists
                                 }
                     }
                 } else {
-                    throw Throwable(context.getString(R.string.already_registered))
+                    Single.error {
+                        throw Throwable(context.getString(R.string.already_registered))
+                    }
                 }
             }
 }

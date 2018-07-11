@@ -31,37 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.feature_channel
 
-import android.arch.persistence.room.TypeConverter
-import com.google.gson.annotations.SerializedName
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    6/26/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+class ChannelActivity : AppCompatActivity() {
 
-/**
- * RawSignedModelConverter
- */
-class RawSignedModelConverter {
-
-    @TypeConverter fun toRawSignedModelSerialized(serialized: String?): RawSignedModel? =
-            if (serialized == null)
-                null
-            else
-                RawSignedModel.fromString(serialized)
-
-    @TypeConverter fun toRawSignedModelSerialized(serializable: RawSignedModel?): String? =
-            if (serializable == null)
-                null
-            else
-                serializable.exportAsBase64String()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_channel)
+    }
 }

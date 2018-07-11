@@ -76,9 +76,8 @@ class RegistrationVMDefault(
     override fun getState(): LiveData<State> = state
 
     override fun registration(identity: String) {
-//        state.value = State.ShowLoading
-//        signUpDo.execute(identity)
-        UiUtils.log("tag_tag", "reg test")
+        state.value = State.ShowLoading
+        signUpDo.execute(identity)
     }
 
     override fun onCleared() {

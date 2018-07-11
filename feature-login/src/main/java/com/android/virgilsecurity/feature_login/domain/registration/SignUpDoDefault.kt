@@ -71,7 +71,7 @@ class SignUpDoDefault(
 
     private fun success(signInResponse: SignInResponse) {
         virgilHelper.parseCard(signInResponse.rawSignedModel).let {
-            liveData.value = SignUpDo.Result.OnSuccess(User(it.identity, it.rawCard))
+            liveData.value = SignUpDo.Result.OnSuccess(User(it.identity, it.rawCard.exportAsBase64String()))
         }
     }
 

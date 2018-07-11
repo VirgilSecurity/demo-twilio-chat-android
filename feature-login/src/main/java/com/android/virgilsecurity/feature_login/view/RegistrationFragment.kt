@@ -107,7 +107,10 @@ class RegistrationFragment @SuppressLint("ValidFragment") constructor(
     }
 
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
-        is RegistrationVM.State.RegisteredSuccessfully -> startChatList(state.user)
+        is RegistrationVM.State.RegisteredSuccessfully -> {
+            stateSliceRegistration.cleanUp()
+            startChatList(state.user)
+        }
         RegistrationVM.State.ShowLoading -> stateSliceRegistration.showLoading()
         is RegistrationVM.State.UsernameInvalid -> when (state.causeCode) {
             RegistrationVM.KEY_USERNAME_EMPTY -> stateSliceRegistration.showUsernameEmpty()

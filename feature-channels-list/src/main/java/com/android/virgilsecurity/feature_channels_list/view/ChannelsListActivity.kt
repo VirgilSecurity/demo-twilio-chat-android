@@ -34,8 +34,10 @@
 package com.android.virgilsecurity.feature_channels_list.view
 
 import android.os.Bundle
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.feature_channels_list.R
+import kotlinx.android.synthetic.main.activity_channels_list.*
 
 /**
  * . _  _
@@ -56,7 +58,9 @@ class ChannelsListActivity(
 ) : BaseActivity() {
 
     override fun init(savedInstanceState: Bundle?) {
-        // TODO Implement body or it will be empty ):
+        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
+        tvTest.text = "Finnaly"
+        tvUsername.text = user?.identity
     }
 
     override fun initViewSlices() {

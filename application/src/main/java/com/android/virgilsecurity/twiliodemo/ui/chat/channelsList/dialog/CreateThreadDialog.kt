@@ -45,7 +45,7 @@ import android.view.WindowManager
 import com.android.virgilsecurity.twiliodemo.R
 import com.android.virgilsecurity.common.util.DefaultSymbolsInputFilter
 import com.android.virgilsecurity.common.util.Validator
-import kotlinx.android.synthetic.main.dialog_create_thread.*
+import kotlinx.android.synthetic.main.dialog_create_thread_old.*
 
 /**
  * Created by Danylo Oliinyk on 11/26/17 at Virgil Security.
@@ -64,7 +64,7 @@ class CreateThreadDialog(context: Context,
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.dialog_create_thread)
+        setContentView(R.layout.dialog_create_thread_old)
         setCancelable(true)
 
         initUi()

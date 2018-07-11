@@ -35,8 +35,9 @@
     package="com.android.virgilsecurity.feature_channels_list">
 
     <application>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".view.ChannelsListActivity" />
+        <activity
+            android:name=".view.ChannelsListActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

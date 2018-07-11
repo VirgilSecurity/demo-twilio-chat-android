@@ -53,7 +53,6 @@ import com.android.virgilsecurity.base.data.model.User
  * RoomDS
  */
 @Database(entities = [(User::class)], version = 1, exportSchema = false)
-@TypeConverters(RawSignedModelConverter::class)
 abstract class RoomDS : RoomDatabase() {
 
     abstract fun usersDao(): UsersDao
