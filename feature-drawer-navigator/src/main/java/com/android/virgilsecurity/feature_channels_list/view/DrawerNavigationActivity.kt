@@ -53,9 +53,9 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  */
 
 /**
- * ChannelsListActivity
+ * DrawerNavigationActivity
  */
-class ChannelsListActivity(
+class DrawerNavigationActivity(
         override val layoutResourceId: Int = R.layout.activity_channels_list
 ) : BaseActivity() {
 

@@ -31,15 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
-
-import android.os.Bundle
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.R.id.tvTest
-import com.android.virgilsecurity.feature_channels_list.R.id.tvUsername
-import kotlinx.android.synthetic.main.activity_channels_list.*
+package com.android.virgilsecurity.common.util
 
 /**
  * . _  _
@@ -47,32 +39,24 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsListActivity
+ * UserUtils
  */
-class ChannelsListActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
-) : BaseActivity() {
 
-    override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
-
-    }
-
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+/**
+ * If identity consists of two or more words - returns first two words letters. Otherwise returns
+ * first letter. Username can't be empty, so there's no check for isEmpty().
+ */
+object UserUtils {
+    fun firstInitials(identity: String) = identity.split(" ").let {
+        if (it.size > 1)
+            StringBuilder("$it[0]$it[1]").toString()
+        else
+            it[0][0].toString()
     }
 }

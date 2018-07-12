@@ -70,7 +70,7 @@ class RegistrationVMDefault(
                 onUsernameChanged(usernameField.get())
             }
         }
-        usernameField.addOnPropertyChangedCallback(propertyChangedCallback)
+        usernameField.addOnPropertyChangedCallback(propertyChangedCallback) // TODO add nice look with https://proandroiddev.com/the-ugly-onpropertychangedcallback-63c78c762394
     }
 
     override fun getState(): LiveData<State> = state

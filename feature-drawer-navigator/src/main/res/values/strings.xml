@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -31,32 +31,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dlDrawer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<resources>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include layout="@layout/toolbar" />
-
-        <FrameLayout
-            android:id="@+id/flBaseContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nvNavigation"
-        android:layout_width="258dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/layout_drawer_header"
-        app:menu="@menu/drawer_menu" />
-
-</android.support.v4.widget.DrawerLayout>
+    <string name="contacts">Contacts</string>
+    <string name="chats">Chats</string>
+    <string name="settings_drawer">Settings</string>
+</resources>

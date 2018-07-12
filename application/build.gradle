@@ -57,9 +57,7 @@ android {
 dependencies {
     implementation project(":base")
     implementation project(":common")
-    implementation project(":feature-login")
-    implementation project(":feature-channels-list")
-    implementation project(":feature-channel")
+    implementation project(":feature-drawer-navigator")
 }
 
 // Outer dependencies

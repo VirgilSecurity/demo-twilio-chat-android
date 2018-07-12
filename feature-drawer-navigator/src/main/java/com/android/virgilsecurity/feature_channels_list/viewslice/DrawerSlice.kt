@@ -31,15 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_channels_list.viewslice
 
-import android.os.Bundle
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.R.id.tvTest
-import com.android.virgilsecurity.feature_channels_list.R.id.tvUsername
-import kotlinx.android.synthetic.main.activity_channels_list.*
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -47,32 +42,21 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsListActivity
+ * DrawerSlice
  */
-class ChannelsListActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
-) : BaseActivity() {
+interface DrawerSlice : ViewSlice {
 
-    override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
-
+    sealed class Action {
+        object ContactsClicked : Action()
+        object ChatsClicked : Action()
+        object SettingsClicked : Action()
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    fun getAction(): LiveData<Action>
 }

@@ -32,35 +32,33 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<android.support.constraint.ConstraintLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dlDrawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finnaly"
-        android:elevation="5dp"
-        android:textSize="20sp"
-        android:textColor="@color/yesterday_snow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="5dp"
-        android:textSize="20sp"
-        android:textColor="@color/yesterday_snow"
-        app:layout_constraintTop_toBottomOf="@id/tvTest"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <include layout="@layout/toolbar" />
 
-</android.support.constraint.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/flBaseContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nvNavigation"
+        android:layout_width="304dp"
+        android:background="@color/colorPrimary"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/layout_drawer_header"
+        app:menu="@menu/drawer_menu" />
+
+</android.support.v4.widget.DrawerLayout>

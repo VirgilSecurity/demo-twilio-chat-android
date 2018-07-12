@@ -31,14 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_channels_list.viewslice
 
-import android.os.Bundle
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.R.id.tvTest
-import com.android.virgilsecurity.feature_channels_list.R.id.tvUsername
 import kotlinx.android.synthetic.main.activity_channels_list.*
 
 /**
@@ -47,32 +47,34 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsListActivity
+ * DrawerSliceDefault
  */
-class ChannelsListActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
-) : BaseActivity() {
+class DrawerSliceDefault(
+        private val actionLiveData: MutableLiveData<DrawerSlice.Action>
+) : BaseViewSlice(), DrawerSlice {
 
-    override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        setupDrawer()
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
+    private fun setupDrawer() {
+        nvNavigation.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
+                R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChatsClicked
+                R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+            }
+
+            return@setNavigationItemSelectedListener true
+        }
     }
 
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
 }

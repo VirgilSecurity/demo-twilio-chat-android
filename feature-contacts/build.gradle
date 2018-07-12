@@ -31,48 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+apply plugin: 'com.android.library'
 
-import android.os.Bundle
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.R.id.tvTest
-import com.android.virgilsecurity.feature_channels_list.R.id.tvUsername
-import kotlinx.android.synthetic.main.activity_channels_list.*
+apply from: '../config-android.gradle'
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/5/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+// Inner dependencies
+dependencies {
+    implementation project(':base')
+    implementation project(':common')
+}
 
-/**
- * ChannelsListActivity
- */
-class ChannelsListActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
-) : BaseActivity() {
-
-    override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
-
-    }
-
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+// Outer dependencies
+dependencies {
+    kotlin()
+    support()
 }

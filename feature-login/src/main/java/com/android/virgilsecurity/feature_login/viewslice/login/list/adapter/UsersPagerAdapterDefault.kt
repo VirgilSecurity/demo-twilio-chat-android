@@ -43,6 +43,7 @@ import android.widget.TextView
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inflate
 import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UserUtils
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
 
@@ -128,10 +129,7 @@ class UsersPagerAdapterDefault(
                 Uri.Builder().path(user.picturePath!!).build()))
         } else {
             tvInitials.visibility = View.VISIBLE
-            user.identity.split(" ").let {
-                if (it.size > 1)
-                    tvInitials.text = StringBuilder("$it[0]$it[1]").toString()
-            }
+            tvInitials.text = UserUtils.firstInitials(user.identity)
             ivUserPic.background = context.getDrawable(R.drawable.rect_rounded_gradient_2)
             // TODO get random background
         }

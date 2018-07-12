@@ -115,23 +115,6 @@ import com.android.virgilsecurity.base.view.BaseActivity
 //        ChannelActivity.startWithExtras(this, Constants.KEY_CHANNEL, channel)
 //    }
 //
-//    override fun onBackPressed() {
-//        hideKeyboard()
-//
-//        if (secondPress)
-//            super.onBackPressed()
-//        else
-//            UiUtils.toast(this, getString(R.string.press_exit_once_more))
-//
-//        secondPress = true
-//
-//        object : OnFinishTimer(2000, 100) {
-//            override fun onFinish() {
-//                secondPress = false
-//            }
-//        }.start()
-//    }
-//
 //    fun dialogNewChannelStopLoading() {
 //        createThreadDialog.showProgress(false)
 //    }

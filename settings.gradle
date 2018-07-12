@@ -1,3 +1,4 @@
 include ':application', ':base', ':feature-login',
         ':feature-channels-list', ':feature-channel',
-        ':common'
+        ':common', ':feature-contacts', ':feature-settings',
+        ':feature-drawer-navigator'
