@@ -59,6 +59,9 @@ ext.versions = [
         'virgilCrypto'          : '5.0.2@aar',
         'room'                  : '1.1.0',
         'viewPagerIndicator'    : '1.1.0',
+        'conductorarchLifecycle': '0.1.1',
+        'conductor'             : '2.1.4',
+        'circleImageView'       : '2.2.0',
 
         // TESTING
 

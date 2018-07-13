@@ -33,7 +33,10 @@
 
 package com.android.virgilsecurity.feature_channels_list.view
 
-import com.android.virgilsecurity.base.view.BaseFragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.bluelinelabs.conductor.Controller
 
 /**
  * . _  _
@@ -49,5 +52,9 @@ import com.android.virgilsecurity.base.view.BaseFragment
 /**
  * ContactsFragment
  */
-class ContactsFragment : BaseFragment<DrawerNavigation>(){
+class ContactsController : Controller() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        return View(applicationContext)
+    }
 }

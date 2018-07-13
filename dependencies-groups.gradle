@@ -64,8 +64,7 @@ ext {
         implementation deps.ac.liveData
         annotationProcessor deps.ac.lifecycleCompiler
         implementation deps.ac.extensions
-//        implementation deps.ac.streams
-//
+
         kapt deps.ac.databinding
     }
 
@@ -99,6 +98,15 @@ ext {
 
     viewPagerIndicator = Group {
         implementation deps.viewPagerIndicator
+    }
+
+    conductor = Group {
+        implementation deps.conductor.core
+        implementation deps.conductor.archLifecycle
+    }
+
+    circleImageView = Group {
+        implementation deps.circleImageView
     }
 
     testing = Group {

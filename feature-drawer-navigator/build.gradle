@@ -39,10 +39,10 @@ apply from: '../config-android.gradle'
 dependencies {
     implementation project(":base")
     implementation project(":common")
-    implementation project(":feature-contacts")
-    implementation project(":feature-channels-list")
-    implementation project(":feature-channel")
-    implementation project(":feature-settings")
+    api project(":feature-contacts")
+    api project(":feature-channels-list")
+    api project(":feature-channel")
+    api project(":feature-settings")
 }
 
 // Outer dependencies
@@ -50,4 +50,6 @@ dependencies {
     kotlin()
     support()
     architectureComponents()
+    conductor()
+    circleImageView()
 }

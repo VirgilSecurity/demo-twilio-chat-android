@@ -34,7 +34,6 @@ ext.deps = [
                 'viewModel'        : "android.arch.lifecycle:viewmodel:$versions.architectureComponents",
                 'liveData'         : "android.arch.lifecycle:livedata:$versions.architectureComponents",
                 'lifecycleCompiler': "android.arch.lifecycle:compiler:$versions.architectureComponents",
-                'streams'          : "android.arch.lifecycle:reactivestreams:$versions.architectureComponents",
                 'extensions'       : "android.arch.lifecycle:extensions:$versions.architectureComponents",
                 'databinding'      : "com.android.databinding:compiler:$versions.dataBindingVersion",
                 'roomRuntime'      : "android.arch.persistence.room:runtime:$versions.room",
@@ -62,6 +61,13 @@ ext.deps = [
                 'sdk'          : "com.virgilsecurity.sdk:sdk:$versions.virgil",
                 'cryptoAndroid': "com.virgilsecurity.sdk:crypto-android:$versions.virgilCrypto",
         ],
+
+        'conductor'         : [
+                'core'         : "com.bluelinelabs:conductor:$versions.conductor",
+                'archLifecycle': "com.bluelinelabs:conductor-archlifecycle:$versions.conductorarchLifecycle",
+        ],
+
+        'circleImageView' : "de.hdodenhof:circleimageview:$versions.circleImageView",
 
         // TESTING
 

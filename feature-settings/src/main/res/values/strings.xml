@@ -34,5 +34,11 @@
 <resources>
 
 
-
+    <string name="info_settings">Info</string>
+    <string name="username">Username</string>
+    <string name="help">Help</string>
+    <string name="ask_question">Ask question</string>
+    <string name="about_settings">About</string>
+    <string name="version_history">Version history</string>
+    <string name="change_profile_picture">Change profile picture</string>
 </resources>

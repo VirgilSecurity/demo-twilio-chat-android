@@ -45,4 +45,6 @@ dependencies {
 dependencies {
     kotlin()
     support()
+    conductor()
+    circleImageView()
 }

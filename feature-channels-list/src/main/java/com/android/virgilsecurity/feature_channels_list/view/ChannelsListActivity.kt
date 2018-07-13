@@ -36,10 +36,6 @@ package com.android.virgilsecurity.feature_channels_list.view
 import android.os.Bundle
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.R.id.tvTest
-import com.android.virgilsecurity.feature_channels_list.R.id.tvUsername
-import kotlinx.android.synthetic.main.activity_channels_list.*
 
 /**
  * . _  _
@@ -56,7 +52,7 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * ChannelsListActivity
  */
 class ChannelsListActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
+        override val layoutResourceId: Int
 ) : BaseActivity() {
 
     override fun init(savedInstanceState: Bundle?) {

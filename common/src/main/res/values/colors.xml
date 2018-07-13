@@ -36,6 +36,7 @@
 
     <color name="colorPrimary">#2B303B</color>
     <color name="colorPrimaryDark">#20232B</color>
+    <color name="colorPrimaryNight">#64000000</color>
     <color name="colorAccent">#9E3621</color>
     <color name="colorAccentDark">#4F1B11</color>
 
@@ -56,5 +57,6 @@
     <color name="virgil_gray_light">#64ffffff</color>
     <color name="gray_light">#94ffffff</color>
     <color name="aqua">#80CBC4</color>
+    <color name="wet_paper">#E2E2E2</color>
 
 </resources>

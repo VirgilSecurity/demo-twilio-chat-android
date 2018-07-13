@@ -48,7 +48,7 @@ import com.android.virgilsecurity.feature_login.view.AuthActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/21/186/21/18
+ * ....|  _/    6/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
@@ -69,6 +69,7 @@ class ScreenRouterDefault : ScreenRouter {
                                  key: String,
                                  value: Parcelable): Intent? {
         val screenClass = getScreenClass(screen)
+
         return if (screenClass == null) null else Intent(context, screenClass).apply {
             putExtra(key, value)
         }

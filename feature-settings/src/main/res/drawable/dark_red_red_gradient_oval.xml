@@ -31,8 +31,11 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
-    android:layout_height="56dp" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <gradient
+        android:angle="225"
+        android:endColor="@color/colorAccentDark"
+        android:startColor="@color/colorAccent" />
+</shape>
