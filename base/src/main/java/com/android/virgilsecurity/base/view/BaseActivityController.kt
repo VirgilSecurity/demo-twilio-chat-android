@@ -35,60 +35,76 @@ package com.android.virgilsecurity.base.view
 
 import android.app.Activity
 import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import kotlinx.android.extensions.LayoutContainer
+import android.widget.Toolbar
+import com.android.virgilsecurity.base.util.ContainerView
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Router
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/16/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+abstract class BaseActivityController : Activity(), LifecycleOwner {
 
-/**
- * BaseController
- */
-abstract class BaseController : LifecycleController(), LayoutContainer {
+    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+
+    protected lateinit var router: Router
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
+    @ContainerView
+    protected abstract fun provideContainer(): ViewGroup
 
-    protected abstract fun init()
-    protected abstract fun initViewSlices(view: View)
+    protected abstract fun init(savedInstanceState: Bundle?)
+    protected abstract fun initViewSlices()
     protected abstract fun setupVSActionObservers()
     protected abstract fun setupVMStateObservers()
 
-    override lateinit var containerView: View
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
+        setContentView(layoutResourceId)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View =
-            inflater.inflate(layoutResourceId, container, false)
+        router = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
-        containerView = view
-
-        init()
-        initViewSlices(view)
+        init(savedInstanceState)
+        initViewSlices()
         setupVSActionObservers()
         setupVMStateObservers()
     }
 
-    protected fun hideKeyboard() {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
+    override fun onStart() {
+        super.onStart()
+        lifecycleRegistry.markState(Lifecycle.State.STARTED)
     }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
+    }
+
+    override fun onBackPressed() {
+        if (!router.handleBack())
+            super.onBackPressed()
+    }
+
+    protected fun initToolbar(toolbar: Toolbar, title: String) {
+        setActionBar(toolbar)
+        actionBar?.title = title
+    }
+
+    protected fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
+    }
+
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }

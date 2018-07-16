@@ -33,9 +33,7 @@
 
 package com.android.virgilsecurity.base.extension
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import com.bluelinelabs.conductor.Router
 
 /**
  * . _  _
@@ -43,14 +41,12 @@ import android.arch.lifecycle.Observer
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ArchitectureComponentsExt
+ * RouterExt
  */
-fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
-    liveData.observe(this, Observer { it?.let { action(it) } })
-}
+fun Router.hasNoRootController(): Boolean = !this.hasRootController()

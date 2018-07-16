@@ -31,11 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.extension
-
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+package com.android.virgilsecurity.base.util
 
 /**
  * . _  _
@@ -43,14 +39,19 @@ import android.arch.lifecycle.Observer
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ArchitectureComponentsExt
+ * ContainerView
  */
-fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
-    liveData.observe(this, Observer { it?.let { action(it) } })
-}
+@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION,
+        AnnotationTarget.PROPERTY_GETTER,
+        AnnotationTarget.PROPERTY_SETTER,
+        AnnotationTarget.VALUE_PARAMETER,
+        AnnotationTarget.FIELD,
+        AnnotationTarget.LOCAL_VARIABLE)
+annotation class ContainerView

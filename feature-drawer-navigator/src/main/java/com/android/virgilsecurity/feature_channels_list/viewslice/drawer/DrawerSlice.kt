@@ -31,11 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.extension
+package com.android.virgilsecurity.feature_channels_list.viewslice.drawer
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -43,14 +42,21 @@ import android.arch.lifecycle.Observer
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ArchitectureComponentsExt
+ * DrawerSlice
  */
-fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
-    liveData.observe(this, Observer { it?.let { action(it) } })
+interface DrawerSlice : ViewSlice {
+
+    sealed class Action {
+        object ContactsClicked : Action()
+        object ChannelsListClicked : Action()
+        object SettingsClicked : Action()
+    }
+
+    fun getAction(): LiveData<Action>
 }

@@ -31,14 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.viewslice
+package com.android.virgilsecurity.feature_channels_list.viewslice.state
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.OnLifecycleEvent
+import android.support.v4.widget.DrawerLayout
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.feature_drawer_navigator.R
 import kotlinx.android.synthetic.main.activity_channels_list.*
 
 /**
@@ -47,34 +43,21 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/12/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerSliceDefault
+ * DrawerStateSliceDefault
  */
-class DrawerSliceDefault(
-        private val actionLiveData: MutableLiveData<DrawerSlice.Action>
-) : BaseViewSlice(), DrawerSlice {
+class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
-        setupDrawer()
+    override fun lockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    private fun setupDrawer() {
-        nvNavigation.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
-                R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChatsClicked
-                R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
-            }
-
-            return@setNavigationItemSelectedListener true
-        }
+    override fun unLockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
-
-    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
 }

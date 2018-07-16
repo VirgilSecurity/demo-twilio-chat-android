@@ -96,7 +96,7 @@ class AuthActivity(
 
     fun login(user: User) =
             screenRouter.getScreenIntent(this,
-                                         ScreenChat.ChannelsList,
+                                         ScreenChat.DrawerNavigation,
                                          User.EXTRA_USER,
                                          user)
                     .run { startActivity(this) }

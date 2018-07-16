@@ -34,9 +34,21 @@
 package com.android.virgilsecurity.feature_channels_list.view
 
 import android.os.Bundle
+import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
+import com.android.virgilsecurity.base.extension.getContentView
+import com.android.virgilsecurity.base.extension.hasNoRootController
+import com.android.virgilsecurity.base.extension.observe
+import com.android.virgilsecurity.base.view.BaseActivityController
+import com.android.virgilsecurity.feature_channel.ChannelController
+import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSlice
 import com.android.virgilsecurity.feature_drawer_navigator.R
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import kotlinx.android.synthetic.main.activity_channels_list.*
+import org.koin.android.ext.android.inject
 
 /**
  * . _  _
@@ -54,22 +66,61 @@ import com.android.virgilsecurity.feature_drawer_navigator.R
  */
 class DrawerNavigationActivity(
         override val layoutResourceId: Int = R.layout.activity_channels_list
-) : BaseActivity() {
+) : BaseActivityController() {
+
+    private val drawerSlice: DrawerSlice by inject()
+    private val stateSlice: DrawerStateSlice by inject()
+    private lateinit var user: User
+
+    override fun provideContainer(): ViewGroup = controllerContainer
 
     override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
+        user = intent.getParcelableExtra(User.EXTRA_USER)
 
+        if (router.hasNoRootController())
+            router.setRoot(RouterTransaction
+                                   .with(ChannelsListController(user) { openChannel(it) })
+                                   .pushChangeHandler(FadeChangeHandler())
+                                   .popChangeHandler(FadeChangeHandler()))
     }
 
     override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
+        drawerSlice.init(lifecycle, getContentView())
+        stateSlice.init(lifecycle, getContentView())
     }
 
     override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(drawerSlice.getAction()) { onActionChanged(it) }
     }
 
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+    private fun onActionChanged(action: DrawerSlice.Action) = when (action) {
+        DrawerSlice.Action.ChannelsListClicked -> {
+            stateSlice.unLockDrawer()
+            changeController(ChannelsListController(user) {
+                openChannel(it)
+            })
+        }
+        DrawerSlice.Action.ContactsClicked -> {
+            stateSlice.unLockDrawer()
+            changeController(ContactsController())
+        }
+        DrawerSlice.Action.SettingsClicked -> {
+            stateSlice.unLockDrawer()
+            changeController(SettingsController(user))
+        }
     }
+
+    private fun changeController(controller: Controller) {
+        router.pushController(RouterTransaction
+                                      .with(controller)
+                                      .pushChangeHandler(FadeChangeHandler())
+                                      .popChangeHandler(FadeChangeHandler()))
+    }
+
+    private fun openChannel(user: User) {
+        stateSlice.lockDrawer()
+        changeController(ChannelController(user))
+    }
+
+    override fun setupVMStateObservers() {}
 }

@@ -52,4 +52,5 @@ dependencies {
     architectureComponents()
     conductor()
     circleImageView()
+    koin()
 }

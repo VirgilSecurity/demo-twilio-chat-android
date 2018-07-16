@@ -51,9 +51,9 @@ import com.android.virgilsecurity.feature_contacts.R
 /**
  * ContactsController
  */
-class ContactsController(
-        override val layoutResourceId: Int = R.layout.controller_contacts
-) : BaseController() {
+class ContactsController : BaseController() {
+
+    override val layoutResourceId: Int = R.layout.controller_contacts
 
     override fun init() {
         // TODO Implement body or it will be empty ):

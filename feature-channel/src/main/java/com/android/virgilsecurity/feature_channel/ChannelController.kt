@@ -34,11 +34,17 @@
 package com.android.virgilsecurity.feature_channel
 
 import android.view.View
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseController
 
-class ChannelController(
-        override val layoutResourceId: Int = R.layout.controller_channel
-) : BaseController() {
+class ChannelController() : BaseController() {
+
+    private lateinit var user: User
+    override val layoutResourceId: Int = R.layout.controller_channel
+
+    constructor(user: User) : this() {
+        this.user = user
+    }
 
     override fun init() {
         // TODO Implement body or it will be empty ):

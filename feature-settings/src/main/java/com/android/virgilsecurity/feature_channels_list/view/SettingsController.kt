@@ -34,8 +34,11 @@
 package com.android.virgilsecurity.feature_channels_list.view
 
 import android.view.View
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_settings.R
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -51,12 +54,17 @@ import com.android.virgilsecurity.feature_settings.R
 /**
  * SettingsController
  */
-class SettingsController(
-        override val layoutResourceId: Int = R.layout.controller_settings
-) : BaseController() {
+class SettingsController() : BaseController() {
+
+    private lateinit var user: User
+    override val layoutResourceId: Int = R.layout.controller_settings
+
+    constructor(user: User) : this() {
+        this.user = user
+    }
 
     override fun init() {
-        // TODO Implement body or it will be empty ):
+        initViews()
     }
 
     override fun initViewSlices(view: View) {
@@ -69,5 +77,13 @@ class SettingsController(
 
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
+    }
+
+    private fun initViews() {
+        tvUsernameSettings.text = user.identity
+        tvUsernameSettingsInfo.text = user.identity
+        ivChangeUserPic.setOnClickListener {
+            UiUtils.toast(activity!!.applicationContext, "Under development")
+        }
     }
 }

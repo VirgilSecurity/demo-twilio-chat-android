@@ -31,11 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.extension
+package com.android.virgilsecurity.feature_channels_list.viewslice.state
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -43,14 +41,17 @@ import android.arch.lifecycle.Observer
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ArchitectureComponentsExt
+ * DrawerStateSlice
  */
-fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
-    liveData.observe(this, Observer { it?.let { action(it) } })
+interface DrawerStateSlice : ViewSlice {
+
+    fun lockDrawer()
+
+    fun unLockDrawer()
 }

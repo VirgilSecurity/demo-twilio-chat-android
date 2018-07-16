@@ -80,29 +80,4 @@ object UiUtils {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(containerId, fragment)
                     .commit()
-
-    fun replaceFragmentNoBackStack(fm: FragmentManager, containerId: Int, fragment: Fragment, tag: String) =
-            fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(containerId, fragment, tag)
-                    .commit()
-
-    fun replaceFragment(fm: FragmentManager, containerId: Int, fragment: Fragment, tag: String) =
-            fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(containerId, fragment, tag)
-                    .addToBackStack(tag)
-                    .commit()
-
-    fun showFragment(fm: FragmentManager, fragment: Fragment) =
-            fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .show(fragment)
-                    .commit()
-
-    fun hideFragment(fm: FragmentManager, fragment: Fragment) =
-            fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .hide(fragment)
-                    .commit()
 }

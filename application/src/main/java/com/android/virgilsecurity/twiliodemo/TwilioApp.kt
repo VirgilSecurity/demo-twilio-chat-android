@@ -40,6 +40,7 @@ import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.channelsListMo
 import authActivityModule
 import authModule
 import com.android.virgilsecurity.common.di.*
+import com.android.virgilsecurity.feature_channels_list.di.drawerNavigationModule
 import com.android.virgilsecurity.twiliodemo.di.appModule
 import loginFragmentModule
 import org.koin.android.ext.android.startKoin
@@ -70,6 +71,8 @@ class TwilioApp : Application() {
                       // Auth modules
                       authModule, authActivityModule, loginFragmentModule,
                       registrationFragmentModule,
+                      // Drawer navigation modules
+                      drawerNavigationModule,
                       // Channels list modules
                       channelsListModule,
                       // Channel modules

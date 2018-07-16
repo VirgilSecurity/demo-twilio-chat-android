@@ -33,12 +33,12 @@
 
 package com.android.virgilsecurity.feature_channels_list.view
 
-import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.feature_channels_list.R
+import kotlinx.android.synthetic.main.controller_channels_list.*
+
 
 /**
  * . _  _
@@ -54,13 +54,20 @@ import com.android.virgilsecurity.feature_channels_list.R
 /**
  * ChannelsListController
  */
-class ChannelsListController(
-        private val user: User,
-        override val layoutResourceId: Int = R.layout.controller_channels_list
-) : BaseController() {
+class ChannelsListController() : BaseController() {
+
+    private lateinit var user: User
+    private lateinit var onChatClick: (User) -> Unit
+    override val layoutResourceId: Int = R.layout.controller_channels_list
+
+    constructor(user: User, onChatClick: (User) -> Unit) : this() {
+        this.user = user
+        this.onChatClick = onChatClick
+    }
 
     override fun init() {
-        // TODO Implement body or it will be empty ):
+        tvUsername.text = user.identity
+        tvUsername.setOnClickListener { onChatClick(user) }
     }
 
     override fun initViewSlices(view: View) {

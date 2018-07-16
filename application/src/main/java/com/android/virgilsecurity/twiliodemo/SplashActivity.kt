@@ -77,7 +77,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun startChannelsActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.ChannelsList,
+        screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
                                      User.EXTRA_USER, userManager.currentUser!!)
                 .run { startActivity(this) }
     }

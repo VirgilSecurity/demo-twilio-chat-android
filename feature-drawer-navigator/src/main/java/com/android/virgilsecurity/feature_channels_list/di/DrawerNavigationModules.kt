@@ -31,11 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.extension
+package com.android.virgilsecurity.feature_channels_list.di
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSliceDefault
+import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSlice
+import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSliceDefault
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -43,14 +47,17 @@ import android.arch.lifecycle.Observer
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/3/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ArchitectureComponentsExt
+ * DrawerNavigationModules
  */
-fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
-    liveData.observe(this, Observer { it?.let { action(it) } })
+
+val drawerNavigationModule: Module = applicationContext {
+    bean { MutableLiveData<DrawerSlice.Action>() }
+    bean { DrawerSliceDefault(get()) as DrawerSlice }
+    bean { DrawerStateSliceDefault() as DrawerStateSlice }
 }
