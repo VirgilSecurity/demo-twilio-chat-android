@@ -31,19 +31,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_channels_list.view
 
-apply from: '../config-android.gradle'
+import android.view.View
+import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.feature_contacts.R
 
-// Inner dependencies
-dependencies {
-    implementation project(":base")
-    implementation project(":common")
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/12/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    support()
-    conductor()
+/**
+ * ContactsController
+ */
+class ContactsController(
+        override val layoutResourceId: Int = R.layout.controller_contacts
+) : BaseController() {
+
+    override fun init() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSActionObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
 }

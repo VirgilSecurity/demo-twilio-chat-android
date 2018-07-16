@@ -39,7 +39,6 @@ import android.os.Parcelable
 import com.android.virgilsecurity.base.view.Screen
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
-import com.android.virgilsecurity.feature_channels_list.view.ChannelsListActivity
 import com.android.virgilsecurity.feature_login.view.AuthActivity
 
 /**
@@ -77,7 +76,7 @@ class ScreenRouterDefault : ScreenRouter {
 
     private fun getScreenClass(screen: Screen) = when (screen) {
         ScreenChat.Login -> AuthActivity::class.java
-        ScreenChat.ChannelsList -> ChannelsListActivity::class.java
+//        ScreenChat.ChannelsList -> ChannelsListActivity::class.java
         ScreenChat.Channel -> null // TODO
         else -> null
     }

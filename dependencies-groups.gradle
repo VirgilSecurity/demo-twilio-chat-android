@@ -62,8 +62,7 @@ ext {
     architectureComponents = Group {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
-        annotationProcessor deps.ac.lifecycleCompiler
-        implementation deps.ac.extensions
+        kapt deps.ac.lifecycleCompiler // was annotationProcessor
 
         kapt deps.ac.databinding
     }

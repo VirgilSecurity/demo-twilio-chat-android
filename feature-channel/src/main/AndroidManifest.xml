@@ -32,13 +32,10 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.feature_channel">
+<manifest package="com.android.virgilsecurity.feature_channel">
 
     <application>
-        <activity
-            android:name=".ChannelActivity"
-            android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>

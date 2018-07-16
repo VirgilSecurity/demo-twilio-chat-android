@@ -33,12 +33,12 @@
 
 package com.android.virgilsecurity.feature_channels_list.viewslice
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_drawer_navigator.R
 import kotlinx.android.synthetic.main.activity_channels_list.*
 
 /**

@@ -36,7 +36,7 @@ package com.android.virgilsecurity.feature_channels_list.view
 import android.os.Bundle
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseActivity
-import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_drawer_navigator.R
 
 /**
  * . _  _
@@ -65,7 +65,7 @@ class DrawerNavigationActivity(
         // TODO Implement body or it will be empty ):
     }
 
-    override fun setupVSObservers() {
+    override fun setupVSActionObservers() {
         // TODO Implement body or it will be empty ):
     }
 

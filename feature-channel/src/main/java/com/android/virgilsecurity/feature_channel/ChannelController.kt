@@ -31,30 +31,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_channel
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.bluelinelabs.conductor.Controller
+import com.android.virgilsecurity.base.view.BaseController
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/12/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+class ChannelController(
+        override val layoutResourceId: Int = R.layout.controller_channel
+) : BaseController() {
 
-/**
- * ContactsFragment
- */
-class ContactsController : Controller() {
+    override fun init() {
+        // TODO Implement body or it will be empty ):
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return View(applicationContext)
+    override fun initViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSActionObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
     }
 }

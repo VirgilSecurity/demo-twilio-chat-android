@@ -31,15 +31,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel
+package com.android.virgilsecurity.feature_channels_list.view
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.view.BaseActivity
+import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.feature_channels_list.R
 
-class ChannelActivity : AppCompatActivity() {
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/5/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_channel)
+/**
+ * ChannelsListController
+ */
+class ChannelsListController(
+        private val user: User,
+        override val layoutResourceId: Int = R.layout.controller_channels_list
+) : BaseController() {
+
+    override fun init() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun initViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSActionObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
     }
 }

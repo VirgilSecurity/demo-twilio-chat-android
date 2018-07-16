@@ -72,7 +72,7 @@ class AuthActivity(
 
     override fun initViewSlices() {}
 
-    override fun setupVSObservers() {}
+    override fun setupVSActionObservers() {}
 
     override fun setupVMStateObservers() = observe(loginVM.getState()) {
         onStateChanged(it)

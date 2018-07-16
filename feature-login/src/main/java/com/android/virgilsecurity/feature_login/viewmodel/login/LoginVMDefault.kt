@@ -51,7 +51,6 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 /**
  * LoginVMDefault
  */
-
 class LoginVMDefault(
         private val state: MediatorLiveData<State>,
         private val loadUsersDo: LoadUsersDo

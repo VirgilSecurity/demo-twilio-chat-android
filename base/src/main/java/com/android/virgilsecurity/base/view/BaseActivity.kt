@@ -42,7 +42,6 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.FragmentActivity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
-import org.koin.android.ext.android.releaseContext
 
 abstract class BaseActivity : FragmentActivity(), LifecycleOwner {
 
@@ -53,7 +52,7 @@ abstract class BaseActivity : FragmentActivity(), LifecycleOwner {
 
     protected abstract fun init(savedInstanceState: Bundle?)
     protected abstract fun initViewSlices()
-    protected abstract fun setupVSObservers()
+    protected abstract fun setupVSActionObservers()
     protected abstract fun setupVMStateObservers()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +62,7 @@ abstract class BaseActivity : FragmentActivity(), LifecycleOwner {
 
         init(savedInstanceState)
         initViewSlices()
-        setupVSObservers()
+        setupVSActionObservers()
         setupVMStateObservers()
     }
 

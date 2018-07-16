@@ -31,11 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.base.view
 
+import android.app.Activity
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleRegistry
+import android.content.Context
 import android.os.Bundle
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseActivity
+import android.support.annotation.LayoutRes
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 
 /**
  * . _  _
@@ -43,32 +52,38 @@ import com.android.virgilsecurity.base.view.BaseActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsListActivity
+ * BaseController
  */
-class ChannelsListActivity(
-        override val layoutResourceId: Int
-) : BaseActivity() {
+abstract class BaseController : LifecycleController() {
 
-    override fun init(savedInstanceState: Bundle?) {
-        val user = intent?.getParcelableExtra<User>(User.EXTRA_USER)
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
 
+    protected abstract fun init()
+    protected abstract fun initViewSlices(view: View)
+    protected abstract fun setupVSActionObservers()
+    protected abstract fun setupVMStateObservers()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View =
+            inflater.inflate(layoutResourceId, container, false)
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+
+        init()
+        initViewSlices(view)
+        setupVSActionObservers()
+        setupVMStateObservers()
     }
 
-    override fun initViewSlices() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+    protected fun hideKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
     }
 }
