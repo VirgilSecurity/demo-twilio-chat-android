@@ -32,20 +32,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <dimen name="fourty_margin">48dp</dimen>
-    <dimen name="ddble_margin">32dp</dimen>
-    <dimen name="twenty_margin">24dp</dimen>
-    <dimen name="default_margin">16dp</dimen>
-    <dimen name="half_default_margin">8dp</dimen>
-
-    <dimen name="small_text">12sp</dimen>
-    <dimen name="default_text">14sp</dimen>
-    <dimen name="increased_text">16sp</dimen>
-    <dimen name="big_text">18sp</dimen>
-    <dimen name="large_text">32sp</dimen>
-
-    <dimen name="toolbar_icon_size">24dp</dimen>
-
-</resources>
+    <solid
+        android:color="@android:color/transparent" />
+</shape>

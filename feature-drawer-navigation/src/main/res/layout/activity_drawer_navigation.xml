@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -32,20 +31,24 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dlDrawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <dimen name="fourty_margin">48dp</dimen>
-    <dimen name="ddble_margin">32dp</dimen>
-    <dimen name="twenty_margin">24dp</dimen>
-    <dimen name="default_margin">16dp</dimen>
-    <dimen name="half_default_margin">8dp</dimen>
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+        android:id="@+id/controllerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <dimen name="small_text">12sp</dimen>
-    <dimen name="default_text">14sp</dimen>
-    <dimen name="increased_text">16sp</dimen>
-    <dimen name="big_text">18sp</dimen>
-    <dimen name="large_text">32sp</dimen>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nvNavigation"
+        android:layout_width="304dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorPrimary"
+        app:headerLayout="@layout/layout_drawer_header"
+        app:menu="@menu/drawer_menu" />
 
-    <dimen name="toolbar_icon_size">24dp</dimen>
-
-</resources>
+</android.support.v4.widget.DrawerLayout>

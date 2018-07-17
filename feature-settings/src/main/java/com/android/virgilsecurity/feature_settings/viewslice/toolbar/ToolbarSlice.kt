@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_settings.viewslice.toolbar
 
 import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _

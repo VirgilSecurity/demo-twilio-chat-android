@@ -35,5 +35,9 @@
 
     <string name="logo">logo</string>
     <string name="press_exit_once_more">Press back once more to exit</string>
+    <string name="previous_screen_button">Previous screen button</string>
+    <string name="search_contacts">Search Contacts</string>
+    <string name="clear_search_field">Clear search field</string>
+    <string name="messenger">Messenger</string>
 
 </resources>

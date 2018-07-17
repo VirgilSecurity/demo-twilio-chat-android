@@ -31,10 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.viewslice.drawer
+package com.android.virgilsecurity.feature_channels_list.viewslice.toolbar
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.view.Toolbar
+import kotlinx.android.synthetic.main.toolbar.*
 
 /**
  * . _  _
@@ -42,21 +46,31 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/12/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerSlice
+ * ToolbarSliceChannelsList
  */
-interface DrawerSlice : ViewSlice {
+class ToolbarSliceChannelsList(
+        private val actionLiveData: LiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
 
-    sealed class Action {
-        object ContactsClicked : Action()
-        object ChannelsListClicked : Action()
-        object SettingsClicked : Action()
+    private lateinit var toolbarField: Toolbar
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        this.toolbarField = toolbar as Toolbar
+        setupToolbar()
     }
 
-    fun getAction(): LiveData<Action>
+    private fun setupToolbar() {
+        toolbarField.showHamburgerButton()
+        toolbarField.showSearchButton()
+        toolbarField.showAddPersonButton()
+    }
+
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }

@@ -31,21 +31,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_channels_list.viewslice.toolbar
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.LiveData
 
-// Inner dependencies
-dependencies {
-    implementation project(":base")
-    implementation project(":common")
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/17/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    support()
-    conductor()
-    circleImageView()
-    koin()
+/**
+ * ToolbarSlice
+ */
+interface ToolbarSlice {
+
+    sealed class Action {
+        object HamburgerClicked : Action()
+        object SearchClicked : Action()
+        object AddClicked : Action()
+    }
+
+    fun getAction(): LiveData<Action>
 }

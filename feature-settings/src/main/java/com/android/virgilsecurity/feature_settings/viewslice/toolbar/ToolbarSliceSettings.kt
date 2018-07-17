@@ -37,6 +37,8 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.view.Toolbar
+import kotlinx.android.synthetic.main.toolbar.*
 
 /**
  * . _  _
@@ -56,9 +58,16 @@ class ToolbarSliceSettings(
         private val actionLiveData: LiveData<ToolbarSlice.Action>
 ) : BaseViewSlice(), ToolbarSlice {
 
+    private lateinit var toolbarField: Toolbar
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
+        this.toolbarField = toolbar as Toolbar
+        setupToolbar()
+    }
 
+    private fun setupToolbar() {
+        toolbarField.showMenuButton()
     }
 
     override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData

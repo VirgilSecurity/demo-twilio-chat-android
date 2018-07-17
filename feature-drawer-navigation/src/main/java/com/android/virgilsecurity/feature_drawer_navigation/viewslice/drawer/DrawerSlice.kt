@@ -31,21 +31,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
-// Inner dependencies
-dependencies {
-    implementation project(":base")
-    implementation project(":common")
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/12/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    support()
-    conductor()
-    circleImageView()
-    koin()
+/**
+ * DrawerSlice
+ */
+interface DrawerSlice : ViewSlice {
+
+    sealed class Action {
+        object ContactsClicked : Action()
+        object ChannelsListClicked : Action()
+        object SettingsClicked : Action()
+    }
+
+    fun getAction(): LiveData<Action>
 }

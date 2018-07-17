@@ -50,4 +50,5 @@ dependencies {
     koin()
     architectureComponents()
     networking()
+    support()
 }

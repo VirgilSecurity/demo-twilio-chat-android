@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_drawer_navigation.view
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -41,14 +41,17 @@ import com.android.virgilsecurity.base.extension.hasNoRootController
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivityController
 import com.android.virgilsecurity.feature_channel.ChannelController
-import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSlice
-import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSlice
-import com.android.virgilsecurity.feature_drawer_navigator.R
+import com.android.virgilsecurity.feature_channels_list.view.ChannelsListController
+import com.android.virgilsecurity.feature_settings.view.SettingsController
+import com.android.virgilsecurity.feature_contacts.view.ContactsController
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
-import kotlinx.android.synthetic.main.activity_channels_list.*
+import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
+import com.android.virgilsecurity.feature_drawer_navigation.R
 
 /**
  * . _  _
@@ -65,7 +68,7 @@ import org.koin.android.ext.android.inject
  * DrawerNavigationActivity
  */
 class DrawerNavigationActivity(
-        override val layoutResourceId: Int = R.layout.activity_channels_list
+        override val layoutResourceId: Int = R.layout.activity_drawer_navigation
 ) : BaseActivityController() {
 
     private val drawerSlice: DrawerSlice by inject()

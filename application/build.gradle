@@ -59,7 +59,7 @@ dependencies {
     implementation project(':base')
     implementation project(':common')
     implementation project(':feature-login')
-    api project(":feature-drawer-navigator")
+    api project(':feature-drawer-navigation')
     //    implementation project(":feature-channels-list")
     //    implementation project(":feature-channel")
     //    implementation project(":feature-contacts")

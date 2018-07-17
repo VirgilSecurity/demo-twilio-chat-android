@@ -64,18 +64,6 @@ class TextViewNoUnderline @JvmOverloads constructor(
         setSpannableFactory(Factory.instance)
     }
 
-//    @SuppressLint("ClickableViewAccessibility")
-//    override fun onTouchEvent(event: MotionEvent?): Boolean {
-////        if (hasOnClickListeners()) {
-//            when (event?.action) {
-//                MotionEvent.ACTION_DOWN -> isSelected = true
-//                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> isSelected = false
-//            }
-////        }
-//
-//        return false
-//    }
-
     private class Factory : Spannable.Factory() {
 
         override fun newSpannable(source: CharSequence): Spannable {

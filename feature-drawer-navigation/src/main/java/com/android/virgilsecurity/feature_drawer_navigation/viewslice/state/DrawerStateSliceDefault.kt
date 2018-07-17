@@ -31,9 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.viewslice.state
+package com.android.virgilsecurity.feature_drawer_navigation.viewslice.state
 
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.support.v4.widget.DrawerLayout
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 
 /**
  * . _  _
@@ -47,11 +49,15 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  */
 
 /**
- * DrawerStateSlice
+ * DrawerStateSliceDefault
  */
-interface DrawerStateSlice : ViewSlice {
+class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
 
-    fun lockDrawer()
+    override fun lockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
 
-    fun unLockDrawer()
+    override fun unLockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
 }

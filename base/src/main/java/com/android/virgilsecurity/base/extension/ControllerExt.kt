@@ -31,11 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.viewslice.state
+package com.android.virgilsecurity.base.extension
 
-import android.support.v4.widget.DrawerLayout
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.activity_channels_list.*
+import com.bluelinelabs.conductor.Controller
+import org.koin.KoinContext
+import org.koin.standalone.StandAloneContext
 
 /**
  * . _  _
@@ -43,21 +43,14 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerStateSliceDefault
+ * ControllerExt
  */
-class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
 
-    override fun lockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    override fun unLockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
-}
+inline fun <reified T> Controller.inject(name: String = "")
+        = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }

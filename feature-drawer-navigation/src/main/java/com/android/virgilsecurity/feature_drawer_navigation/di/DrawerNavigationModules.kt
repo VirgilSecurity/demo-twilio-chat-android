@@ -31,21 +31,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_drawer_navigation.di
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSliceDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSliceDefault
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
-// Inner dependencies
-dependencies {
-    implementation project(":base")
-    implementation project(":common")
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/16/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    support()
-    conductor()
-    circleImageView()
-    koin()
+/**
+ * DrawerNavigationModules
+ */
+
+val drawerNavigationModule: Module = applicationContext {
+    bean { MutableLiveData<DrawerSlice.Action>() }
+    bean { DrawerSliceDefault(get()) as DrawerSlice }
+    bean { DrawerStateSliceDefault() as DrawerStateSlice }
 }

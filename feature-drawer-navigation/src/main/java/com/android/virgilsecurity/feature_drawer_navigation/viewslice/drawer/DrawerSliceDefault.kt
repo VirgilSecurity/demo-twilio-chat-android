@@ -31,21 +31,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer
 
-apply from: '../config-android.gradle'
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import kotlinx.android.synthetic.main.activity_drawer_navigation.*
+import com.android.virgilsecurity.feature_drawer_navigation.R
 
-// Inner dependencies
-dependencies {
-    implementation project(":base")
-    implementation project(":common")
-}
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/12/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-// Outer dependencies
-dependencies {
-    kotlin()
-    support()
-    conductor()
-    circleImageView()
-    koin()
+/**
+ * DrawerSliceDefault
+ */
+class DrawerSliceDefault(
+        private val actionLiveData: MutableLiveData<DrawerSlice.Action>
+) : BaseViewSlice(), DrawerSlice {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setupDrawer()
+    }
+
+    private fun setupDrawer() {
+        nvNavigation.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
+                R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
+                R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+            }
+
+            return@setNavigationItemSelectedListener true
+        }
+    }
+
+    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
 }

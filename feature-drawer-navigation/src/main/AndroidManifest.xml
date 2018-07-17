@@ -32,11 +32,11 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.feature_drawer_navigator">
+    package="com.android.virgilsecurity.feature_drawer_navigation">
 
     <application>
         <activity
-            android:name=".view.DrawerNavigationActivity"
+            android:name="com.android.virgilsecurity.feature_drawer_navigation.view.DrawerNavigationActivity"
             android:theme="@style/AppTheme" />
     </application>
 

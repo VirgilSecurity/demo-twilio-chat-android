@@ -34,8 +34,11 @@
 package com.android.virgilsecurity.feature_contacts.view
 
 import android.view.View
+import com.android.virgilsecurity.base.extension.inject
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.feature_contacts.R
+import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSlice
 
 /**
  * . _  _
@@ -51,23 +54,33 @@ import com.android.virgilsecurity.feature_contacts.R
 /**
  * ContactsController
  */
-class ContactsController : BaseController() {
+class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
+
+    private lateinit var toolbarSlice: ToolbarSlice by inject()
+
+    constructor(toolbarSlice: ToolbarSlice) : this() {
+        this.toolbarSlice = toolbarSlice
+    }
 
     override fun init() {
         // TODO Implement body or it will be empty ):
     }
 
     override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+        toolbarSlice.init(lifecycle, view)
     }
 
     override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
+    }
+
+    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+        ToolbarSlice.Action.HamburgerClicked ->
     }
 }
