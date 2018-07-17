@@ -31,16 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.view
+package com.android.virgilsecurity.feature_contacts.view
 
-import android.content.Context
-import android.content.Intent
-import android.os.Parcelable
-import com.android.virgilsecurity.base.view.Screen
-import com.android.virgilsecurity.base.view.ScreenRouter
-import com.android.virgilsecurity.common.view.ScreenChat
-import com.android.virgilsecurity.feature_drawer_navigator.view.DrawerNavigationActivity
-import com.android.virgilsecurity.feature_login.view.AuthActivity
+import android.view.View
+import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.feature_contacts.R
 
 /**
  * . _  _
@@ -48,37 +43,31 @@ import com.android.virgilsecurity.feature_login.view.AuthActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/21/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ScreenRouterDefault
+ * ContactsController
  */
-class ScreenRouterDefault : ScreenRouter {
+class ContactsController : BaseController() {
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen): Intent? {
-        val screenClass = getScreenClass(screen)
-        return if (screenClass == null) null else Intent(context, screenClass)
+    override val layoutResourceId: Int = R.layout.controller_contacts
+
+    override fun init() {
+        // TODO Implement body or it will be empty ):
     }
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen,
-                                 key: String,
-                                 value: Parcelable): Intent? {
-        val screenClass = getScreenClass(screen)
-
-        return if (screenClass == null) null else Intent(context, screenClass).apply {
-            putExtra(key, value)
-        }
+    override fun initViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
     }
 
-    private fun getScreenClass(screen: Screen) = when (screen) {
-        ScreenChat.Login -> AuthActivity::class.java
-        ScreenChat.DrawerNavigation -> DrawerNavigationActivity::class.java
-        ScreenChat.Channel -> null // TODO
-        else -> null
+    override fun setupVSActionObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
     }
 }

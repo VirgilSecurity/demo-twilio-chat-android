@@ -31,16 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.view
+package com.android.virgilsecurity.feature_settings.viewslice.toolbar
 
-import android.content.Context
-import android.content.Intent
-import android.os.Parcelable
-import com.android.virgilsecurity.base.view.Screen
-import com.android.virgilsecurity.base.view.ScreenRouter
-import com.android.virgilsecurity.common.view.ScreenChat
-import com.android.virgilsecurity.feature_drawer_navigator.view.DrawerNavigationActivity
-import com.android.virgilsecurity.feature_login.view.AuthActivity
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 
 /**
  * . _  _
@@ -48,37 +44,22 @@ import com.android.virgilsecurity.feature_login.view.AuthActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/21/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ScreenRouterDefault
+ * ToolbarSliceSettings
  */
-class ScreenRouterDefault : ScreenRouter {
+class ToolbarSliceSettings(
+        private val actionLiveData: LiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen): Intent? {
-        val screenClass = getScreenClass(screen)
-        return if (screenClass == null) null else Intent(context, screenClass)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+
     }
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen,
-                                 key: String,
-                                 value: Parcelable): Intent? {
-        val screenClass = getScreenClass(screen)
-
-        return if (screenClass == null) null else Intent(context, screenClass).apply {
-            putExtra(key, value)
-        }
-    }
-
-    private fun getScreenClass(screen: Screen) = when (screen) {
-        ScreenChat.Login -> AuthActivity::class.java
-        ScreenChat.DrawerNavigation -> DrawerNavigationActivity::class.java
-        ScreenChat.Channel -> null // TODO
-        else -> null
-    }
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }

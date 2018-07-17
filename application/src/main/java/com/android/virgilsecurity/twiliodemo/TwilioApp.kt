@@ -40,7 +40,7 @@ import com.android.virgilsecurity.twiliodemo.ui.chat.channelsList.channelsListMo
 import authActivityModule
 import authModule
 import com.android.virgilsecurity.common.di.*
-import com.android.virgilsecurity.feature_channels_list.di.drawerNavigationModule
+import com.android.virgilsecurity.feature_drawer_navigator.di.drawerNavigationModule
 import com.android.virgilsecurity.twiliodemo.di.appModule
 import loginFragmentModule
 import org.koin.android.ext.android.startKoin

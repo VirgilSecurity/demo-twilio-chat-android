@@ -31,15 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.di
+package com.android.virgilsecurity.feature_drawer_navigator.viewslice.drawer
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSlice
-import com.android.virgilsecurity.feature_channels_list.viewslice.drawer.DrawerSliceDefault
-import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSlice
-import com.android.virgilsecurity.feature_channels_list.viewslice.state.DrawerStateSliceDefault
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import kotlinx.android.synthetic.main.activity_channels_list.*
+import com.android.virgilsecurity.feature_drawer_navigator.R
 
 /**
  * . _  _
@@ -47,17 +47,34 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerNavigationModules
+ * DrawerSliceDefault
  */
+class DrawerSliceDefault(
+        private val actionLiveData: MutableLiveData<DrawerSlice.Action>
+) : BaseViewSlice(), DrawerSlice {
 
-val drawerNavigationModule: Module = applicationContext {
-    bean { MutableLiveData<DrawerSlice.Action>() }
-    bean { DrawerSliceDefault(get()) as DrawerSlice }
-    bean { DrawerStateSliceDefault() as DrawerStateSlice }
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setupDrawer()
+    }
+
+    private fun setupDrawer() {
+        nvNavigation.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
+                R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
+                R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+            }
+
+            return@setNavigationItemSelectedListener true
+        }
+    }
+
+    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
 }

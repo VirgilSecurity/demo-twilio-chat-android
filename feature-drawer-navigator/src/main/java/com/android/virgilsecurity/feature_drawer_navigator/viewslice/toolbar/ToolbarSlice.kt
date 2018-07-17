@@ -31,11 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_drawer_navigator.viewslice.toolbar
 
-import android.view.View
-import com.android.virgilsecurity.base.view.BaseController
-import com.android.virgilsecurity.feature_contacts.R
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -43,31 +41,15 @@ import com.android.virgilsecurity.feature_contacts.R
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/12/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ContactsController
+ * ToolbarSlice
  */
-class ContactsController : BaseController() {
+interface ToolbarSlice : ViewSlice {
 
-    override val layoutResourceId: Int = R.layout.controller_contacts
-
-    override fun init() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
+    fun showToolbar()
 }

@@ -31,16 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.view
+package com.android.virgilsecurity.feature_settings.view
 
-import android.content.Context
-import android.content.Intent
-import android.os.Parcelable
-import com.android.virgilsecurity.base.view.Screen
-import com.android.virgilsecurity.base.view.ScreenRouter
-import com.android.virgilsecurity.common.view.ScreenChat
-import com.android.virgilsecurity.feature_drawer_navigator.view.DrawerNavigationActivity
-import com.android.virgilsecurity.feature_login.view.AuthActivity
+import android.view.View
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.feature_settings.R
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -48,37 +46,44 @@ import com.android.virgilsecurity.feature_login.view.AuthActivity
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/21/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ScreenRouterDefault
+ * SettingsController
  */
-class ScreenRouterDefault : ScreenRouter {
+class SettingsController() : BaseController() {
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen): Intent? {
-        val screenClass = getScreenClass(screen)
-        return if (screenClass == null) null else Intent(context, screenClass)
+    private lateinit var user: User
+    override val layoutResourceId: Int = R.layout.controller_settings
+
+    constructor(user: User) : this() {
+        this.user = user
     }
 
-    override fun getScreenIntent(context: Context,
-                                 screen: Screen,
-                                 key: String,
-                                 value: Parcelable): Intent? {
-        val screenClass = getScreenClass(screen)
+    override fun init() {
+        initViews()
+    }
 
-        return if (screenClass == null) null else Intent(context, screenClass).apply {
-            putExtra(key, value)
+    override fun initViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVSActionObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+
+    private fun initViews() {
+        tvUsernameSettings.text = user.identity
+        tvUsernameSettingsInfo.text = user.identity
+        ivChangeUserPic.setOnClickListener {
+            UiUtils.toast(activity!!.applicationContext, "Under development")
         }
-    }
-
-    private fun getScreenClass(screen: Screen) = when (screen) {
-        ScreenChat.Login -> AuthActivity::class.java
-        ScreenChat.DrawerNavigation -> DrawerNavigationActivity::class.java
-        ScreenChat.Channel -> null // TODO
-        else -> null
     }
 }
