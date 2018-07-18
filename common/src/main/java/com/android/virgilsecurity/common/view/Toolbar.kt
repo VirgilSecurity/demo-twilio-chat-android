@@ -41,6 +41,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.Toolbar
 import com.android.virgilsecurity.common.R
+import com.android.virgilsecurity.common.R.id.*
 import kotlinx.android.synthetic.main.toolbar_custom.view.*
 
 /**
@@ -57,37 +58,16 @@ import kotlinx.android.synthetic.main.toolbar_custom.view.*
 /**
  * Toolbar
  */
-class Toolbar @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int)
-    : ConstraintLayout(context, attrs, defStyleAttr), View.OnClickListener {
+class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context,
+                                                                                attrs), View.OnClickListener {
 
     private lateinit var onToolbarItemClickListener: (View) -> Unit
     private lateinit var views: MutableMap<View, Int>
 
-//    private lateinit var ivBack: View
-//    private lateinit var ivHamburger: View
-//    private lateinit var ivMenu: View
-//    private lateinit var ivAddPerson: View
-//    private lateinit var ivSearch: View
-//    private lateinit var ivClose: View
-//    private lateinit var etSearch: View
-
-    init {
-//        findViews()
+    override fun onFinishInflate() {
+        super.onFinishInflate()
         setupViewsMap()
     }
-
-//    private fun findViews() {
-//        ivBack = findViewById<View>(R.id.ivBack)
-//        ivHamburger = findViewById<View>(R.id.ivHamburger)
-//        ivMenu = findViewById<View>(R.id.ivMenu)
-//        ivAddPerson = findViewById<View>(R.id.ivAddPerson)
-//        ivSearch = findViewById<View>(R.id.ivSearch)
-//        ivClose = findViewById<View>(R.id.ivClose)
-//        etSearch = findViewById<View>(R.id.etSearch)
-//    }
 
     private fun setupViewsMap() {
         views = HashMap()
