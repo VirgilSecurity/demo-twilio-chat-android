@@ -33,17 +33,12 @@
 
 package com.android.virgilsecurity.base.view
 
-import android.app.Activity
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
-import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import kotlinx.android.extensions.LayoutContainer
 
@@ -73,18 +68,22 @@ abstract class BaseController : LifecycleController(), LayoutContainer {
 
     override lateinit var containerView: View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View =
-            inflater.inflate(layoutResourceId, container, false)
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        val view =  inflater.inflate(layoutResourceId, container, false)
         containerView = view
 
         init()
         initViewSlices(view)
         setupVSActionObservers()
         setupVMStateObservers()
+
+        return view
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+
+
     }
 
     protected fun hideKeyboard() {

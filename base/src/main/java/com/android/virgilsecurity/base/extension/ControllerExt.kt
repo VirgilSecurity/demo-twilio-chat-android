@@ -35,6 +35,7 @@ package com.android.virgilsecurity.base.extension
 
 import com.bluelinelabs.conductor.Controller
 import org.koin.KoinContext
+import org.koin.android.ext.android.get
 import org.koin.standalone.StandAloneContext
 
 /**
@@ -53,4 +54,4 @@ import org.koin.standalone.StandAloneContext
  */
 
 inline fun <reified T> Controller.inject(name: String = "")
-        = lazy { (StandAloneContext.koinContext as KoinContext).get<T>(name) }
+        = lazy { activity!!.get<T>(name) }

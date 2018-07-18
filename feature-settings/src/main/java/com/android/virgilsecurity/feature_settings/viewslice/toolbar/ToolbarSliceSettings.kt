@@ -38,7 +38,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.view.Toolbar
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -62,7 +62,7 @@ class ToolbarSliceSettings(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        this.toolbarField = toolbar as Toolbar
+        this.toolbarField = toolbarSettings as Toolbar
         setupToolbar()
     }
 

@@ -31,14 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.view
+package com.android.virgilsecurity.feature_contacts.di
 
-import android.view.View
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.view.BaseController
-import com.android.virgilsecurity.common.util.UiUtils
-import com.android.virgilsecurity.feature_settings.R
-import kotlinx.android.synthetic.main.controller_settings.*
+import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSlice
+import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSliceContacts
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -46,44 +45,16 @@ import kotlinx.android.synthetic.main.controller_settings.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/18/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * SettingsController
+ * ContactsModules
  */
-class SettingsController() : BaseController() {
 
-    private lateinit var user: User
-    override val layoutResourceId: Int = R.layout.controller_settings
-
-    constructor(user: User) : this() {
-        this.user = user
-    }
-
-    override fun init() {
-        initViews()
-    }
-
-    override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
-    }
-
-    private fun initViews() {
-        tvUsernameSettings.text = user.identity
-        tvUsernameSettingsInfo.text = user.identity
-        ivChangeUserPic.setOnClickListener {
-            UiUtils.toast(activity!!.applicationContext, "Under development")
-        }
-    }
+val contactsModule: Module = applicationContext {
+    bean { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceContacts(get()) as ToolbarSlice }
 }

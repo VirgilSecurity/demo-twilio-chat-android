@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
+package com.android.virgilsecurity.feature_settings.di
 
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
@@ -42,15 +42,15 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/1/186/1/18
+ * ....|  _/    7/18/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ThreadsListModules
+ * SettingsModules
  */
-val channelsListModule: Module = applicationContext {
-    factory { ChannelsListPresenter(get(), get(), get(), get()) }
-    factory { ChannelsListRVAdapter(get()) }
+
+val settingsModule: Module = applicationContext {
+
 }

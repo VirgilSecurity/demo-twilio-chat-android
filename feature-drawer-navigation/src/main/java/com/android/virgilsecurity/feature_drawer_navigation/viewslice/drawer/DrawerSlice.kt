@@ -59,4 +59,6 @@ interface DrawerSlice : ViewSlice {
     }
 
     fun getAction(): LiveData<Action>
+
+    fun setHeader(identity: String, picturePath: String?)
 }

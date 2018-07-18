@@ -35,10 +35,12 @@ package com.android.virgilsecurity.feature_channels_list.viewslice.toolbar
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.view.Toolbar
-import kotlinx.android.synthetic.main.toolbar.*
+import com.android.virgilsecurity.feature_channels_list.R
+import kotlinx.android.synthetic.main.controller_channels_list.*
 
 /**
  * . _  _
@@ -55,21 +57,30 @@ import kotlinx.android.synthetic.main.toolbar.*
  * ToolbarSliceChannelsList
  */
 class ToolbarSliceChannelsList(
-        private val actionLiveData: LiveData<ToolbarSlice.Action>
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
 ) : BaseViewSlice(), ToolbarSlice {
 
     private lateinit var toolbarField: Toolbar
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        this.toolbarField = toolbar as Toolbar
+        this.toolbarField = toolbarChannelsList as Toolbar
         setupToolbar()
     }
 
     private fun setupToolbar() {
+        toolbarField.setTitle(resources.getString(R.string.messenger))
+
         toolbarField.showHamburgerButton()
         toolbarField.showSearchButton()
         toolbarField.showAddPersonButton()
+
+        toolbarField.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
+                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.AddClicked
+            }
+        }
     }
 
     override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData

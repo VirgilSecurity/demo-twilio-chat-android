@@ -31,11 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigator.viewslice.state
+package com.android.virgilsecurity.feature_channels_list.di
 
-import android.support.v4.widget.DrawerLayout
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.activity_channels_list.*
+import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
+import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSliceChannelsList
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -43,21 +45,15 @@ import kotlinx.android.synthetic.main.activity_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    6/1/186/1/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerStateSliceDefault
+ * ThreadsListModules
  */
-class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
-
-    override fun lockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    override fun unLockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
+val channelsListModule: Module = applicationContext {
+    bean { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceChannelsList(get()) as ToolbarSlice }
 }

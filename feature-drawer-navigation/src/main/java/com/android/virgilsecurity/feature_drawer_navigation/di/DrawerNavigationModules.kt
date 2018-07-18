@@ -58,6 +58,6 @@ import org.koin.dsl.module.applicationContext
 
 val drawerNavigationModule: Module = applicationContext {
     bean { MutableLiveData<DrawerSlice.Action>() }
-    bean { DrawerSliceDefault(get()) as DrawerSlice }
+    bean { DrawerSliceDefault(get(), get()) as DrawerSlice }
     bean { DrawerStateSliceDefault() as DrawerStateSlice }
 }

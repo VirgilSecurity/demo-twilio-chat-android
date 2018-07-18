@@ -35,8 +35,11 @@ package com.android.virgilsecurity.feature_channels_list.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.inject
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_channels_list.*
 
 
@@ -56,29 +59,42 @@ import kotlinx.android.synthetic.main.controller_channels_list.*
  */
 class ChannelsListController() : BaseController() {
 
-    private lateinit var user: User
-    private lateinit var onChatClick: (User) -> Unit
     override val layoutResourceId: Int = R.layout.controller_channels_list
 
-    constructor(user: User, onChatClick: (User) -> Unit) : this() {
+    private val toolbarSlice: ToolbarSlice by inject()
+
+    private lateinit var user: User
+    private lateinit var onChatClick: (User) -> Unit
+    private lateinit var openDrawer: () -> Unit
+
+    constructor(user: User, onChatClick: (User) -> Unit, openDrawer: () -> Unit) : this() {
         this.user = user
         this.onChatClick = onChatClick
+        this.openDrawer = openDrawer
     }
 
     override fun init() {
-        tvUsername.text = user.identity
-        tvUsername.setOnClickListener { onChatClick(user) }
+//        tvUsername.text = user.identity
+        clNoContacts.setOnClickListener { onChatClick(user) }
     }
 
     override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+        toolbarSlice.init(lifecycle, view)
     }
 
     override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
     override fun setupVMStateObservers() {
+        // TODO Implement body or it will be empty ):
+    }
+    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+        ToolbarSlice.Action.HamburgerClicked -> openDrawer()
+        ToolbarSlice.Action.AddClicked -> addContact()
+    }
+
+    private fun addContact() {
         // TODO Implement body or it will be empty ):
     }
 }

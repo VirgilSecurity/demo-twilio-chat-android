@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_channels_list.viewslice.toolbar
 
 import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -49,11 +50,10 @@ import android.arch.lifecycle.LiveData
 /**
  * ToolbarSlice
  */
-interface ToolbarSlice {
+interface ToolbarSlice : ViewSlice {
 
     sealed class Action {
         object HamburgerClicked : Action()
-        object SearchClicked : Action()
         object AddClicked : Action()
     }
 

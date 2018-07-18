@@ -40,18 +40,18 @@ import com.android.virgilsecurity.base.extension.getContentView
 import com.android.virgilsecurity.base.extension.hasNoRootController
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivityController
-import com.android.virgilsecurity.feature_channel.ChannelController
+import com.android.virgilsecurity.feature_channel.view.ChannelController
 import com.android.virgilsecurity.feature_channels_list.view.ChannelsListController
-import com.android.virgilsecurity.feature_settings.view.SettingsController
 import com.android.virgilsecurity.feature_contacts.view.ContactsController
+import com.android.virgilsecurity.feature_drawer_navigation.R
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
+import com.android.virgilsecurity.feature_settings.view.SettingsController
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
-import com.android.virgilsecurity.feature_drawer_navigation.R
 
 /**
  * . _  _
@@ -82,7 +82,13 @@ class DrawerNavigationActivity(
 
         if (router.hasNoRootController())
             router.setRoot(RouterTransaction
-                                   .with(ChannelsListController(user) { openChannel(it) })
+                                   .with(ChannelsListController(user,
+                                                                {
+                                                                    openChannel(it)
+                                                                },
+                                                                {
+                                                                    stateSlice.openDrawer()
+                                                                }))
                                    .pushChangeHandler(FadeChangeHandler())
                                    .popChangeHandler(FadeChangeHandler()))
     }
@@ -90,6 +96,8 @@ class DrawerNavigationActivity(
     override fun initViewSlices() {
         drawerSlice.init(lifecycle, getContentView())
         stateSlice.init(lifecycle, getContentView())
+
+        drawerSlice.setHeader(user.identity, user.picturePath)
     }
 
     override fun setupVSActionObservers() {
@@ -99,13 +107,19 @@ class DrawerNavigationActivity(
     private fun onActionChanged(action: DrawerSlice.Action) = when (action) {
         DrawerSlice.Action.ChannelsListClicked -> {
             stateSlice.unLockDrawer()
-            changeController(ChannelsListController(user) {
-                openChannel(it)
-            })
+            changeController(ChannelsListController(user,
+                                                    {
+                                                        openChannel(it)
+                                                    },
+                                                    {
+                                                        stateSlice.openDrawer()
+                                                    }))
         }
         DrawerSlice.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
-            changeController(ContactsController())
+            changeController(ContactsController {
+                stateSlice::openDrawer
+            })
         }
         DrawerSlice.Action.SettingsClicked -> {
             stateSlice.unLockDrawer()

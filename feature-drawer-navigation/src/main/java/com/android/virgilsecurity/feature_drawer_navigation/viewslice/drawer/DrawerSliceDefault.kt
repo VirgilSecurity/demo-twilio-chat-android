@@ -37,9 +37,14 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
+import android.net.Uri
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.activity_drawer_navigation.*
+import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UserUtils
 import com.android.virgilsecurity.feature_drawer_navigation.R
+import kotlinx.android.synthetic.main.activity_drawer_navigation.*
+import kotlinx.android.synthetic.main.layout_drawer_header.*
+import kotlinx.android.synthetic.main.layout_drawer_header.view.*
 
 /**
  * . _  _
@@ -56,7 +61,8 @@ import com.android.virgilsecurity.feature_drawer_navigation.R
  * DrawerSliceDefault
  */
 class DrawerSliceDefault(
-        private val actionLiveData: MutableLiveData<DrawerSlice.Action>
+        private val actionLiveData: MutableLiveData<DrawerSlice.Action>,
+        private val imageStorage: ImageStorage
 ) : BaseViewSlice(), DrawerSlice {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -77,4 +83,15 @@ class DrawerSliceDefault(
     }
 
     override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
+
+    override fun setHeader(identity: String, picturePath: String?) {
+        if (picturePath != null) {
+            nvNavigation.getHeaderView(0).ivUserPicDrawer.setImageBitmap(imageStorage.get(Uri.parse(picturePath)))
+        } else {
+            nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
+            nvNavigation.getHeaderView(0).ivUserPicDrawer.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
+        }
+
+        nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity
+    }
 }

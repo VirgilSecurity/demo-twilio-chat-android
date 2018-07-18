@@ -31,10 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo.ui.chat.channel
+package com.android.virgilsecurity.feature_contacts.viewslice.toolbar
 
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.view.Toolbar
+import com.android.virgilsecurity.feature_contacts.R
+import kotlinx.android.synthetic.main.controller_contacts.*
 
 /**
  * . _  _
@@ -42,15 +48,38 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/2/186/2/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelModules
+ * ToolbarSliceContacts
  */
-val channelModule : Module = applicationContext {
-    factory { ChannelPresenter(get(), get(), get()) }
-    factory { ChannelRVAdapter(get(), get()) }
+class ToolbarSliceContacts(
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
+
+    private lateinit var toolbarField: Toolbar
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        this.toolbarField = toolbarContacts as Toolbar
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        toolbarField.setTitle(resources.getString(R.string.messenger))
+
+        toolbarField.showHamburgerButton()
+        toolbarField.showSearchButton()
+
+        toolbarField.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
+            }
+        }
+    }
+
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }

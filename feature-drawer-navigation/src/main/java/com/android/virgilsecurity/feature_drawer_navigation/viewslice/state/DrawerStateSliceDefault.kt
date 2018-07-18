@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_drawer_navigation.viewslice.state
 
 import android.support.v4.widget.DrawerLayout
+import android.view.Gravity
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 
@@ -59,5 +60,13 @@ class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
 
     override fun unLockDrawer() {
         dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    override fun openDrawer() {
+        dlDrawer.openDrawer(Gravity.START)
+    }
+
+    override fun closeDrawer() {
+        dlDrawer.closeDrawer(Gravity.START)
     }
 }

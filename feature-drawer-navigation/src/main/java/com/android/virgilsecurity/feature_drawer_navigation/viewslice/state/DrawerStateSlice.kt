@@ -54,4 +54,8 @@ interface DrawerStateSlice : ViewSlice {
     fun lockDrawer()
 
     fun unLockDrawer()
+
+    fun openDrawer()
+
+    fun closeDrawer()
 }

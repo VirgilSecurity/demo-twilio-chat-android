@@ -34,7 +34,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/toolbar"
+    android:id="@+id/toolbarCustom"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:background="@color/colorPrimaryDark">
@@ -66,12 +66,12 @@
 
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ivSearch"
         app:layout_constraintStart_toEndOf="@id/ivBack"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="wrap_content">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -79,11 +79,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
-            android:textSize="20sp"
-            tools:text="Messenger"
+            android:fontFamily="sans-serif-medium"
             android:textColor="@color/snow"
+            android:textSize="20sp"
             android:visibility="visible"
-            android:fontFamily="sans-serif-medium"/>
+            tools:text="Messenger" />
 
         <TextView
             android:id="@+id/tvSubTitle"
@@ -91,11 +91,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
-            android:textSize="14sp"
             android:textColor="@color/snow"
-            tools:text="The best"
-            android:visibility="visible" />
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="The best" />
     </LinearLayout>
+
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content" />

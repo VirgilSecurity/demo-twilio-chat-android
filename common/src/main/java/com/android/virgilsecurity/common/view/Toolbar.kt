@@ -35,11 +35,13 @@ package com.android.virgilsecurity.common.view
 
 import android.content.Context
 import android.support.constraint.ConstraintLayout
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Toolbar
 import com.android.virgilsecurity.common.R
-import kotlinx.android.synthetic.main.toolbar.view.*
+import kotlinx.android.synthetic.main.toolbar_custom.view.*
 
 /**
  * . _  _
@@ -61,7 +63,7 @@ class Toolbar @JvmOverloads constructor(
         defStyleAttr: Int)
     : ConstraintLayout(context, attrs, defStyleAttr), View.OnClickListener {
 
-    private lateinit var onToolbarItemClickListener: (View?) -> Unit
+    private lateinit var onToolbarItemClickListener: (View) -> Unit
     private lateinit var views: MutableMap<View, Int>
 
 //    private lateinit var ivBack: View
@@ -229,11 +231,11 @@ class Toolbar @JvmOverloads constructor(
         ivAddPerson.visibility = View.INVISIBLE
     }
 
-    fun setOnToolbarItemClickListener(listener: (View?) -> Unit) {
+    fun setOnToolbarItemClickListener(listener: (View) -> Unit) {
         this.onToolbarItemClickListener = listener
     }
 
-    override fun onClick(v: View?) {
+    override fun onClick(v: View) {
         onToolbarItemClickListener(v)
     }
 

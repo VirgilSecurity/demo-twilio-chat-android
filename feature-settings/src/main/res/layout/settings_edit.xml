@@ -39,7 +39,8 @@
     android:background="@color/colorPrimary">
 
     <include
-        layout="@layout/toolbar"
+        android:id="@+id/toolbarSettingsEdit"
+        layout="@layout/toolbar_custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +54,7 @@
         android:paddingStart="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbarSettingsEdit">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivUserPicEdit"

@@ -31,8 +31,14 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-
-    <string name="no_messages_image">No messages image</string>
-    <string name="no_messages_yet">No messages yet. Write something!</string>
-</resources>
+<vector android:height="24dp" android:viewportHeight="38"
+    android:viewportWidth="44" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#00000000" android:fillType="evenOdd"
+        android:pathData="M2,1h34a1,1 0,0 1,1 1v20a1,1 0,0 1,-1 1L16,23v4l-5.986,-4L2,23a1,1 0,0 1,-1 -1v-20A1,1 0,0 1,2 1Z"
+        android:strokeColor="#fff" android:strokeLineCap="round"
+        android:strokeLineJoin="round" android:strokeWidth="2"/>
+    <path android:fillColor="#00000000" android:fillType="evenOdd"
+        android:pathData="M7,27v5a1,1 0,0 0,1 1h20v4l5.987,-4L42,33a1,1 0,0 0,1 -1v-20a1,1 0,0 0,-1 -1h-1"
+        android:strokeColor="#fff" android:strokeLineCap="round"
+        android:strokeLineJoin="round" android:strokeWidth="2"/>
+</vector>

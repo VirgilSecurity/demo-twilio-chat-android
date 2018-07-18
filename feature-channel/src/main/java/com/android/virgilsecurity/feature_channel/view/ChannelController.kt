@@ -31,11 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel
+package com.android.virgilsecurity.feature_channel.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.feature_channel.R
 
 class ChannelController() : BaseController() {
 

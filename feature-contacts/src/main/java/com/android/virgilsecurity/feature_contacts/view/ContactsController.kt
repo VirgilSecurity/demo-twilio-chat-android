@@ -58,10 +58,12 @@ class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 
-    private lateinit var toolbarSlice: ToolbarSlice by inject()
+    private val toolbarSlice: ToolbarSlice by inject()
 
-    constructor(toolbarSlice: ToolbarSlice) : this() {
-        this.toolbarSlice = toolbarSlice
+    private lateinit var openDrawer: () -> Unit
+
+    constructor(openDrawer: () -> Unit) : this() {
+        this.openDrawer = openDrawer
     }
 
     override fun init() {
@@ -81,6 +83,7 @@ class ContactsController() : BaseController() {
     }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.HamburgerClicked ->
+        ToolbarSlice.Action.HamburgerClicked -> openDrawer()
+        else -> Unit
     }
 }

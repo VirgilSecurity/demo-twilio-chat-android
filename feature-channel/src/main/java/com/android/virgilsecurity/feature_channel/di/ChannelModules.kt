@@ -31,14 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.viewslice.toolbar
+package com.android.virgilsecurity.feature_channel.di
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.common.view.Toolbar
-import kotlinx.android.synthetic.main.toolbar.*
+import org.koin.dsl.module.Module
+import org.koin.dsl.module.applicationContext
 
 /**
  * . _  _
@@ -46,30 +42,14 @@ import kotlinx.android.synthetic.main.toolbar.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    6/2/186/2/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ToolbarSliceChannelsList
+ * ChannelModules
  */
-class ToolbarSliceChannelsList(
-        private val actionLiveData: LiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+val channelModule : Module = applicationContext {
 
-    private lateinit var toolbarField: Toolbar
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        this.toolbarField = toolbar as Toolbar
-        setupToolbar()
-    }
-
-    private fun setupToolbar() {
-        toolbarField.showHamburgerButton()
-        toolbarField.showSearchButton()
-    }
-
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }
