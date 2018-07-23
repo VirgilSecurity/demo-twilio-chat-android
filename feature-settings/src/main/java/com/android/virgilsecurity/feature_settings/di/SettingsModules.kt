@@ -33,6 +33,10 @@
 
 package com.android.virgilsecurity.feature_settings.di
 
+import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS
+import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
+import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSliceSettings
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -52,5 +56,10 @@ import org.koin.dsl.module.applicationContext
  */
 
 val settingsModule: Module = applicationContext {
+    factory(LIVE_DATA_SETTINGS) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS)) as ToolbarSlice }
+}
 
+object Const {
+    const val LIVE_DATA_SETTINGS = "LIVE_DATA_SETTINGS"
 }

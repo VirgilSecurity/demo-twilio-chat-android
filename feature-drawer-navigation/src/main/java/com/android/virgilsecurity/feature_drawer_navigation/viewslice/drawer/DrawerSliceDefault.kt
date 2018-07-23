@@ -71,11 +71,19 @@ class DrawerSliceDefault(
     }
 
     private fun setupDrawer() {
+        nvNavigation.menu.getItem(1).isChecked = true
+
         nvNavigation.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
-                R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
-                R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+            if (!it.isChecked) {
+                when (it.itemId) {
+                    R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
+                    R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
+                    R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+                }
+
+                it.isChecked = true
+            } else {
+                actionLiveData.value = DrawerSlice.Action.SameItemClicked
             }
 
             return@setNavigationItemSelectedListener true
@@ -93,5 +101,10 @@ class DrawerSliceDefault(
         }
 
         nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity
+    }
+
+    override fun setItemSelected(position: Int) {
+        nvNavigation.menu.getItem(position).isChecked = true
+
     }
 }

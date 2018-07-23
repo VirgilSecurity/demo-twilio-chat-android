@@ -31,16 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.viewslice.toolbar
+package com.android.virgilsecurity.feature_channel.viewslice.toolbar
 
-import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.common.view.Toolbar
-import com.android.virgilsecurity.feature_channels_list.R
-import kotlinx.android.synthetic.main.controller_channels_list.*
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -48,38 +42,21 @@ import kotlinx.android.synthetic.main.controller_channels_list.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    7/23/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ToolbarSliceChannelsList
+ * ToolbarSlice
  */
-class ToolbarSliceChannelsList(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+interface ToolbarSlice : ViewSlice {
 
-    private lateinit var toolbarField: Toolbar
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        this.toolbarField = toolbarChannelsList as Toolbar
-        setupToolbar()
+    sealed class Action {
+        object BackClicked : Action()
     }
 
-    private fun setupToolbar() {
-        toolbarField.setTitle(resources.getString(R.string.messenger))
+    fun getAction(): LiveData<Action>
 
-        toolbarField.showHamburgerButton()
-        toolbarField.showSearchButton()
-
-        toolbarField.setOnToolbarItemClickListener {
-            when (it.id) {
-                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
-            }
-        }
-    }
-
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun setTitle(text: String)
 }

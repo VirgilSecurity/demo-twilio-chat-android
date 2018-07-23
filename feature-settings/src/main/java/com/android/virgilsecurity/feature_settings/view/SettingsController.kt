@@ -35,9 +35,13 @@ package com.android.virgilsecurity.feature_settings.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.inject
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_settings.R
+import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS
+import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
@@ -56,11 +60,16 @@ import kotlinx.android.synthetic.main.controller_settings.*
  */
 class SettingsController() : BaseController() {
 
-    private lateinit var user: User
     override val layoutResourceId: Int = R.layout.controller_settings
 
-    constructor(user: User) : this() {
+    private val toolbarSlice: ToolbarSlice by inject()
+
+    private lateinit var user: User
+    private lateinit var backPress: () -> Unit
+
+    constructor(user: User, backPress: () -> Unit) : this() {
         this.user = user
+        this.backPress = backPress
     }
 
     override fun init() {
@@ -68,15 +77,22 @@ class SettingsController() : BaseController() {
     }
 
     override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+        toolbarSlice.init(lifecycle, view)
     }
 
     override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
+    }
+
+    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+        ToolbarSlice.Action.BackClicked -> backPress()
+        ToolbarSlice.Action.MenuClicked -> UiUtils.toast(this, "Under development")
+        ToolbarSlice.Action.EditClicked -> UiUtils.toast(this, "Under development")
+        ToolbarSlice.Action.LogoutClicked -> UiUtils.toast(this, "Under development")
     }
 
     private fun initViews() {
@@ -85,5 +101,9 @@ class SettingsController() : BaseController() {
         ivChangeUserPic.setOnClickListener {
             UiUtils.toast(activity!!.applicationContext, "Under development")
         }
+    }
+
+    companion object {
+        const val KEY_SETTINGS_CONTROLLER = "KEY_SETTINGS_CONTROLLER"
     }
 }

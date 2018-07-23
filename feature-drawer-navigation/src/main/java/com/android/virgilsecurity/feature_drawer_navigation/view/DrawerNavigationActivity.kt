@@ -49,7 +49,7 @@ import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.Draw
 import com.android.virgilsecurity.feature_settings.view.SettingsController
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.bluelinelabs.conductor.changehandler.*
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
 
@@ -90,7 +90,8 @@ class DrawerNavigationActivity(
                                                                     stateSlice.openDrawer()
                                                                 }))
                                    .pushChangeHandler(FadeChangeHandler())
-                                   .popChangeHandler(FadeChangeHandler()))
+                                   .popChangeHandler(FadeChangeHandler())
+                                   .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
     }
 
     override fun initViewSlices() {
@@ -105,38 +106,76 @@ class DrawerNavigationActivity(
     }
 
     private fun onActionChanged(action: DrawerSlice.Action) = when (action) {
-        DrawerSlice.Action.ChannelsListClicked -> {
-            stateSlice.unLockDrawer()
-            changeController(ChannelsListController(user,
-                                                    {
-                                                        openChannel(it)
-                                                    },
-                                                    {
-                                                        stateSlice.openDrawer()
-                                                    }))
-        }
         DrawerSlice.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
-            changeController(ContactsController {
-                stateSlice::openDrawer
-            })
+            stateSlice.closeDrawer()
+            replaceTopController(ContactsController {
+                stateSlice.openDrawer()
+            }, ContactsController.KEY_CONTACTS_CONTROLLER)
+        }
+        DrawerSlice.Action.ChannelsListClicked -> {
+            stateSlice.unLockDrawer()
+            stateSlice.closeDrawer()
+            replaceTopController(ChannelsListController(user,
+                                                        {
+                                                            openChannel(it)
+                                                        },
+                                                        {
+                                                            stateSlice.openDrawer()
+                                                        }),
+                                 ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)
         }
         DrawerSlice.Action.SettingsClicked -> {
             stateSlice.unLockDrawer()
-            changeController(SettingsController(user))
+            stateSlice.closeDrawer()
+            pushController(SettingsController(user)
+                           {
+                               // Quick fix for toolbar view restoring issue
+                               router.popController(router.getControllerWithTag(
+                                   SettingsController.KEY_SETTINGS_CONTROLLER)!!
+                               )
+                               stateSlice.closeDrawer()
+
+                               if (router.getControllerWithTag(ContactsController.KEY_CONTACTS_CONTROLLER) != null) {
+                                   replaceTopController(ContactsController {
+                                       stateSlice.openDrawer()
+                                   }, ContactsController.KEY_CONTACTS_CONTROLLER)
+                                   drawerSlice.setItemSelected(0)
+                               } else if (router.getControllerWithTag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER) != null) {
+                                   replaceTopController(ChannelsListController(user,
+                                                                               {
+                                                                                   openChannel(it)
+                                                                               },
+                                                                               {
+                                                                                   stateSlice.openDrawer()
+                                                                               }),
+                                                        ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)
+                                   drawerSlice.setItemSelected(1)
+                               }
+                           },
+                           SettingsController.KEY_SETTINGS_CONTROLLER)
+        }
+        DrawerSlice.Action.SameItemClicked -> {
+            stateSlice.closeDrawer()
         }
     }
 
-    private fun changeController(controller: Controller) {
-        router.pushController(RouterTransaction
-                                      .with(controller)
-                                      .pushChangeHandler(FadeChangeHandler())
-                                      .popChangeHandler(FadeChangeHandler()))
-    }
+    private fun replaceTopController(controller: Controller, tag: String) =
+            router.replaceTopController(RouterTransaction
+                                                .with(controller)
+                                                .pushChangeHandler(SimpleSwapChangeHandler())
+                                                .tag(tag))
+
+    private fun pushController(controller: Controller, tag: String) =
+            router.pushController(RouterTransaction
+                                          .with(controller)
+                                          .pushChangeHandler(SimpleSwapChangeHandler())
+                                          .popChangeHandler(SimpleSwapChangeHandler())
+                                          .tag(tag))
 
     private fun openChannel(user: User) {
         stateSlice.lockDrawer()
-        changeController(ChannelController(user))
+        replaceTopController(ChannelController(user), ChannelController.KEY_CHANNEL_CONTROLLER)
     }
 
     override fun setupVMStateObservers() {}

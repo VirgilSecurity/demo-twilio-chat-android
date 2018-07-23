@@ -32,31 +32,12 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:ignore="AlwaysShowAction">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:checkableBehavior="single">
+    <item android:color="@color/snow" android:state_pressed="true" />
+    <item android:color="@color/snow" android:state_selected="true" />
+    <item android:color="@color/snow" android:state_checked="true" />
+    <item android:color="@color/snow" android:state_activated="true" />
+    <item android:color="@color/virgil_gray_light" />
 
-    <item
-        android:id="@+id/itemContacts"
-        android:title="@string/contacts"
-        android:icon="@drawable/ic_contacts"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/itemChats"
-        android:title="@string/chats"
-        android:icon="@drawable/ic_chats"
-        app:showAsAction="always"
-         />
-
-    <item
-        android:id="@+id/itemSettings"
-        android:title="@string/settings_drawer"
-        android:icon="@drawable/ic_settings"
-        app:showAsAction="always" />
-    </group>
-</menu>
+</selector>

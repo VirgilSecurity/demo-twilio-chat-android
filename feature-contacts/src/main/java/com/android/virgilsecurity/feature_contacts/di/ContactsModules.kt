@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_contacts.di
 
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_contacts.di.Const.LIVE_DATA_CONTACTS
 import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSliceContacts
 import org.koin.dsl.module.Module
@@ -55,6 +56,10 @@ import org.koin.dsl.module.applicationContext
  */
 
 val contactsModule: Module = applicationContext {
-    bean { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceContacts(get()) as ToolbarSlice }
+    factory(LIVE_DATA_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceContacts(get(LIVE_DATA_CONTACTS)) as ToolbarSlice }
+}
+
+object Const {
+    const val LIVE_DATA_CONTACTS = "LIVE_DATA_CONTACTS"
 }

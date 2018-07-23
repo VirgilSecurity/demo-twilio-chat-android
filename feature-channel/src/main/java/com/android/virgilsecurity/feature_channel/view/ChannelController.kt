@@ -35,31 +35,46 @@ package com.android.virgilsecurity.feature_channel.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.inject
+import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_channel.R
+import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
 
 class ChannelController() : BaseController() {
 
-    private lateinit var user: User
     override val layoutResourceId: Int = R.layout.controller_channel
+
+    private val toolbarSlice: ToolbarSlice by inject()
+
+    private lateinit var user: User
 
     constructor(user: User) : this() {
         this.user = user
     }
 
     override fun init() {
-        // TODO Implement body or it will be empty ):
+        toolbarSlice.setTitle(user.identity)
     }
 
     override fun initViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+        toolbarSlice.init(lifecycle, view)
     }
 
     override fun setupVSActionObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
+    }
+
+    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+        ToolbarSlice.Action.BackClicked -> UiUtils.toast(this, "Under development")
+    }
+
+    companion object {
+        const val KEY_CHANNEL_CONTROLLER = "KEY_CHANNEL_CONTROLLER"
     }
 }

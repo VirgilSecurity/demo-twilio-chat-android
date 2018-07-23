@@ -80,12 +80,6 @@ abstract class BaseController : LifecycleController(), LayoutContainer {
         return view
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
-
-    }
-
     protected fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)

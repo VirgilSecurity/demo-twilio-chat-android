@@ -56,9 +56,12 @@ interface DrawerSlice : ViewSlice {
         object ContactsClicked : Action()
         object ChannelsListClicked : Action()
         object SettingsClicked : Action()
+        object SameItemClicked : Action()
     }
 
     fun getAction(): LiveData<Action>
 
     fun setHeader(identity: String, picturePath: String?)
+
+    fun setItemSelected(position: Int)
 }

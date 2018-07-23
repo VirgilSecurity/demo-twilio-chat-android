@@ -40,6 +40,7 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.bluelinelabs.conductor.Controller
 
 /**
  * . _  _
@@ -71,6 +72,14 @@ object UiUtils {
     fun toast(fragment: Fragment, stringResId: Int) =
             Toast.makeText(fragment.activity,
                            fragment.activity!!.getString(stringResId),
+                           Toast.LENGTH_SHORT).show()
+
+    fun toast(controller: Controller, text: String) =
+            Toast.makeText(controller.activity, text, Toast.LENGTH_SHORT).show()
+
+    fun toast(controller: Controller, stringResId: Int) =
+            Toast.makeText(controller.activity,
+                           controller.activity!!.getString(stringResId),
                            Toast.LENGTH_SHORT).show()
 
     fun log(tag: String, text: String) = Log.d(tag, text)

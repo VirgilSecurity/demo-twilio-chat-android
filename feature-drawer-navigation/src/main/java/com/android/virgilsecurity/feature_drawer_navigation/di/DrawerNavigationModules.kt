@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_drawer_navigation.di
 
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.LIVE_DATA_DRAWER
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSliceDefault
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
@@ -57,7 +58,11 @@ import org.koin.dsl.module.applicationContext
  */
 
 val drawerNavigationModule: Module = applicationContext {
-    bean { MutableLiveData<DrawerSlice.Action>() }
-    bean { DrawerSliceDefault(get(), get()) as DrawerSlice }
+    bean(LIVE_DATA_DRAWER) { MutableLiveData<DrawerSlice.Action>() }
+    bean { DrawerSliceDefault(get(LIVE_DATA_DRAWER), get()) as DrawerSlice }
     bean { DrawerStateSliceDefault() as DrawerStateSlice }
+}
+
+object Const {
+    const val LIVE_DATA_DRAWER = "LIVE_DATA_DRAWER"
 }

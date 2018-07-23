@@ -34,15 +34,16 @@
 package com.android.virgilsecurity.common.view
 
 import android.content.Context
+import android.os.Parcelable
 import android.support.constraint.ConstraintLayout
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.View
-import android.widget.Toolbar
-import com.android.virgilsecurity.common.R
-import com.android.virgilsecurity.common.R.id.*
 import kotlinx.android.synthetic.main.toolbar_custom.view.*
+import android.os.Parcel
+import org.jetbrains.annotations.NotNull
+import kotlin.jvm.JvmField
+
 
 /**
  * . _  _
@@ -127,14 +128,14 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
     }
 
     fun setSubTitle(text: String) {
-        tvSubTitle.visibility = View.INVISIBLE
-        views[tvSubTitle] = STATE_INVISIBLE
+        tvSubTitle.visibility = View.VISIBLE
+        views[tvSubTitle] = STATE_VISIBLE
         tvSubTitle.text = text
     }
 
     fun removeSubTitle() {
         tvSubTitle.visibility = View.GONE
-        views[tvSubTitle] = STATE_INVISIBLE
+        views[tvSubTitle] = STATE_GONE
         tvSubTitle.text = ""
     }
 
@@ -143,8 +144,11 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
         views[ivSearch] = STATE_VISIBLE
 
         ivSearch.setOnClickListener {
+            if (ivBack.visibility != View.VISIBLE)
+                showBackButton()
+
             for (entry in views.entries) {
-                if (entry.value == STATE_VISIBLE) {
+                if (entry.value == STATE_VISIBLE && entry.key != ivBack) {
                     entry.key.visibility = View.INVISIBLE
                     entry.setValue(STATE_HIDDEN)
                 }
@@ -153,8 +157,11 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
             ivClose.visibility = View.VISIBLE
             views[etSearch] = STATE_VISIBLE
             views[ivClose] = STATE_VISIBLE
+            etSearch.requestFocus()
 
             ivBack.setOnClickListener {
+                hideBackButton()
+
                 for (entry in views.entries) {
                     if (entry.value == STATE_HIDDEN) {
                         entry.key.visibility = View.VISIBLE
@@ -163,28 +170,32 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
                 }
 
                 etSearch.visibility = View.INVISIBLE
-                ivClose.visibility = View.INVISIBLE
+                ivClose.visibility = View.GONE
                 views[etSearch] = STATE_INVISIBLE
-                views[ivClose] = STATE_INVISIBLE
+                views[ivClose] = STATE_GONE
 
                 ivBack.setOnClickListener(this)
+            }
+
+            ivClose.setOnClickListener {
+                etSearch.text.clear()
             }
         }
     }
 
     fun hideSearchButton() {
         ivSearch.setOnClickListener(null)
-        views[ivSearch] = STATE_INVISIBLE
-        ivSearch.visibility = View.INVISIBLE
+        views[ivSearch] = STATE_GONE
+        ivSearch.visibility = View.GONE
 
         if (ivBack.hasOnClickListeners())
             ivBack.setOnClickListener(this)
 
         // For case if this function is called after search button was clicked
         etSearch.visibility = View.INVISIBLE
-        ivClose.visibility = View.INVISIBLE
+        ivClose.visibility = View.GONE
         views[etSearch] = STATE_INVISIBLE
-        views[ivClose] = STATE_INVISIBLE
+        views[ivClose] = STATE_GONE
     }
 
     fun showMenuButton() {
@@ -195,8 +206,8 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
 
     fun hideMenuButton() {
         ivMenu.setOnClickListener(null)
-        views[ivMenu] = STATE_INVISIBLE
-        ivMenu.visibility = View.INVISIBLE
+        views[ivMenu] = STATE_GONE
+        ivMenu.visibility = View.GONE
     }
 
     fun showAddPersonButton() {
@@ -205,10 +216,10 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
         views[ivAddPerson] = STATE_VISIBLE
     }
 
-    fun hidePersonButton() {
+    fun hideAddPersonButton() {
         ivAddPerson.setOnClickListener(null)
-        views[ivAddPerson] = STATE_INVISIBLE
-        ivAddPerson.visibility = View.INVISIBLE
+        views[ivAddPerson] = STATE_GONE
+        ivAddPerson.visibility = View.GONE
     }
 
     fun setOnToolbarItemClickListener(listener: (View) -> Unit) {
@@ -219,10 +230,72 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
         onToolbarItemClickListener(v)
     }
 
+//    override fun onSaveInstanceState(): Parcelable {
+//
+//        val saveInstanceState = super.onSaveInstanceState()
+//        val savedState = SavedState(saveInstanceState)
+//        savedState.childrenStates = SparseArray()
+//        for (i in 0 until childCount) {
+//            getChildAt(i).saveHierarchyState(savedState.childrenStates as SparseArray<Parcelable>)
+//        }
+//        return savedState
+//    }
+//
+//    override fun onRestoreInstanceState(state: Parcelable?) {
+//        val savedState = state as SavedState
+//        super.onRestoreInstanceState(savedState.superState)
+//        for (i in 0 until childCount) {
+//            getChildAt(i).restoreHierarchyState(savedState.childrenStates as SparseArray<Parcelable>)
+//        }
+//    }
+//
+//    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
+//        dispatchFreezeSelfOnly(container)
+//    }
+//
+//    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
+//        dispatchThawSelfOnly(container)
+//    }
+//
+//    private class SavedState : View.BaseSavedState {
+//
+//        lateinit var childrenStates: SparseArray<Any>
+//
+//        constructor(superState: Parcelable) : super(superState)
+//
+//        private constructor(`in`: Parcel, classLoader: ClassLoader) : super(`in`) {
+//            childrenStates = `in`.readSparseArray(classLoader)
+//        }
+//
+//        override fun writeToParcel(out: Parcel, flags: Int) {
+//            super.writeToParcel(out, flags)
+//            out.writeSparseArray(childrenStates)
+//        }
+//
+//        companion object {
+//
+//            @JvmField
+//            val CREATOR = object : Parcelable.ClassLoaderCreator<SavedState> {
+//                override fun createFromParcel(source: Parcel, loader: ClassLoader): SavedState {
+//                    return SavedState(source, loader)
+//                }
+//
+//                override fun createFromParcel(source: Parcel): SavedState {
+//                    return createFromParcel(source)
+//                }
+//
+//                override fun newArray(size: Int): Array<SavedState?> {
+//                    return arrayOfNulls(size)
+//                }
+//            }
+//        }
+//    }
+
     companion object {
         const val STATE_DEFAULT = 0
         const val STATE_VISIBLE = 1
         const val STATE_INVISIBLE = 2
-        const val STATE_HIDDEN = 3
+        const val STATE_GONE = 3
+        const val STATE_HIDDEN = 4
     }
 }

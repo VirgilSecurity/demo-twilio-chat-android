@@ -89,12 +89,12 @@ class ChannelsListController() : BaseController() {
     override fun setupVMStateObservers() {
         // TODO Implement body or it will be empty ):
     }
+
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
-        ToolbarSlice.Action.AddClicked -> addContact()
     }
 
-    private fun addContact() {
-        // TODO Implement body or it will be empty ):
+    companion object {
+        const val KEY_CHANNELS_LIST_CONTROLLER = "KEY_CHANNELS_LIST_CONTROLLER"
     }
 }

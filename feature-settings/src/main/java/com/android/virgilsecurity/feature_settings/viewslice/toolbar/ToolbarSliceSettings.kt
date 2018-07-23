@@ -35,9 +35,11 @@ package com.android.virgilsecurity.feature_settings.viewslice.toolbar
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.view.Toolbar
+import com.android.virgilsecurity.feature_settings.R
 import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
@@ -55,7 +57,7 @@ import kotlinx.android.synthetic.main.controller_settings.*
  * ToolbarSliceSettings
  */
 class ToolbarSliceSettings(
-        private val actionLiveData: LiveData<ToolbarSlice.Action>
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
 ) : BaseViewSlice(), ToolbarSlice {
 
     private lateinit var toolbarField: Toolbar
@@ -67,7 +69,17 @@ class ToolbarSliceSettings(
     }
 
     private fun setupToolbar() {
+        toolbarField.showBackButton()
         toolbarField.showMenuButton()
+
+        toolbarField.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivBack -> actionLiveData.value = ToolbarSlice.Action.BackClicked
+                R.id.ivMenu -> actionLiveData.value = ToolbarSlice.Action.MenuClicked
+//                R.id.menuEdit -> actionLiveData.value = ToolbarSlice.Action.EditClicked
+//                R.id.menuLogout -> actionLiveData.value = ToolbarSlice.Action.LogoutClicked
+            }
+        }
     }
 
     override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData

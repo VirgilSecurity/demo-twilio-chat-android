@@ -37,6 +37,7 @@ import android.view.View
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSlice
 
@@ -84,6 +85,14 @@ class ContactsController() : BaseController() {
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
-        else -> Unit
+        ToolbarSlice.Action.AddClicked -> addContact()
+    }
+
+    private fun addContact() {
+        UiUtils.toast(this, "Under development")
+    }
+
+    companion object {
+        const val KEY_CONTACTS_CONTROLLER = "KEY_CONTACTS_CONTROLLER"
     }
 }

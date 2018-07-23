@@ -34,6 +34,7 @@
 import LoginDiConst.KEY_AUTH_ACTIVITY
 import LoginDiConst.KEY_MEDIATOR_LOGIN
 import LoginDiConst.KEY_MEDIATOR_REGISTRATION
+import LoginDiConst.LIVE_DATA_LOGIN
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.support.v4.app.FragmentActivity
@@ -92,8 +93,8 @@ val authActivityModule: Module = applicationContext {
 }
 
 val loginFragmentModule: Module = applicationContext {
-    bean { MutableLiveData<Action>() }
-    bean { UsersPagerAdapterDefault(get(), get(), get()) as UserPagerAdapter }
+    bean(LIVE_DATA_LOGIN) { MutableLiveData<Action>() }
+    bean { UsersPagerAdapterDefault(get(), get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
     bean { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
     bean { StateSliceLogin() as StateSlice }
 }
@@ -112,6 +113,7 @@ object LoginDiConst {
     const val KEY_AUTH_ACTIVITY = "KEY_AUTH_ACTIVITY"
     const val KEY_MEDIATOR_REGISTRATION = "KEY_MEDIATOR_REGISTRATION"
     const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
+    const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
 
     const val SPAN_COUNT = 2
 }

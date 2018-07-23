@@ -51,4 +51,5 @@ dependencies {
     architectureComponents()
     networking()
     support()
+    conductor()
 }

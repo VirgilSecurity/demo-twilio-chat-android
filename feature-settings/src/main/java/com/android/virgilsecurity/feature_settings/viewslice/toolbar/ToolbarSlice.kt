@@ -50,10 +50,11 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
 /**
  * ToolbarSlice
  */
-interface ToolbarSlice {
+interface ToolbarSlice : ViewSlice {
 
     sealed class Action {
         object BackClicked : Action()
+        object MenuClicked : Action()
         object EditClicked : Action()
         object LogoutClicked : Action()
     }
