@@ -31,18 +31,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.view
+package com.android.virgilsecurity.common.view
 
-import android.arch.lifecycle.Lifecycle
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Point
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.support.annotation.LayoutRes
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import com.android.virgilsecurity.common.R
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
+import kotlinx.android.synthetic.main.layout_popup_menu.*
+
 
 /**
  * . _  _
@@ -50,74 +56,52 @@ import kotlinx.android.synthetic.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/24/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * BaseController
+ * MenuPopup
  */
-abstract class BaseController : LifecycleController(), LayoutContainer {
-
-    @get:LayoutRes
-    protected abstract val layoutResourceId: Int
-
-    /**
-     * Used to initialize general options
-     */
-    protected abstract fun init()
-    /**
-     * Used to initialize view slices *Before*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun initViewSlices(view: View)
-    /**
-     * Used to setup view slices *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupViewSlices(view: View)
-    /**
-     * Used to setup view slices action observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVSActionObservers()
-    /**
-     * Used to setup view model state observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVMStateObservers()
+class MenuPopup(
+//        @LayoutRes private val layoutResId: Int,
+) : PopupWindow(), LayoutContainer {
 
     override lateinit var containerView: View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view = inflater.inflate(layoutResourceId, container, false)
+    private lateinit var layout: View
+    private lateinit var onClick: (View) -> Unit
 
-        containerView = view
+    fun setupPopup(context: Context) {
+//        val viewGroup = context.findViewById(R.id.llSortChangePopup) as LinearLayout
+        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        layout = layoutInflater.inflate(R.layout.layout_popup_menu, null)
+        containerView = layout
 
-        init()
-        initViewSlices(view)
+        contentView = layout
+        width = LAYOUT_PARAMS
+        height = LAYOUT_PARAMS
+        isFocusable = IS_FOCUSABLE
+        setBackgroundDrawable(ColorDrawable(Color.WHITE))
+        animationStyle = R.style.popup_window_animation
 
-        return view
+        tvMenuItem1.setOnClickListener(onClick)
+        tvMenuItem2.setOnClickListener(onClick)
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
-        setupViewSlices(view)
-        setupVSActionObservers()
-        setupVMStateObservers()
-
+    fun showPopup(showPoint: Point) {
+        showAtLocation(layout, Gravity.NO_GRAVITY, showPoint.x + OFFSET_X, showPoint.y + OFFSET_Y)
     }
 
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-        clearFindViewByIdCache()
-//        cleanUp()
+    fun setOnClickListener(onClick: (View) -> Unit) {
+        this.onClick = onClick
     }
 
-    protected fun hideKeyboard() {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
+    companion object {
+        const val LAYOUT_PARAMS = LinearLayout.LayoutParams.WRAP_CONTENT
+        const val IS_FOCUSABLE = true
+        const val OFFSET_X = -20
+        const val OFFSET_Y = 95
     }
 }

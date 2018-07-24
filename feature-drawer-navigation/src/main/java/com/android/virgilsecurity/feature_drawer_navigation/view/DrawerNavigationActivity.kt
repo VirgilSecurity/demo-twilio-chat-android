@@ -88,7 +88,9 @@ class DrawerNavigationActivity(
     override fun initViewSlices() {
         drawerSlice.init(lifecycle, getContentView())
         stateSlice.init(lifecycle, getContentView())
+    }
 
+    override fun setupViewSlices() {
         drawerSlice.setHeader(user.identity, user.picturePath)
     }
 
@@ -139,13 +141,13 @@ class DrawerNavigationActivity(
     private fun pushController(controller: Controller, tag: String) =
             router.pushController(RouterTransaction
                                           .with(controller)
-                                          .pushChangeHandler(SimpleSwapChangeHandler())
-                                          .popChangeHandler(SimpleSwapChangeHandler())
+                                          .pushChangeHandler(HorizontalChangeHandler())
+                                          .popChangeHandler(HorizontalChangeHandler())
                                           .tag(tag))
 
     private fun openChannel(user: User) {
         stateSlice.lockDrawer()
-        replaceTopController(ChannelController(user), ChannelController.KEY_CHANNEL_CONTROLLER)
+        pushController(ChannelController(user), ChannelController.KEY_CHANNEL_CONTROLLER)
     }
 
     private fun initRouter() {
@@ -158,8 +160,8 @@ class DrawerNavigationActivity(
                                                                 {
                                                                     stateSlice.openDrawer()
                                                                 }))
-                                   .pushChangeHandler(FadeChangeHandler())
-                                   .popChangeHandler(FadeChangeHandler())
+                                   .pushChangeHandler(SimpleSwapChangeHandler())
+                                   .popChangeHandler(SimpleSwapChangeHandler())
                                    .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
 
         router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {

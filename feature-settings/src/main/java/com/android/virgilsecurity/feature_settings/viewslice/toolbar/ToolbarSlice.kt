@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_settings.viewslice.toolbar
 
 import android.arch.lifecycle.LiveData
+import android.graphics.Point
 import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
@@ -54,7 +55,7 @@ interface ToolbarSlice : ViewSlice {
 
     sealed class Action {
         object BackClicked : Action()
-        object MenuClicked : Action()
+        data class MenuClicked(val showPoint: Point) : Action()
         object EditClicked : Action()
         object LogoutClicked : Action()
         object Idle : Action()

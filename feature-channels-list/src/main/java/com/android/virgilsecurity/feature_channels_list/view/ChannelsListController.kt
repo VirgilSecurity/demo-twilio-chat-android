@@ -91,6 +91,10 @@ class ChannelsListController() : BaseController() {
         toolbarSlice.init(lifecycle, view)
     }
 
+    override fun setupViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
     override fun setupVSActionObservers() {
         removeObservers(toolbarSlice.getAction())
         observe(toolbarSlice.getAction()) { onActionChanged(it) }

@@ -31,17 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_settings.di
+package com.android.virgilsecurity.feature_settings.viewslice.menu
 
-import android.arch.lifecycle.MutableLiveData
-import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
-import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
-import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSlice
-import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSliceSettings
-import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
-import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSliceSettings
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import android.arch.lifecycle.LiveData
+import android.graphics.Point
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -49,23 +43,23 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/18/18
+ * ....|  _/    7/24/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * SettingsModules
+ * MenuSlice
  */
+interface MenuSlice : ViewSlice {
 
-val settingsModule: Module = applicationContext {
-    bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
-    bean(LIVE_DATA_SETTINGS_MENU) { MutableLiveData<MenuSlice.Action>() }
-    bean { MenuSliceSettings(get(LIVE_DATA_SETTINGS_MENU)) as MenuSlice }
-}
+    sealed class Action {
+        object EditClicked : Action()
+        object LogoutClicked : Action()
+        object Idle : Action()
+    }
 
-object Const {
-    const val LIVE_DATA_SETTINGS_TOOLBAR = "LIVE_DATA_SETTINGS_TOOLBAR"
-    const val LIVE_DATA_SETTINGS_MENU = "LIVE_DATA_SETTINGS_MENU"
+    fun getAction(): LiveData<Action>
+
+    fun showMenu(showPoint: Point)
 }

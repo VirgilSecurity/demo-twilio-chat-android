@@ -55,11 +55,15 @@ class ChannelController() : BaseController() {
     }
 
     override fun init() {
-        toolbarSlice.setTitle(user.identity)
+
     }
 
     override fun initViewSlices(view: View) {
         toolbarSlice.init(lifecycle, view)
+    }
+
+    override fun setupViewSlices(view: View) {
+        toolbarSlice.setTitle(user.identity)
     }
 
     override fun setupVSActionObservers() {
@@ -71,7 +75,7 @@ class ChannelController() : BaseController() {
     }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> UiUtils.toast(this, "Under development")
+        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
         ToolbarSlice.Action.Idle -> Unit
     }
 

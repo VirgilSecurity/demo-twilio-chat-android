@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -32,39 +31,22 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <TextView
+        android:id="@+id/tvMenuItem1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Item Menu 1" />
 
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash</item>
-    </style>
+    <TextView
+        android:id="@+id/tvMenuItem2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/half_default_margin"
+        android:text="Item Menu 2" />
 
-    <style name="TextInputBlack">
-        <item name="colorAccent">@color/black</item>
-    </style>
-
-    <style name="NotTransBtnsDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorPrimary">@color/colorAccent</item>
-    </style>
-
-    <style name="ProgressBarBlack">
-        <item name="colorAccent">@color/black</item>
-    </style>
-
-    <style name="AccentProgress">
-        <item name="android:colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="popup_window_animation">
-        <item name="android:windowEnterAnimation">@anim/animation_slide_in</item>
-        <item name="android:windowExitAnimation">@anim/animation_slide_out</item>
-    </style>
-
-</resources>
+</LinearLayout>

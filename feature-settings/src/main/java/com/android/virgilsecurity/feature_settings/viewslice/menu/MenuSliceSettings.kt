@@ -31,17 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_settings.di
+package com.android.virgilsecurity.feature_settings.viewslice.menu
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
-import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
-import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSlice
-import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSliceSettings
-import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
-import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSliceSettings
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import android.arch.lifecycle.OnLifecycleEvent
+import android.graphics.Point
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.view.MenuPopup
+import com.android.virgilsecurity.feature_settings.R
 
 /**
  * . _  _
@@ -49,23 +48,45 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/18/18
+ * ....|  _/    7/24/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * SettingsModules
+ * MenuSliceSettings
  */
+class MenuSliceSettings(
+        private val actionLiveData: MutableLiveData<MenuSlice.Action>
+) : BaseViewSlice(), MenuSlice {
 
-val settingsModule: Module = applicationContext {
-    bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
-    bean(LIVE_DATA_SETTINGS_MENU) { MutableLiveData<MenuSlice.Action>() }
-    bean { MenuSliceSettings(get(LIVE_DATA_SETTINGS_MENU)) as MenuSlice }
-}
+    private lateinit var menu: MenuPopup
 
-object Const {
-    const val LIVE_DATA_SETTINGS_TOOLBAR = "LIVE_DATA_SETTINGS_TOOLBAR"
-    const val LIVE_DATA_SETTINGS_MENU = "LIVE_DATA_SETTINGS_MENU"
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setupMenu()
+    }
+
+    private fun setupMenu() {
+        menu = MenuPopup()
+        menu.setOnClickListener {
+            when (it.id) {
+                R.id.tvMenuItem1 -> {
+                    actionLiveData.value = MenuSlice.Action.EditClicked
+                    actionLiveData.value = MenuSlice.Action.Idle
+                }
+                R.id.tvMenuItem2 -> {
+                    actionLiveData.value = MenuSlice.Action.LogoutClicked
+                    actionLiveData.value = MenuSlice.Action.Idle
+                }
+            }
+        }
+        menu.setupPopup(context)
+    }
+
+    override fun showMenu(showPoint: Point) {
+        menu.showPopup(showPoint)
+    }
+
+    override fun getAction(): LiveData<MenuSlice.Action> = actionLiveData
 }

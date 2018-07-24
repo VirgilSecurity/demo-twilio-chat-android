@@ -75,6 +75,10 @@ class ContactsController() : BaseController() {
         toolbarSlice.init(lifecycle, view)
     }
 
+    override fun setupViewSlices(view: View) {
+        // TODO Implement body or it will be empty ):
+    }
+
     override fun setupVSActionObservers() {
         observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
