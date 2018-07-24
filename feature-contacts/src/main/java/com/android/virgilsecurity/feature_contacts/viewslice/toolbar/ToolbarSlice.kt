@@ -55,6 +55,7 @@ interface ToolbarSlice : ViewSlice {
     sealed class Action {
         object HamburgerClicked : Action()
         object AddClicked : Action()
+        object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>

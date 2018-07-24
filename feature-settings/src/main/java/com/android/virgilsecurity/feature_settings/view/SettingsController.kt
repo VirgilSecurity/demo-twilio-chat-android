@@ -40,7 +40,6 @@ import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_settings.R
-import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS
 import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_settings.*
 
@@ -65,11 +64,9 @@ class SettingsController() : BaseController() {
     private val toolbarSlice: ToolbarSlice by inject()
 
     private lateinit var user: User
-    private lateinit var backPress: () -> Unit
 
-    constructor(user: User, backPress: () -> Unit) : this() {
+    constructor(user: User) : this() {
         this.user = user
-        this.backPress = backPress
     }
 
     override fun init() {
@@ -89,10 +86,11 @@ class SettingsController() : BaseController() {
     }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> backPress()
+        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
         ToolbarSlice.Action.MenuClicked -> UiUtils.toast(this, "Under development")
         ToolbarSlice.Action.EditClicked -> UiUtils.toast(this, "Under development")
         ToolbarSlice.Action.LogoutClicked -> UiUtils.toast(this, "Under development")
+        ToolbarSlice.Action.Idle -> Unit
     }
 
     private fun initViews() {

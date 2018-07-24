@@ -55,8 +55,8 @@ import org.koin.dsl.module.applicationContext
  * ChannelModules
  */
 val channelModule : Module = applicationContext {
-    factory(LIVE_DATA_CHANNEL) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceChannel(get(LIVE_DATA_CHANNEL)) as ToolbarSlice }
+    bean(LIVE_DATA_CHANNEL) { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceChannel(get(LIVE_DATA_CHANNEL)) as ToolbarSlice }
 }
 
 object Const {

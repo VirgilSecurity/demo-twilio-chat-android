@@ -57,6 +57,7 @@ interface DrawerSlice : ViewSlice {
         object ChannelsListClicked : Action()
         object SettingsClicked : Action()
         object SameItemClicked : Action()
+        object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>

@@ -33,11 +33,15 @@
 
 package com.android.virgilsecurity.feature_channels_list.view
 
+import android.app.Activity
+import android.content.Context
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
+import com.android.virgilsecurity.base.extension.removeObservers
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_channels_list.R
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_channels_list.*
@@ -73,6 +77,11 @@ class ChannelsListController() : BaseController() {
         this.openDrawer = openDrawer
     }
 
+//    override fun onContextAvailable(context: Context) {
+//        super.onContextAvailable(context)
+//        rootActivity = context as D
+//    }
+
     override fun init() {
 //        tvUsername.text = user.identity
         clNoContacts.setOnClickListener { onChatClick(user) }
@@ -83,6 +92,7 @@ class ChannelsListController() : BaseController() {
     }
 
     override fun setupVSActionObservers() {
+        removeObservers(toolbarSlice.getAction())
         observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
@@ -90,8 +100,13 @@ class ChannelsListController() : BaseController() {
         // TODO Implement body or it will be empty ):
     }
 
+//    override fun cleanUp() {
+//        toolbarSlice.cleanViewIdsCache()
+//    }
+
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
+        ToolbarSlice.Action.Idle -> Unit
     }
 
     companion object {

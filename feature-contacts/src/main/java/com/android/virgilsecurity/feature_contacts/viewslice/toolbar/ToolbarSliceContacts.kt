@@ -77,8 +77,14 @@ class ToolbarSliceContacts(
 
         toolbarField.setOnToolbarItemClickListener {
             when (it.id) {
-                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
-                R.id.ivAddPerson -> actionLiveData.value = ToolbarSlice.Action.AddClicked
+                R.id.ivHamburger -> {
+                    actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+                R.id.ivAddPerson -> {
+                    actionLiveData.value = ToolbarSlice.Action.AddClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
             }
         }
     }

@@ -73,7 +73,10 @@ class ToolbarSliceChannel(
 
         toolbarField.setOnToolbarItemClickListener {
             when (it.id) {
-                R.id.ivBack -> actionLiveData.value = ToolbarSlice.Action.BackClicked
+                R.id.ivBack -> {
+                    actionLiveData.value = ToolbarSlice.Action.BackClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
             }
         }
     }

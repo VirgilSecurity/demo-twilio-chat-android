@@ -40,4 +40,6 @@ import android.view.View
 interface ViewSlice : LifecycleObserver {
 
     fun init(lifecycle: Lifecycle, view: View)
+
+    fun cleanViewIdsCache()
 }

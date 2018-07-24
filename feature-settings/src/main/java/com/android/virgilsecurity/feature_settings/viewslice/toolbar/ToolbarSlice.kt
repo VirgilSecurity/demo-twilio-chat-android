@@ -57,6 +57,7 @@ interface ToolbarSlice : ViewSlice {
         object MenuClicked : Action()
         object EditClicked : Action()
         object LogoutClicked : Action()
+        object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>

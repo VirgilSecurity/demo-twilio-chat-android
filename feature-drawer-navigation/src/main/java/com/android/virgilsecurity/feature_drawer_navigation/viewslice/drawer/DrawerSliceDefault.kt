@@ -38,6 +38,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.net.Uri
+import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.util.ImageStorage
 import com.android.virgilsecurity.common.util.UserUtils
@@ -76,14 +77,24 @@ class DrawerSliceDefault(
         nvNavigation.setNavigationItemSelectedListener {
             if (!it.isChecked) {
                 when (it.itemId) {
-                    R.id.itemContacts -> actionLiveData.value = DrawerSlice.Action.ContactsClicked
-                    R.id.itemChats -> actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
-                    R.id.itemSettings -> actionLiveData.value = DrawerSlice.Action.SettingsClicked
+                    R.id.itemContacts -> {
+                        actionLiveData.value = DrawerSlice.Action.ContactsClicked
+                        actionLiveData.value = DrawerSlice.Action.Idle
+                    }
+                    R.id.itemChats -> {
+                        actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
+                        actionLiveData.value = DrawerSlice.Action.Idle
+                    }
+                    R.id.itemSettings -> {
+                        actionLiveData.value = DrawerSlice.Action.SettingsClicked
+                        actionLiveData.value = DrawerSlice.Action.Idle
+                    }
                 }
 
                 it.isChecked = true
             } else {
                 actionLiveData.value = DrawerSlice.Action.SameItemClicked
+                actionLiveData.value = DrawerSlice.Action.Idle
             }
 
             return@setNavigationItemSelectedListener true
@@ -97,6 +108,7 @@ class DrawerSliceDefault(
             nvNavigation.getHeaderView(0).ivUserPicDrawer.setImageBitmap(imageStorage.get(Uri.parse(picturePath)))
         } else {
             nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
+            nvNavigation.getHeaderView(0).tvInitialsDrawer.visibility = View.VISIBLE
             nvNavigation.getHeaderView(0).ivUserPicDrawer.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
         }
 
@@ -105,6 +117,5 @@ class DrawerSliceDefault(
 
     override fun setItemSelected(position: Int) {
         nvNavigation.menu.getItem(position).isChecked = true
-
     }
 }

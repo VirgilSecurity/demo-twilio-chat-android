@@ -56,8 +56,8 @@ import org.koin.dsl.module.applicationContext
  */
 
 val contactsModule: Module = applicationContext {
-    factory(LIVE_DATA_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceContacts(get(LIVE_DATA_CONTACTS)) as ToolbarSlice }
+    bean(LIVE_DATA_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceContacts(get(LIVE_DATA_CONTACTS)) as ToolbarSlice }
 }
 
 object Const {

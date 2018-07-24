@@ -76,7 +76,10 @@ class ToolbarSliceChannelsList(
 
         toolbarField.setOnToolbarItemClickListener {
             when (it.id) {
-                R.id.ivHamburger -> actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
+                R.id.ivHamburger -> {
+                    actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
             }
         }
     }

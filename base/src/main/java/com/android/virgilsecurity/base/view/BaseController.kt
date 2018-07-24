@@ -41,6 +41,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.*
 
 /**
  * . _  _
@@ -65,11 +66,13 @@ abstract class BaseController : LifecycleController(), LayoutContainer {
     protected abstract fun initViewSlices(view: View)
     protected abstract fun setupVSActionObservers()
     protected abstract fun setupVMStateObservers()
+//    protected abstract fun cleanUp()
 
     override lateinit var containerView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view =  inflater.inflate(layoutResourceId, container, false)
+        val view = inflater.inflate(layoutResourceId, container, false)
+
         containerView = view
 
         init()
@@ -78,6 +81,12 @@ abstract class BaseController : LifecycleController(), LayoutContainer {
         setupVMStateObservers()
 
         return view
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        clearFindViewByIdCache()
+//        cleanUp()
     }
 
     protected fun hideKeyboard() {

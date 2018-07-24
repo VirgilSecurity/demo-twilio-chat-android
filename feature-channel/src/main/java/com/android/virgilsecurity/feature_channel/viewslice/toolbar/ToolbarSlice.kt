@@ -54,6 +54,7 @@ interface ToolbarSlice : ViewSlice {
 
     sealed class Action {
         object BackClicked : Action()
+        object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>

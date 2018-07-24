@@ -56,8 +56,8 @@ import org.koin.dsl.module.applicationContext
  */
 
 val settingsModule: Module = applicationContext {
-    factory(LIVE_DATA_SETTINGS) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS)) as ToolbarSlice }
+    bean(LIVE_DATA_SETTINGS) { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS)) as ToolbarSlice }
 }
 
 object Const {

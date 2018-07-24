@@ -34,10 +34,12 @@
 package com.android.virgilsecurity.base.viewslice
 
 import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.*
 
 abstract class BaseViewSlice : ViewSlice, LayoutContainer {
 
@@ -51,5 +53,10 @@ abstract class BaseViewSlice : ViewSlice, LayoutContainer {
         context = view.context
         resources = view.resources
         containerView = view
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    override fun cleanViewIdsCache() {
+        clearFindViewByIdCache()
     }
 }

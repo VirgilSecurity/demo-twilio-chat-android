@@ -74,8 +74,14 @@ class ToolbarSliceSettings(
 
         toolbarField.setOnToolbarItemClickListener {
             when (it.id) {
-                R.id.ivBack -> actionLiveData.value = ToolbarSlice.Action.BackClicked
-                R.id.ivMenu -> actionLiveData.value = ToolbarSlice.Action.MenuClicked
+                R.id.ivBack -> {
+                    actionLiveData.value = ToolbarSlice.Action.BackClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+                R.id.ivMenu -> {
+                    actionLiveData.value = ToolbarSlice.Action.MenuClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
 //                R.id.menuEdit -> actionLiveData.value = ToolbarSlice.Action.EditClicked
 //                R.id.menuLogout -> actionLiveData.value = ToolbarSlice.Action.LogoutClicked
             }

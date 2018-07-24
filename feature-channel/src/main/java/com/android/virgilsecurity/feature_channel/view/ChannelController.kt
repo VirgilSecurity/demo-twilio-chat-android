@@ -72,6 +72,7 @@ class ChannelController() : BaseController() {
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.BackClicked -> UiUtils.toast(this, "Under development")
+        ToolbarSlice.Action.Idle -> Unit
     }
 
     companion object {

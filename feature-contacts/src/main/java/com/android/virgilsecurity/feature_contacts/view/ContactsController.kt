@@ -86,6 +86,7 @@ class ContactsController() : BaseController() {
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
         ToolbarSlice.Action.AddClicked -> addContact()
+        ToolbarSlice.Action.Idle -> Unit
     }
 
     private fun addContact() {
