@@ -38,5 +38,5 @@
         android:bottomRightRadius="14dp"
         android:topLeftRadius="14dp"
         android:topRightRadius="14dp" />
-    <solid android:color="@color/virgil_light_trans" />
+    <solid android:color="@color/virgilLightTrans" />
 </shape>

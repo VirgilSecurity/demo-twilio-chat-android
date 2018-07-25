@@ -38,8 +38,11 @@ import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.getContentView
 import com.android.virgilsecurity.base.extension.hasNoRootController
+import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivityController
+import com.android.virgilsecurity.base.view.ScreenRouter
+import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_channel.view.ChannelController
 import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_channels_list.view.ChannelsListController
@@ -75,6 +78,8 @@ class DrawerNavigationActivity(
 
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
+    private val screenRouter: ScreenRouter by inject()
+
     private lateinit var user: User
 
     override fun provideContainer(): ViewGroup = controllerContainer
@@ -121,7 +126,13 @@ class DrawerNavigationActivity(
         DrawerSlice.Action.SettingsClicked -> {
             stateSlice.lockDrawer()
             stateSlice.closeDrawer()
-            pushController(SettingsController(user),
+            pushController(SettingsController(user)
+                           {
+                               screenRouter.getScreenIntent(this, ScreenChat.Login).run {
+                                   startActivity(this)
+                                   finish()
+                               }
+                           },
                            SettingsController.KEY_SETTINGS_CONTROLLER)
         }
         DrawerSlice.Action.SameItemClicked -> {

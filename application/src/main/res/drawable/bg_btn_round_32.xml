@@ -38,6 +38,6 @@
 
     <stroke
         android:width="1dp"
-        android:color="@color/virgil_light" />
+        android:color="@color/virgilLight" />
 
 </shape>

@@ -31,11 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_settings.viewmodel
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import android.arch.lifecycle.ViewModel
 
 /**
  * . _  _
@@ -43,43 +42,24 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * SettingsVM
  */
-class LoginVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+abstract class SettingsVM : ViewModel() {
 
-    init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    sealed class State {
+        object LogoutSuccessful : State()
+        object ShowLoading : State()
+        object ShowError : State()
+        object Idle : State()
     }
 
-    override fun onCleared() = loadUsersDo.cleanUp()
+    abstract fun getState() : LiveData<State>
 
-    override fun getState(): LiveData<State> = state
-
-    override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
-        loadUsersDo.execute()
-    }
-
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
-        when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
-                } else {
-                    state.value = State.ShowNoUsers
-                }
-            }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
-        }
-    }
+    abstract fun logout()
 }

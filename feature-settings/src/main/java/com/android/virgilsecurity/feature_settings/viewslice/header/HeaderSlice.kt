@@ -33,6 +33,10 @@
 
 package com.android.virgilsecurity.feature_settings.viewslice.header
 
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
+import com.android.virgilsecurity.feature_settings.viewslice.footer.FooterSlice
+
 /**
  * . _  _
  * .| || | _
@@ -47,9 +51,19 @@ package com.android.virgilsecurity.feature_settings.viewslice.header
 /**
  * HeaderSlice
  */
-interface HeaderSlice {
+interface HeaderSlice : ViewSlice {
 
     sealed class Action {
         object ChangePicClicked : Action()
+        object Idle : Action()
     }
+
+    fun getAction(): LiveData<Action>
+
+    fun setName(name: String)
+
+    /**
+     * If picture path is null - then user's name initials will be shown, taken from the identity.
+     */
+    fun setUserPic(identity: String, picturePath: String?)
 }

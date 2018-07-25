@@ -62,7 +62,7 @@ class ViewPagerSliceDefault(
         private val actionLiveData: MutableLiveData<Action>
 ) : BaseViewSlice(), ViewPagerSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onCreate() {
         setupViewPager()
     }

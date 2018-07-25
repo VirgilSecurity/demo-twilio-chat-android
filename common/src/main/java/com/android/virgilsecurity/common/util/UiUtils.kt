@@ -38,9 +38,11 @@ import android.app.FragmentManager
 import android.app.FragmentTransaction
 import android.content.Context
 import android.util.Log
-import android.view.View
+import android.util.TypedValue
 import android.widget.Toast
 import com.bluelinelabs.conductor.Controller
+import android.util.DisplayMetrics
+
 
 /**
  * . _  _
@@ -82,6 +84,8 @@ object UiUtils {
                            controller.activity!!.getString(stringResId),
                            Toast.LENGTH_SHORT).show()
 
+    fun toastUnderDevelopment(controller: Controller) = toast(controller, "Under development")
+
     fun log(tag: String, text: String) = Log.d(tag, text)
 
     fun replaceFragmentNoTag(fm: FragmentManager, containerId: Int, fragment: Fragment) =
@@ -89,4 +93,42 @@ object UiUtils {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(containerId, fragment)
                     .commit()
+
+    /**
+     * This method converts density independent pixels (dp) to equivalent pixels,
+     * depending on device density.
+     * Where [dp] is a dp value which we need to convert into pixels.
+     */
+    fun dpToPixels(dp: Float, context: Context): Int =
+            context.resources.displayMetrics.let {
+                dp * (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+            }.toInt()
+
+    /**
+     * This method converts device specific pixels (dp) to density independent pixels.
+     * Where [px] is a value in pixels, which we need to convert into dp.
+     */
+    fun pixelsToDp(px: Float, context: Context): Int =
+            context.resources.displayMetrics.let {
+                px / (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+            }.toInt()
+
+    /**
+     * This method converts density independent pixels (dp) to equivalent pixels,
+     * depending on device density.
+     * Where [dp] is a dp value which we need to convert into pixels.
+     */
+    fun dpToPixels(dp: Int, context: Context): Int =
+            context.resources.displayMetrics.let {
+                dp * (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+            }.toInt()
+
+    /**
+     * This method converts device specific pixels (dp) to density independent pixels.
+     * Where [px] is a value in pixels, which we need to convert into dp.
+     */
+    fun pixelsToDp(px: Int, context: Context): Int =
+            context.resources.displayMetrics.let {
+                px / (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+            }.toInt()
 }

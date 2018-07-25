@@ -32,21 +32,31 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:id="@+id/llPopupRoot"
+    android:layout_width="128dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rect_white_rounded_2"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/twenty_margin"
+    android:paddingTop="@dimen/twenty_margin">
 
     <TextView
-        android:id="@+id/tvMenuItem1"
+        android:id="@+id/tvMenuItemEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Item Menu 1" />
+        android:layout_marginStart="@dimen/default_margin"
+        android:text="@string/edit"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/big_text" />
 
     <TextView
-        android:id="@+id/tvMenuItem2"
+        android:id="@+id/tvMenuItemLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/half_default_margin"
-        android:text="Item Menu 2" />
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/twenty_margin"
+        android:text="@string/logout"
+        android:textColor="@color/colorAccentLight"
+        android:textSize="@dimen/big_text" />
 
 </LinearLayout>

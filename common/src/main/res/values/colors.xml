@@ -37,26 +37,27 @@
     <color name="colorPrimary">#2B303B</color>
     <color name="colorPrimaryDark">#20232B</color>
     <color name="colorPrimaryNight">#64000000</color>
+    <color name="colorAccentLight">#d36562</color>
     <color name="colorAccent">#9E3621</color>
     <color name="colorAccentDark">#4F1B11</color>
 
     <color name="snow">#ffffffff</color>
-    <color name="yesterday_snow">#c6ffffff</color>
+    <color name="yesterdaySnow">#c6ffffff</color>
     <color name="black">#ff000000</color>
     <color name="timberwolf">#dbd7d2</color>
-    <color name="oxford_blue">#002147</color>
-    <color name="black_coral">#54626F</color>
-    <color name="chinese_silver">#CCCCCC</color>
-    <color name="black_olive">#3B3C36</color>
-    <color name="baby_pink_trans">#e0f1e2e2</color>
-    <color name="virgil_light">#ae4244</color>
-    <color name="virgil_light_trans">#97ae4244</color>
-    <color name="virgil_gray">#1effffff</color>
-    <color name="virgil_gray_trans">#0fffffff</color>
-    <color name="virgil_gray_middle">#42ffffff</color>
-    <color name="virgil_gray_light">#64ffffff</color>
-    <color name="gray_light">#94ffffff</color>
+    <color name="oxfordBlue">#002147</color>
+    <color name="blackCoral">#54626F</color>
+    <color name="chineseSilver">#CCCCCC</color>
+    <color name="blackOlive">#3B3C36</color>
+    <color name="babyPinkTrans">#e0f1e2e2</color>
+    <color name="virgilLight">#ae4244</color>
+    <color name="virgilLightTrans">#97ae4244</color>
+    <color name="virgilGray">#1effffff</color>
+    <color name="virgilGrayTrans">#0fffffff</color>
+    <color name="virgilGrayMiddle">#42ffffff</color>
+    <color name="virgilGrayLight">#64ffffff</color>
+    <color name="grayLight">#94ffffff</color>
     <color name="aqua">#80CBC4</color>
-    <color name="wet_paper">#E2E2E2</color>
+    <color name="wetPaper">#E2E2E2</color>
 
 </resources>

@@ -94,7 +94,7 @@ class ContactsController() : BaseController() {
     }
 
     private fun addContact() {
-        UiUtils.toast(this, "Under development")
+        UiUtils.toastUnderDevelopment(this)
     }
 
     companion object {

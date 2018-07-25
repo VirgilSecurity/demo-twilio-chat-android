@@ -31,11 +31,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_settings.viewslice.header
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import android.net.Uri
+import android.view.View
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UserUtils
+import com.android.virgilsecurity.feature_settings.R
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -43,43 +51,46 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * HeaderSliceSettings
  */
-class LoginVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+class HeaderSliceSettings(
+        private val mutableLiveData: MutableLiveData<HeaderSlice.Action>,
+        private val imageStorage: ImageStorage
+) : BaseViewSlice(), HeaderSlice {
 
-    init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setupViews()
     }
 
-    override fun onCleared() = loadUsersDo.cleanUp()
-
-    override fun getState(): LiveData<State> = state
-
-    override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
-        loadUsersDo.execute()
-    }
-
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
-        when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
-                } else {
-                    state.value = State.ShowNoUsers
-                }
-            }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+    private fun setupViews() {
+        ivChangeUserPic.setOnClickListener {
+            mutableLiveData.value = HeaderSlice.Action.ChangePicClicked
+            mutableLiveData.value = HeaderSlice.Action.Idle
         }
     }
+
+    override fun setName(name: String) {
+        tvUsernameSettings.text = name
+        tvUsernameSettingsInfo.text = name
+    }
+
+    override fun setUserPic(identity: String, picturePath: String?) {
+        if (picturePath != null) {
+            ivUserPicSettings.setImageBitmap(imageStorage.get(Uri.parse(picturePath)))
+        } else {
+            tvInitials.text = UserUtils.firstInitials(identity)
+            tvInitials.visibility = View.VISIBLE
+            ivUserPicSettings.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
+        }
+
+    }
+
+    override fun getAction(): LiveData<HeaderSlice.Action> = mutableLiveData
 }

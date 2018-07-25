@@ -36,16 +36,16 @@ package com.android.virgilsecurity.common.view
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.support.annotation.LayoutRes
+import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import com.android.virgilsecurity.common.R
+import com.android.virgilsecurity.common.util.UiUtils
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.layout_popup_menu.*
 
@@ -64,9 +64,7 @@ import kotlinx.android.synthetic.main.layout_popup_menu.*
 /**
  * MenuPopup
  */
-class MenuPopup(
-//        @LayoutRes private val layoutResId: Int,
-) : PopupWindow(), LayoutContainer {
+class MenuPopup : PopupWindow(), LayoutContainer {
 
     override lateinit var containerView: View
 
@@ -74,20 +72,24 @@ class MenuPopup(
     private lateinit var onClick: (View) -> Unit
 
     fun setupPopup(context: Context) {
-//        val viewGroup = context.findViewById(R.id.llSortChangePopup) as LinearLayout
         val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         layout = layoutInflater.inflate(R.layout.layout_popup_menu, null)
         containerView = layout
 
         contentView = layout
-        width = LAYOUT_PARAMS
-        height = LAYOUT_PARAMS
+        width = UiUtils.dpToPixels(LAYOUT_PARAMS_WIDTH, context)
+        height = LAYOUT_PARAMS_HEIGHT
+        layout.setPadding(0,
+                          UiUtils.dpToPixels(PADDING_TOP, context),
+                          0,
+                          UiUtils.dpToPixels(PADDING_BOTTOM, context))
+
         isFocusable = IS_FOCUSABLE
-        setBackgroundDrawable(ColorDrawable(Color.WHITE))
+        setBackgroundDrawable(context.getDrawable(R.drawable.rect_white_rounded_2))
         animationStyle = R.style.popup_window_animation
 
-        tvMenuItem1.setOnClickListener(onClick)
-        tvMenuItem2.setOnClickListener(onClick)
+        tvMenuItemEdit.setOnClickListener(onClick)
+        tvMenuItemLogout.setOnClickListener(onClick)
     }
 
     fun showPopup(showPoint: Point) {
@@ -99,9 +101,12 @@ class MenuPopup(
     }
 
     companion object {
-        const val LAYOUT_PARAMS = LinearLayout.LayoutParams.WRAP_CONTENT
+        const val LAYOUT_PARAMS_WIDTH = 128
+        const val LAYOUT_PARAMS_HEIGHT = LinearLayout.LayoutParams.WRAP_CONTENT
+        const val PADDING_TOP = 24
+        const val PADDING_BOTTOM = 24
         const val IS_FOCUSABLE = true
-        const val OFFSET_X = -20
+        const val OFFSET_X = LAYOUT_PARAMS_WIDTH * (-1)
         const val OFFSET_Y = 95
     }
 }

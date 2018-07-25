@@ -39,7 +39,7 @@
     tools:targetApi="lollipop">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/chinese_silver" />
+            <solid android:color="@color/chineseSilver" />
         </shape>
     </item>
 </ripple>

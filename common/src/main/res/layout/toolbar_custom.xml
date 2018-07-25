@@ -160,7 +160,7 @@
         android:hint="@string/search_contacts"
         android:inputType="text"
         android:textColor="@color/snow"
-        android:textColorHint="@color/gray_light"
+        android:textColorHint="@color/grayLight"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/llIconsRoot"

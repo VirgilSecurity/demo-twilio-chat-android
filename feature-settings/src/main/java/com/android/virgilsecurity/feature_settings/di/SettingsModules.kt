@@ -33,11 +33,25 @@
 
 package com.android.virgilsecurity.feature_settings.di
 
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_FOOTER
+import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_HEADER
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
+import com.android.virgilsecurity.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS_FOOTER
+import com.android.virgilsecurity.feature_settings.domain.LogoutDo
+import com.android.virgilsecurity.feature_settings.domain.LogoutDoDefault
+import com.android.virgilsecurity.feature_settings.viewmodel.SettingsVM
+import com.android.virgilsecurity.feature_settings.viewmodel.SettingsVMDefault
+import com.android.virgilsecurity.feature_settings.viewslice.footer.FooterSlice
+import com.android.virgilsecurity.feature_settings.viewslice.footer.FooterSliceSettings
+import com.android.virgilsecurity.feature_settings.viewslice.header.HeaderSlice
+import com.android.virgilsecurity.feature_settings.viewslice.header.HeaderSliceSettings
 import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSlice
 import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSliceSettings
+import com.android.virgilsecurity.feature_settings.viewslice.state.StateSlice
+import com.android.virgilsecurity.feature_settings.viewslice.state.StateSliceSettings
 import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSliceSettings
 import org.koin.dsl.module.Module
@@ -61,11 +75,28 @@ import org.koin.dsl.module.applicationContext
 val settingsModule: Module = applicationContext {
     bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
     bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
+
     bean(LIVE_DATA_SETTINGS_MENU) { MutableLiveData<MenuSlice.Action>() }
     bean { MenuSliceSettings(get(LIVE_DATA_SETTINGS_MENU)) as MenuSlice }
+
+    bean(LIVE_DATA_SETTINGS_HEADER) { MutableLiveData<HeaderSlice.Action>() }
+    bean { HeaderSliceSettings(get(LIVE_DATA_SETTINGS_HEADER), get()) as HeaderSlice }
+
+    bean(LIVE_DATA_SETTINGS_FOOTER) { MutableLiveData<FooterSlice.Action>() }
+    bean { FooterSliceSettings(get(LIVE_DATA_SETTINGS_FOOTER)) as FooterSlice }
+
+    bean { StateSliceSettings() as StateSlice }
+
+    bean { LogoutDoDefault(get(), get()) as LogoutDo }
+    bean(MEDIATOR_DATA_SETTINGS_FOOTER) { MediatorLiveData<SettingsVM.State>() }
+    bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get()) as SettingsVM }
 }
 
 object Const {
     const val LIVE_DATA_SETTINGS_TOOLBAR = "LIVE_DATA_SETTINGS_TOOLBAR"
     const val LIVE_DATA_SETTINGS_MENU = "LIVE_DATA_SETTINGS_MENU"
+    const val LIVE_DATA_SETTINGS_HEADER = "LIVE_DATA_SETTINGS_HEADER"
+    const val LIVE_DATA_SETTINGS_FOOTER = "LIVE_DATA_SETTINGS_FOOTER"
+
+    const val MEDIATOR_DATA_SETTINGS_FOOTER = "MEDIATOR_DATA_SETTINGS_FOOTER"
 }

@@ -71,8 +71,8 @@
                     android:maxLines="3"
                     android:padding="@dimen/default_text"
                     android:paddingStart="@dimen/twenty_margin"
-                    android:textColor="@color/oxford_blue"
-                    android:textColorHint="@color/black_coral"
+                    android:textColor="@color/oxfordBlue"
+                    android:textColorHint="@color/blackCoral"
                     android:textSize="@dimen/default_text" />
 
                 <ImageButton
@@ -113,7 +113,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="No messages"
-            android:textColor="@color/black_coral"
+            android:textColor="@color/blackCoral"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
 
@@ -124,7 +124,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="Error loading messages"
-            android:textColor="@color/oxford_blue"
+            android:textColor="@color/oxfordBlue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
     </FrameLayout>

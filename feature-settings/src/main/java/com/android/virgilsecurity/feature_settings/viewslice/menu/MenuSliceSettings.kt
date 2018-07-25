@@ -71,11 +71,11 @@ class MenuSliceSettings(
         menu = MenuPopup()
         menu.setOnClickListener {
             when (it.id) {
-                R.id.tvMenuItem1 -> {
+                R.id.tvMenuItemEdit -> {
                     actionLiveData.value = MenuSlice.Action.EditClicked
                     actionLiveData.value = MenuSlice.Action.Idle
                 }
-                R.id.tvMenuItem2 -> {
+                R.id.tvMenuItemLogout -> {
                     actionLiveData.value = MenuSlice.Action.LogoutClicked
                     actionLiveData.value = MenuSlice.Action.Idle
                 }

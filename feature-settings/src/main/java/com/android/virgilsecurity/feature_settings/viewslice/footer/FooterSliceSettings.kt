@@ -31,11 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_settings.viewslice.footer
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import android.view.View
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -43,43 +47,45 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * FooterSliceSettings
  */
-class LoginVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+class FooterSliceSettings(
+        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
+) : BaseViewSlice(), FooterSlice, View.OnClickListener {
 
-    init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setupViews()
     }
 
-    override fun onCleared() = loadUsersDo.cleanUp()
-
-    override fun getState(): LiveData<State> = state
-
-    override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
-        loadUsersDo.execute()
+    private fun setupViews() {
+        tvAbout.setOnClickListener(this)
+        tvAskQuestion.setOnClickListener(this)
+        tvVersionHistory.setOnClickListener(this)
     }
 
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
-        when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
-                } else {
-                    state.value = State.ShowNoUsers
-                }
+    override fun onClick(view: View) {
+        when (view) {
+            tvAbout -> {
+                mutableLiveData.value = FooterSlice.Action.AboutClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
             }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+            tvAskQuestion -> {
+                mutableLiveData.value = FooterSlice.Action.AskQuestionClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
+            tvVersionHistory -> {
+                mutableLiveData.value = FooterSlice.Action.VersionClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
         }
     }
+
+    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
 }

@@ -39,5 +39,7 @@
     <string name="search_contacts">Search Contacts</string>
     <string name="clear_search_field">Clear search field</string>
     <string name="messenger">Messenger</string>
+    <string name="edit">Edit</string>
+    <string name="logout">Logout</string>
 
 </resources>

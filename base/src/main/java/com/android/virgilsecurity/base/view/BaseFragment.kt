@@ -68,6 +68,7 @@ abstract class BaseFragment<A> : Fragment(), LifecycleOwner where A : Activity {
 
     protected abstract fun init(view: View, savedInstanceState: Bundle?)
     protected abstract fun initViewSlices(view: View)
+    protected abstract fun setupViewSlices(view: View)
     protected abstract fun setupVSActionObservers()
     protected abstract fun setupVMStateObservers()
 
@@ -94,6 +95,7 @@ abstract class BaseFragment<A> : Fragment(), LifecycleOwner where A : Activity {
 
         init(view, savedInstanceState)
         initViewSlices(view)
+        setupViewSlices(view)
         setupVSActionObservers()
         setupVMStateObservers()
     }

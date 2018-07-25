@@ -38,6 +38,6 @@
     <item android:color="@color/snow" android:state_selected="true" />
     <item android:color="@color/snow" android:state_checked="true" />
     <item android:color="@color/snow" android:state_activated="true" />
-    <item android:color="@color/virgil_gray_light" />
+    <item android:color="@color/virgilGrayLight" />
 
 </selector>

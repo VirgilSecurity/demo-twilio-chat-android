@@ -128,7 +128,7 @@
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="14dp"
         android:src="@drawable/ic_powered_by"
-        android:tint="@color/virgil_gray_light"
+        android:tint="@color/virgilGrayLight"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ivPoweredBy2"
         app:layout_constraintHorizontal_chainStyle="packed"

@@ -63,7 +63,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/black_olive"
+            android:textColor="@color/blackOlive"
             android:textSize="@dimen/big_text"
             tools:body="User Name" />
     </LinearLayout>

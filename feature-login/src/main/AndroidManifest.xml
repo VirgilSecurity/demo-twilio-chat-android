@@ -35,7 +35,9 @@
     package="com.android.virgilsecurity.feature_login">
 
     <application>
-        <activity android:name=".view.AuthActivity" />
+        <activity
+            android:name=".view.AuthActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

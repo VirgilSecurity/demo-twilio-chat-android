@@ -54,7 +54,7 @@
             android:paddingBottom="@dimen/half_default_margin"
             android:paddingStart="@dimen/default_margin"
             android:paddingEnd="@dimen/default_margin"
-            android:textColor="@color/oxford_blue"
+            android:textColor="@color/oxfordBlue"
             android:textSize="@dimen/increased_text"
             tools:text="Some title" />
 
@@ -70,7 +70,7 @@
             android:layout_marginTop="@dimen/default_margin"
             android:paddingStart="@dimen/default_margin"
             android:paddingEnd="@dimen/default_margin"
-            android:textColor="@color/oxford_blue"
+            android:textColor="@color/oxfordBlue"
             android:textSize="@dimen/increased_text"
             tools:text="Some body text" />
 
@@ -85,7 +85,7 @@
             android:hint="Identity"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:textColorHint="@color/black_coral"
+            android:textColorHint="@color/blackCoral"
             android:textSize="@dimen/increased_text" />
 
         <LinearLayout

@@ -31,11 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_settings.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
-import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import com.android.virgilsecurity.feature_settings.domain.LogoutDo
 
 /**
  * . _  _
@@ -43,43 +43,42 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * SettingsVMDefault
  */
-class LoginVMDefault(
+class SettingsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+        private val logoutDo: LogoutDo
+) : SettingsVM() {
 
     init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+        state.addSource(logoutDo.getLiveData(), ::onLogoutResult)
     }
 
-    override fun onCleared() = loadUsersDo.cleanUp()
+    override fun onCleared() = logoutDo.cleanUp()
 
     override fun getState(): LiveData<State> = state
 
-    override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
-        loadUsersDo.execute()
+    override fun logout() {
+        state.value = SettingsVM.State.ShowLoading
+        logoutDo.execute()
     }
 
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
+    private fun onLogoutResult(result: LogoutDo.Result?) {
         when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
-                } else {
-                    state.value = State.ShowNoUsers
-                }
+            is LogoutDo.Result.OnSuccess -> {
+                state.value = State.LogoutSuccessful
+                state.value = State.Idle
             }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+            is LogoutDo.Result.OnError -> {
+                state.value = State.ShowError
+                state.value = State.Idle
+            }
         }
     }
 }

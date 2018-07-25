@@ -33,6 +33,9 @@
 
 package com.android.virgilsecurity.feature_settings.viewslice.footer
 
+import android.arch.lifecycle.LiveData
+import com.android.virgilsecurity.base.viewslice.ViewSlice
+
 /**
  * . _  _
  * .| || | _
@@ -47,11 +50,14 @@ package com.android.virgilsecurity.feature_settings.viewslice.footer
 /**
  * FooterSlice
  */
-interface FooterSlice {
+interface FooterSlice : ViewSlice {
 
     sealed class Action {
         object AboutClicked : Action()
-        object QuestionClicked : Action()
+        object AskQuestionClicked : Action()
         object VersionClicked : Action()
+        object Idle : Action()
     }
+
+    fun getAction(): LiveData<FooterSlice.Action>
 }

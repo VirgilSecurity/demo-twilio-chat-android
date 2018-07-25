@@ -40,7 +40,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/ddble_margin" />
-            <solid android:color="@color/virgil_light" />
+            <solid android:color="@color/virgilLight" />
         </shape>
     </item>
 </ripple>

@@ -37,6 +37,7 @@
     <application>
         <activity
             android:name="com.android.virgilsecurity.feature_drawer_navigation.view.DrawerNavigationActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>
 

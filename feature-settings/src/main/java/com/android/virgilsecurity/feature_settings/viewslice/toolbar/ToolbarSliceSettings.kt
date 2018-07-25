@@ -39,6 +39,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.graphics.Point
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.Toolbar
 import com.android.virgilsecurity.feature_settings.R
 import kotlinx.android.synthetic.main.controller_settings.*
@@ -81,12 +82,11 @@ class ToolbarSliceSettings(
                 }
                 R.id.ivMenu -> {
                     actionLiveData.value = ToolbarSlice.Action.MenuClicked(
-                        Point(it.x.toInt(), it.y.toInt())
+                        Point(it.x.toInt() + UiUtils.pixelsToDp(it.width, context),
+                              it.y.toInt())
                     )
                     actionLiveData.value = ToolbarSlice.Action.Idle
                 }
-//                R.id.menuEdit -> actionLiveData.value = ToolbarSlice.Action.EditClicked
-//                R.id.menuLogout -> actionLiveData.value = ToolbarSlice.Action.LogoutClicked
             }
         }
     }

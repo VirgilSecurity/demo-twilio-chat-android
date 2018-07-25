@@ -36,5 +36,5 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/virgil_gray_trans" />
+        android:color="@color/virgilGrayTrans" />
 </shape>

@@ -31,11 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_settings.domain
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -43,43 +48,36 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * LogoutDoDefault
  */
-class LoginVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+class LogoutDoDefault(
+        private val userManager: UserManager,
+        private val twilioHelper: TwilioHelper
+) : BaseDo<LogoutDo.Result>(), LogoutDo {
 
-    init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    override fun execute() =
+            Completable.fromCallable {
+                userManager.clearCurrentUser()
+            }.doOnComplete {
+                Completable.fromCallable {
+                    twilioHelper.shutdownChatClient()
+                }.subscribe()
+            }.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
+
+    private fun success() {
+        liveData.value = LogoutDo.Result.OnSuccess
     }
 
-    override fun onCleared() = loadUsersDo.cleanUp()
-
-    override fun getState(): LiveData<State> = state
-
-    override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
-        loadUsersDo.execute()
-    }
-
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
-        when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
-                } else {
-                    state.value = State.ShowNoUsers
-                }
-            }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
-        }
+    private fun error(throwable: Throwable) {
+        liveData.value = LogoutDo.Result.OnError(throwable)
     }
 }

@@ -48,4 +48,6 @@ dependencies {
     conductor()
     circleImageView()
     koin()
+    reactiveness()
+    architectureComponents()
 }

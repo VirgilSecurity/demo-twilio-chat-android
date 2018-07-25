@@ -56,8 +56,6 @@ interface ToolbarSlice : ViewSlice {
     sealed class Action {
         object BackClicked : Action()
         data class MenuClicked(val showPoint: Point) : Action()
-        object EditClicked : Action()
-        object LogoutClicked : Action()
         object Idle : Action()
     }
 

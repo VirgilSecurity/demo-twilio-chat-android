@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="No threads yet"
-            android:textColor="@color/oxford_blue"
+            android:textColor="@color/oxfordBlue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
 
@@ -65,7 +65,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="Error loading threads"
-            android:textColor="@color/oxford_blue"
+            android:textColor="@color/oxfordBlue"
             android:textSize="@dimen/increased_text"
             android:visibility="gone" />
 

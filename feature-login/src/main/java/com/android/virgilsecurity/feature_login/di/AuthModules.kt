@@ -95,7 +95,7 @@ val authActivityModule: Module = applicationContext {
 val loginFragmentModule: Module = applicationContext {
     bean(LIVE_DATA_LOGIN) { MutableLiveData<Action>() }
     bean { UsersPagerAdapterDefault(get(), get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
-    bean { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
+    bean { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
     bean { StateSliceLogin() as StateSlice }
 }
 

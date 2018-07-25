@@ -86,8 +86,10 @@ class TwilioHelper(private val context: Context,
     }
 
     fun shutdownChatClient() {
-        chatClient?.shutdown()
-        chatClient = null
+        if (chatClient != null) {
+            chatClient?.shutdown()
+            chatClient = null
+        }
     }
 
     fun setChatListener(chatClientListener: ChatClientListener) {
