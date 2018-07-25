@@ -71,7 +71,8 @@ class UsersPagerAdapterDefault(
 
     override fun isViewFromObject(view: View, `object`: Any) = view == (`object` as View)
 
-    override fun getCount(): Int = pages.size
+    override fun getCount(): Int =
+            pages.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val page = pages[position]
@@ -134,7 +135,10 @@ class UsersPagerAdapterDefault(
             // TODO get random background
         }
 
-        parent.setOnClickListener { actionLiveData.value = ViewPagerSlice.Action.UserClicked(user) }
+        parent.setOnClickListener {
+            actionLiveData.value = ViewPagerSlice.Action.UserClicked(user)
+            actionLiveData.value = ViewPagerSlice.Action.Idle
+        }
         parent.addView(child)
     }
 

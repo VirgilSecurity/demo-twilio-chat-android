@@ -86,6 +86,8 @@ object UiUtils {
 
     fun toastUnderDevelopment(controller: Controller) = toast(controller, "Under development")
 
+    fun toastUnderDevelopment(context: Context) = toast(context, "Under development")
+
     fun log(tag: String, text: String) = Log.d(tag, text)
 
     fun replaceFragmentNoTag(fm: FragmentManager, containerId: Int, fragment: Fragment) =

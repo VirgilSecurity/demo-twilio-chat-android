@@ -33,17 +33,21 @@
 
 package com.android.virgilsecurity.feature_login.view
 
-import android.app.Fragment
 import android.os.Bundle
+import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.hasNoRootController
 import com.android.virgilsecurity.base.extension.observe
-import com.android.virgilsecurity.base.view.BaseActivity
+import com.android.virgilsecurity.base.view.BaseActivityController
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 
@@ -60,7 +64,9 @@ import org.koin.android.ext.android.inject
 
 class AuthActivity(
         override val layoutResourceId: Int = R.layout.activity_login
-) : BaseActivity() {
+) : BaseActivityController() {
+
+    override fun provideContainer(): ViewGroup = controllerContainer
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
@@ -72,6 +78,8 @@ class AuthActivity(
 
     override fun initViewSlices() {}
 
+    override fun setupViewSlices() {}
+
     override fun setupVSActionObservers() {}
 
     override fun setupVMStateObservers() = observe(loginVM.getState()) {
@@ -79,38 +87,64 @@ class AuthActivity(
     }
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
-        is LoginVM.State.ShowContent -> showFragment(LoginFragment.instance())
-        LoginVM.State.ShowNoUsers -> showFragment(NoUsersFragment.instance())
-        LoginVM.State.ShowError -> showFragment(LoginFragment.instance())
-        else -> {
-            // Waiting while users are loaded
+        is LoginVM.State.UsersLoaded -> {
+            val controller = LoginController(::login)
+            if (router.hasNoRootController())
+                initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
+            else
+                replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
+        }
+        LoginVM.State.ShowNoUsers -> {
+            val controller = NoUsersController(::registration)
+            if (router.hasNoRootController())
+                initRouter(controller, NoUsersController.KEY_NO_USERS_CONTROLLER)
+            else
+                replaceTopController(controller, NoUsersController.KEY_NO_USERS_CONTROLLER)
+        }
+        LoginVM.State.ShowLoading -> Unit
+        LoginVM.State.ShowContent -> Unit
+        LoginVM.State.ShowError -> {
+            val controller = LoginController(::login)
+            if (router.hasNoRootController())
+                initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
+            else
+                replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
-        UiUtils.replaceFragmentNoTag(fragmentManager,
-                                     flContainer.id,
-                                     fragment)
-        // TODO add nice transaction & remove white background after splash
-    }
+    private fun replaceTopController(controller: Controller, tag: String) =
+            router.replaceTopController(RouterTransaction
+                                                .with(controller)
+                                                .pushChangeHandler(SimpleSwapChangeHandler())
+                                                .tag(tag))
 
     fun login(user: User) =
             screenRouter.getScreenIntent(this,
                                          ScreenChat.DrawerNavigation,
                                          User.EXTRA_USER,
                                          user)
-                    .run { startActivity(this) }
+                    .run {
+                        startActivity(this)
+                        finish()
+                    }
 
     fun registration() {
-        showFragment(RegistrationFragment.instance())
+        replaceTopController(RegistrationController(::login),
+                             RegistrationController.KEY_REGISTRATION_CONTROLLER)
     }
 
-    override fun onBackPressed() {
-        hideKeyboard()
+    private fun initRouter(controller: Controller, tag: String) =
+            router.setRoot(RouterTransaction
+                                   .with(controller)
+                                   .pushChangeHandler(SimpleSwapChangeHandler())
+                                   .popChangeHandler(SimpleSwapChangeHandler())
+                                   .tag(tag))
 
+    override fun onBackPressed() {
         if (doubleBack.tryToPress())
             super.onBackPressed()
         else
             UiUtils.toast(this, getString(R.string.press_exit_once_more))
     }
+    // TODO add wait controller while users are loaded
 }

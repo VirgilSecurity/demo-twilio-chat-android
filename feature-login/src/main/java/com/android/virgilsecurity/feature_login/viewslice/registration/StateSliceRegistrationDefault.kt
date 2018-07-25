@@ -41,7 +41,7 @@ import com.android.virgilsecurity.feature_login.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_register.*
+import kotlinx.android.synthetic.main.controller_register.*
 import java.util.concurrent.TimeUnit
 
 /**

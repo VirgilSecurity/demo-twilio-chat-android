@@ -50,4 +50,5 @@ dependencies {
     architectureComponents()
     support()
     viewPagerIndicator()
+    conductor()
 }

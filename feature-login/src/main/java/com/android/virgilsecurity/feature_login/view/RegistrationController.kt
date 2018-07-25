@@ -33,23 +33,21 @@
 
 package com.android.virgilsecurity.feature_login.view
 
-import android.annotation.SuppressLint
 import android.databinding.DataBindingUtil
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
-import com.android.virgilsecurity.base.view.BaseFragmentBinding
+import com.android.virgilsecurity.base.view.BaseControllerBinding
 import com.android.virgilsecurity.common.view.LinkMovementMethodNoSelection
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.databinding.FragmentRegisterBinding
+import com.android.virgilsecurity.feature_login.databinding.ControllerRegisterBinding
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVMDefault
 import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistration
-import kotlinx.android.synthetic.main.fragment_register.*
-import org.koin.android.ext.android.inject
+import kotlinx.android.synthetic.main.controller_register.*
 
 /**
  * . _  _
@@ -63,17 +61,23 @@ import org.koin.android.ext.android.inject
  */
 
 /**
- * RegistrationFragment
+ * RegistrationController
  */
-class RegistrationFragment @SuppressLint("ValidFragment") constructor(
-        override val layoutResourceId: Int = R.layout.fragment_register
-) : BaseFragmentBinding<AuthActivity>() {
+class RegistrationController() : BaseControllerBinding() {
+
+    override val layoutResourceId: Int = R.layout.controller_register
 
     private val viewModel: RegistrationVM by inject()
     private val stateSliceRegistration: StateSliceRegistration by inject()
 
+    private lateinit var login: (User) -> Unit
+
+    constructor(login: (User) -> Unit) : this() {
+        this.login = login
+    }
+
     override fun initViewBinding(inflater: LayoutInflater, container: ViewGroup?, layoutResourceId: Int): View {
-        val binding: FragmentRegisterBinding = DataBindingUtil.inflate(inflater,
+        val binding: ControllerRegisterBinding = DataBindingUtil.inflate(inflater,
                                                                        layoutResourceId,
                                                                        container,
                                                                        false)
@@ -82,7 +86,7 @@ class RegistrationFragment @SuppressLint("ValidFragment") constructor(
     }
 
 
-    override fun init(view: View, savedInstanceState: Bundle?) {
+    override fun init() {
         initViews()
         initViewCallbacks()
     }
@@ -100,6 +104,8 @@ class RegistrationFragment @SuppressLint("ValidFragment") constructor(
         stateSliceRegistration.init(lifecycle, view)
     }
 
+    override fun setupViewSlices(view: View) {}
+
     override fun setupVSActionObservers() {}
 
     override fun setupVMStateObservers() {
@@ -109,7 +115,7 @@ class RegistrationFragment @SuppressLint("ValidFragment") constructor(
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
         is RegistrationVM.State.RegisteredSuccessfully -> {
             stateSliceRegistration.cleanUp()
-            startChatList(state.user)
+            login(state.user)
         }
         RegistrationVM.State.ShowLoading -> stateSliceRegistration.showLoading()
         is RegistrationVM.State.UsernameInvalid -> when (state.causeCode) {
@@ -122,9 +128,7 @@ class RegistrationFragment @SuppressLint("ValidFragment") constructor(
         RegistrationVM.State.ShowError -> stateSliceRegistration.showError()
     }
 
-    private fun startChatList(user: User) = rootActivity?.login(user)
-
     companion object {
-        fun instance() = RegistrationFragment()
+        const val KEY_REGISTRATION_CONTROLLER = "KEY_REGISTRATION_CONTROLLER"
     }
 }

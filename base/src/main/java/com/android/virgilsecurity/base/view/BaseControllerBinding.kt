@@ -58,11 +58,17 @@ import kotlinx.android.synthetic.*
 /**
  * BaseController
  */
-abstract class BaseController : LifecycleController(), LayoutContainer {
+abstract class BaseControllerBinding : LifecycleController(), LayoutContainer {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
 
+    /**
+     * Used to initialize view binding
+     */
+    protected abstract fun initViewBinding(inflater: LayoutInflater,
+                                           container: ViewGroup?,
+                                           @LayoutRes layoutResourceId: Int): View
     /**
      * Used to initialize general options
      */
@@ -91,7 +97,7 @@ abstract class BaseController : LifecycleController(), LayoutContainer {
     override lateinit var containerView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        containerView = inflater.inflate(layoutResourceId, container, false)
+        containerView = initViewBinding(inflater, container, layoutResourceId)
 
         init()
         initViewSlices(containerView)

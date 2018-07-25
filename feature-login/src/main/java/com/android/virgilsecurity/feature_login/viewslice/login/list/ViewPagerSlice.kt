@@ -55,6 +55,7 @@ interface ViewPagerSlice : ViewSlice {
 
     sealed class Action {
         data class UserClicked(val user: User) : Action()
+        object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>

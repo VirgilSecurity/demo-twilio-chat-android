@@ -31,13 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import LoginDiConst.KEY_AUTH_ACTIVITY
 import LoginDiConst.KEY_MEDIATOR_LOGIN
 import LoginDiConst.KEY_MEDIATOR_REGISTRATION
 import LoginDiConst.LIVE_DATA_LOGIN
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.support.v4.app.FragmentActivity
 import com.android.virgilsecurity.base.data.api.AuthApi
 import com.android.virgilsecurity.common.data.remote.AuthRemote
 import com.android.virgilsecurity.common.util.DoubleBack
@@ -49,7 +47,6 @@ import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDoDefault
-import com.android.virgilsecurity.feature_login.view.AuthActivity
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVMDefault
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
@@ -80,7 +77,6 @@ import org.koin.dsl.module.applicationContext
  * LoginModules
  */
 val authModule: Module = applicationContext {
-    bean(KEY_AUTH_ACTIVITY) { AuthActivity() as FragmentActivity }
     bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
     bean { LoadUsersDoDefault(get()) as LoadUsersDo }
     bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<Action>() }
@@ -110,7 +106,6 @@ val registrationFragmentModule: Module = applicationContext {
 
 object LoginDiConst {
     const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
-    const val KEY_AUTH_ACTIVITY = "KEY_AUTH_ACTIVITY"
     const val KEY_MEDIATOR_REGISTRATION = "KEY_MEDIATOR_REGISTRATION"
     const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"

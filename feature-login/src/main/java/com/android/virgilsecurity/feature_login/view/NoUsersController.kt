@@ -33,15 +33,10 @@
 
 package com.android.virgilsecurity.feature_login.view
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.android.virgilsecurity.base.view.BaseFragment
+import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.R.id.btnCreateNewAccount
-import kotlinx.android.synthetic.main.fragment_no_users.*
+import kotlinx.android.synthetic.main.controller_no_users.*
 
 /**
  * . _  _
@@ -55,31 +50,38 @@ import kotlinx.android.synthetic.main.fragment_no_users.*
  */
 
 /**
- * NoUsersFragment
+ * NoUsersController
  */
 
-class NoUsersFragment @SuppressLint("ValidFragment") constructor(
-        override val layoutResourceId: Int = R.layout.fragment_no_users
-) : BaseFragment<AuthActivity>() {
+class NoUsersController() : BaseController() {
 
+    override val layoutResourceId: Int = R.layout.controller_no_users
 
-    override fun init(view: View, savedInstanceState: Bundle?) {
+    private lateinit var registration: () -> Unit
+
+    constructor(registration: () -> Unit) : this() {
+        this.registration = registration
+    }
+
+    override fun init() {
         initViewCallbacks()
     }
 
     private fun initViewCallbacks() {
         btnCreateNewAccount.setOnClickListener {
-            rootActivity!!.registration()
+            registration()
         }
     }
 
-    override fun initViewSlices(view: View) { }
+    override fun initViewSlices(view: View) {}
 
-    override fun setupVSActionObservers() { }
+    override fun setupViewSlices(view: View) {}
 
-    override fun setupVMStateObservers() { }
+    override fun setupVSActionObservers() {}
+
+    override fun setupVMStateObservers() {}
 
     companion object {
-        fun instance() = NoUsersFragment()
+        const val KEY_NO_USERS_CONTROLLER = "KEY_NO_USERS_CONTROLLER"
     }
 }

@@ -36,7 +36,7 @@ package com.android.virgilsecurity.feature_login.viewslice.login.state
 import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.viewslice.StateSlice
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.controller_login.*
 
 /**
  * . _  _

@@ -41,7 +41,7 @@ import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
 import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.controller_login.*
 
 /**
  * . _  _

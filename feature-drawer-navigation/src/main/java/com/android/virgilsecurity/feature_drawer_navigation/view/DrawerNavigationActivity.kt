@@ -76,13 +76,13 @@ class DrawerNavigationActivity(
         override val layoutResourceId: Int = R.layout.activity_drawer_navigation
 ) : BaseActivityController() {
 
+    override fun provideContainer(): ViewGroup = controllerContainer
+
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
     private val screenRouter: ScreenRouter by inject()
 
     private lateinit var user: User
-
-    override fun provideContainer(): ViewGroup = controllerContainer
 
     override fun init(savedInstanceState: Bundle?) {
         user = intent.getParcelableExtra(User.EXTRA_USER)
