@@ -55,7 +55,7 @@ package com.android.virgilsecurity.common.util
 object UserUtils {
     fun firstInitials(identity: String) = identity.split(" ").let {
         if (it.size > 1)
-            StringBuilder("$it[0]$it[1]").toString().capitalize()
+            StringBuilder("${it[0][0]}${it[1][0]}").toString().capitalize()
         else
             it[0][0].toString().capitalize()
     }

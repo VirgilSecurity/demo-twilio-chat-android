@@ -36,8 +36,10 @@ package com.android.virgilsecurity.feature_login.viewslice.login.list.adapter
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.android.virgilsecurity.base.data.model.User
@@ -63,24 +65,22 @@ import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSl
  */
 class UsersPagerAdapterDefault(
         private val imageStorage: ImageStorage,
-        private val context: Context,
         private val actionLiveData: MutableLiveData<ViewPagerSlice.Action>
 ) : UserPagerAdapter() {
 
-    private lateinit var pages: MutableList<MutableList<User>>
+    private var pages: MutableList<MutableList<User>>? = null
 
     override fun isViewFromObject(view: View, `object`: Any) = view == (`object` as View)
 
-    override fun getCount(): Int =
-            pages.size
+    override fun getCount(): Int = pages?.size ?: 0
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val page = pages[position]
+        val page = pages!![position]
 
         val parent: ViewGroup = container.inflate(R.layout.item_users_page, false) as ViewGroup
-        val childCount = parent.childCount
+        container.addView(parent)
 
-        for (i in 1..childCount)
+        for (i in 0 until page.size)
             inflateChildAndAttach(parent.getChildAt(i) as ViewGroup, page[i])
 
         return parent
@@ -99,26 +99,33 @@ class UsersPagerAdapterDefault(
                         page.add(iterator.next())
                 }
 
-                pages.add(page)
+                pages!!.add(page)
             }
+
+            notifyDataSetChanged()
         }
     }
 
     override fun addUser(user: User) {
-        if (pages[pages.size - 1].size == 4) {
+        if (pages!![pages!!.size - 1].size == 4) {
             val newPage = MutableList(1) { user }
-            pages.add(newPage)
+            pages!!.add(newPage)
         } else {
-            pages[pages.size - 1].add(user)
+            pages!![pages!!.size - 1].add(user)
         }
+
+        notifyDataSetChanged()
     }
 
     override fun clearUsers() {
-        pages.clear()
+        pages!!.clear()
+        notifyDataSetChanged()
     }
 
     private fun inflateChildAndAttach(parent: ViewGroup, user: User) {
-        val child = parent.inflate(R.layout.item_login_user)
+        val child = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_login_user, null, false)
+
         child.findViewById<TextView>(R.id.tvUsername).text = user.identity
 
         val tvInitials = child.findViewById<TextView>(R.id.tvInitials)
@@ -131,7 +138,7 @@ class UsersPagerAdapterDefault(
         } else {
             tvInitials.visibility = View.VISIBLE
             tvInitials.text = UserUtils.firstInitials(user.identity)
-            ivUserPic.background = context.getDrawable(R.drawable.rect_rounded_gradient_2)
+            ivUserPic.background = parent.context.getDrawable(R.drawable.rect_rounded_gradient_2)
             // TODO get random background
         }
 
