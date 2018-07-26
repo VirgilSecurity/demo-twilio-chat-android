@@ -81,6 +81,7 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
         views[ivSearch] = STATE_DEFAULT
         views[ivClose] = STATE_DEFAULT
         views[etSearch] = STATE_DEFAULT
+        views[ivInfo] = STATE_DEFAULT
     }
 
     fun showBackButton() {
@@ -220,6 +221,18 @@ class Toolbar(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(
         ivAddPerson.setOnClickListener(null)
         views[ivAddPerson] = STATE_GONE
         ivAddPerson.visibility = View.GONE
+    }
+
+    fun showInfoButton() {
+        ivInfo.setOnClickListener(this)
+        ivInfo.visibility = View.VISIBLE
+        views[ivInfo] = STATE_VISIBLE
+    }
+
+    fun hideInfoButton() {
+        ivInfo.setOnClickListener(null)
+        views[ivInfo] = STATE_GONE
+        ivInfo.visibility = View.GONE
     }
 
     fun setOnToolbarItemClickListener(listener: (View) -> Unit) {

@@ -31,9 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.registration
+package com.android.virgilsecurity.feature_login.viewslice.registration.toolbar
 
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.view.Toolbar
+import com.android.virgilsecurity.feature_login.R
+import kotlinx.android.synthetic.main.controller_register.*
 
 /**
  * . _  _
@@ -41,27 +48,45 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/10/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSliceRegistration
+ * ToolbarSliceRegistration
  */
-interface StateSliceRegistration : ViewSlice {
+class ToolbarSliceRegistration(
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
 
-    fun showConsistent()
+    private lateinit var toolbarField: Toolbar
 
-    fun showUsernameEmpty()
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        this.toolbarField = toolbarRegistration as Toolbar
+        setupToolbar()
+    }
 
-    fun showUsernameTooShort()
+    private fun setupToolbar() {
+        toolbarField.setTitle(resources.getString(R.string.registration))
 
-    fun showUsernameTooLong()
+        toolbarField.showBackButton()
+        toolbarField.showInfoButton()
 
-    fun showLoading()
+        toolbarField.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivBack -> {
+                    actionLiveData.value = ToolbarSlice.Action.BackClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+                R.id.ivInfo -> {
+                    actionLiveData.value = ToolbarSlice.Action.InfoClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+            }
+        }
+    }
 
-    fun showError()
-
-    fun cleanUp()
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }

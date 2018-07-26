@@ -31,12 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewmodel.login
+package com.android.virgilsecurity.feature_login.viewslice.registration.state
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
-import android.icu.text.SymbolTable
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -44,29 +41,27 @@ import com.android.virgilsecurity.base.data.model.User
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/10/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVM
+ * StateSliceRegistration
  */
+interface StateSliceRegistration : ViewSlice {
 
-abstract class LoginVM : ViewModel() {
+    fun showConsistent()
 
-    sealed class State {
-        data class UsersLoaded(val users: List<User>) : State()
-        data class Login(val user: User) : State()
-        object ShowNoUsers : State()
-        object ShowLoading : State()
-        object ShowContent : State()
-        object ShowError : State()
-    }
+    fun showUsernameEmpty()
 
-    abstract fun getState() : LiveData<State>
+    fun showUsernameTooShort()
 
-    abstract fun users()
+    fun showUsernameTooLong()
 
-    abstract fun login(identity: String)
+    fun showLoading()
+
+    fun showError()
+
+    fun cleanUp()
 }

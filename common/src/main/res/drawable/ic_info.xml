@@ -31,16 +31,18 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-
-    <string name="logo">logo</string>
-    <string name="press_exit_once_more">Press back once more to exit</string>
-    <string name="previous_screen_button">Previous screen button</string>
-    <string name="search_contacts">Search Contacts</string>
-    <string name="clear_search_field">Clear search field</string>
-    <string name="info_toolbar">Info button</string>
-    <string name="messenger">Messenger</string>
-    <string name="edit">Edit</string>
-    <string name="logout">Logout</string>
-
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M11,7h2v2h-2z"/>
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M11,11h2v6h-2z"/>
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M12,2C6.48,2 2,6.48 2,12c0,5.52 4.48,10 10,10s10,-4.48 10,-10C22,6.48 17.52,2 12,2zM12,20c-4.41,0 -8,-3.59 -8,-8c0,-4.41 3.59,-8 8,-8s8,3.59 8,8C20,16.41 16.41,20 12,20z"/>
+</vector>

@@ -61,4 +61,6 @@ interface ViewPagerSlice : ViewSlice {
     fun getAction(): LiveData<Action>
 
     fun showUsers(users: List<User>)
+
+    fun showIndicator()
 }

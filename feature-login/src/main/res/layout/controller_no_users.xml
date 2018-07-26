@@ -44,7 +44,7 @@
         android:layout_height="80dp"
         android:elevation="2dp"
         android:layout_marginStart="@dimen/login_left_new_user"
-        android:background="@drawable/rect_rounded_gradient_2"
+        android:background="@drawable/rect_rounded_gradient_virgil_2"
         app:layout_constraintBottom_toTopOf="@id/tvCreateAccount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

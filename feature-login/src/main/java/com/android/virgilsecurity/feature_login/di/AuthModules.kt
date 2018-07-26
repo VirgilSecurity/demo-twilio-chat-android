@@ -34,6 +34,7 @@
 import LoginDiConst.KEY_MEDIATOR_LOGIN
 import LoginDiConst.KEY_MEDIATOR_REGISTRATION
 import LoginDiConst.LIVE_DATA_LOGIN
+import LoginDiConst.LIVE_DATA_REGISTRATION
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.virgilsecurity.base.data.api.AuthApi
@@ -45,6 +46,8 @@ import com.android.virgilsecurity.feature_login.data.repository.AuthInteractorDe
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
+import com.android.virgilsecurity.feature_login.domain.registration.SignInDo
+import com.android.virgilsecurity.feature_login.domain.registration.SignInDoDefault
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDoDefault
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
@@ -57,8 +60,10 @@ import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSl
 import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
 import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UsersPagerAdapterDefault
 import com.android.virgilsecurity.feature_login.viewslice.login.state.StateSliceLogin
-import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistration
-import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistrationDefault
+import com.android.virgilsecurity.feature_login.viewslice.registration.state.StateSliceRegistration
+import com.android.virgilsecurity.feature_login.viewslice.registration.state.StateSliceRegistrationDefault
+import com.android.virgilsecurity.feature_login.viewslice.registration.toolbar.ToolbarSlice
+import com.android.virgilsecurity.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -79,8 +84,9 @@ import org.koin.dsl.module.applicationContext
 val authModule: Module = applicationContext {
     bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
     bean { LoadUsersDoDefault(get()) as LoadUsersDo }
+    bean { SignInDoDefault(get(), get()) as SignInDo }
     bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<Action>() }
-    bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get()) as LoginVM }
+    bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get(), get()) as LoginVM }
 }
 
 val authActivityModule: Module = applicationContext {
@@ -102,6 +108,8 @@ val registrationFragmentModule: Module = applicationContext {
     bean { SignUpDoDefault(get(), get()) as SignUpDo }
     bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
     bean { StateSliceRegistrationDefault() as StateSliceRegistration }
+    bean(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
+    bean { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
 }
 
 object LoginDiConst {
@@ -109,6 +117,7 @@ object LoginDiConst {
     const val KEY_MEDIATOR_REGISTRATION = "KEY_MEDIATOR_REGISTRATION"
     const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
+    const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
 
     const val SPAN_COUNT = 2
 }

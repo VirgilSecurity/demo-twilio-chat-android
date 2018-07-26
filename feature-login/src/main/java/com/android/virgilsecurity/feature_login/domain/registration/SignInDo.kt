@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.feature_login.domain.registration
 
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.Do
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
@@ -53,7 +54,7 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
 interface SignInDo : Do<SignInDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val rawSignedModel: RawSignedModel) : Result()
+        data class OnSuccess(val user: User) : Result()
         data class OnError(val error: Throwable) : Result()
     }
 

@@ -43,6 +43,7 @@ import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
+import kotlinx.android.synthetic.main.controller_login.*
 
 /**
  * . _  _
@@ -67,12 +68,20 @@ class LoginController() : BaseController() {
     private val viewModel: LoginVM by inject()
 
     private lateinit var login: (User) -> Unit
+    private lateinit var registration: () -> Unit
 
-    constructor(login: (User) -> Unit) : this() {
+    constructor(login: (User) -> Unit, registration: () -> Unit) : this() {
         this.login = login
+        this.registration = registration
     }
 
-    override fun init() {}
+    override fun init() {
+        initViewCallbacks()
+    }
+
+    private fun initViewCallbacks() {
+        tvCreateAccount.setOnClickListener { registration() }
+    }
 
     override fun initViewSlices(view: View) {
         viewPagerSlice.init(lifecycle, view)
@@ -92,13 +101,17 @@ class LoginController() : BaseController() {
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> viewPagerSlice.showUsers(state.users)
         LoginVM.State.ShowLoading -> stateSlice.showLoading()
-        LoginVM.State.ShowContent -> stateSlice.showContent()
+        LoginVM.State.ShowContent -> {
+            stateSlice.showContent()
+            viewPagerSlice.showIndicator()
+        }
         LoginVM.State.ShowError -> stateSlice.showError()
+        is LoginVM.State.Login -> Unit // Handled by activity
         else -> stateSlice.showError()
     }
 
     private fun onActionChanged(action: Action) = when (action) {
-        is Action.UserClicked -> login(action.user)
+        is Action.UserClicked -> viewModel.login(action.user.identity)
         Action.Idle -> Unit
     }
 

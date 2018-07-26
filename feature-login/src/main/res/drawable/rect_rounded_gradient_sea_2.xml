@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
@@ -31,16 +32,14 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <string name="logo">logo</string>
-    <string name="press_exit_once_more">Press back once more to exit</string>
-    <string name="previous_screen_button">Previous screen button</string>
-    <string name="search_contacts">Search Contacts</string>
-    <string name="clear_search_field">Clear search field</string>
-    <string name="info_toolbar">Info button</string>
-    <string name="messenger">Messenger</string>
-    <string name="edit">Edit</string>
-    <string name="logout">Logout</string>
+    <gradient
+        android:angle="45"
+        android:endColor="@color/seaWave"
+        android:startColor="@color/seaWaveDark" />
 
-</resources>
+    <corners android:radius="2dp" />
+
+</shape>

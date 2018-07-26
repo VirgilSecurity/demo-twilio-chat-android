@@ -41,12 +41,14 @@ import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.LinkMovementMethodNoSelection
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.databinding.ControllerRegisterBinding
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVM
 import com.android.virgilsecurity.feature_login.viewmodel.registration.RegistrationVMDefault
-import com.android.virgilsecurity.feature_login.viewslice.registration.StateSliceRegistration
+import com.android.virgilsecurity.feature_login.viewslice.registration.state.StateSliceRegistration
+import com.android.virgilsecurity.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_register.*
 
 /**
@@ -68,7 +70,8 @@ class RegistrationController() : BaseControllerBinding() {
     override val layoutResourceId: Int = R.layout.controller_register
 
     private val viewModel: RegistrationVM by inject()
-    private val stateSliceRegistration: StateSliceRegistration by inject()
+    private val stateSlice: StateSliceRegistration by inject()
+    private val toolbarSlice: ToolbarSlice by inject()
 
     private lateinit var login: (User) -> Unit
 
@@ -91,22 +94,31 @@ class RegistrationController() : BaseControllerBinding() {
         initViewCallbacks()
     }
 
-    private fun initViewCallbacks() {
-        btnNext.setOnClickListener { viewModel.registration(etUsername.text.toString()) }
-    }
-
     private fun initViews() {
         tvPolicy2.movementMethod = LinkMovementMethodNoSelection.instance
         tvPolicy4.movementMethod = LinkMovementMethodNoSelection.instance
     }
 
+    private fun initViewCallbacks() {
+        btnNext.setOnClickListener { viewModel.registration(etUsername.text.toString()) }
+    }
+
     override fun initViewSlices(view: View) {
-        stateSliceRegistration.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
+        toolbarSlice.init(lifecycle, view)
     }
 
     override fun setupViewSlices(view: View) {}
 
-    override fun setupVSActionObservers() {}
+    override fun setupVSActionObservers() {
+        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+    }
+
+    private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
+        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
+        ToolbarSlice.Action.InfoClicked -> UiUtils.toastUnderDevelopment(this)
+        ToolbarSlice.Action.Idle -> Unit
+    }
 
     override fun setupVMStateObservers() {
         observe(viewModel.getState()) { onStateChanged(it) }
@@ -114,18 +126,19 @@ class RegistrationController() : BaseControllerBinding() {
 
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
         is RegistrationVM.State.RegisteredSuccessfully -> {
-            stateSliceRegistration.cleanUp()
+            stateSlice.cleanUp()
             login(state.user)
         }
-        RegistrationVM.State.ShowLoading -> stateSliceRegistration.showLoading()
+        RegistrationVM.State.ShowLoading -> stateSlice.showLoading()
         is RegistrationVM.State.UsernameInvalid -> when (state.causeCode) {
-            RegistrationVM.KEY_USERNAME_EMPTY -> stateSliceRegistration.showUsernameEmpty()
-            RegistrationVM.KEY_USERNAME_SHORT -> stateSliceRegistration.showUsernameTooShort()
-            RegistrationVM.KEY_USERNAME_LONG -> stateSliceRegistration.showUsernameTooLong()
+            RegistrationVM.KEY_USERNAME_EMPTY -> stateSlice.showUsernameEmpty()
+            RegistrationVM.KEY_USERNAME_SHORT -> stateSlice.showUsernameTooShort()
+            RegistrationVM.KEY_USERNAME_LONG -> stateSlice.showUsernameTooLong()
             else -> Unit
         }
-        RegistrationVM.State.UsernameConsistent -> stateSliceRegistration.showConsistent()
-        RegistrationVM.State.ShowError -> stateSliceRegistration.showError()
+        RegistrationVM.State.UsernameConsistent -> stateSlice.showConsistent()
+        RegistrationVM.State.ShowError -> stateSlice.showError()
+        RegistrationVM.State.Idle -> Unit
     }
 
     companion object {

@@ -87,9 +87,14 @@ class RegistrationVMDefault(
 
     private fun onRegistrationResult(result: SignUpDo.Result?) {
         when (result) {
-            is SignUpDo.Result.OnSuccess ->
+            is SignUpDo.Result.OnSuccess -> {
                 state.value = State.RegisteredSuccessfully(result.user)
-            is SignUpDo.Result.OnError -> state.value = State.ShowError
+                state.value = State.Idle
+            }
+            is SignUpDo.Result.OnError -> {
+                state.value = State.ShowError
+                state.value = State.Idle
+            }
         }
     }
 

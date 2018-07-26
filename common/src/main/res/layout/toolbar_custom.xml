@@ -148,6 +148,16 @@
             android:src="@drawable/ic_close"
             android:visibility="gone"
             tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivInfo"
+            android:layout_width="@dimen/toolbar_icon_size"
+            android:layout_height="@dimen/toolbar_icon_size"
+            android:layout_marginEnd="18dp"
+            android:contentDescription="@string/info_toolbar"
+            android:src="@drawable/ic_info"
+            android:visibility="gone"
+            tools:visibility="gone" />
     </LinearLayout>
 
     <EditText

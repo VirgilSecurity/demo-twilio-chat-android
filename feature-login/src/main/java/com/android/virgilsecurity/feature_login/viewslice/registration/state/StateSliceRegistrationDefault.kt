@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.registration
+package com.android.virgilsecurity.feature_login.viewslice.registration.state
 
 import android.view.View
 import android.view.animation.AlphaAnimation
@@ -126,9 +126,11 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
     private fun activateButton(active: Boolean) {
         if (active) {
             btnNext.isEnabled = true
+            btnNext.isClickable = true
             btnNext.background = context.getDrawable(R.drawable.rect_rounded_accent_2)
         } else {
             btnNext.isEnabled = false
+            btnNext.isClickable = false
             btnNext.background = context.getDrawable(R.drawable.rect_rounded_gray_2)
         }
     }

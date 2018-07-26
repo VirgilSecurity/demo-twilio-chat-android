@@ -41,6 +41,7 @@ import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
 import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
+import com.github.vivchar.viewpagerindicator.ViewPagerIndicator
 import kotlinx.android.synthetic.main.controller_login.*
 
 /**
@@ -69,10 +70,16 @@ class ViewPagerSliceDefault(
 
     private fun setupViewPager() {
         vpUsers.adapter = adapter
-        vpIndicatorUsers.setupWithViewPager(vpUsers)
     }
 
     override fun getAction(): LiveData<Action> = actionLiveData
 
-    override fun showUsers(users: List<User>) = adapter.setUsers(users)
+    override fun showUsers(users: List<User>) {
+        adapter.setUsers(users)
+    }
+
+    override fun showIndicator() {
+        vpIndicatorUsers.setupWithViewPager(vpUsers)
+        vpUsers.setCurrentItem(0, false) // While indicator is not saving it's state
+    }
 }

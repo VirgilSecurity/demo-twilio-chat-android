@@ -47,6 +47,7 @@ import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
@@ -88,7 +89,7 @@ class AuthActivity(
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
-            val controller = LoginController(::login)
+            val controller = LoginController(::login, ::registration)
             if (router.hasNoRootController())
                 initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
             else
@@ -104,12 +105,13 @@ class AuthActivity(
         LoginVM.State.ShowLoading -> Unit
         LoginVM.State.ShowContent -> Unit
         LoginVM.State.ShowError -> {
-            val controller = LoginController(::login)
+            val controller = LoginController(::login, ::registration)
             if (router.hasNoRootController())
                 initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
             else
                 replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
         }
+        is LoginVM.State.Login -> login(state.user)
     }
 
     private fun replaceTopController(controller: Controller, tag: String) =
@@ -125,11 +127,13 @@ class AuthActivity(
                                          user)
                     .run {
                         startActivity(this)
+                        overridePendingTransition(R.anim.animation_slide_from_end_activity,
+                                                  R.anim.animation_slide_to_start_activity)
                         finish()
                     }
 
     fun registration() {
-        replaceTopController(RegistrationController(::login),
+        pushController(RegistrationController(::login),
                              RegistrationController.KEY_REGISTRATION_CONTROLLER)
     }
 
@@ -140,11 +144,22 @@ class AuthActivity(
                                    .popChangeHandler(SimpleSwapChangeHandler())
                                    .tag(tag))
 
+    private fun pushController(controller: Controller, tag: String) =
+            router.pushController(RouterTransaction
+                                          .with(controller)
+                                          .pushChangeHandler(HorizontalChangeHandler())
+                                          .popChangeHandler(HorizontalChangeHandler())
+                                          .tag(tag))
+
     override fun onBackPressed() {
-        if (doubleBack.tryToPress())
-            super.onBackPressed()
-        else
-            UiUtils.toast(this, getString(R.string.press_exit_once_more))
+        if (router.backstackSize > 1) {
+            router.popToRoot()
+        } else {
+            if (doubleBack.tryToPress())
+                super.onBackPressed()
+            else
+                UiUtils.toast(this, getString(R.string.press_exit_once_more))
+        }
     }
     // TODO add wait controller while users are loaded
 }

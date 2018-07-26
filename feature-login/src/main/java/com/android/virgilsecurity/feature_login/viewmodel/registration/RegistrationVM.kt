@@ -59,6 +59,7 @@ abstract class RegistrationVM : ViewModel() {
         data class UsernameInvalid(val causeCode: Int) : State()
         object UsernameConsistent : State()
         object ShowError : State()
+        object Idle : State()
     }
 
     abstract fun getState() : LiveData<State>
@@ -71,6 +72,6 @@ abstract class RegistrationVM : ViewModel() {
         const val KEY_USERNAME_LONG = 2
 
         const val MIN_LENGTH = 4
-        const val MAX_LENGTH = 24
+        const val MAX_LENGTH = 32
     }
 }

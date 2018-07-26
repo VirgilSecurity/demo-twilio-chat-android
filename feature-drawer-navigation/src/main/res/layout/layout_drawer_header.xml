@@ -45,6 +45,7 @@
         android:layout_marginStart="@dimen/default_margin"
         android:layout_marginTop="44dp"
         app:civ_border_width="0dp"
+        tools:src="@color/colorAccent"
         app:civ_border_color="@android:color/transparent"
         android:src="@drawable/dark_red_red_gradient_oval"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +53,7 @@
 
     <TextView
         android:id="@+id/tvUsernameDrawer"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginStart="@dimen/default_margin"
@@ -62,8 +63,9 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/ivUserPicDrawer"
         app:layout_constraintStart_toEndOf="@id/ivUserPicDrawer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivUserPicDrawer"
-        tools:text="User Name" />
+        tools:text="User Namedsadsadsadasdsadaddas" />
 
     <TextView
         android:id="@+id/tvInitialsDrawer"
@@ -74,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="@id/ivUserPicDrawer"
         app:layout_constraintStart_toStartOf="@id/ivUserPicDrawer"
         app:layout_constraintEnd_toEndOf="@id/ivUserPicDrawer"
-        android:textSize="34sp"
+        android:textSize="30sp"
         android:textColor="@color/snow"
         android:visibility="gone"
         tools:visibility="visible"

@@ -68,7 +68,9 @@ class AuthInteractorDefault(
             authApi.signIn(identity).flatMap { response ->
                 Single.fromCallable {
                     userManager.currentUser = User(identity, response.rawSignedModel.exportAsBase64String())
-                }.map { response }
+                }.map {
+                    response
+                }
             }
 
     override fun signUp(identity: String): Single<SignInResponse> =

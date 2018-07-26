@@ -59,5 +59,9 @@
     <color name="grayLight">#94ffffff</color>
     <color name="aqua">#80CBC4</color>
     <color name="wetPaper">#E2E2E2</color>
+    <color name="water">#6AC7FF</color>
+    <color name="waterDark">#009DFF</color>
+    <color name="seaWave">#21999E</color>
+    <color name="seaWaveDark">#135F5F</color>
 
 </resources>
