@@ -31,10 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer
+package com.android.virgilsecurity.feature_drawer_navigation.viewmodel
 
 import android.arch.lifecycle.LiveData
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.arch.lifecycle.MediatorLiveData
+import com.android.virgilsecurity.feature_drawer_navigation.domain.InitTwilioDo
 
 /**
  * . _  _
@@ -42,27 +43,39 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/12/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerSlice
+ * InitTwilioVMDefault
  */
-interface DrawerSlice : ViewSlice {
+class InitTwilioVMDefault(
+        private val state: MediatorLiveData<InitTwilioVM.State>,
+        private val initTwilioDo: InitTwilioDo
+) : InitTwilioVM() {
 
-    sealed class Action {
-        object ContactsClicked : Action()
-        object ChannelsListClicked : Action()
-        object SettingsClicked : Action()
-        object SameItemClicked : Action()
-        object Idle : Action()
+    init {
+        state.addSource(initTwilioDo.getLiveData(), ::onInitTwilioResult)
     }
 
-    fun getAction(): LiveData<Action>
+    override fun onCleared() = initTwilioDo.cleanUp()
 
-    fun setHeader(identity: String, picturePath: String?)
+    override fun getState(): LiveData<State> = state
 
-    fun setItemSelected(position: Int)
+    override fun initChatClient(identity: String) {
+        state.value = InitTwilioVM.State.ShowLoading
+        initTwilioDo.execute(identity)
+    }
+
+    private fun onInitTwilioResult(result: InitTwilioDo.Result?) {
+        when (result) {
+            is InitTwilioDo.Result.OnSuccess -> {
+                    state.value = State.InitSuccess
+                    state.value = State.ShowContent
+            }
+            is InitTwilioDo.Result.OnError -> state.value = State.ShowError
+        }
+    }
 }

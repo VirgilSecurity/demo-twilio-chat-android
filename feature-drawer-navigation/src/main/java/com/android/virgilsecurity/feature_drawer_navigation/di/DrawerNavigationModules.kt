@@ -33,12 +33,26 @@
 
 package com.android.virgilsecurity.feature_drawer_navigation.di
 
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.common.viewslice.StateSlice
+import com.android.virgilsecurity.feature_drawer_navigation.data.repository.InitTwilioInteractor
+import com.android.virgilsecurity.feature_drawer_navigation.data.repository.InitTwilioInteractorDefault
 import com.android.virgilsecurity.feature_drawer_navigation.di.Const.LIVE_DATA_DRAWER
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSliceDefault
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSliceDefault
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.LIVE_DATA_TWILIO_INIT
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.MEDIATOR_LIVE_DATA_INIT_TWILIO
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
+import com.android.virgilsecurity.feature_drawer_navigation.domain.InitTwilioDo
+import com.android.virgilsecurity.feature_drawer_navigation.domain.InitTwilioDoDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewmodel.InitTwilioVM
+import com.android.virgilsecurity.feature_drawer_navigation.viewmodel.InitTwilioVMDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSliceDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSliceDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSliceDefault
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceTwilioInit
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -63,6 +77,21 @@ val drawerNavigationModule: Module = applicationContext {
     bean { DrawerStateSliceDefault() as DrawerStateSlice }
 }
 
+val twilioInitModule: Module = applicationContext {
+    bean { InitTwilioInteractorDefault(get(), get(), get()) as InitTwilioInteractor }
+    bean { InitTwilioDoDefault(get()) as InitTwilioDo }
+    bean(MEDIATOR_LIVE_DATA_INIT_TWILIO) { MediatorLiveData<InitTwilioVM.State>() }
+    bean { InitTwilioVMDefault(get(MEDIATOR_LIVE_DATA_INIT_TWILIO), get()) as InitTwilioVM }
+
+    bean(LIVE_DATA_TWILIO_INIT) { MutableLiveData<TwilioInitSlice.Action>() }
+    bean { TwilioInitSliceDefault(get(LIVE_DATA_TWILIO_INIT)) as TwilioInitSlice }
+
+    bean(STATE_SLICE_TWILIO_INIT) { StateSliceTwilioInit() as StateSlice }
+}
+
 object Const {
+    const val STATE_SLICE_TWILIO_INIT = "STATE_SLICE_TWILIO_INIT"
     const val LIVE_DATA_DRAWER = "LIVE_DATA_DRAWER"
+    const val LIVE_DATA_TWILIO_INIT = "LIVE_DATA_TWILIO_INIT"
+    const val MEDIATOR_LIVE_DATA_INIT_TWILIO = "MEDIATOR_LIVE_DATA_INIT_TWILIO"
 }

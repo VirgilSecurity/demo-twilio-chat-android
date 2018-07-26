@@ -65,12 +65,10 @@ class LoadUsersDoDefault(
                     .track()
 
     private fun success(users: List<User>) {
-        liveData.value = LoadUsersDo.Result.OnSuccess(
-            users)
+        liveData.value = LoadUsersDo.Result.OnSuccess(users)
     }
 
     private fun error(throwable: Throwable) {
-        liveData.value = LoadUsersDo.Result.OnError(
-            throwable)
+        liveData.value = LoadUsersDo.Result.OnError(throwable)
     }
 }

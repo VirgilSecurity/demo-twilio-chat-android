@@ -31,12 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigation.viewslice.state
+package com.android.virgilsecurity.feature_drawer_navigation.data.repository
 
-import android.support.v4.widget.DrawerLayout
-import android.view.Gravity
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.activity_drawer_navigation.*
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.common.util.AuthUtils
+import io.reactivex.Completable
 
 /**
  * . _  _
@@ -44,29 +44,24 @@ import kotlinx.android.synthetic.main.activity_drawer_navigation.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerStateSliceDefault
+ * InitTwilioInteractorDefault
  */
-class DrawerStateSliceDefault : BaseViewSlice(), DrawerStateSlice {
+class InitTwilioInteractorDefault(
+        private val twilioHelper: TwilioHelper,
+        private val authUtils: AuthUtils,
+        private val userManager: UserManager
+) : InitTwilioInteractor {
 
-    override fun lockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    override fun unLockDrawer() {
-        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
-
-    override fun openDrawer() {
-        dlDrawer.openDrawer(Gravity.START)
-    }
-
-    override fun closeDrawer() {
-        dlDrawer.closeDrawer(Gravity.START)
-    }
+    override fun initClient(identity: String): Completable =
+            userManager.currentUser.let { user ->
+                twilioHelper.createChatClient(identity) {
+                    authUtils.generateAuthHeader(identity, user!!.card())
+                }
+            }
 }

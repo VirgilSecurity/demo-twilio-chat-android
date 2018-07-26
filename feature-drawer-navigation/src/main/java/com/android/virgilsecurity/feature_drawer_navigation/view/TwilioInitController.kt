@@ -31,20 +31,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.view
+package com.android.virgilsecurity.feature_drawer_navigation.view
 
-import LoginDiConst.STATE_SLICE_LOGIN
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.viewslice.StateSlice
-import com.android.virgilsecurity.feature_login.R
-import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
-import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
-import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
-import kotlinx.android.synthetic.main.controller_login.*
+import com.android.virgilsecurity.feature_drawer_navigation.R
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
+import com.android.virgilsecurity.feature_drawer_navigation.viewmodel.InitTwilioVM
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceTwilioInit
 
 /**
  * . _  _
@@ -52,71 +51,65 @@ import kotlinx.android.synthetic.main.controller_login.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/4/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginController
+ * TwilioInitController
  */
-class LoginController() : BaseController() {
+class TwilioInitController() : BaseController() {
 
-    override val layoutResourceId: Int = R.layout.controller_login
+    override val layoutResourceId: Int = R.layout.controller_twilio_init
 
-    private val viewPagerSlice: ViewPagerSlice by inject()
-    private val stateSlice: StateSlice by inject(STATE_SLICE_LOGIN)
-    private val viewModel: LoginVM by inject()
+    private val twilioInitSlice: TwilioInitSlice by inject()
+    private val stateSlice: StateSlice by inject(STATE_SLICE_TWILIO_INIT)
+    private val viewModel: InitTwilioVM by inject()
 
-    private lateinit var login: (User) -> Unit
-    private lateinit var registration: () -> Unit
+    private lateinit var user: User
+    private lateinit var initSuccess: () -> Unit
 
-    constructor(login: (User) -> Unit, registration: () -> Unit) : this() {
-        this.login = login
-        this.registration = registration
+    constructor(user: User, initSuccess: () -> Unit) : this() {
+        this.user = user
+        this.initSuccess = initSuccess
     }
 
     override fun init() {
-        initViewCallbacks()
-    }
-
-    private fun initViewCallbacks() {
-        tvCreateAccount.setOnClickListener { registration() }
+        viewModel.initChatClient(user.identity)
     }
 
     override fun initViewSlices(view: View) {
-        viewPagerSlice.init(lifecycle, view)
+        twilioInitSlice.init(lifecycle, view)
         stateSlice.init(lifecycle, view)
     }
 
-    override fun setupViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
+    override fun setupViewSlices(view: View) { }
+
+    private fun onActionChanged(action: TwilioInitSlice.Action) = when (action) {
+        TwilioInitSlice.Action.RetryClicked -> viewModel.initChatClient(user.identity)
+        TwilioInitSlice.Action.Idle -> Unit
     }
 
-    override fun setupVSActionObservers() =
-            observe(viewPagerSlice.getAction()) { onActionChanged(it) }
-
-    override fun setupVMStateObservers()
-            = observe(viewModel.getState()) { onStateChanged(it) }
-
-    private fun onStateChanged(state: LoginVM.State) = when (state) {
-        is LoginVM.State.UsersLoaded -> viewPagerSlice.showUsers(state.users)
-        LoginVM.State.ShowLoading -> stateSlice.showLoading()
-        LoginVM.State.ShowContent -> {
-            stateSlice.showContent()
-            viewPagerSlice.showIndicator()
-        }
-        LoginVM.State.ShowError -> stateSlice.showError()
-        is LoginVM.State.Login -> Unit // Handled by activity
-        else -> stateSlice.showError()
+    override fun setupVSActionObservers() {
+        observe(twilioInitSlice.getAction()) { onActionChanged(it) }
     }
 
-    private fun onActionChanged(action: Action) = when (action) {
-        is Action.UserClicked -> viewModel.login(action.user.identity)
-        Action.Idle -> Unit
+    override fun setupVMStateObservers() {
+        observe(viewModel.getState(), ::onStateChanged) // TODO change everywhere this part to reference
     }
 
-    companion object {
-        const val KEY_LOGIN_CONTROLLER = "KEY_LOGIN_CONTROLLER"
+    private fun onStateChanged(state: InitTwilioVM.State) = when (state) {
+        InitTwilioVM.State.InitSuccess -> initSuccess()
+        InitTwilioVM.State.ShowLoading -> stateSlice.showLoading()
+        InitTwilioVM.State.ShowContent -> stateSlice.showContent()
+        InitTwilioVM.State.ShowError -> stateSlice.showError()
+    }
+
+    override fun handleBack(): Boolean {
+        return if (viewModel.getState().value != InitTwilioVM.State.ShowLoading)
+            true
+        else
+            super.handleBack()
     }
 }

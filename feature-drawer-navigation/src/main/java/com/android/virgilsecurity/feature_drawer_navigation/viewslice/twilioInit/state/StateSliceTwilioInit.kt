@@ -31,9 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigation.viewslice.state
+package com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state
 
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.view.View
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.viewslice.StateSlice
+import kotlinx.android.synthetic.main.controller_twilio_init.*
 
 /**
  * . _  _
@@ -41,21 +44,40 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerStateSlice
+ * StateSliceTwilioInit
  */
-interface DrawerStateSlice : ViewSlice {
+class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
-    fun lockDrawer()
+    override fun showLoading() = show(LOADING)
 
-    fun unLockDrawer()
+    override fun showContent() = show(CONTENT)
 
-    fun openDrawer()
+    override fun showError() = show(ERROR)
 
-    fun closeDrawer()
+    private fun show(state: Int) {
+        when (state) {
+            CONTENT, ERROR -> { // For now our content is showing up that something happened
+                clContentRoot.visibility = View.VISIBLE
+                pbLoading.visibility = View.INVISIBLE
+                tvInitializing.visibility = View.INVISIBLE
+            }
+            LOADING -> {
+                clContentRoot.visibility = View.INVISIBLE
+                pbLoading.visibility = View.VISIBLE
+                tvInitializing.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    companion object {
+        const val CONTENT = 0
+        const val LOADING = 1
+        const val ERROR = 2
+    }
 }

@@ -38,18 +38,16 @@ import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.getContentView
 import com.android.virgilsecurity.base.extension.hasNoRootController
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseActivityController
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_channel.view.ChannelController
-import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_channels_list.view.ChannelsListController
 import com.android.virgilsecurity.feature_contacts.view.ContactsController
 import com.android.virgilsecurity.feature_drawer_navigation.R
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.drawer.DrawerSlice
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.state.DrawerStateSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
+import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
 import com.android.virgilsecurity.feature_settings.view.SettingsController
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
@@ -130,6 +128,8 @@ class DrawerNavigationActivity(
                            {
                                screenRouter.getScreenIntent(this, ScreenChat.Login).run {
                                    startActivity(this)
+                                   overridePendingTransition(R.anim.animation_slide_from_start_activity,
+                                                             R.anim.animation_slide_to_end_activity)
                                    finish()
                                }
                            },
@@ -164,13 +164,10 @@ class DrawerNavigationActivity(
     private fun initRouter() {
         if (router.hasNoRootController())
             router.setRoot(RouterTransaction
-                                   .with(ChannelsListController(user,
-                                                                {
-                                                                    openChannel(it)
-                                                                },
-                                                                {
-                                                                    stateSlice.openDrawer()
-                                                                }))
+                                   .with(TwilioInitController(user)
+                                         {
+                                             onActionChanged(DrawerSlice.Action.ChannelsListClicked)
+                                         })
                                    .pushChangeHandler(SimpleSwapChangeHandler())
                                    .popChangeHandler(SimpleSwapChangeHandler())
                                    .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))

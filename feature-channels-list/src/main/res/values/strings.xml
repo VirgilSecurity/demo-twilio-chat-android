@@ -34,6 +34,6 @@
 <resources>
 
 
-    <string name="no_chats_yet">No chats yet.\nAdd new!</string>
+    <string name="no_chats_yet">No chats yet.\nAdd from contacts!</string>
     <string name="no_chats_image">No chats image</string>
 </resources>

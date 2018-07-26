@@ -35,6 +35,7 @@ import LoginDiConst.KEY_MEDIATOR_LOGIN
 import LoginDiConst.KEY_MEDIATOR_REGISTRATION
 import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
+import LoginDiConst.STATE_SLICE_LOGIN
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.virgilsecurity.base.data.api.AuthApi
@@ -94,14 +95,14 @@ val authActivityModule: Module = applicationContext {
     bean { DoubleBack() }
 }
 
-val loginFragmentModule: Module = applicationContext {
+val loginControllerModule: Module = applicationContext {
     bean(LIVE_DATA_LOGIN) { MutableLiveData<Action>() }
     bean { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
     bean { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
-    bean { StateSliceLogin() as StateSlice }
+    bean(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
 }
 
-val registrationFragmentModule: Module = applicationContext {
+val registrationControllerModule: Module = applicationContext {
     bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
     bean { AuthRemote(get()) as AuthApi }
     bean { AuthInteractorDefault(get(), get(), get(), get(), get()) as AuthInteractor }
@@ -118,6 +119,7 @@ object LoginDiConst {
     const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
+    const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
 
     const val SPAN_COUNT = 2
 }

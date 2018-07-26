@@ -31,14 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.util
+package com.android.virgilsecurity.feature_drawer_navigation.domain
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.crypto.VirgilCrypto
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKey
-import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import com.virgilsecurity.sdk.utils.ConvertionUtils
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.feature_drawer_navigation.data.repository.InitTwilioInteractor
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -46,27 +44,31 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/4/186/4/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthUtils
+ * InitTwilioDoDefault
  */
-class AuthUtils(private val userManager: UserManager,
-                private val virgilCrypto: VirgilCrypto,
-                private val privateKeyStorage: PrivateKeyStorage) {
+class InitTwilioDoDefault(
+        private val initTwilioInteractor: InitTwilioInteractor
+) : BaseDo<InitTwilioDo.Result>(), InitTwilioDo {
 
-    fun generateAuthHeader(identity: String = userManager.currentUser!!.identity,
-                           card: Card = userManager.currentUser!!.card()): String =
-            card.identifier.let { identifier ->
-                (identifier + "." + (System.currentTimeMillis() / 1000L)).let { idAndTimestamp ->
-                    (privateKeyStorage.load(identity).left as VirgilPrivateKey).let {
-                        virgilCrypto.generateSignature(idAndTimestamp.toByteArray(), it).let {
-                            idAndTimestamp + "." + ConvertionUtils.toBase64String(it)
-                        }
-                    }
-                }
-            }
+    override fun execute(identity: String) {
+        initTwilioInteractor.initClient(identity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+    }
+
+    private fun success() {
+        liveData.value = InitTwilioDo.Result.OnSuccess
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = InitTwilioDo.Result.OnError(throwable)
+    }
 }

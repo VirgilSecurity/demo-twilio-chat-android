@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
@@ -31,14 +32,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="contacts">Contacts</string>
-    <string name="chats">Chats</string>
-    <string name="settings_drawer">Settings</string>
-    <string name="retry">Retry</string>
-    <string name="can_not_start_client_chat">Can not start client chat</string>
-    <string name="let_s_try_again">Let\'s try again</string>
-    <string name="client_not_started_error_pic">Picture that client can not be started</string>
-    <string name="initializing">Initializing</string>
-</resources>
+    <item android:state_pressed="true" android:drawable="@drawable/rect_rounded_accent_2" />
+    <item android:drawable="@drawable/rect_rounded_gray_2" />
+
+</selector>

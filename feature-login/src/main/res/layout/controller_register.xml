@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="40dp"
-            android:background="@drawable/btn_test"
+            android:background="@drawable/btn_selector_virgil_gray"
             android:elevation="0dp"
             android:enabled="false"
             android:clickable="false"

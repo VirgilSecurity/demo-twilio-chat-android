@@ -31,14 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.util
+package com.android.virgilsecurity.feature_drawer_navigation.data.repository
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.virgilsecurity.sdk.cards.Card
-import com.virgilsecurity.sdk.crypto.VirgilCrypto
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKey
-import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import com.virgilsecurity.sdk.utils.ConvertionUtils
+import io.reactivex.Completable
 
 /**
  * . _  _
@@ -46,27 +41,15 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/4/186/4/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthUtils
+ * InitTwilioInteractor
  */
-class AuthUtils(private val userManager: UserManager,
-                private val virgilCrypto: VirgilCrypto,
-                private val privateKeyStorage: PrivateKeyStorage) {
+interface InitTwilioInteractor {
 
-    fun generateAuthHeader(identity: String = userManager.currentUser!!.identity,
-                           card: Card = userManager.currentUser!!.card()): String =
-            card.identifier.let { identifier ->
-                (identifier + "." + (System.currentTimeMillis() / 1000L)).let { idAndTimestamp ->
-                    (privateKeyStorage.load(identity).left as VirgilPrivateKey).let {
-                        virgilCrypto.generateSignature(idAndTimestamp.toByteArray(), it).let {
-                            idAndTimestamp + "." + ConvertionUtils.toBase64String(it)
-                        }
-                    }
-                }
-            }
+    fun initClient(identity: String) : Completable
 }
