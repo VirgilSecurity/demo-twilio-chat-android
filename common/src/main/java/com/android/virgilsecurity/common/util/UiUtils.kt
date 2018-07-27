@@ -33,16 +33,14 @@
 
 package com.android.virgilsecurity.common.util
 
-import android.app.Fragment
-import android.app.FragmentManager
-import android.app.FragmentTransaction
 import android.content.Context
-import android.util.Log
-import android.util.TypedValue
-import android.widget.Toast
-import com.bluelinelabs.conductor.Controller
+import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
-
+import android.util.Log
+import android.widget.Toast
+import com.android.virgilsecurity.common.R
+import com.bluelinelabs.conductor.Controller
+import java.util.*
 
 /**
  * . _  _
@@ -50,7 +48,7 @@ import android.util.DisplayMetrics
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    5/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
@@ -63,17 +61,9 @@ object UiUtils {
     fun toast(context: Context, text: String) =
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
-    fun toast(fragment: Fragment, text: String) =
-            Toast.makeText(fragment.activity, text, Toast.LENGTH_SHORT).show()
-
     fun toast(context: Context, stringResId: Int) =
             Toast.makeText(context,
                            context.getString(stringResId),
-                           Toast.LENGTH_SHORT).show()
-
-    fun toast(fragment: Fragment, stringResId: Int) =
-            Toast.makeText(fragment.activity,
-                           fragment.activity!!.getString(stringResId),
                            Toast.LENGTH_SHORT).show()
 
     fun toast(controller: Controller, text: String) =
@@ -89,12 +79,6 @@ object UiUtils {
     fun toastUnderDevelopment(context: Context) = toast(context, "Under development")
 
     fun log(tag: String, text: String) = Log.d(tag, text)
-
-    fun replaceFragmentNoTag(fm: FragmentManager, containerId: Int, fragment: Fragment) =
-            fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(containerId, fragment)
-                    .commit()
 
     /**
      * This method converts density independent pixels (dp) to equivalent pixels,
@@ -133,4 +117,13 @@ object UiUtils {
             context.resources.displayMetrics.let {
                 px / (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
             }.toInt()
+
+    fun randomDrawable(context: Context, drawablesArrayId: Int): Drawable =
+            context.resources.obtainTypedArray(drawablesArrayId).let { backgrounds ->
+                Random().nextInt(backgrounds.length()).let {
+                    val result = backgrounds.getDrawable(it)
+                    backgrounds.recycle()
+                    result
+                }
+            }
 }

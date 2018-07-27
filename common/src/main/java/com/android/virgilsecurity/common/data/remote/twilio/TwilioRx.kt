@@ -35,6 +35,8 @@ package com.android.virgilsecurity.common.data.remote.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_RECEIVER
+import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.common.util.UiUtils
@@ -163,7 +165,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
                     override fun onError(errorInfo: ErrorInfo?) {
                         if (errorInfo?.code == channelExistsCode)
-                            it.onError(Throwable("Channel already exists"))
+                            it.onError(Throwable("ChannelInfo already exists"))
                         else
                             it.onError(ErrorInfoWrapper(
                                 errorInfo))
@@ -227,6 +229,38 @@ class TwilioRx(private val fuelHelper: FuelHelper,
         }
 
     }.subscribeOn(Schedulers.io())
+
+    fun getUserChannels(chatClient: ChatClient?): Single<List<ChannelDescriptor>> =
+            Single.create<List<ChannelDescriptor>> {
+                val channelDescriptors = ArrayList<ChannelDescriptor>()
+
+                val firstPaginator = getUserChannelsFirstPaginator(chatClient).blockingGet()
+
+                if (firstPaginator.hasNextPage()) {
+                    channelDescriptors.addAll(getAllNextPages(PaginationResult(firstPaginator,
+                                                                               firstPaginator.items)))
+                } else {
+                    channelDescriptors.addAll(firstPaginator.items)
+                    it.onSuccess(channelDescriptors)
+                }
+            }
+
+    data class PaginationResult(val paginator: Paginator<ChannelDescriptor>,
+                                val channels: MutableList<ChannelDescriptor>)
+
+    private fun getAllNextPages(paginationResult: PaginationResult): List<ChannelDescriptor> {
+        val newPaginator = getChannelsNextPaginator(paginationResult.paginator).blockingGet()
+
+        return if (paginationResult.paginator.hasNextPage()) {
+            val result = paginationResult.channels
+            result.addAll(newPaginator.items)
+            getAllNextPages(PaginationResult(newPaginator, result))
+        } else {
+            val result = paginationResult.channels
+            result.addAll(newPaginator.items)
+            result
+        }
+    }
 
     fun getPublicChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
         return Single.create<Paginator<ChannelDescriptor>> {
@@ -345,9 +379,4 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
                 })
             }.subscribeOn(Schedulers.io())
-
-    companion object {
-        const val KEY_SENDER = "sender"
-        const val KEY_RECEIVER = "receiver"
-    }
 }

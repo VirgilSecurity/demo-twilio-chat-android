@@ -31,16 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.feature_contacts.viewslice.list
 
-import android.content.Context
-import com.android.virgilsecurity.base.data.api.UserManager
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.local.PreferenceHelper.edit
-import com.android.virgilsecurity.common.data.local.PreferenceHelper.get
-import com.android.virgilsecurity.common.data.local.PreferenceHelper.set
-import com.google.gson.Gson
-
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
+import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.feature_contacts.viewslice.list.ContactsSlice.Action
+import kotlinx.android.synthetic.main.controller_contacts.*
 
 /**
  * . _  _
@@ -48,28 +50,31 @@ import com.google.gson.Gson
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
-class UserManagerDefault(context: Context) : UserManager {
 
-    companion object {
-        private const val CURRENT_USER = "CURRENT_USER"
+/**
+ * ContactsSliceDefault
+ */
+class ContactsSliceDefault(
+        private val actionLiveData: MutableLiveData<Action>,
+        private val adapter: DelegateAdapter<User>,
+        private val itemDecoratorBottomDivider: RecyclerView.ItemDecoration
+) : BaseViewSlice(), ContactsSlice {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onCreate() {
+        setupRecyclerView()
     }
 
-    private val preferences = PreferenceHelper.defaultPrefs(context)
-
-    override var currentUser: User?
-        get() {
-            val serialized: String = preferences[CURRENT_USER] ?: return null
-            return Gson().fromJson(serialized, User::class.java)
-        }
-        set(user) {
-            preferences[CURRENT_USER] = Gson().toJson(user)
-        }
-
-    override fun clearCurrentUser() {
-        preferences.edit { it.remove(CURRENT_USER) }
+    private fun setupRecyclerView() {
+        rvContacts.adapter = adapter
+        rvContacts.addItemDecoration(itemDecoratorBottomDivider)
     }
+
+    override fun getAction(): LiveData<Action> = actionLiveData
+
+    override fun showUsers(users: List<User>) = adapter.swapData(users)
 }

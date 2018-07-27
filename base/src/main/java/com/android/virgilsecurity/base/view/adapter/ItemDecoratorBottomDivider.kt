@@ -31,14 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.base.view.adapter
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.support.v7.widget.RecyclerView
 
 /**
  * . _  _
@@ -46,29 +43,33 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * ItemDecoratorBottomDivider
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
+class ItemDecoratorBottomDivider(
+        private val mDivider: Drawable
+) : RecyclerView.ItemDecoration() {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
+    override fun onDrawOver(canvas: Canvas?, parent: RecyclerView, state: RecyclerView.State?) {
+        val left = parent.paddingLeft
+        val right = parent.width - parent.paddingRight
+
+        val childCount = parent.childCount
+        for (i in 0 until childCount) {
+            val child = parent.getChildAt(i)
+
+            val params = child.layoutParams as RecyclerView.LayoutParams
+
+            val top = child.bottom + params.bottomMargin
+            val bottom = top + mDivider.intrinsicHeight
+
+            mDivider.setBounds(left, top, right, bottom)
+            mDivider.draw(canvas)
+        }
     }
-
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
-
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
 }

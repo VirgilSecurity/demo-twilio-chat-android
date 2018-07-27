@@ -31,13 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.base.data.api
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.base.data.model.User
 import io.reactivex.Single
 
 /**
@@ -46,29 +42,18 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    6/20/186/20/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * UsersApi
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
-    }
+interface UsersApi {
 
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
+    fun users(): Single<List<User>>
 
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
+    fun addUser(user: User)
 }

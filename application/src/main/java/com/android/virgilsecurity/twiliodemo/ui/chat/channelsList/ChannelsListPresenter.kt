@@ -89,13 +89,6 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
         compositeDisposable += startChatClientDisposable
     }
 
-    fun fetchChannels(identity: String? = "",
-                      onFetchChannelsSuccess: (List<Channel>?) -> Unit,
-                      onFetchChannelsError: ((Throwable) -> Unit)? = null) {
-        val channels = chatClient?.channels?.subscribedChannels
-        onFetchChannelsSuccess(channels)
-    }
-
     fun createChannel(interlocutor: String,
                       onCreateChannelSuccess: (Channel) -> Unit,
                       onCreateChannelError: (Throwable) -> Unit) {

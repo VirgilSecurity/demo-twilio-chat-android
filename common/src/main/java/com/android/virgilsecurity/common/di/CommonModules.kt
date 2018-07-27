@@ -36,10 +36,10 @@ package com.android.virgilsecurity.common.di
 import android.arch.persistence.room.Room
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.base.data.api.UsersApi
 import com.android.virgilsecurity.common.data.local.RoomDS
-import com.android.virgilsecurity.common.data.local.UserManagerDefault
-import com.android.virgilsecurity.common.data.local.UsersLocalDS
+import com.android.virgilsecurity.common.data.local.users.UserManagerDefault
+import com.android.virgilsecurity.common.data.local.users.UsersLocalDS
 import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
 import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
 import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx

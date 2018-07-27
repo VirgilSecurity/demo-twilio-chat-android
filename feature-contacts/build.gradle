@@ -47,4 +47,5 @@ dependencies {
     support()
     conductor()
     koin()
+    circleImageView()
 }

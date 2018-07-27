@@ -35,8 +35,10 @@ package com.android.virgilsecurity.common.data.local
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.local.channels.ChannelsDao
+import com.android.virgilsecurity.common.data.local.users.UsersDao
 
 /**
  * . _  _
@@ -52,8 +54,10 @@ import com.android.virgilsecurity.base.data.model.User
 /**
  * RoomDS
  */
-@Database(entities = [(User::class)], version = 1, exportSchema = false)
+@Database(entities = [User::class, ChannelInfo::class], version = 2, exportSchema = false)
 abstract class RoomDS : RoomDatabase() {
 
     abstract fun usersDao(): UsersDao
+
+    abstract fun channelsDao(): ChannelsDao
 }

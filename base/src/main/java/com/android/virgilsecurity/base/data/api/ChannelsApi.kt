@@ -31,13 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.base.data.api
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.twilio.chat.Channel
 import io.reactivex.Single
 
 /**
@@ -46,18 +43,19 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersDao
+ * TwilioApi
  */
-@Dao
-interface UsersDao {
+interface ChannelsApi {
 
-    @Query("SELECT * FROM users") fun users(): Single<List<User>>
+    fun getUserChannelsInfo(): Single<List<ChannelInfo>>
 
-    @Insert(onConflict = OnConflictStrategy.FAIL) fun insertUser(user: User)
+    fun addChannels(channels: List<ChannelInfo>)
+
+    fun addChannel(channel: ChannelInfo)
 }

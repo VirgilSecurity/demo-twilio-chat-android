@@ -56,7 +56,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //    private val userManager: UserManager by inject()
 //    private val adapter: ChannelRVAdapter by inject()
 //
-//    private lateinit var channel: Channel
+//    private lateinit var channel: ChannelInfo
 //    private lateinit var interlocutor: String
 //    private lateinit var interlocutorCard: Card
 //
@@ -82,7 +82,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //    }
 //
 //    override fun preInitUi() {
-//        channel = arguments!!.getParcelable(Constants.KEY_CHANNEL) as Channel
+//        channel = arguments!!.getParcelable(Constants.KEY_CHANNEL) as ChannelInfo
 //    }
 //
 //    override fun initUi() {
@@ -143,7 +143,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //                                         })
 //    }
 //
-//    private fun initChannelCallbacks(channel: Channel) {
+//    private fun initChannelCallbacks(channel: ChannelInfo) {
 //        this.channel = channel
 //
 //        this.channel.addListener(object : ChannelListener {
@@ -151,7 +151,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberDeleted")
 //            }
 //
-//            override fun onTypingEnded(p0: Channel?, p1: Member?) {
+//            override fun onTypingEnded(p0: ChannelInfo?, p1: Member?) {
 //                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onTypingEnded")
 //            }
 //
@@ -170,11 +170,11 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onMemberAdded")
 //            }
 //
-//            override fun onTypingStarted(p0: Channel?, p1: Member?) {
+//            override fun onTypingStarted(p0: ChannelInfo?, p1: Member?) {
 //                UiUtils.log(this@ChannelFragment::class.java.simpleName, " -> onTypingStarted")
 //            }
 //
-//            override fun onSynchronizationChanged(p0: Channel?) {
+//            override fun onSynchronizationChanged(p0: ChannelInfo?) {
 //                UiUtils.log(this@ChannelFragment::class.java.simpleName,
 //                                                                   " -> onSynchronizationChanged")
 //            }

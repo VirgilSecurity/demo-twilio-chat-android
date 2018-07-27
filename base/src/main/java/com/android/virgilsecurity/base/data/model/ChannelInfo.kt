@@ -31,14 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.base.data.model
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
+import android.arch.persistence.room.Entity
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -46,29 +42,30 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * ChannelInfo
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
+@Entity
+class ChannelInfo(
+        val sid: String,
+        attributes: JSONObject,
+        val friendlyName: String,
+        val uniqueName: String,
+        val sender: String,
+        val receiver: String
+) {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
+    val attributes: String = attributes.toString()
+
+    fun getAttributes() = JSONObject(attributes)
+
+    companion object {
+        const val KEY_SENDER = "sender"
+        const val KEY_RECEIVER = "receiver"
     }
-
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
-
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
 }

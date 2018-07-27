@@ -34,10 +34,7 @@
 package com.android.virgilsecurity.feature_login.viewslice.login.list.adapter
 
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +43,7 @@ import android.widget.TextView
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inflate
 import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.util.UserUtils
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
@@ -140,7 +138,7 @@ class UsersPagerAdapterDefault(
         } else {
             tvInitials.visibility = View.VISIBLE
             tvInitials.text = UserUtils.firstInitials(user.identity)
-            ivUserPic.background = randomBackground(parent.context)
+            ivUserPic.background = UiUtils.randomDrawable(parent.context, R.array.loginBackgrounds)
         }
 
         parent.setOnClickListener {
@@ -150,18 +148,7 @@ class UsersPagerAdapterDefault(
         parent.addView(child)
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-//        super.destroyItem(container, position, `object`)
-    }
-
-    private fun randomBackground(context: Context): Drawable =
-            context.resources.obtainTypedArray(R.array.loginBackgrounds).let { backgrounds ->
-                Random().nextInt(backgrounds.length()).let {
-                    val result = backgrounds.getDrawable(it)
-                    backgrounds.recycle()
-                    result
-                }
-            }
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {}
 
     companion object {
         const val PAGE_SIZE = 4 // TODO dynamically get size of page

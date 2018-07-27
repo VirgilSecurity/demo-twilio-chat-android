@@ -33,7 +33,7 @@
 
 import com.android.virgilsecurity.base.data.api.UserManager
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.base.data.api.UsersApi
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.Single
 

@@ -31,13 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.common.data.local.channels
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.common.data.local.RoomDS
+import com.twilio.chat.Channel
 import io.reactivex.Single
 
 /**
@@ -46,29 +46,25 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * ChannelsLocalDS
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
+class ChannelsLocalDS(
+        private val roomDS: RoomDS,
+        private val userManager: UserManager
+) : ChannelsApi {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
-    }
+    override fun getUserChannelsInfo(): Single<List<ChannelInfo>> =
+            roomDS.channelsDao().userChannels(userManager.currentUser!!.identity)
 
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
+    override fun addChannels(channels: List<ChannelInfo>) =
+            roomDS.channelsDao().insertChannelsInfo(channels)
 
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
+    override fun addChannel(channel: ChannelInfo) =
+            roomDS.channelsDao().insertChannelInfo(channel)
 }

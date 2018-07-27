@@ -31,14 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.feature_contacts.viewslice.list.adapter
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
+import android.net.Uri
+import android.view.View
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
+import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.common.util.UserUtils
+import com.android.virgilsecurity.feature_contacts.R
+import kotlinx.android.synthetic.main.item_contact.*
 
 /**
  * . _  _
@@ -46,29 +49,37 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * ContactItem
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
+class ContactItem(
+        private val imageStorage: ImageStorage,
+        override val layoutResourceId: Int = R.layout.item_contact
+) : DelegateAdapterItemDefault<User>() {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
-    }
+    override fun onBind(item: User, viewHolder: DelegateAdapterItemDefault.KViewHolder<User>) =
+            with(viewHolder) {
+                tvUsernameContact.text = item.identity
 
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
+                if (item.picturePath != null && imageStorage.exists(item.picturePath!!)) {
+                    tvInitialsContact.visibility = View.GONE
+                    cvUserPicContact.setImageBitmap(imageStorage.get(
+                        Uri.Builder().path(item.picturePath!!).build()))
+                } else {
+                    tvInitialsContact.visibility = View.VISIBLE
+                    tvInitialsContact.text = UserUtils.firstInitials(item.identity)
+                    cvUserPicContact.background = UiUtils.randomDrawable(context,
+                                                                         R.array.loginBackgrounds)
+                }
+            }
 
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
+    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<User>) {}
 
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            items[position] is User
 }

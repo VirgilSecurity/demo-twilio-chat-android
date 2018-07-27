@@ -33,11 +33,13 @@
 
 package com.android.virgilsecurity.base.view.adapter
 
+import android.content.Context
+import android.content.res.Resources
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 
 abstract class DelegateAdapterItemDefault<T>
-    : DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<T>, T> where T : Comparable<T>{
+    : DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<T>, T> where T : Comparable<T> {
 
     open fun onCreated(view: View) = Unit
 
@@ -53,6 +55,9 @@ abstract class DelegateAdapterItemDefault<T>
 
     class KViewHolder<T>(override val containerView: View, onCreated: (View) -> Unit)
         : BaseViewHolder<T>(containerView), LayoutContainer where T : Comparable<T> {
+
+        val context: Context = containerView.context
+        val resources: Resources = containerView.resources
 
         init {
             onCreated(containerView)

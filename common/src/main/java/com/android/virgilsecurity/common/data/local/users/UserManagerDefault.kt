@@ -31,14 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.common.data.local.users
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
+import android.content.Context
+import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.common.data.local.PreferenceHelper
+import com.android.virgilsecurity.common.data.local.PreferenceHelper.edit
+import com.android.virgilsecurity.common.data.local.PreferenceHelper.get
+import com.android.virgilsecurity.common.data.local.PreferenceHelper.set
+import com.google.gson.Gson
+
 
 /**
  * . _  _
@@ -46,29 +49,29 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    5/29/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
+class UserManagerDefault(context: Context) : UserManager {
 
-/**
- * AuthRemote
- */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
-
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
+    companion object {
+        private const val CURRENT_USER = "CURRENT_USER"
     }
 
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
+    private val preferences = PreferenceHelper.defaultPrefs(
+        context)
+
+    override var currentUser: User?
+        get() {
+            val serialized: String = preferences[CURRENT_USER] ?: return null
+            return Gson().fromJson(serialized, User::class.java)
+        }
+        set(user) {
+            preferences[CURRENT_USER] = Gson().toJson(user)
+        }
+
+    override fun clearCurrentUser() {
+        preferences.edit { it.remove(CURRENT_USER) }
     }
-
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
 }

@@ -31,13 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.remote
+package com.android.virgilsecurity.common.data.local.channels
 
-import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
+import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Query
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import io.reactivex.Single
 
 /**
@@ -46,29 +46,21 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/6/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AuthRemote
+ * ChannelsDao
  */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
+@Dao
+interface ChannelsDao {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
-    }
+    @Query("SELECT * FROM channelinfo WHERE sender LIKE (:identity) OR receiver LIKE (:identity)")
+    fun userChannels(identity: String): Single<List<ChannelInfo>>
 
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
-    }
+    @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelsInfo(channelsInfo: List<ChannelInfo>)
 
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getTwilioToken(identity, authHeader)
+    @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelInfo(channelInfo: ChannelInfo)
 }

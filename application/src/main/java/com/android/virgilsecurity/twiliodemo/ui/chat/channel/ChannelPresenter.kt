@@ -58,7 +58,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
 
 //    private val compositeDisposable = CompositeDisposable()
 //
-//    fun requestMessages(channel: Channel,
+//    fun requestMessages(channel: ChannelInfo,
 //                        onGetMessagesSuccess: (MutableList<Message>) -> Unit,
 //                        onGetMessagesError: (Throwable) -> Unit) {
 //        val getMessagesDisposable =
@@ -76,7 +76,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
 //        compositeDisposable += getMessagesDisposable
 //    }
 //
-//    fun requestSendMessage(channel: Channel,
+//    fun requestSendMessage(channel: ChannelInfo,
 //                           interlocutor: String,
 //                           body: String,
 //                           interlocutorCard: Card,
@@ -122,7 +122,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
 //    }
 //
 //    fun requestGetChannelBySid(sid: String,
-//                               onGetChannelSuccess: (Channel) -> Unit,
+//                               onGetChannelSuccess: (ChannelInfo) -> Unit,
 //                               onGetChannelError: (Throwable) -> Unit) {
 //        twilioHelper.getChannelBySid(sid)
 //                .observeOn(AndroidSchedulers.mainThread())

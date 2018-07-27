@@ -110,7 +110,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //
 //    private fun setupChatClientListener() {
 //        presenter.setupChatListener(object : ChatClientListener {
-//            override fun onChannelDeleted(p0: Channel?) {
+//            override fun onChannelDeleted(p0: ChannelInfo?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelDeleted")
 //            }
 //
@@ -130,7 +130,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onUserSubscribed")
 //            }
 //
-//            override fun onChannelUpdated(p0: Channel?, p1: Channel.UpdateReason?) {
+//            override fun onChannelUpdated(p0: ChannelInfo?, p1: ChannelInfo.UpdateReason?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelUpdated")
 //            }
 //
@@ -142,15 +142,15 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onNotificationFailed")
 //            }
 //
-//            override fun onChannelJoined(p0: Channel?) {
+//            override fun onChannelJoined(p0: ChannelInfo?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelJoined")
 //            }
 //
-//            override fun onChannelAdded(channel: Channel?) {
+//            override fun onChannelAdded(channel: ChannelInfo?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelAdded")
 //            }
 //
-//            override fun onChannelSynchronizationChange(p0: Channel?) {
+//            override fun onChannelSynchronizationChange(p0: ChannelInfo?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelSynchronizationChange")
 //            }
 //
@@ -162,7 +162,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onAddedToChannelNotification")
 //            }
 //
-//            override fun onChannelInvited(channel: Channel?) {
+//            override fun onChannelInvited(channel: ChannelInfo?) {
 //                UiUtils.log(this@ChannelsListFragment::class.java.simpleName, " -> onChannelInvited")
 //
 //                channel?.join(object : StatusListener() {

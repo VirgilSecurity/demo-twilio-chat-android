@@ -31,11 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.local
+package com.android.virgilsecurity.base.data.api
 
-
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.common.data.api.UsersApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.twilio.chat.Channel
 import io.reactivex.Single
 
 /**
@@ -44,19 +43,15 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/20/186/20/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersLocalDS
+ * TwilioApi
  */
-class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
+interface ChannelsApiRemote : ChannelsApi {
 
-    override fun users(): Single<List<User>> = roomDS.usersDao().users()
-
-    override fun addUser(user: User) = roomDS.usersDao().insertUser(user)
+    fun getUserChannelById(id: String): Single<Channel>
 }
