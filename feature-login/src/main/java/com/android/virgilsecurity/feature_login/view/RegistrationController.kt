@@ -125,10 +125,7 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
-        is RegistrationVM.State.RegisteredSuccessfully -> {
-            stateSlice.cleanUp()
-            login(state.user)
-        }
+        is RegistrationVM.State.RegisteredSuccessfully -> login(state.user)
         RegistrationVM.State.ShowLoading -> stateSlice.showLoading()
         is RegistrationVM.State.UsernameInvalid -> when (state.causeCode) {
             RegistrationVM.KEY_USERNAME_EMPTY -> stateSlice.showUsernameEmpty()

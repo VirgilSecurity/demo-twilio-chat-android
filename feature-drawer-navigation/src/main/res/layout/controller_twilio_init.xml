@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/twenty_margin"
-            android:text="@string/let_s_try_again"
+            android:text="@string/let_s_retry"
             android:textColor="@color/snow"
             android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/btnRetry"
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/twenty_margin"
             android:layout_marginTop="@dimen/fourty_margin"
-            android:background="@drawable/rect_rounded_accent_2"
+            android:background="@drawable/btn_selector_virgil_gray"
             android:elevation="2dp"
             android:gravity="center"
             android:minHeight="36dp"
@@ -98,6 +98,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLetsTryAgain" />
+
+        <TextView
+            android:id="@+id/tvTryAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:text="@string/try_again_please"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/small_text"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/btnRetry"
+            app:layout_constraintStart_toEndOf="@id/btnRetry" />
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar

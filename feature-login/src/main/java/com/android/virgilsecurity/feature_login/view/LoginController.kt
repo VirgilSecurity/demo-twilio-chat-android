@@ -39,6 +39,7 @@ import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
@@ -100,15 +101,18 @@ class LoginController() : BaseController() {
             = observe(viewModel.getState()) { onStateChanged(it) }
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
-        is LoginVM.State.UsersLoaded -> viewPagerSlice.showUsers(state.users)
-        LoginVM.State.ShowLoading -> stateSlice.showLoading()
-        LoginVM.State.ShowContent -> {
+        is LoginVM.State.UsersLoaded -> {
+            viewPagerSlice.showUsers(state.users)
             stateSlice.showContent()
             viewPagerSlice.showIndicator()
         }
+        LoginVM.State.ShowLoading -> stateSlice.showLoading()
         LoginVM.State.ShowError -> stateSlice.showError()
-        is LoginVM.State.Login -> Unit // Handled by activity
-        else -> stateSlice.showError()
+        LoginVM.State.LoginError -> {
+            UiUtils.toast(this, "Login error. Try again")
+            stateSlice.showContent()
+        }
+        else -> Unit
     }
 
     private fun onActionChanged(action: Action) = when (action) {

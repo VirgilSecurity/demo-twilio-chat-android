@@ -33,6 +33,9 @@
 
 package com.android.virgilsecurity.feature_login.viewslice.registration.state
 
+import android.app.ProgressDialog.show
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.OnLifecycleEvent
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -61,9 +64,10 @@ import java.util.concurrent.TimeUnit
 class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
 
     private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
-    private val debounceDisposable: Disposable
+    private lateinit var debounceDisposable: Disposable
 
-    init {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         debounceDisposable = debounceSubject.debounce(DEBOUNCE_INTERVAL, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,6 +75,11 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
                     if (it) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
                     if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
                 }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        debounceDisposable.dispose()
     }
 
     override fun showConsistent() {
@@ -113,10 +122,6 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
             })
             tvTryAgain.startAnimation(alphaAnimation)
         }
-    }
-
-    override fun cleanUp() {
-        debounceDisposable.dispose()
     }
 
     private fun loading(loading: Boolean) {

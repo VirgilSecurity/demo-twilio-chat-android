@@ -33,10 +33,18 @@
 
 package com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.OnLifecycleEvent
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.viewslice.StateSlice
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.controller_twilio_init.*
+import java.util.concurrent.TimeUnit
 
 /**
  * . _  _
@@ -54,20 +62,45 @@ import kotlinx.android.synthetic.main.controller_twilio_init.*
  */
 class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
-    override fun showLoading() = show(LOADING)
+    private val debounceSubject: PublishSubject<Int> = PublishSubject.create()
+    private lateinit var debounceDisposable: Disposable
 
-    override fun showContent() = show(CONTENT)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        debounceDisposable = debounceSubject.debounce(DEBOUNCE_INTERVAL, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    show(it)
+                }
+    }
 
-    override fun showError() = show(ERROR)
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        debounceDisposable.dispose()
+    }
+
+    override fun showLoading() = debounceSubject.onNext(LOADING)
+
+    override fun showContent() = debounceSubject.onNext(CONTENT)
+
+    override fun showError() {
+        debounceSubject.onNext(ERROR)
+        showFadingError()
+    }
 
     private fun show(state: Int) {
         when (state) {
             CONTENT, ERROR -> { // For now our content is showing up that something happened
+                btnRetry.isClickable = true
+                btnRetry.isEnabled = true
                 clContentRoot.visibility = View.VISIBLE
                 pbLoading.visibility = View.INVISIBLE
                 tvInitializing.visibility = View.INVISIBLE
             }
             LOADING -> {
+                btnRetry.isClickable = false
+                btnRetry.isEnabled = false
                 clContentRoot.visibility = View.INVISIBLE
                 pbLoading.visibility = View.VISIBLE
                 tvInitializing.visibility = View.VISIBLE
@@ -75,9 +108,32 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
         }
     }
 
+    private fun showFadingError() {
+        if (tvTryAgain.visibility == View.INVISIBLE) {
+            tvTryAgain.visibility = View.VISIBLE
+            val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
+            alphaAnimation.duration = ERROR_FADE_OUT_DURATION
+            alphaAnimation.startOffset = ERROR_START_OFFSET
+            alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    tvTryAgain.visibility = View.INVISIBLE
+                }
+
+                override fun onAnimationStart(animation: Animation?) {}
+            })
+            tvTryAgain.startAnimation(alphaAnimation)
+        }
+    }
+
     companion object {
         const val CONTENT = 0
         const val LOADING = 1
         const val ERROR = 2
+
+        const val ERROR_FADE_OUT_DURATION = 500L
+        const val ERROR_START_OFFSET = 1500L
+        const val DEBOUNCE_INTERVAL = 300L
     }
 }

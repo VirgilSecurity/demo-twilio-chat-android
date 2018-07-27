@@ -38,7 +38,8 @@
     <string name="settings_drawer">Settings</string>
     <string name="retry">Retry</string>
     <string name="can_not_start_client_chat">Can not start client chat</string>
-    <string name="let_s_try_again">Let\'s try again</string>
+    <string name="let_s_retry">Let\'s retry</string>
     <string name="client_not_started_error_pic">Picture that client can not be started</string>
     <string name="initializing">Initializing</string>
+    <string name="try_again_please">Try again, please</string>
 </resources>

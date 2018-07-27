@@ -62,6 +62,4 @@ interface StateSliceRegistration : ViewSlice {
     fun showLoading()
 
     fun showError()
-
-    fun cleanUp()
 }

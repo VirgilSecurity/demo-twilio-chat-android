@@ -57,7 +57,8 @@ abstract class LoginVM : ViewModel() {
 
     sealed class State {
         data class UsersLoaded(val users: List<User>) : State()
-        data class Login(val user: User) : State()
+        data class LoginSuccess(val user: User) : State()
+        object LoginError : State()
         object ShowNoUsers : State()
         object ShowLoading : State()
         object ShowContent : State()

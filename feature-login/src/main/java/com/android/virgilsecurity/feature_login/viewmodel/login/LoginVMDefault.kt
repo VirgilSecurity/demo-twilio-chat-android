@@ -85,7 +85,6 @@ class LoginVMDefault(
             is LoadUsersDo.Result.OnSuccess -> {
                 if (result.users.isNotEmpty()) {
                     state.value = State.UsersLoaded(result.users)
-                    state.value = State.ShowContent
                 } else {
                     state.value = State.ShowNoUsers
                 }
@@ -97,9 +96,9 @@ class LoginVMDefault(
     private fun onSignInResult(result: SignInDo.Result?) {
         when (result) {
             is SignInDo.Result.OnSuccess -> {
-                    state.value = State.Login(result.user)
+                    state.value = State.LoginSuccess(result.user)
             }
-            is SignInDo.Result.OnError -> state.value = State.ShowError
+            is SignInDo.Result.OnError -> state.value = State.LoginError
         }
     }
 }

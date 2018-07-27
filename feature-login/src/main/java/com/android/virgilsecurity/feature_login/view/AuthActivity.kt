@@ -104,6 +104,7 @@ class AuthActivity(
         }
         LoginVM.State.ShowLoading -> Unit
         LoginVM.State.ShowContent -> Unit
+        LoginVM.State.LoginError -> Unit
         LoginVM.State.ShowError -> {
             val controller = LoginController(::login, ::registration)
             if (router.hasNoRootController())
@@ -111,7 +112,7 @@ class AuthActivity(
             else
                 replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
         }
-        is LoginVM.State.Login -> login(state.user)
+        is LoginVM.State.LoginSuccess -> login(state.user)
     }
 
     private fun replaceTopController(controller: Controller, tag: String) =

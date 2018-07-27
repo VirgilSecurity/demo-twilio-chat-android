@@ -37,6 +37,7 @@ import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
+import com.android.virgilsecurity.base.extension.removeObservers
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_drawer_navigation.R
