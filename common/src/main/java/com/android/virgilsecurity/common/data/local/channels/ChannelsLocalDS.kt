@@ -34,10 +34,11 @@
 package com.android.virgilsecurity.common.data.local.channels
 
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.dao.ChannelsDao
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.common.data.local.RoomDS
 import com.twilio.chat.Channel
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -55,16 +56,16 @@ import io.reactivex.Single
  * ChannelsLocalDS
  */
 class ChannelsLocalDS(
-        private val roomDS: RoomDS,
-        private val userManager: UserManager
-) : ChannelsApi {
+        private val channelsQao: ChannelsQao,
+        private val userProperties: UserProperties
+) : ChannelsDao {
 
-    override fun getUserChannelsInfo(): Single<List<ChannelInfo>> =
-            roomDS.channelsDao().userChannels(userManager.currentUser!!.identity)
+    override fun getUserChannels(): Single<List<ChannelInfo>> =
+            channelsQao.userChannels(userProperties.currentUser!!.identity)
 
-    override fun addChannels(channels: List<ChannelInfo>) =
-            roomDS.channelsDao().insertChannelsInfo(channels)
+    override fun addChannels(channels: List<ChannelInfo>): Completable =
+            Completable.fromCallable { channelsQao.insertChannelsInfo(channels) }
 
-    override fun addChannel(channel: ChannelInfo) =
-            roomDS.channelsDao().insertChannelInfo(channel)
+    override fun addChannel(channel: ChannelInfo): Completable =
+            Completable.fromCallable { channelsQao.insertChannelInfo(channel) }
 }

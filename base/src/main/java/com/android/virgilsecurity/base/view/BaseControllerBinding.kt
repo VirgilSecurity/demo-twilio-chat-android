@@ -93,6 +93,12 @@ abstract class BaseControllerBinding : LifecycleController(), LayoutContainer {
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
     protected abstract fun setupVMStateObservers()
+    /**
+     * Used to request data *After*
+     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
+     * and all View Slices and ViewModels are set up.
+     */
+    protected abstract fun initData()
 
     override lateinit var containerView: View
 
@@ -111,7 +117,7 @@ abstract class BaseControllerBinding : LifecycleController(), LayoutContainer {
         setupViewSlices(view)
         setupVSActionObservers()
         setupVMStateObservers()
-
+        initData()
     }
 
     override fun onDestroyView(view: View) {

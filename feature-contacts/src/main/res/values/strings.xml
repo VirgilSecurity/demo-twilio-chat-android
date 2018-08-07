@@ -33,7 +33,10 @@
 
 <resources>
 
-
     <string name="no_people_image">No people image</string>
     <string name="no_contacts_yet">No contacts yet. Add someone!</string>
+    <string name="error_loading_contacts">Error loading contacts.\nSwipe top to refresh.</string>
+    <string name="username">Username</string>
+    <string name="interlocutor_identity">Interlocutor identity</string>
+
 </resources>

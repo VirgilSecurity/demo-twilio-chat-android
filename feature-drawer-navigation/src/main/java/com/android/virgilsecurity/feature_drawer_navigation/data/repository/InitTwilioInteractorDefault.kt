@@ -33,8 +33,8 @@
 
 package com.android.virgilsecurity.feature_drawer_navigation.data.repository
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import com.android.virgilsecurity.common.util.AuthUtils
 import io.reactivex.Completable
 
@@ -55,12 +55,12 @@ import io.reactivex.Completable
 class InitTwilioInteractorDefault(
         private val twilioHelper: TwilioHelper,
         private val authUtils: AuthUtils,
-        private val userManager: UserManager
+        private val userProperties: UserProperties
 ) : InitTwilioInteractor {
 
     override fun initClient(identity: String): Completable =
-            userManager.currentUser.let { user ->
-                twilioHelper.createChatClient(identity) {
+            userProperties.currentUser.let { user ->
+                twilioHelper.startChatClient(identity) {
                     authUtils.generateAuthHeader(identity, user!!.card())
                 }
             }

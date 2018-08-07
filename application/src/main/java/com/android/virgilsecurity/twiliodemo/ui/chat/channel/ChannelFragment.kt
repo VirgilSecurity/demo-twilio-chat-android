@@ -53,7 +53,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 //    private val thresholdScroll = 1
 //
 //    private val presenter: ChannelPresenter by inject()
-//    private val userManager: UserManager by inject()
+//    private val userManager: UserProperties by inject()
 //    private val adapter: ChannelRVAdapter by inject()
 //
 //    private lateinit var channel: ChannelInfo

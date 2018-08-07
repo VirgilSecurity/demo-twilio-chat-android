@@ -35,17 +35,25 @@ package com.android.virgilsecurity.common.di
 
 import android.arch.persistence.room.Room
 import android.content.Context
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.base.data.api.UsersApi
-import com.android.virgilsecurity.common.data.local.RoomDS
-import com.android.virgilsecurity.common.data.local.users.UserManagerDefault
+import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.dao.ChannelsDao
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.common.data.helper.room.RoomDB
+import com.android.virgilsecurity.common.data.local.users.UserPropertiesDefault
 import com.android.virgilsecurity.common.data.local.users.UsersLocalDS
-import com.android.virgilsecurity.common.data.remote.fuel.FuelHelper
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx
-import com.android.virgilsecurity.common.data.remote.virgil.GetTokenCallbackImpl
-import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.common.data.remote.virgil.VirgilRx
+import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioRx
+import com.android.virgilsecurity.common.data.helper.virgil.GetTokenCallbackImpl
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilRx
+import com.android.virgilsecurity.common.data.local.channels.ChannelsLocalDS
+import com.android.virgilsecurity.common.data.local.channels.ChannelsQao
+import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGenerator
+import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGeneratorDefault
+import com.android.virgilsecurity.common.data.remote.channels.ChannelsRemoteDS
+import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
 import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
 import com.android.virgilsecurity.common.util.AuthUtils
@@ -79,17 +87,18 @@ import org.koin.dsl.module.applicationContext
 val commonModules: Module = applicationContext {
     bean(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
     bean {
-        Room.databaseBuilder(get(), RoomDS::class.java, get(KEY_ROOM_DB_NAME))
+        Room.databaseBuilder(get(), RoomDB::class.java, get(KEY_ROOM_DB_NAME))
                 .fallbackToDestructiveMigration()
                 .build()
     }
-    bean { UsersLocalDS(get()) as UsersApi }
+    bean { UsersLocalDS(get()) as UsersDao }
     bean { ImageStorage(get()) }
 }
 
 val utilsModule : Module = applicationContext {
-    bean { UserManagerDefault(get()) as UserManager }
+    bean { UserPropertiesDefault(get()) as UserProperties }
     bean { AuthUtils(get(), get(), get()) }
+    bean { ChannelIdGeneratorDefault(get()) as ChannelIdGenerator }
 }
 
 val networkModule : Module = applicationContext {
@@ -117,6 +126,13 @@ val twilioModule : Module = applicationContext {
 
 val paramsModule : Module = applicationContext {
     bean(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
+}
+
+val channelsModule: Module = applicationContext {
+    bean { MapperToChannelInfo() }
+    bean { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
+    bean { (get() as RoomDB).channelsDao() }
+    bean { ChannelsLocalDS(get(), get()) as ChannelsDao }
 }
 
 object CommonDiConst {

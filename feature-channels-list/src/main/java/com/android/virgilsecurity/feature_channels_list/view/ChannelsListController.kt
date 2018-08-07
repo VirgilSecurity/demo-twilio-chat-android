@@ -104,9 +104,9 @@ class ChannelsListController() : BaseController() {
         // TODO Implement body or it will be empty ):
     }
 
-//    override fun cleanUp() {
-//        toolbarSlice.cleanViewIdsCache()
-//    }
+    override fun initData() {
+        // TODO Implement body or it will be empty ):
+    }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()

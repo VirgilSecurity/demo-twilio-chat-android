@@ -36,7 +36,7 @@ package com.android.virgilsecurity.twiliodemo
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
@@ -55,7 +55,7 @@ import org.koin.android.ext.android.inject
 
 class SplashActivity : AppCompatActivity() {
 
-    private val userManager: UserManager by inject()
+    private val userProperties: UserProperties by inject()
     private val screenRouter: ScreenRouter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +69,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun isAuthenticated(): Boolean {
-        return userManager.currentUser != null
+        return userProperties.currentUser != null
     }
 
     override fun onBackPressed() {
@@ -78,7 +78,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun startChannelsActivity() {
         screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
-                                     User.EXTRA_USER, userManager.currentUser!!)
+                                     User.EXTRA_USER, userProperties.currentUser!!)
                 .run {
                     startActivity(this)
                     finish()

@@ -40,6 +40,7 @@ import authModule
 import com.android.virgilsecurity.common.di.*
 import com.android.virgilsecurity.feature_channel.di.channelModule
 import com.android.virgilsecurity.feature_channels_list.di.channelsListModule
+import com.android.virgilsecurity.feature_contacts.di.addContactModule
 import com.android.virgilsecurity.feature_contacts.di.contactsModule
 import com.android.virgilsecurity.feature_drawer_navigation.di.drawerNavigationModule
 import com.android.virgilsecurity.feature_drawer_navigation.di.twilioInitModule
@@ -69,6 +70,7 @@ class TwilioApp : Application() {
                   listOf(
                       // Base modules
                       utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
+                      channelsModule,
                       // Common modules
                       commonModules, appModule,
                       // Auth modules
@@ -77,7 +79,7 @@ class TwilioApp : Application() {
                       // Drawer navigation modules
                       drawerNavigationModule, twilioInitModule,
                       // Contacts modules
-                      contactsModule,
+                      contactsModule, addContactModule,
                       // Channels list modules
                       channelsListModule,
                       // Channel modules

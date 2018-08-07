@@ -51,7 +51,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //
 //    private val presenter: ChannelsListPresenter by inject()
 //    private val adapter: ChannelsListRVAdapter by inject()
-//    private val userManager: UserManager by inject()
+//    private val userManager: UserProperties by inject()
 //
 //    companion object {
 //        fun newInstance() = ChannelsListFragment()

@@ -44,6 +44,7 @@ import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_channel.view.ChannelController
 import com.android.virgilsecurity.feature_channels_list.view.ChannelsListController
+import com.android.virgilsecurity.feature_contacts.view.AddContactController
 import com.android.virgilsecurity.feature_contacts.view.ContactsController
 import com.android.virgilsecurity.feature_drawer_navigation.R
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
@@ -105,9 +106,14 @@ class DrawerNavigationActivity(
         DrawerSlice.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
-            replaceTopController(ContactsController {
-                stateSlice.openDrawer()
-            }, ContactsController.KEY_CONTACTS_CONTROLLER)
+            replaceTopController(ContactsController({
+                                                        stateSlice.openDrawer()
+                                                    },
+                                                    {
+                                                        pushController(AddContactController(::openChannel),
+                                                                       AddContactController.KEY_ADD_CONTACT_CONTROLLER)
+                                                    })
+                                 , ContactsController.KEY_CONTACTS_CONTROLLER)
         }
         DrawerSlice.Action.ChannelsListClicked -> {
             stateSlice.unLockDrawer()

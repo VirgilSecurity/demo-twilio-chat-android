@@ -35,6 +35,12 @@ package com.android.virgilsecurity.base.data.api
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.twilio.chat.Channel
+import com.twilio.chat.ChatClient
+import com.twilio.chat.ErrorInfo
+import com.twilio.chat.User
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -53,9 +59,36 @@ import io.reactivex.Single
  */
 interface ChannelsApi {
 
-    fun getUserChannelsInfo(): Single<List<ChannelInfo>>
+    fun getUserChannelById(id: String): Single<Channel>
 
-    fun addChannels(channels: List<ChannelInfo>)
+    fun getUserChannels(): Observable<List<ChannelInfo>>
 
-    fun addChannel(channel: ChannelInfo)
+    fun createChannel(sender: String, interlocutor: String): Completable
+
+    fun observeChannelsChanges(): Flowable<ChannelsChanges>
+
+    fun joinChannel(channel: Channel): Single<ChannelInfo>
+
+    sealed class ChannelsChanges {
+        data class ChannelDeleted(val channel: Channel?) : ChannelsChanges()
+        data class InvitedToChannelNotification(val notification: String?) : ChannelsChanges()
+        data class ClientSynchronization(val status: ChatClient.SynchronizationStatus?) : ChannelsChanges()
+        object NotificationSubscribed : ChannelsChanges()
+        data class UserSubscribed(val user: User?) : ChannelsChanges()
+        data class ChannelUpdated(val channel: Channel?, val reason: Channel.UpdateReason?) : ChannelsChanges()
+        data class RemovedFromChannelNotification(val notification: String?) : ChannelsChanges()
+        data class NotificationFailed(val error: ErrorInfo?) : ChannelsChanges()
+        data class ChannelJoined(val channel: Channel?) : ChannelsChanges()
+        data class ChannelAdded(val channel: Channel?) : ChannelsChanges()
+        data class ChannelSynchronizationChange(val channel: Channel?) : ChannelsChanges()
+        data class UserUnsubscribed(val user: User?) : ChannelsChanges()
+        data class AddedToChannelNotification(val notification: String?) : ChannelsChanges()
+        data class ChannelInvited(val channel: Channel?) : ChannelsChanges()
+        data class NewMessageNotification(val p0: String?, val p1: String?, val p2: Long) : ChannelsChanges()
+        data class ConnectionStateChange(val state: ChatClient.ConnectionState?) : ChannelsChanges()
+        data class Error(val error: ErrorInfo?) : ChannelsChanges()
+        data class UserUpdated(val user: User?, val reason: User.UpdateReason?) : ChannelsChanges()
+
+        data class Exception(val error: Throwable) : ChannelsChanges()
+    }
 }

@@ -33,7 +33,6 @@
 
 package com.android.virgilsecurity.feature_login.viewslice.registration.state
 
-import android.app.ProgressDialog.show
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
 import android.view.View

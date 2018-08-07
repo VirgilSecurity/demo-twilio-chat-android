@@ -100,6 +100,8 @@ class TwilioInitController() : BaseController() {
         observe(viewModel.getState(), ::onStateChanged) // TODO change everywhere this part to reference
     }
 
+    override fun initData() {}
+
     private fun onStateChanged(state: InitTwilioVM.State) = when (state) {
         InitTwilioVM.State.InitSuccess -> initSuccess()
         InitTwilioVM.State.ShowLoading -> stateSlice.showLoading()

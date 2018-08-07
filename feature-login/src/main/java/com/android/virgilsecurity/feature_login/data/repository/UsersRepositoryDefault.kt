@@ -31,9 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.data.api.UsersApi
+import com.android.virgilsecurity.base.data.dao.UsersDao
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.Single
 
@@ -52,17 +52,17 @@ import io.reactivex.Single
  * UsersRepositoryDefault
  */
 class UsersRepositoryDefault(
-        private val usersApi: UsersApi,
-        private val userManager: UserManager
+        private val usersDao: UsersDao,
+        private val userProperties: UserProperties
 ) : UsersRepository {
 
-    override fun users(): Single<List<User>> = usersApi.users()
+    override fun users(): Single<List<User>> = usersDao.users()
 
-    override fun addUser(user: User) = usersApi.addUser(user)
+    override fun addUser(user: User) = usersDao.addUser(user)
 
-    override fun currentUser(): User? = userManager.currentUser
+    override fun currentUser(): User? = userProperties.currentUser
 
     override fun setCurrentUser(user: User) {
-        userManager.currentUser = user
+        userProperties.currentUser = user
     }
 }

@@ -33,12 +33,10 @@
 
 package com.android.virgilsecurity.feature_settings.domain
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -57,13 +55,13 @@ import io.reactivex.schedulers.Schedulers
  * LogoutDoDefault
  */
 class LogoutDoDefault(
-        private val userManager: UserManager,
+        private val userProperties: UserProperties,
         private val twilioHelper: TwilioHelper
 ) : BaseDo<LogoutDo.Result>(), LogoutDo {
 
     override fun execute() =
             Completable.fromCallable {
-                userManager.clearCurrentUser()
+                userProperties.clearCurrentUser()
             }.doOnComplete {
                 Completable.fromCallable {
                     twilioHelper.shutdownChatClient()

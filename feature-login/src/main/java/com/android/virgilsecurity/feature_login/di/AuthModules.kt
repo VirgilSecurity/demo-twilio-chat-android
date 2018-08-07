@@ -39,11 +39,11 @@ import LoginDiConst.STATE_SLICE_LOGIN
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.common.data.remote.AuthRemote
+import com.android.virgilsecurity.common.data.remote.auth.AuthRemote
 import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.viewslice.StateSlice
-import com.android.virgilsecurity.feature_login.data.repository.AuthInteractor
-import com.android.virgilsecurity.feature_login.data.repository.AuthInteractorDefault
+import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractor
+import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractorDefault
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
@@ -105,7 +105,12 @@ val loginControllerModule: Module = applicationContext {
 val registrationControllerModule: Module = applicationContext {
     bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
     bean { AuthRemote(get()) as AuthApi }
-    bean { AuthInteractorDefault(get(), get(), get(), get(), get()) as AuthInteractor }
+    bean { AuthInteractorDefault(get(),
+                                                                                          get(),
+                                                                                          get(),
+                                                                                          get(),
+                                                                                          get()) as AuthInteractor
+    }
     bean { SignUpDoDefault(get(), get()) as SignUpDo }
     bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
     bean { StateSliceRegistrationDefault() as StateSliceRegistration }

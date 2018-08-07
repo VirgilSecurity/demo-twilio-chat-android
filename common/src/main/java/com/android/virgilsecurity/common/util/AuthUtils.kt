@@ -33,7 +33,7 @@
 
 package com.android.virgilsecurity.common.util
 
-import com.android.virgilsecurity.base.data.api.UserManager
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.crypto.VirgilCrypto
 import com.virgilsecurity.sdk.crypto.VirgilPrivateKey
@@ -54,12 +54,12 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
 /**
  * AuthUtils
  */
-class AuthUtils(private val userManager: UserManager,
+class AuthUtils(private val userProperties: UserProperties,
                 private val virgilCrypto: VirgilCrypto,
                 private val privateKeyStorage: PrivateKeyStorage) {
 
-    fun generateAuthHeader(identity: String = userManager.currentUser!!.identity,
-                           card: Card = userManager.currentUser!!.card()): String =
+    fun generateAuthHeader(identity: String = userProperties.currentUser!!.identity,
+                           card: Card = userProperties.currentUser!!.card()): String =
             card.identifier.let { identifier ->
                 (identifier + "." + (System.currentTimeMillis() / 1000L)).let { idAndTimestamp ->
                     (privateKeyStorage.load(identity).left as VirgilPrivateKey).let {

@@ -48,4 +48,9 @@ dependencies {
     conductor()
     koin()
     circleImageView()
+    reactiveness()
+    architectureComponents()
+    virgil()
+    glide()
+    twilio()
 }

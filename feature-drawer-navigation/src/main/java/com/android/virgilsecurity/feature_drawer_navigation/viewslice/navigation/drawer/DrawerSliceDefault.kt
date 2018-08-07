@@ -41,8 +41,11 @@ import android.net.Uri
 import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.util.UserUtils
 import com.android.virgilsecurity.feature_drawer_navigation.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import kotlinx.android.synthetic.main.layout_drawer_header.view.*
 
@@ -108,7 +111,11 @@ class DrawerSliceDefault(
         } else {
             nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
             nvNavigation.getHeaderView(0).tvInitialsDrawer.visibility = View.VISIBLE
-            nvNavigation.getHeaderView(0).ivUserPicDrawer.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
+            Glide.with(context)
+                    .load(UiUtils.randomDrawable(context, R.array.loginBackgrounds))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
+//            nvNavigation.getHeaderView(0).ivUserPicDrawer.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
         }
 
         nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity

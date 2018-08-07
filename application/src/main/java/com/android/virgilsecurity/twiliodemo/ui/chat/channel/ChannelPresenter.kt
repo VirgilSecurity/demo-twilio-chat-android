@@ -33,9 +33,9 @@
 
 package com.android.virgilsecurity.twiliodemo.ui.chat.channel
 
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioHelper
-import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 
 /**
  * . _  _
@@ -54,7 +54,7 @@ import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
 
 class ChannelPresenter(private val twilioHelper: TwilioHelper,
                        private val virgilHelper: VirgilHelper,
-                       private val userManager: UserManager) {
+                       private val userProperties: UserProperties) {
 
 //    private val compositeDisposable = CompositeDisposable()
 //
@@ -85,7 +85,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
 //
 //        val publicKeys = ArrayList<VirgilPublicKey>()
 //
-//        publicKeys.add(userManager.getUserCard().publicKey as VirgilPublicKey)
+//        publicKeys.add(userProperties.getUserCard().publicKey as VirgilPublicKey)
 //        publicKeys.add(interlocutorCard.publicKey as VirgilPublicKey)
 //
 //        val encryptedText = virgilHelper.encrypt(body, publicKeys)

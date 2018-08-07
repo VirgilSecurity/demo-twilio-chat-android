@@ -100,7 +100,10 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     private fun initViewCallbacks() {
-        btnNext.setOnClickListener { viewModel.registration(etUsername.text.toString()) }
+        btnNext.setOnClickListener {
+            viewModel.registration(etUsername.text.toString())
+            hideKeyboard()
+        }
     }
 
     override fun initViewSlices(view: View) {
@@ -108,7 +111,9 @@ class RegistrationController() : BaseControllerBinding() {
         toolbarSlice.init(lifecycle, view)
     }
 
-    override fun setupViewSlices(view: View) {}
+    override fun setupViewSlices(view: View) {
+        stateSlice.showUsernameTooShort()
+    }
 
     override fun setupVSActionObservers() {
         observe(toolbarSlice.getAction()) { onActionChanged(it) }
@@ -123,6 +128,8 @@ class RegistrationController() : BaseControllerBinding() {
     override fun setupVMStateObservers() {
         observe(viewModel.getState()) { onStateChanged(it) }
     }
+
+    override fun initData() {}
 
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
         is RegistrationVM.State.RegisteredSuccessfully -> login(state.user)

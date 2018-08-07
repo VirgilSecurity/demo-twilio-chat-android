@@ -100,6 +100,8 @@ class LoginController() : BaseController() {
     override fun setupVMStateObservers()
             = observe(viewModel.getState()) { onStateChanged(it) }
 
+    override fun initData() {}
+
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
             viewPagerSlice.showUsers(state.users)

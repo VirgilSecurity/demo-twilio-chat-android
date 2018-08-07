@@ -74,26 +74,35 @@ class DelegateAdapter<T : Comparable<T>> constructor(
     }
 
     fun swapData(data: List<T>) {
-        diffCallback.setLists(this.data, data)
-        val result = DiffUtil.calculateDiff(diffCallback)
-        this.data.clear()
-        this.data.addAll(data)
-        result.dispatchUpdatesTo(this)
+        if (data.isNotEmpty()) {
+            diffCallback.setLists(this.data, data)
+            val result = DiffUtil.calculateDiff(diffCallback)
+//        this.data.clear()
+            this.data.addAll(data)
+
+            result.dispatchUpdatesTo(this)
+        }
     }
 
     override fun getItemCount(): Int {
         return data.size
     }
 
+    /**
+     * Adapter must have at least one item added and diff callback.
+     * Otherwise exception will be thrown.
+     */
     class Builder<T : Comparable<T>> {
 
         private var count: Int = 0
         private val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>> =
                 SparseArray()
-        private lateinit var diffCallback: DiffCallback<T>
+        private var diffCallback: DiffCallback<T>? = null
 
-        fun setDiffCallback(diffCallback: DiffCallback<T>) {
+        fun diffCallback(diffCallback: DiffCallback<T>): Builder<T> {
             this.diffCallback = diffCallback
+
+            return this
         }
 
         fun add(delegateAdapter: DelegateAdapterItem<BaseViewHolder<T>, T>): Builder<T> {
@@ -103,13 +112,17 @@ class DelegateAdapter<T : Comparable<T>> constructor(
 
         fun build(): DelegateAdapter<T> {
             if (count == 0) throw IllegalArgumentException("Register at least one adapter item")
-            return DelegateAdapter(diffCallback, typeToAdapterMap)
+
+            if (diffCallback == null)
+                throw IllegalArgumentException("This adapter requires diff callback provided")
+
+            return DelegateAdapter(diffCallback!!, typeToAdapterMap)
         }
     }
 
     companion object {
 
         private val TAG = DelegateAdapter::class.java.simpleName
-        private val FIRST_VIEW_TYPE = 0
+        private const val FIRST_VIEW_TYPE = 0
     }
 }

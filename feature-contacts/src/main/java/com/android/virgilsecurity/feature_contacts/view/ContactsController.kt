@@ -34,12 +34,18 @@
 package com.android.virgilsecurity.feature_contacts.view
 
 import android.view.View
+import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_contacts.R
-import com.android.virgilsecurity.feature_contacts.viewslice.toolbar.ToolbarSlice
+import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
+import com.android.virgilsecurity.feature_contacts.viewmodel.list.ContactsVM
+import com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.ContactsSlice
+import com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
 
 /**
  * . _  _
@@ -59,45 +65,91 @@ class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CONTACTS_LIST)
+    private val contactsSlice: ContactsSlice by inject()
+    private val stateSlice: StateSliceEmptyable by inject()
+    private val viewModel: ContactsVM by inject()
 
     private lateinit var openDrawer: () -> Unit
+    private lateinit var addContact: () -> Unit
 
-    constructor(openDrawer: () -> Unit) : this() {
+    constructor(openDrawer: () -> Unit, addContact: () -> Unit) : this() {
         this.openDrawer = openDrawer
+        this.addContact = addContact
     }
 
-    override fun init() {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun init() {}
 
     override fun initViewSlices(view: View) {
         toolbarSlice.init(lifecycle, view)
+        contactsSlice.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
     }
 
-    override fun setupViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupViewSlices(view: View) {}
 
     override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
+        observe(contactsSlice.getAction(), ::onContactsActionChanged)
+    }
+
+    private fun onContactsActionChanged(action: ContactsSlice.Action) = when (action) {
+        is ContactsSlice.Action.ContactClicked -> UiUtils.toastUnderDevelopment(this)
+        ContactsSlice.Action.Idle -> Unit
     }
 
     override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+    override fun initData() {
+        viewModel.contacts()
+        viewModel.observeContactsChanges()
+    }
+
+    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
         ToolbarSlice.Action.AddClicked -> addContact()
         ToolbarSlice.Action.Idle -> Unit
     }
 
-    private fun addContact() {
-        UiUtils.toastUnderDevelopment(this)
+    private fun onStateChanged(state: ContactsVM.State): Unit = when (state) {
+        is ContactsVM.State.ContactsLoaded -> contactsSlice.showContacts(state.contacts)
+        ContactsVM.State.ShowEmpty -> stateSlice.showEmpty()
+        ContactsVM.State.ShowContent -> stateSlice.showContent()
+        ContactsVM.State.ShowLoading -> stateSlice.showLoading()
+        ContactsVM.State.ShowError -> stateSlice.showError()
+        is ContactsVM.State.ContactChanged -> onContactsChanged(state.change)
+        is ContactsVM.State.OnJoinSuccess -> {
+            contactsSlice.showContacts(listOf(state.channel))
+            stateSlice.showContent()
+        }
+    }
+
+    private fun onContactsChanged(change: ChannelsApi.ChannelsChanges) = when(change) {
+        is ChannelsApi.ChannelsChanges.ChannelDeleted -> Unit
+        is ChannelsApi.ChannelsChanges.InvitedToChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ClientSynchronization -> Unit
+        ChannelsApi.ChannelsChanges.NotificationSubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.UserSubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelUpdated -> Unit
+        is ChannelsApi.ChannelsChanges.RemovedFromChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.NotificationFailed -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelJoined -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelAdded -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
+        is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelInvited -> viewModel.joinChannel(change.channel!!)
+        is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
+        is ChannelsApi.ChannelsChanges.Error -> Unit
+        is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
+        is ChannelsApi.ChannelsChanges.Exception -> Unit
     }
 
     companion object {
         const val KEY_CONTACTS_CONTROLLER = "KEY_CONTACTS_CONTROLLER"
+        private val TAG = ContactsController::class.java.simpleName
     }
 }

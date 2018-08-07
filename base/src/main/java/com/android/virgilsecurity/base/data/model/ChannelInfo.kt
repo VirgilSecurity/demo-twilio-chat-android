@@ -33,7 +33,11 @@
 
 package com.android.virgilsecurity.base.data.model
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
 
 /**
@@ -51,21 +55,30 @@ import org.json.JSONObject
  * ChannelInfo
  */
 @Entity
+@Parcelize
 class ChannelInfo(
+        @PrimaryKey
         val sid: String,
-        attributes: JSONObject,
+        @ColumnInfo(name = KEY_ATTRIBUTES)
+        val attributesString: String,
+        @ColumnInfo(name = KEY_FRIENDLY_NAME)
         val friendlyName: String,
+        @ColumnInfo(name = KEY_UNIQUE_NAME)
         val uniqueName: String,
         val sender: String,
-        val receiver: String
-) {
+        val interlocutor: String
+): Comparable<ChannelInfo>, Parcelable {
 
-    val attributes: String = attributes.toString()
+    fun attributes() = JSONObject(attributesString)
 
-    fun getAttributes() = JSONObject(attributes)
+    override fun compareTo(other: ChannelInfo): Int = this.sid.compareTo(other.sid)
 
     companion object {
+        const val EXTRA_CHANNEL_INFO = "EXTRA_CHANNEL_INFO"
+        const val KEY_ATTRIBUTES = "attributes"
+        const val KEY_FRIENDLY_NAME = "friendly_name"
+        const val KEY_UNIQUE_NAME = "unique_name"
         const val KEY_SENDER = "sender"
-        const val KEY_RECEIVER = "receiver"
+        const val KEY_INTERLOCUTOR = "interlocutor"
     }
 }

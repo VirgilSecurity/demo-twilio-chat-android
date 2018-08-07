@@ -55,4 +55,5 @@ dependencies {
     koin()
     reactiveness()
     virgil()
+    glide()
 }

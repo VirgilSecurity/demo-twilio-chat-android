@@ -36,9 +36,8 @@ package com.android.virgilsecurity.feature_login.domain.registration
 import com.android.virgilsecurity.base.data.model.SignInResponse
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.remote.virgil.VirgilHelper
-import com.android.virgilsecurity.feature_login.data.repository.AuthInteractor
-import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
+import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

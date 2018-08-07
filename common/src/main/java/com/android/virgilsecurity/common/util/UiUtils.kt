@@ -78,7 +78,9 @@ object UiUtils {
 
     fun toastUnderDevelopment(context: Context) = toast(context, "Under development")
 
-    fun log(tag: String, text: String) = Log.d(tag, text)
+    fun log(tag: String, text: String) {
+        Log.d(tag, text)
+    }
 
     /**
      * This method converts density independent pixels (dp) to equivalent pixels,

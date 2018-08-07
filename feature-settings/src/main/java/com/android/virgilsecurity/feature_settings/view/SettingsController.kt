@@ -106,6 +106,8 @@ class SettingsController() : BaseController() {
         observe(viewModel.getState()) { onStateChanged(it) }
     }
 
+    override fun initData() {}
+
     private fun onStateChanged(state: SettingsVM.State) = when (state) {
         SettingsVM.State.LogoutSuccessful -> logout()
         SettingsVM.State.ShowLoading -> stateSlice.showLoading()

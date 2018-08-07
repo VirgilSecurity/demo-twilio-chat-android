@@ -16,7 +16,7 @@ import com.android.virgilsecurity.base.view.BaseActivity
 //class ChannelsListActivity : BaseActivity() {
 //
 //    private val threadsListTag = "threadsListTag"
-//    private val userManager: UserManager by inject()
+//    private val userManager: UserProperties by inject()
 //    private lateinit var createThreadDialog: CreateThreadDialog
 //    private var secondPress: Boolean = false
 //

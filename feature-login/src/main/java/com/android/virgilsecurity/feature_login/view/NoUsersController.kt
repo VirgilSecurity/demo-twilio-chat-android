@@ -81,6 +81,8 @@ class NoUsersController() : BaseController() {
 
     override fun setupVMStateObservers() {}
 
+    override fun initData() {}
+
     companion object {
         const val KEY_NO_USERS_CONTROLLER = "KEY_NO_USERS_CONTROLLER"
     }

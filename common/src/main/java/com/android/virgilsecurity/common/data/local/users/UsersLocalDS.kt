@@ -35,8 +35,8 @@ package com.android.virgilsecurity.common.data.local.users
 
 
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.data.api.UsersApi
-import com.android.virgilsecurity.common.data.local.RoomDS
+import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.common.data.helper.room.RoomDB
 import io.reactivex.Single
 
 /**
@@ -54,10 +54,10 @@ import io.reactivex.Single
  * UsersLocalDS
  */
 class UsersLocalDS(
-        private val roomDS: RoomDS
-) : UsersApi {
+        private val roomDB: RoomDB
+) : UsersDao {
 
-    override fun users(): Single<List<User>> = roomDS.usersDao().users()
+    override fun users(): Single<List<User>> = roomDB.usersDao().users()
 
-    override fun addUser(user: User) = roomDS.usersDao().insertUser(user)
+    override fun addUser(user: User) = roomDB.usersDao().insertUser(user)
 }

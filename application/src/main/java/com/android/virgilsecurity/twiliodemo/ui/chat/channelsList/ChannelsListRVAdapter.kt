@@ -37,9 +37,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.virgilsecurity.base.data.api.UserManager
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx.Companion.KEY_RECEIVER
-import com.android.virgilsecurity.common.data.remote.twilio.TwilioRx.Companion.KEY_SENDER
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.twiliodemo.R
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer
@@ -56,7 +56,7 @@ import kotlinx.android.synthetic.main.item_list_channels_old.*
  * ....|_|-
  */
 
-class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
+class ChannelsListRVAdapter constructor(private val userProperties: UserProperties) :
         RecyclerView.Adapter<ChannelsListRVAdapter.ChannelHolder>() {
 
     private var items: MutableList<Channel> = mutableListOf()
@@ -66,7 +66,7 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_list_channels_old, parent, false)
 
-        return ChannelHolder(view, clickListener, userManager)
+        return ChannelHolder(view, clickListener, userProperties)
     }
 
     override fun onBindViewHolder(holder: ChannelHolder, position: Int) {
@@ -102,7 +102,7 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
 
     fun getItemById(interlocutor: String): Channel? {
         for (channel in items) {
-            if ((channel.attributes[KEY_RECEIVER] as String) == interlocutor)
+            if ((channel.attributes[ChannelInfo.KEY_INTERLOCUTOR] as String) == interlocutor)
                 return channel
         }
 
@@ -115,15 +115,15 @@ class ChannelsListRVAdapter constructor(private val userManager: UserManager) :
 
     class ChannelHolder(override val containerView: View?,
                         private val onItemClicked: (Int, Channel) -> Unit,
-                        private val userManager: UserManager) :
+                        private val userProperties: UserProperties) :
             RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind(channel: Channel) {
             val attributes = channel.attributes
 
-            val receiver = attributes[KEY_RECEIVER] as String
+            val receiver = attributes[ChannelInfo.KEY_INTERLOCUTOR] as String
             val sender = attributes[KEY_SENDER] as String
-            val currentUser = userManager.currentUser!!.identity
+            val currentUser = userProperties.currentUser!!.identity
 
             if (currentUser == sender)
                 tvUsername.text = receiver
