@@ -53,7 +53,7 @@ import com.android.virgilsecurity.base.domain.Do
 interface AddContactDo : Do<AddContactDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val user: User) : Result()
+        data class OnSuccess(val identity: String) : Result()
         data class OnError(val error: Throwable) : Result()
     }
 

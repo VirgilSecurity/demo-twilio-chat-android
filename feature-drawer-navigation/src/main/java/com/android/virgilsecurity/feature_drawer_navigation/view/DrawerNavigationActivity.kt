@@ -47,13 +47,15 @@ import com.android.virgilsecurity.feature_channels_list.view.ChannelsListControl
 import com.android.virgilsecurity.feature_contacts.view.AddContactController
 import com.android.virgilsecurity.feature_contacts.view.ContactsController
 import com.android.virgilsecurity.feature_drawer_navigation.R
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.CONTEXT_DRAWER_NAVIGATION
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
 import com.android.virgilsecurity.feature_settings.view.SettingsController
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.*
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
 
@@ -76,6 +78,7 @@ class DrawerNavigationActivity(
 ) : BaseActivityController() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
+    override val koinContextName: String? = CONTEXT_DRAWER_NAVIGATION
 
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
@@ -102,56 +105,66 @@ class DrawerNavigationActivity(
         observe(drawerSlice.getAction()) { onActionChanged(it) }
     }
 
+    override fun setupVMStateObservers() {}
+
     private fun onActionChanged(action: DrawerSlice.Action) = when (action) {
         DrawerSlice.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
-            replaceTopController(ContactsController({
-                                                        stateSlice.openDrawer()
-                                                    },
-                                                    {
-                                                        pushController(AddContactController(::openChannel),
-                                                                       AddContactController.KEY_ADD_CONTACT_CONTROLLER)
-                                                    })
-                                 , ContactsController.KEY_CONTACTS_CONTROLLER)
+            replaceTopController(contactsController(), ContactsController.KEY_CONTACTS_CONTROLLER)
         }
         DrawerSlice.Action.ChannelsListClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
-            replaceTopController(ChannelsListController(user,
-                                                        {
-                                                            openChannel(it)
-                                                        },
-                                                        {
-                                                            stateSlice.openDrawer()
-                                                        }),
+            replaceTopController(channelsController(),
                                  ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)
         }
         DrawerSlice.Action.SettingsClicked -> {
             stateSlice.lockDrawer()
             stateSlice.closeDrawer()
-            pushController(SettingsController(user)
-                           {
-                               screenRouter.getScreenIntent(this, ScreenChat.Login).run {
-                                   startActivity(this)
-                                   overridePendingTransition(R.anim.animation_slide_from_start_activity,
-                                                             R.anim.animation_slide_to_end_activity)
-                                   finish()
-                               }
-                           },
-                           SettingsController.KEY_SETTINGS_CONTROLLER)
+            pushController(settingsController(), SettingsController.KEY_SETTINGS_CONTROLLER)
         }
-        DrawerSlice.Action.SameItemClicked -> {
-            stateSlice.closeDrawer()
-        }
+        DrawerSlice.Action.SameItemClicked -> stateSlice.closeDrawer()
         DrawerSlice.Action.Idle -> Unit
     }
 
-    override fun setupVMStateObservers() {}
+    private fun contactsController() =
+            ContactsController({
+                                   stateSlice.openDrawer()
+                               },
+                               {
+                                   pushController(AddContactController(::openChannel),
+                                                  AddContactController.KEY_ADD_CONTACT_CONTROLLER)
+                               },
+                               {
+                                   openChannel(it)
+                               })
+
+    private fun channelsController() =
+            ChannelsListController(user,
+                                   {
+                                       openChannel(it)
+                                   },
+                                   {
+                                       stateSlice.openDrawer()
+                                   })
+
+    private fun settingsController() =
+            SettingsController(user)
+            {
+                screenRouter.getScreenIntent(this, ScreenChat.Login).run {
+                    startActivity(this)
+                    overridePendingTransition(R.anim.animation_slide_from_start_activity,
+                                              R.anim.animation_slide_to_end_activity)
+                    finish()
+                }
+            }
 
     private fun replaceTopController(controller: Controller, tag: String) =
             router.replaceTopController(RouterTransaction
-                                                .with(controller)
+                                                .with(controller.apply {
+                                                    retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                                })
                                                 .pushChangeHandler(SimpleSwapChangeHandler())
                                                 .tag(tag))
 
@@ -162,9 +175,18 @@ class DrawerNavigationActivity(
                                           .popChangeHandler(HorizontalChangeHandler())
                                           .tag(tag))
 
-    private fun openChannel(user: User) {
+    private fun openChannel(interlocutor: String) {
         stateSlice.lockDrawer()
-        pushController(ChannelController(user), ChannelController.KEY_CHANNEL_CONTROLLER)
+        router.setBackstack(
+            listOf(RouterTransaction
+                           .with(channelsController().apply {
+                               retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                           })
+                           .pushChangeHandler(SimpleSwapChangeHandler())
+                           .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)),
+            SimpleSwapChangeHandler())
+
+        pushController(ChannelController(interlocutor), ChannelController.KEY_CHANNEL_CONTROLLER)
     }
 
     private fun initRouter() {

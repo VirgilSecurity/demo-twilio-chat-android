@@ -33,12 +33,12 @@
 
 package com.android.virgilsecurity.common.data.helper.fuel
 
+import com.android.virgilsecurity.base.data.model.SignInResponse
+import com.android.virgilsecurity.base.data.model.TokenResponse
 import com.android.virgilsecurity.base.extension.toObject
 import com.android.virgilsecurity.common.data.model.request.SignInRequest
 import com.android.virgilsecurity.common.data.model.request.SignUpRequest
 import com.android.virgilsecurity.common.data.model.request.TokenRequest
-import com.android.virgilsecurity.base.data.model.SignInResponse
-import com.android.virgilsecurity.base.data.model.TokenResponse
 import com.android.virgilsecurity.common.util.UiUtils
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.FuelManager

@@ -34,24 +34,24 @@
 package com.android.virgilsecurity.feature_channel.view
 
 import android.view.View
-import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_channel.R
+import com.android.virgilsecurity.feature_channel.di.Const.CONTEXT_CHANNEL
 import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
+import org.koin.standalone.inject
 
 class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel
+    override val koinContextName: String? = CONTEXT_CHANNEL
 
     private val toolbarSlice: ToolbarSlice by inject()
 
-    private lateinit var user: User
+    private lateinit var interlocutor: String
 
-    constructor(user: User) : this() {
-        this.user = user
+    constructor(interlocutor: String) : this() {
+        this.interlocutor = interlocutor
     }
 
     override fun init() {
@@ -63,7 +63,7 @@ class ChannelController() : BaseController() {
     }
 
     override fun setupViewSlices(view: View) {
-        toolbarSlice.setTitle(user.identity)
+        toolbarSlice.setTitle(interlocutor)
     }
 
     override fun setupVSActionObservers() {

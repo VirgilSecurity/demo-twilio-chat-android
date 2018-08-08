@@ -34,16 +34,9 @@
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
 import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.twilio.chat.*
-import com.virgilsecurity.sdk.crypto.HashAlgorithm
-import com.virgilsecurity.sdk.utils.ConvertionUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
+import com.android.virgilsecurity.common.util.AuthUtils
 
 /**
  * . _  _

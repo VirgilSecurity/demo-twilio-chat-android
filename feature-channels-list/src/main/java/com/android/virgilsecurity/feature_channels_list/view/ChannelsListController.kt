@@ -33,18 +33,16 @@
 
 package com.android.virgilsecurity.feature_channels_list.view
 
-import android.app.Activity
-import android.content.Context
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.extension.removeObservers
 import com.android.virgilsecurity.base.view.BaseController
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_channels_list.*
+import org.koin.standalone.inject
 
 
 /**
@@ -64,27 +62,23 @@ import kotlinx.android.synthetic.main.controller_channels_list.*
 class ChannelsListController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channels_list
+    override val koinContextName: String? = CONTEXT_CHANNELS_LIST
 
     private val toolbarSlice: ToolbarSlice by inject()
 
     private lateinit var user: User
-    private lateinit var onChatClick: (User) -> Unit
+    private lateinit var onChatClick: (String) -> Unit
     private lateinit var openDrawer: () -> Unit
 
-    constructor(user: User, onChatClick: (User) -> Unit, openDrawer: () -> Unit) : this() {
+    constructor(user: User, onChatClick: (interlocutor: String) -> Unit, openDrawer: () -> Unit) : this() {
         this.user = user
         this.onChatClick = onChatClick
         this.openDrawer = openDrawer
     }
 
-//    override fun onContextAvailable(context: Context) {
-//        super.onContextAvailable(context)
-//        rootActivity = context as D
-//    }
-
     override fun init() {
 //        tvUsername.text = user.identity
-        clNoContacts.setOnClickListener { onChatClick(user) }
+//        clNoContacts.setOnClickListener { onChatClick(user.identity) }
     }
 
     override fun initViewSlices(view: View) {

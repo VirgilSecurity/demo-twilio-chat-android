@@ -34,8 +34,8 @@
 package com.android.virgilsecurity.common.data.local.users
 
 
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.helper.room.RoomDB
 import io.reactivex.Single
 

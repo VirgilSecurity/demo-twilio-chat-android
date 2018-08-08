@@ -31,9 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import io.reactivex.Single
 

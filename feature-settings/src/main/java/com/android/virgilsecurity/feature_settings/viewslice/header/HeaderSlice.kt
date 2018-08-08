@@ -35,7 +35,6 @@ package com.android.virgilsecurity.feature_settings.viewslice.header
 
 import android.arch.lifecycle.LiveData
 import com.android.virgilsecurity.base.viewslice.ViewSlice
-import com.android.virgilsecurity.feature_settings.viewslice.footer.FooterSlice
 
 /**
  * . _  _

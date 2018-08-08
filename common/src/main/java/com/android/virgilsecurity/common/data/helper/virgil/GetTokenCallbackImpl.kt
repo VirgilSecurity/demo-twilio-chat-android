@@ -34,8 +34,8 @@
 package com.android.virgilsecurity.common.data.helper.virgil
 
 import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
+import com.android.virgilsecurity.common.util.AuthUtils
 import com.virgilsecurity.sdk.jwt.TokenContext
 import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 

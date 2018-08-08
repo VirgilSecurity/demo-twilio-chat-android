@@ -33,10 +33,10 @@
 
 package com.android.virgilsecurity.feature_login.view
 
+import LoginDiConst.CONTEXT_LOGIN_CONTROLLER
 import LoginDiConst.STATE_SLICE_LOGIN
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
@@ -46,6 +46,7 @@ import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice
 import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
 import kotlinx.android.synthetic.main.controller_login.*
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -64,6 +65,7 @@ import kotlinx.android.synthetic.main.controller_login.*
 class LoginController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_login
+    override val koinContextName: String? = CONTEXT_LOGIN_CONTROLLER
 
     private val viewPagerSlice: ViewPagerSlice by inject()
     private val stateSlice: StateSlice by inject(STATE_SLICE_LOGIN)

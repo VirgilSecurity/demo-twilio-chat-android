@@ -38,18 +38,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
 import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.databinding.ControllerAddContactBinding
+import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
 import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_ADD_CONTACT
-import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.android.virgilsecurity.feature_contacts.viewmodel.addContact.AddContactVM
 import com.android.virgilsecurity.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.android.virgilsecurity.feature_contacts.viewslice.addContact.state.StateSliceAddContact
 import com.android.virgilsecurity.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_add_contact.*
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -68,14 +68,15 @@ import kotlinx.android.synthetic.main.controller_add_contact.*
 class AddContactController() : BaseControllerBinding() { // TODO try to move layoutResourceId to primary constructor and add : super()
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
+    override val koinContextName: String? = CONTEXT_ADD_CONTACT
 
     private val viewModel: AddContactVM by inject()
     private val stateSlice: StateSliceAddContact by inject()
     private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_ADD_CONTACT)
 
-    private lateinit var openChannel: (User) -> Unit
+    private lateinit var openChannel: (String) -> Unit
 
-    constructor(openChannel: (User) -> Unit) : this() {
+    constructor(openChannel: (interlocutor: String) -> Unit) : this() {
         this.openChannel = openChannel
     }
 
@@ -94,7 +95,10 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     }
 
     private fun initViewCallbacks() {
-        btnAdd.setOnClickListener { viewModel.addContact(etUsername.text.toString()) }
+        btnAdd.setOnClickListener {
+            hideKeyboard()
+            viewModel.addContact(etUsername.text.toString())
+        }
     }
 
     override fun initViewSlices(view: View) {
@@ -111,7 +115,10 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
-        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
+        ToolbarSlice.Action.BackClicked -> {
+            hideKeyboard()
+            backPress()
+        }
         ToolbarSlice.Action.Idle -> Unit
     }
 
@@ -122,7 +129,7 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     override fun initData() {}
 
     private fun onStateChanged(state: AddContactVM.State) = when (state) {
-        is AddContactVM.State.ContactAdded -> openChannel(state.user)
+        is AddContactVM.State.ContactAdded -> openChannel(state.identity)
         AddContactVM.State.ShowLoading -> stateSlice.showLoading()
         is AddContactVM.State.UsernameInvalid -> when (state.causeCode) {
             AddContactVM.KEY_USERNAME_EMPTY -> stateSlice.showUsernameEmpty()
@@ -132,7 +139,10 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
         }
         AddContactVM.State.UsernameConsistent -> stateSlice.showConsistent()
         AddContactVM.State.ShowError -> stateSlice.showError()
-//        AddContactVM.State.Idle -> Unit
+    }
+
+    private fun backPress() {
+        router.popCurrentController()
     }
 
     companion object {

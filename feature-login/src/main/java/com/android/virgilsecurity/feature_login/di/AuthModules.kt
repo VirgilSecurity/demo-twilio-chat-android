@@ -31,6 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import LoginDiConst.CONTEXT_AUTH_ACTIVITY
+import LoginDiConst.CONTEXT_LOGIN_CONTROLLER
+import LoginDiConst.CONTEXT_REGISTRATION_CONTROLLER
 import LoginDiConst.KEY_MEDIATOR_LOGIN
 import LoginDiConst.KEY_MEDIATOR_REGISTRATION
 import LoginDiConst.LIVE_DATA_LOGIN
@@ -78,44 +81,46 @@ import org.koin.dsl.module.applicationContext
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
+
 // TODO check dates in print above in all files
+
 /**
  * LoginModules
  */
-val authModule: Module = applicationContext {
-    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
-    bean { LoadUsersDoDefault(get()) as LoadUsersDo }
-    bean { SignInDoDefault(get(), get()) as SignInDo }
-    bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<Action>() }
-    bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get(), get()) as LoginVM }
-}
-
 val authActivityModule: Module = applicationContext {
     bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
     bean { DoubleBack() }
+    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
+
+    context(CONTEXT_AUTH_ACTIVITY) {
+        bean { LoadUsersDoDefault(get()) as LoadUsersDo }
+        bean { SignInDoDefault(get(), get()) as SignInDo }
+        bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<Action>() }
+        bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get(), get()) as LoginVM }
+    }
 }
 
 val loginControllerModule: Module = applicationContext {
-    bean(LIVE_DATA_LOGIN) { MutableLiveData<Action>() }
-    bean { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
-    bean { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
-    bean(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
+    context(CONTEXT_LOGIN_CONTROLLER) {
+        bean(LIVE_DATA_LOGIN) { MutableLiveData<Action>() }
+        bean { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
+        bean { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
+        bean(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
+    }
 }
 
 val registrationControllerModule: Module = applicationContext {
-    bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
     bean { AuthRemote(get()) as AuthApi }
-    bean { AuthInteractorDefault(get(),
-                                                                                          get(),
-                                                                                          get(),
-                                                                                          get(),
-                                                                                          get()) as AuthInteractor
+    bean { AuthInteractorDefault(get(), get(), get(), get(), get()) as AuthInteractor }
+
+    context(CONTEXT_REGISTRATION_CONTROLLER) {
+        bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
+        bean { SignUpDoDefault(get(), get()) as SignUpDo }
+        bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
+        bean { StateSliceRegistrationDefault() as StateSliceRegistration }
+        bean(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
+        bean { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
     }
-    bean { SignUpDoDefault(get(), get()) as SignUpDo }
-    bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
-    bean { StateSliceRegistrationDefault() as StateSliceRegistration }
-    bean(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
 }
 
 object LoginDiConst {
@@ -125,6 +130,10 @@ object LoginDiConst {
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
     const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
+
+    const val CONTEXT_AUTH_ACTIVITY = "CONTEXT_AUTH_ACTIVITY"
+    const val CONTEXT_LOGIN_CONTROLLER = "CONTEXT_LOGIN_CONTROLLER"
+    const val CONTEXT_REGISTRATION_CONTROLLER = "CONTEXT_REGISTRATION_CONTROLLER"
 
     const val SPAN_COUNT = 2
 }

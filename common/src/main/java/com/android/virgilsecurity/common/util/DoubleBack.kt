@@ -34,8 +34,6 @@
 package com.android.virgilsecurity.common.util
 
 import android.os.CountDownTimer
-import android.os.Handler
-import java.util.*
 
 
 /**

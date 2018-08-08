@@ -38,7 +38,6 @@ import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
-import com.android.virgilsecurity.common.R
 import com.bluelinelabs.conductor.Controller
 import java.util.*
 

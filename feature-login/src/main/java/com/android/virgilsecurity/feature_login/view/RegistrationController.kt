@@ -33,12 +33,12 @@
 
 package com.android.virgilsecurity.feature_login.view
 
+import LoginDiConst.CONTEXT_REGISTRATION_CONTROLLER
 import android.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
 import com.android.virgilsecurity.common.util.UiUtils
@@ -50,6 +50,7 @@ import com.android.virgilsecurity.feature_login.viewmodel.registration.Registrat
 import com.android.virgilsecurity.feature_login.viewslice.registration.state.StateSliceRegistration
 import com.android.virgilsecurity.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_register.*
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -68,6 +69,7 @@ import kotlinx.android.synthetic.main.controller_register.*
 class RegistrationController() : BaseControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_register
+    override val koinContextName: String? = CONTEXT_REGISTRATION_CONTROLLER
 
     private val viewModel: RegistrationVM by inject()
     private val stateSlice: StateSliceRegistration by inject()

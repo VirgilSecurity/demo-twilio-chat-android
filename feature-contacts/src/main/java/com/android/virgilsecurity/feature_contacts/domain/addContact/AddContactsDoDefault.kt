@@ -64,8 +64,8 @@ class AddContactsDoDefault(
                     .subscribe(::success, ::error)
                     .track()
 
-    private fun success(user: User) {
-        liveData.value = AddContactDo.Result.OnSuccess(user)
+    private fun success(interlocutor: String) {
+        liveData.value = AddContactDo.Result.OnSuccess(interlocutor)
     }
 
     private fun error(throwable: Throwable) {

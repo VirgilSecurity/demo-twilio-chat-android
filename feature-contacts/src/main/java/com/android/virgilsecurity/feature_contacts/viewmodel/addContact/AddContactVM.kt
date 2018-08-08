@@ -54,7 +54,7 @@ import com.android.virgilsecurity.base.data.model.User
 abstract class AddContactVM : ViewModel() {
 
     sealed class State {
-        data class ContactAdded(val user: User) : State()
+        data class ContactAdded(val identity: String) : State()
         object ShowLoading : State()
         object ShowError : State()
         object UsernameConsistent : State()

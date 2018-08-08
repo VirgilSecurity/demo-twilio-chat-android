@@ -36,16 +36,17 @@ package com.android.virgilsecurity.feature_contacts.view
 import android.view.View
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_contacts.R
+import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_CONTACTS
 import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.android.virgilsecurity.feature_contacts.viewmodel.list.ContactsVM
 import com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -64,6 +65,7 @@ import com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.To
 class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
+    override val koinContextName: String? = CONTEXT_CONTACTS
 
     private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CONTACTS_LIST)
     private val contactsSlice: ContactsSlice by inject()
@@ -72,10 +74,14 @@ class ContactsController() : BaseController() {
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
+    private lateinit var openChannel: (String) -> Unit
 
-    constructor(openDrawer: () -> Unit, addContact: () -> Unit) : this() {
+    constructor(openDrawer: () -> Unit,
+                addContact: () -> Unit,
+                openChannel: (interlocutor: String) -> Unit) : this() {
         this.openDrawer = openDrawer
         this.addContact = addContact
+        this.openChannel = openChannel
     }
 
     override fun init() {}
@@ -94,7 +100,7 @@ class ContactsController() : BaseController() {
     }
 
     private fun onContactsActionChanged(action: ContactsSlice.Action) = when (action) {
-        is ContactsSlice.Action.ContactClicked -> UiUtils.toastUnderDevelopment(this)
+        is ContactsSlice.Action.ContactClicked -> openChannel(action.contact.interlocutor)
         ContactsSlice.Action.Idle -> Unit
     }
 

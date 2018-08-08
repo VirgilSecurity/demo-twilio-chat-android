@@ -33,14 +33,12 @@
 
 package com.android.virgilsecurity.common.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.widget.TextView
-import android.view.MotionEvent
 
 /**
  * . _  _

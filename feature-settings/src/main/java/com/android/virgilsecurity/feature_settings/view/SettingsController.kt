@@ -35,17 +35,18 @@ package com.android.virgilsecurity.feature_settings.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_settings.R
+import com.android.virgilsecurity.feature_settings.di.Const.CONTEXT_SETTINGS
 import com.android.virgilsecurity.feature_settings.viewmodel.SettingsVM
 import com.android.virgilsecurity.feature_settings.viewslice.footer.FooterSlice
 import com.android.virgilsecurity.feature_settings.viewslice.header.HeaderSlice
 import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSlice
 import com.android.virgilsecurity.feature_settings.viewslice.state.StateSlice
 import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -64,6 +65,7 @@ import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlic
 class SettingsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings
+    override val koinContextName: String? = CONTEXT_SETTINGS
 
     private val toolbarSlice: ToolbarSlice by inject()
     private val menuSlice: MenuSlice by inject()
@@ -116,7 +118,10 @@ class SettingsController() : BaseController() {
     }
 
     private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
+        ToolbarSlice.Action.BackClicked -> {
+            hideKeyboard()
+            backPress()
+        }
         is ToolbarSlice.Action.MenuClicked -> menuSlice.showMenu(action.showPoint)
         ToolbarSlice.Action.Idle -> Unit
     }
@@ -137,6 +142,10 @@ class SettingsController() : BaseController() {
         FooterSlice.Action.AskQuestionClicked -> UiUtils.toastUnderDevelopment(this)
         FooterSlice.Action.VersionClicked -> UiUtils.toastUnderDevelopment(this)
         FooterSlice.Action.Idle -> Unit
+    }
+
+    private fun backPress() {
+        router.popCurrentController()
     }
 
     companion object {

@@ -36,8 +36,8 @@ package com.android.virgilsecurity.twiliodemo
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
 import org.koin.android.ext.android.inject

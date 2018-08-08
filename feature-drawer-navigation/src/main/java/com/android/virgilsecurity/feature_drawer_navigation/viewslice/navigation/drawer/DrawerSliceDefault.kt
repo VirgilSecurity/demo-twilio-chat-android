@@ -68,8 +68,8 @@ class DrawerSliceDefault(
         private val imageStorage: ImageStorage
 ) : BaseViewSlice(), DrawerSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupDrawer()
     }
 

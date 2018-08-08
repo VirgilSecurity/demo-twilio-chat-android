@@ -35,7 +35,10 @@ package com.android.virgilsecurity.common.data.helper.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.twilio.chat.*
+import com.twilio.chat.Channel
+import com.twilio.chat.ChannelDescriptor
+import com.twilio.chat.ChatClient
+import com.twilio.chat.Paginator
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

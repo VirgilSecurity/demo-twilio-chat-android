@@ -34,9 +34,7 @@
 package com.android.virgilsecurity.feature_contacts.data.interactor
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.model.User
 import com.twilio.chat.Channel
-import io.reactivex.Completable
 import io.reactivex.Single
 
 /**

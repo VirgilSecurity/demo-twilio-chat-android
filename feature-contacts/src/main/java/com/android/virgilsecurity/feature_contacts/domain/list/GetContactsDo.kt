@@ -54,6 +54,7 @@ interface GetContactsDo : Do<GetContactsDo.Result> {
 
     sealed class Result {
         data class OnSuccess(val contacts: List<ChannelInfo>) : Result()
+        object OnEmpty : Result()
         data class OnError(val error: Throwable) : Result()
     }
 

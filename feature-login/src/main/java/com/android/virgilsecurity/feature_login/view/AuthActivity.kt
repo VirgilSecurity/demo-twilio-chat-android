@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.feature_login.view
 
+import LoginDiConst.CONTEXT_AUTH_ACTIVITY
 import android.os.Bundle
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
@@ -68,6 +69,7 @@ class AuthActivity(
 ) : BaseActivityController() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
+    override val koinContextName: String? = CONTEXT_AUTH_ACTIVITY
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()

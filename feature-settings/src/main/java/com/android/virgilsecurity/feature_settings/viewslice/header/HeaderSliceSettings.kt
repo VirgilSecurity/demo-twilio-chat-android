@@ -64,8 +64,8 @@ class HeaderSliceSettings(
         private val imageStorage: ImageStorage
 ) : BaseViewSlice(), HeaderSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupViews()
     }
 

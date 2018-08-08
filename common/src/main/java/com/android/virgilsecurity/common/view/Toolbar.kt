@@ -34,15 +34,10 @@
 package com.android.virgilsecurity.common.view
 
 import android.content.Context
-import android.os.Parcelable
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.util.SparseArray
 import android.view.View
 import kotlinx.android.synthetic.main.toolbar_custom.view.*
-import android.os.Parcel
-import org.jetbrains.annotations.NotNull
-import kotlin.jvm.JvmField
 
 
 /**

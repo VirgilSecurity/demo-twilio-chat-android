@@ -35,10 +35,8 @@ package com.android.virgilsecurity.feature_login.viewmodel.registration
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
-import android.databinding.Bindable
 import android.databinding.Observable
 import android.databinding.ObservableField
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
 
 /**

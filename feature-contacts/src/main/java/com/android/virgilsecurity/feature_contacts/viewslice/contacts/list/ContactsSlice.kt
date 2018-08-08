@@ -35,7 +35,6 @@ package com.android.virgilsecurity.feature_contacts.viewslice.contacts.list
 
 import android.arch.lifecycle.LiveData
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.viewslice.ViewSlice
 
 /**
@@ -55,7 +54,7 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
 interface ContactsSlice : ViewSlice {
 
     sealed class Action {
-        data class ContactClicked(val user: ChannelInfo) : Action()
+        data class ContactClicked(val contact: ChannelInfo) : Action()
         object Idle : Action()
     }
 

@@ -35,7 +35,6 @@ package com.android.virgilsecurity.feature_login.viewmodel.login
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
-import android.icu.text.SymbolTable
 import com.android.virgilsecurity.base.data.model.User
 
 /**

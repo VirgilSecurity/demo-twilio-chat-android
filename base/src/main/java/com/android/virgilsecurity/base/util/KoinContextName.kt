@@ -31,12 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.extension
-
-import com.bluelinelabs.conductor.Controller
-import org.koin.KoinContext
-import org.koin.android.ext.android.get
-import org.koin.standalone.StandAloneContext
+package com.android.virgilsecurity.base.util
 
 /**
  * . _  _
@@ -44,14 +39,17 @@ import org.koin.standalone.StandAloneContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ControllerExt
+ * ContainerView
  */
-
-inline fun <reified T> Controller.inject(name: String = "")
-        = lazy { activity!!.get<T>(name) }
+@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION,
+        AnnotationTarget.PROPERTY_GETTER,
+        AnnotationTarget.VALUE_PARAMETER,
+        AnnotationTarget.FIELD)
+annotation class KoinContextName

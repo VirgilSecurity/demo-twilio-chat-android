@@ -58,8 +58,8 @@ class TwilioInitSliceDefault(
         private val actionLiveData: MutableLiveData<TwilioInitSlice.Action>
 ) : BaseViewSlice(), TwilioInitSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         initViewCallbacks()
     }
 

@@ -61,7 +61,7 @@ class AddContactInteractorDefault(
         private val userProperties: UserProperties
 ) : AddContactInteractor {
 
-    override fun addContact(interlocutor: String): Single<User> =
+    override fun addContact(interlocutor: String): Single<String> =
             virgilHelper.searchCards(interlocutor).flatMap { cards ->
                 when {
                     cards.isEmpty() -> throw EmptyCardsException()
@@ -69,9 +69,7 @@ class AddContactInteractorDefault(
                     else -> {
                         contactsApi.createChannel(userProperties.currentUser!!.identity,
                                                   interlocutor)
-                                .toSingle {
-                                    User(interlocutor, cards[0].rawCard.exportAsBase64String())
-                                }
+                                .toSingle { interlocutor }
                     }
                 }
             }

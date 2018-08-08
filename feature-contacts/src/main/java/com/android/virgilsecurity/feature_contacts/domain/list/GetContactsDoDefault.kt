@@ -57,11 +57,17 @@ class GetContactsDoDefault(
         private val contactsRepository: ContactsRepository
 ) : BaseDo<GetContactsDo.Result>(), GetContactsDo {
 
+    private var atLeastOneItemPresent = false
+
     override fun execute() =
             contactsRepository.contacts()
+                    .doOnNext {
+                        if (it.isNotEmpty())
+                            atLeastOneItemPresent = true
+                    }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
+                    .subscribe(::success, ::error, ::ifEmpty)
                     .track()
 
     private fun success(users: List<ChannelInfo>) {
@@ -70,5 +76,10 @@ class GetContactsDoDefault(
 
     private fun error(throwable: Throwable) {
         liveData.value = GetContactsDo.Result.OnError(throwable)
+    }
+
+    private fun ifEmpty() {
+        if (!atLeastOneItemPresent)
+            liveData.value = GetContactsDo.Result.OnEmpty
     }
 }

@@ -62,8 +62,8 @@ class MenuSliceSettings(
 
     private lateinit var menu: MenuPopup
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupMenu()
     }
 

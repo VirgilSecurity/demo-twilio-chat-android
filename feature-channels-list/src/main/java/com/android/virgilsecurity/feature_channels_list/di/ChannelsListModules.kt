@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_channels_list.di
 
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
 import com.android.virgilsecurity.feature_channels_list.di.Const.LIVE_DATA_CHANNELS_LIST
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSliceChannelsList
@@ -55,10 +56,14 @@ import org.koin.dsl.module.applicationContext
  * ThreadsListModules
  */
 val channelsListModule: Module = applicationContext {
-    bean(LIVE_DATA_CHANNELS_LIST) { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceChannelsList(get(LIVE_DATA_CHANNELS_LIST)) as ToolbarSlice }
+    context(CONTEXT_CHANNELS_LIST) {
+        bean(LIVE_DATA_CHANNELS_LIST) { MutableLiveData<ToolbarSlice.Action>() }
+        bean { ToolbarSliceChannelsList(get(LIVE_DATA_CHANNELS_LIST)) as ToolbarSlice }
+    }
 }
 
 object Const {
     const val LIVE_DATA_CHANNELS_LIST = "LIVE_DATA_CHANNELS_LIST"
+
+    const val CONTEXT_CHANNELS_LIST = "CONTEXT_CHANNELS_LIST"
 }

@@ -34,8 +34,8 @@
 package com.android.virgilsecurity.common.data.local.users
 
 import android.content.Context
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.common.data.helper.preferences.PreferenceHelper
 import com.android.virgilsecurity.common.data.helper.preferences.PreferenceHelper.edit
 import com.android.virgilsecurity.common.data.helper.preferences.PreferenceHelper.get

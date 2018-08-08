@@ -55,7 +55,7 @@ abstract class BaseViewSlice : ViewSlice, LayoutContainer {
         containerView = view
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     override fun cleanViewIdsCache() {
         clearFindViewByIdCache()
     }

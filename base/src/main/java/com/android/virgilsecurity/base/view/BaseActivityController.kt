@@ -40,13 +40,14 @@ import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import com.android.virgilsecurity.base.util.ContainerView
+import com.android.virgilsecurity.base.util.KoinContextName
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
+import org.koin.android.ext.android.releaseContext
 
 abstract class BaseActivityController : Activity(), LifecycleOwner {
 
@@ -56,28 +57,34 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
-    @ContainerView
-    protected abstract fun provideContainer(): ViewGroup
+    @get:KoinContextName
+    protected abstract val koinContextName: String?
+
+    @ContainerView protected abstract fun provideContainer(): ViewGroup
 
     /**
      * Used to initialize general options
      */
     protected abstract fun init(savedInstanceState: Bundle?)
+
     /**
      * Used to initialize view slices *Before*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
     protected abstract fun initViewSlices()
+
     /**
      * Used to setup view slices *After*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
     protected abstract fun setupViewSlices()
+
     /**
      * Used to setup view slices action observers *After*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
     protected abstract fun setupVSActionObservers()
+
     /**
      * Used to setup view model state observers *After*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
@@ -93,6 +100,10 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
 
         init(savedInstanceState)
         initViewSlices()
+        
+        setupViewSlices()
+        setupVSActionObservers()
+        setupVMStateObservers()
     }
 
     override fun onStart() {
@@ -103,15 +114,14 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
     override fun onResume() {
         super.onResume()
         lifecycleRegistry.markState(Lifecycle.State.RESUMED)
-
-        setupViewSlices()
-        setupVSActionObservers()
-        setupVMStateObservers()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
+
+        if (koinContextName != null)
+            releaseContext(koinContextName!!)
     }
 
     override fun onBackPressed() {

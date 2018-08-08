@@ -35,7 +35,6 @@ package com.android.virgilsecurity.feature_login.domain.registration
 
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.Do
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 /**
  * . _  _

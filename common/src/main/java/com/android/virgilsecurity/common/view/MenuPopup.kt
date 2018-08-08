@@ -34,14 +34,10 @@
 package com.android.virgilsecurity.common.view
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
-import android.graphics.drawable.ColorDrawable
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import com.android.virgilsecurity.common.R

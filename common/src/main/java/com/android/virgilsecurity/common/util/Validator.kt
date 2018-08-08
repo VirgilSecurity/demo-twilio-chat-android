@@ -33,7 +33,6 @@
 
 package com.android.virgilsecurity.common.util
 
-import android.content.Context
 import android.widget.EditText
 
 /**

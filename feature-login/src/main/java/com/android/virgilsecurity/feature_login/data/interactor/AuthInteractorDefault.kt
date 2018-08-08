@@ -35,9 +35,9 @@ package com.android.virgilsecurity.feature_login.data.interactor
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.AuthApi
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.SignInResponse
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.data.repository.UsersRepository

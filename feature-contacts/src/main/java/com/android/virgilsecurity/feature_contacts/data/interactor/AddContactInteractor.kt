@@ -33,7 +33,6 @@
 
 package com.android.virgilsecurity.feature_contacts.data.interactor
 
-import com.android.virgilsecurity.base.data.model.User
 import io.reactivex.Single
 
 /**
@@ -52,5 +51,5 @@ import io.reactivex.Single
  */
 interface AddContactInteractor {
 
-    fun addContact(interlocutor: String): Single<User>
+    fun addContact(interlocutor: String): Single<String>
 }

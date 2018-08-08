@@ -34,15 +34,11 @@
 package com.android.virgilsecurity.base.view
 
 import android.arch.lifecycle.Lifecycle
-import android.content.Context
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
 
 /**
  * . _  _
@@ -55,13 +51,12 @@ import kotlinx.android.synthetic.*
  * ....|_|-
  */
 
+// TODO extend BaseController
+
 /**
  * BaseController
  */
-abstract class BaseControllerBinding : LifecycleController(), LayoutContainer {
-
-    @get:LayoutRes
-    protected abstract val layoutResourceId: Int
+abstract class BaseControllerBinding : BaseController(), LayoutContainer {
 
     /**
      * Used to initialize view binding
@@ -69,65 +64,24 @@ abstract class BaseControllerBinding : LifecycleController(), LayoutContainer {
     protected abstract fun initViewBinding(inflater: LayoutInflater,
                                            container: ViewGroup?,
                                            @LayoutRes layoutResourceId: Int): View
-    /**
-     * Used to initialize general options
-     */
-    protected abstract fun init()
-    /**
-     * Used to initialize view slices *Before*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun initViewSlices(view: View)
-    /**
-     * Used to setup view slices *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupViewSlices(view: View)
-    /**
-     * Used to setup view slices action observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVSActionObservers()
-    /**
-     * Used to setup view model state observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVMStateObservers()
-    /**
-     * Used to request data *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     * and all View Slices and ViewModels are set up.
-     */
-    protected abstract fun initData()
-
-    override lateinit var containerView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         containerView = initViewBinding(inflater, container, layoutResourceId)
 
+        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+
         init()
         initViewSlices(containerView)
 
-        return containerView
-    }
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
-        setupViewSlices(view)
+        setupViewSlices(containerView)
         setupVSActionObservers()
         setupVMStateObservers()
         initData()
-    }
 
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-        clearFindViewByIdCache()
-//        cleanUp()
-    }
-
-    protected fun hideKeyboard() {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
+        return containerView
     }
 }

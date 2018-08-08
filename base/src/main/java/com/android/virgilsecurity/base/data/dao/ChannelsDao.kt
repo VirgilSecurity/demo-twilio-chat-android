@@ -34,7 +34,6 @@
 package com.android.virgilsecurity.base.data.dao
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.twilio.chat.Channel
 import io.reactivex.Completable
 import io.reactivex.Single
 

@@ -62,8 +62,8 @@ class ToolbarSliceContacts(
 
     private lateinit var toolbarField: Toolbar
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         this.toolbarField = toolbarContacts as Toolbar
         setupToolbar()
     }

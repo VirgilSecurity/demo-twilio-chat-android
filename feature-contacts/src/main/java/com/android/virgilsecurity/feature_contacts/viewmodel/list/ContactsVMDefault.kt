@@ -62,7 +62,7 @@ class ContactsVMDefault(
         private val joinChannelDo: JoinChannelDo
 ) : ContactsVM() {
 
-    private var listState: Int = LIST_STATE_INIT
+//    private var listState: Int = LIST_STATE_INIT
 
     init {
         state.addSource(contactsDo.getLiveData(), ::onLoadContactsResult)
@@ -94,13 +94,15 @@ class ContactsVMDefault(
                 state.value = State.ContactsLoaded(result.contacts)
 
                 if (result.contacts.isNotEmpty()) {
-                    listState = LIST_STATE_FILLED
+//                    listState = LIST_STATE_FILLED
                     state.value = State.ShowContent
-                } else if (result.contacts.isEmpty() && listState != LIST_STATE_FILLED) {
-                    state.value = State.ShowEmpty
                 }
+//                else if (result.contacts.isEmpty() && listState != LIST_STATE_FILLED) {
+//                    state.value = State.ShowEmpty
+//                }
             }
             is GetContactsDo.Result.OnError -> state.value = State.ShowError
+            GetContactsDo.Result.OnEmpty -> state.value = State.ShowEmpty
         }
     }
 

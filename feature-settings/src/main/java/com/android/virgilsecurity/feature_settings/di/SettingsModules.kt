@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_settings.di
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.feature_settings.di.Const.CONTEXT_SETTINGS
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_FOOTER
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_HEADER
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
@@ -73,23 +74,25 @@ import org.koin.dsl.module.applicationContext
  */
 
 val settingsModule: Module = applicationContext {
-    bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
-    bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
-
-    bean(LIVE_DATA_SETTINGS_MENU) { MutableLiveData<MenuSlice.Action>() }
-    bean { MenuSliceSettings(get(LIVE_DATA_SETTINGS_MENU)) as MenuSlice }
-
-    bean(LIVE_DATA_SETTINGS_HEADER) { MutableLiveData<HeaderSlice.Action>() }
-    bean { HeaderSliceSettings(get(LIVE_DATA_SETTINGS_HEADER), get()) as HeaderSlice }
-
-    bean(LIVE_DATA_SETTINGS_FOOTER) { MutableLiveData<FooterSlice.Action>() }
-    bean { FooterSliceSettings(get(LIVE_DATA_SETTINGS_FOOTER)) as FooterSlice }
-
     bean { StateSliceSettings() as StateSlice }
 
-    bean { LogoutDoDefault(get(), get()) as LogoutDo }
-    bean(MEDIATOR_DATA_SETTINGS_FOOTER) { MediatorLiveData<SettingsVM.State>() }
-    bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get()) as SettingsVM }
+    context(CONTEXT_SETTINGS) {
+        bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
+        bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
+
+        bean(LIVE_DATA_SETTINGS_MENU) { MutableLiveData<MenuSlice.Action>() }
+        bean { MenuSliceSettings(get(LIVE_DATA_SETTINGS_MENU)) as MenuSlice }
+
+        bean(LIVE_DATA_SETTINGS_HEADER) { MutableLiveData<HeaderSlice.Action>() }
+        bean { HeaderSliceSettings(get(LIVE_DATA_SETTINGS_HEADER), get()) as HeaderSlice }
+
+        bean(LIVE_DATA_SETTINGS_FOOTER) { MutableLiveData<FooterSlice.Action>() }
+        bean { FooterSliceSettings(get(LIVE_DATA_SETTINGS_FOOTER)) as FooterSlice }
+
+        bean { LogoutDoDefault(get(), get()) as LogoutDo }
+        bean(MEDIATOR_DATA_SETTINGS_FOOTER) { MediatorLiveData<SettingsVM.State>() }
+        bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get()) as SettingsVM }
+    }
 }
 
 object Const {
@@ -99,4 +102,6 @@ object Const {
     const val LIVE_DATA_SETTINGS_FOOTER = "LIVE_DATA_SETTINGS_FOOTER"
 
     const val MEDIATOR_DATA_SETTINGS_FOOTER = "MEDIATOR_DATA_SETTINGS_FOOTER"
+
+    const val CONTEXT_SETTINGS = "CONTEXT_SETTINGS"
 }

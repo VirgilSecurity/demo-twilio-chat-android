@@ -35,12 +35,11 @@ package com.android.virgilsecurity.common.data.helper.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_INTERLOCUTOR
 import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
-import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
+import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.common.util.UiUtils
 import com.twilio.accessmanager.AccessManager
 import com.twilio.chat.*

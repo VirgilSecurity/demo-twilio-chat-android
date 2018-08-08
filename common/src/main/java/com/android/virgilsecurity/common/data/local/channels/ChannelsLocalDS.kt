@@ -33,11 +33,9 @@
 
 package com.android.virgilsecurity.common.data.local.channels
 
-import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.twilio.chat.Channel
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import io.reactivex.Completable
 import io.reactivex.Single
 

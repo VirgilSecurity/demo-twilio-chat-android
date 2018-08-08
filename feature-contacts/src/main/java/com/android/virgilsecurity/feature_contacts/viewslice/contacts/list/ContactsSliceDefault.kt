@@ -65,8 +65,8 @@ class ContactsSliceDefault(
         private val layoutManager: RecyclerView.LayoutManager
 ) : BaseViewSlice(), ContactsSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onCreate() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupRecyclerView()
     }
 

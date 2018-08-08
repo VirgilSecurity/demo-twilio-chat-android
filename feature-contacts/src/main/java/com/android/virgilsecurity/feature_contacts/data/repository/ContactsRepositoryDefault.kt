@@ -39,7 +39,6 @@ import com.android.virgilsecurity.base.data.model.ChannelInfo
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.Single
 
 /**
  * . _  _

@@ -35,16 +35,15 @@ package com.android.virgilsecurity.feature_drawer_navigation.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.extension.inject
 import com.android.virgilsecurity.base.extension.observe
-import com.android.virgilsecurity.base.extension.removeObservers
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_drawer_navigation.R
+import com.android.virgilsecurity.feature_drawer_navigation.di.Const.CONTEXT_TWILIO_INIT
 import com.android.virgilsecurity.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
 import com.android.virgilsecurity.feature_drawer_navigation.viewmodel.InitTwilioVM
 import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
-import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceTwilioInit
+import org.koin.standalone.inject
 
 /**
  * . _  _
@@ -63,6 +62,7 @@ import com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit
 class TwilioInitController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_twilio_init
+    override val koinContextName: String? = CONTEXT_TWILIO_INIT
 
     private val twilioInitSlice: TwilioInitSlice by inject()
     private val stateSlice: StateSlice by inject(STATE_SLICE_TWILIO_INIT)

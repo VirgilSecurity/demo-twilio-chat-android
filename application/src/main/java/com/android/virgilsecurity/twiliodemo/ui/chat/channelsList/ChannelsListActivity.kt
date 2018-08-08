@@ -1,7 +1,5 @@
 package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 
-import com.android.virgilsecurity.base.view.BaseActivity
-
 /**
  * . _  _
  * .| || | _

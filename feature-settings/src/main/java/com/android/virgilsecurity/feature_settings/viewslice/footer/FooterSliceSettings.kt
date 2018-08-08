@@ -59,8 +59,8 @@ class FooterSliceSettings(
         private val mutableLiveData: MutableLiveData<FooterSlice.Action>
 ) : BaseViewSlice(), FooterSlice, View.OnClickListener {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupViews()
     }
 
