@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.adapter
+package com.android.virgilsecurity.feature_channels_list.viewslice.list.adapter
 
 import android.arch.lifecycle.MutableLiveData
 import android.view.View
@@ -40,11 +40,11 @@ import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
 import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.util.UserUtils
-import com.android.virgilsecurity.feature_contacts.R
-import com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.ContactsSlice
+import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_channels_list.viewslice.list.ChannelsSlice
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.item_contact.*
+import kotlinx.android.synthetic.main.item_channel.*
 
 /**
  * . _  _
@@ -52,18 +52,18 @@ import kotlinx.android.synthetic.main.item_contact.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/27/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ContactItem
+ * ChannelItem
  */
-class ContactItem(
-        private val actionLiveData: MutableLiveData<ContactsSlice.Action>,
+class ChannelItem(
+        private val actionLiveData: MutableLiveData<ChannelsSlice.Action>,
         private val userProperties: UserProperties,
-        override val layoutResourceId: Int = R.layout.item_contact
+        override val layoutResourceId: Int = R.layout.item_channel
 ) : DelegateAdapterItemDefault<ChannelInfo>() {
 
     override fun onBind(item: ChannelInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelInfo>) =
@@ -79,8 +79,8 @@ class ContactItem(
                         .into(ivUserPicContact)
 
                 containerView.setOnClickListener {
-                    actionLiveData.value = ContactsSlice.Action.ContactClicked(item)
-                    actionLiveData.value = ContactsSlice.Action.Idle
+                    actionLiveData.value = ChannelsSlice.Action.ChannelClicked(item)
+                    actionLiveData.value = ChannelsSlice.Action.Idle
                 }
 
                 tvInitialsContact.visibility = View.VISIBLE

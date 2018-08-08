@@ -62,5 +62,10 @@ interface ViewPagerSlice : ViewSlice {
 
     fun showUsers(users: List<User>)
 
-    fun showIndicator()
+    fun updateIndicator()
+
+    /**
+     * Because it's not saving its state - quickfix
+     */
+    fun resetIndicator()
 }

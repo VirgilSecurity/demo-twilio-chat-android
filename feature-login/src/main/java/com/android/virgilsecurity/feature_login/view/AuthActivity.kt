@@ -91,37 +91,35 @@ class AuthActivity(
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
-            val controller = LoginController(::login, ::registration)
-            if (router.hasNoRootController())
-                initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
-            else
-                replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
+            LoginController(::login, ::registration).run {
+                if (routerRoot.hasNoRootController())
+                    initRouter(this, LoginController.KEY_LOGIN_CONTROLLER)
+                else
+                    replaceTopController(this, LoginController.KEY_LOGIN_CONTROLLER)
+            }
+
         }
         LoginVM.State.ShowNoUsers -> {
-            val controller = NoUsersController(::registration)
-            if (router.hasNoRootController())
-                initRouter(controller, NoUsersController.KEY_NO_USERS_CONTROLLER)
-            else
-                replaceTopController(controller, NoUsersController.KEY_NO_USERS_CONTROLLER)
+            NoUsersController(::registration).run {
+                if (routerRoot.hasNoRootController())
+                    initRouter(this, NoUsersController.KEY_NO_USERS_CONTROLLER)
+                else
+                    replaceTopController(this, NoUsersController.KEY_NO_USERS_CONTROLLER)
+            }
         }
         LoginVM.State.ShowLoading -> Unit
         LoginVM.State.ShowContent -> Unit
         LoginVM.State.LoginError -> Unit
         LoginVM.State.ShowError -> {
-            val controller = LoginController(::login, ::registration)
-            if (router.hasNoRootController())
-                initRouter(controller, LoginController.KEY_LOGIN_CONTROLLER)
-            else
-                replaceTopController(controller, LoginController.KEY_LOGIN_CONTROLLER)
+            LoginController(::login, ::registration).run {
+                if (routerRoot.hasNoRootController())
+                    initRouter(this, LoginController.KEY_LOGIN_CONTROLLER)
+                else
+                    replaceTopController(this, LoginController.KEY_LOGIN_CONTROLLER)
+            }
         }
         is LoginVM.State.LoginSuccess -> login(state.user)
     }
-
-    private fun replaceTopController(controller: Controller, tag: String) =
-            router.replaceTopController(RouterTransaction
-                                                .with(controller)
-                                                .pushChangeHandler(SimpleSwapChangeHandler())
-                                                .tag(tag))
 
     fun login(user: User) =
             screenRouter.getScreenIntent(this,
@@ -137,26 +135,36 @@ class AuthActivity(
 
     fun registration() {
         pushController(RegistrationController(::login),
-                             RegistrationController.KEY_REGISTRATION_CONTROLLER)
+                       RegistrationController.KEY_REGISTRATION_CONTROLLER)
     }
 
     private fun initRouter(controller: Controller, tag: String) =
-            router.setRoot(RouterTransaction
-                                   .with(controller)
+            routerRoot.setRoot(RouterTransaction
+                                   .with(controller.apply {
+                                       retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                   })
                                    .pushChangeHandler(SimpleSwapChangeHandler())
                                    .popChangeHandler(SimpleSwapChangeHandler())
                                    .tag(tag))
 
+    private fun replaceTopController(controller: Controller, tag: String) =
+            routerRoot.replaceTopController(RouterTransaction
+                                                .with(controller.apply {
+                                                    retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                                })
+                                                .pushChangeHandler(SimpleSwapChangeHandler())
+                                                .tag(tag))
+
     private fun pushController(controller: Controller, tag: String) =
-            router.pushController(RouterTransaction
+            routerRoot.pushController(RouterTransaction
                                           .with(controller)
                                           .pushChangeHandler(HorizontalChangeHandler())
                                           .popChangeHandler(HorizontalChangeHandler())
                                           .tag(tag))
 
     override fun onBackPressed() {
-        if (router.backstackSize > 1) {
-            router.popToRoot()
+        if (routerRoot.backstackSize > 1) {
+            routerRoot.popToRoot()
         } else {
             if (doubleBack.tryToPress())
                 super.onBackPressed()

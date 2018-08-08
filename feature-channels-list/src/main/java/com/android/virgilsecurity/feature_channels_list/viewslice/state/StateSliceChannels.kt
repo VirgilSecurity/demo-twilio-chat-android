@@ -31,17 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.viewslice.login.list
+package com.android.virgilsecurity.feature_channels_list.viewslice.state
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import com.android.virgilsecurity.base.data.model.User
+import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import com.android.virgilsecurity.feature_login.viewslice.login.list.ViewPagerSlice.Action
-import com.android.virgilsecurity.feature_login.viewslice.login.list.adapter.UserPagerAdapter
-import kotlinx.android.synthetic.main.controller_login.*
+import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
+import com.android.virgilsecurity.feature_channels_list.R.id.clNoContacts
+import kotlinx.android.synthetic.main.controller_channels_list.*
 
 /**
  * . _  _
@@ -49,40 +45,57 @@ import kotlinx.android.synthetic.main.controller_login.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ViewPagerSliceDefault
+ * StateSliceChannels
  */
-class ViewPagerSliceDefault(
-        private val adapter: UserPagerAdapter,
-        private val actionLiveData: MutableLiveData<Action>
-) : BaseViewSlice(), ViewPagerSlice {
+class StateSliceChannels : BaseViewSlice(), StateSliceEmptyable {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onCreate() {
-        setupViewPager()
+    override fun showLoading() = show(LOADING)
+
+    override fun showContent() = show(CONTENT)
+
+    override fun showError() = show(ERROR)
+
+    override fun showEmpty() = show(EMPTY)
+
+    private fun show(state: Int) {
+        when (state) {
+            CONTENT -> {
+                pbLoading.visibility = View.INVISIBLE
+                clNoChannels.visibility = View.INVISIBLE
+                rvChannels.visibility = View.VISIBLE
+                tvError.visibility = View.INVISIBLE
+            }
+            LOADING -> {
+                pbLoading.visibility = View.VISIBLE
+                clNoChannels.visibility = View.INVISIBLE
+                rvChannels.visibility = View.INVISIBLE
+                tvError.visibility = View.INVISIBLE
+            }
+            EMPTY -> {
+                pbLoading.visibility = View.INVISIBLE
+                clNoChannels.visibility = View.VISIBLE
+                rvChannels.visibility = View.INVISIBLE
+                tvError.visibility = View.INVISIBLE
+            }
+            ERROR -> {
+                pbLoading.visibility = View.INVISIBLE
+                clNoChannels.visibility = View.INVISIBLE
+                rvChannels.visibility = View.INVISIBLE
+                tvError.visibility = View.VISIBLE
+            }
+        }
     }
 
-    private fun setupViewPager() {
-        vpUsers.adapter = adapter
-    }
-
-    override fun getAction(): LiveData<Action> = actionLiveData
-
-    override fun showUsers(users: List<User>) {
-        adapter.setUsers(users)
-    }
-
-    override fun updateIndicator() {
-        vpIndicatorUsers.setupWithViewPager(vpUsers)
-    }
-
-    override fun resetIndicator() {
-        vpUsers.setCurrentItem(0, false) // While indicator is not saving it's state
-        vpIndicatorUsers.setupWithViewPager(vpUsers)
+    companion object {
+        const val CONTENT = 0
+        const val LOADING = 1
+        const val ERROR = 2
+        const val EMPTY = 3
     }
 }

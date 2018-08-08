@@ -31,7 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.exception
+package com.android.virgilsecurity.feature_channels_list.domain.list
+
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.domain.Do
 
 /**
  * . _  _
@@ -39,15 +42,21 @@ package com.android.virgilsecurity.feature_contacts.data.exception
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/6/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * EmptyCardsException
+ * GetChannelsDo
  */
-class EmptyCardsException(
-        message: String? = null,
-        exception: Exception? = null
-) : RuntimeException(message, exception)
+interface GetChannelsDo : Do<GetChannelsDo.Result> {
+
+    sealed class Result {
+        data class OnSuccess(val contacts: List<ChannelInfo>) : Result()
+        object OnEmpty : Result()
+        data class OnError(val error: Throwable) : Result()
+    }
+
+    fun execute()
+}

@@ -104,11 +104,16 @@ class LoginController() : BaseController() {
 
     override fun initData() {}
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        viewPagerSlice.resetIndicator() // Temporary fix cuz indicator doesn't save its state
+    }
+
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
             viewPagerSlice.showUsers(state.users)
             stateSlice.showContent()
-            viewPagerSlice.showIndicator()
+            viewPagerSlice.updateIndicator()
         }
         LoginVM.State.ShowLoading -> stateSlice.showLoading()
         LoginVM.State.ShowError -> stateSlice.showError()

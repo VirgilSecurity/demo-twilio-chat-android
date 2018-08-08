@@ -133,11 +133,12 @@ class DrawerNavigationActivity(
                                    stateSlice.openDrawer()
                                },
                                {
-                                   pushController(AddContactController(::openChannel),
+                                   stateSlice.lockDrawer()
+                                   pushController(AddContactController(::openChannelNotFromChannels),
                                                   AddContactController.KEY_ADD_CONTACT_CONTROLLER)
                                },
                                {
-                                   openChannel(it)
+                                   openChannelNotFromChannels(it)
                                })
 
     private fun channelsController() =
@@ -161,7 +162,7 @@ class DrawerNavigationActivity(
             }
 
     private fun replaceTopController(controller: Controller, tag: String) =
-            router.replaceTopController(RouterTransaction
+            routerRoot.replaceTopController(RouterTransaction
                                                 .with(controller.apply {
                                                     retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
                                                 })
@@ -169,15 +170,14 @@ class DrawerNavigationActivity(
                                                 .tag(tag))
 
     private fun pushController(controller: Controller, tag: String) =
-            router.pushController(RouterTransaction
+            routerRoot.pushController(RouterTransaction
                                           .with(controller)
                                           .pushChangeHandler(HorizontalChangeHandler())
                                           .popChangeHandler(HorizontalChangeHandler())
                                           .tag(tag))
 
-    private fun openChannel(interlocutor: String) {
-        stateSlice.lockDrawer()
-        router.setBackstack(
+    private fun openChannelNotFromChannels(interlocutor: String) {
+        routerRoot.setBackstack(
             listOf(RouterTransaction
                            .with(channelsController().apply {
                                retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
@@ -189,9 +189,12 @@ class DrawerNavigationActivity(
         pushController(ChannelController(interlocutor), ChannelController.KEY_CHANNEL_CONTROLLER)
     }
 
+    private fun openChannel(interlocutor: String) =
+        pushController(ChannelController(interlocutor), ChannelController.KEY_CHANNEL_CONTROLLER)
+
     private fun initRouter() {
-        if (router.hasNoRootController())
-            router.setRoot(RouterTransaction
+        if (routerRoot.hasNoRootController())
+            routerRoot.setRoot(RouterTransaction
                                    .with(TwilioInitController(user)
                                          {
                                              onActionChanged(DrawerSlice.Action.ChannelsListClicked)
@@ -200,7 +203,7 @@ class DrawerNavigationActivity(
                                    .popChangeHandler(SimpleSwapChangeHandler())
                                    .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
 
-        router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
+        routerRoot.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
             override fun onChangeStarted(to: Controller?,
                                          from: Controller?,
                                          isPush: Boolean,

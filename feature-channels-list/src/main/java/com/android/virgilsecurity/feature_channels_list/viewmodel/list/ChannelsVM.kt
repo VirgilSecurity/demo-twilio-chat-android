@@ -31,7 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.exception
+package com.android.virgilsecurity.feature_channels_list.viewmodel.list
+
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.ViewModel
+import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.twilio.chat.Channel
 
 /**
  * . _  _
@@ -39,15 +45,31 @@ package com.android.virgilsecurity.feature_contacts.data.exception
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/6/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * EmptyCardsException
+ * ChannelsVM
  */
-class ManyCardsException(
-        message: String? = null,
-        exception: Exception? = null
-) : RuntimeException(message, exception)
+abstract class ChannelsVM : ViewModel() {
+
+    sealed class State {
+        data class ContactsLoaded(val contacts: List<ChannelInfo>) : State()
+        object ShowEmpty : State()
+        object ShowLoading : State()
+        object ShowContent : State()
+        object ShowError : State()
+        data class ContactChanged(val change: ChannelsApi.ChannelsChanges) : State()
+        data class OnJoinSuccess(val channel: ChannelInfo) : State()
+    }
+
+    abstract fun getState() : LiveData<State>
+
+    abstract fun contacts()
+
+    abstract fun observeContactsChanges()
+
+    abstract fun joinChannel(channel: Channel)
+}

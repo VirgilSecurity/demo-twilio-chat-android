@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/clNoContacts"
+        android:id="@+id/clNoChannels"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/rect_primary_dark_rounded_6"
@@ -55,19 +55,19 @@
         app:layout_constraintTop_toBottomOf="@id/toolbarChannelsList">
 
         <ImageView
-            android:id="@+id/ivNoContacts"
+            android:id="@+id/ivNoChannels"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/no_chats_image"
             android:src="@drawable/ic_chats_empty"
-            app:layout_constraintBottom_toTopOf="@id/tvNoContacts"
+            app:layout_constraintBottom_toTopOf="@id/tvNoChannels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/tvNoContacts"
+            android:id="@+id/tvNoChannels"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -78,13 +78,39 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivNoContacts" />
+            app:layout_constraintTop_toBottomOf="@id/ivNoChannels" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvChannel"
+        android:id="@+id/rvChannels"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChannelsList" />
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        style="@style/AccentProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChannelsList" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/error_loading_channels"
+        android:textColor="@color/snow"
+        android:textSize="12sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

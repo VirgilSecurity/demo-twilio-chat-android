@@ -31,14 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.interactor
+package com.android.virgilsecurity.feature_channels_list.domain.list
 
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.android.virgilsecurity.common.data.exception.EmptyCardsException
-import com.android.virgilsecurity.common.data.exception.ManyCardsException
-import io.reactivex.Single
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.feature_channels_list.data.repository.ChannelsRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -46,30 +45,41 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactInteractorDefault
+ * GetChannelsDoDefault
  */
-class AddContactInteractorDefault(
-        private val contactsApi: ChannelsApi,
-        private val virgilHelper: VirgilHelper,
-        private val userProperties: UserProperties
-) : AddContactInteractor {
+class GetChannelsDoDefault(
+        private val channelsRepository: ChannelsRepository
+) : BaseDo<GetChannelsDo.Result>(), GetChannelsDo {
 
-    override fun addContact(interlocutor: String): Single<String> =
-            virgilHelper.searchCards(interlocutor).flatMap { cards ->
-                when {
-                    cards.isEmpty() -> throw EmptyCardsException()
-                    cards.size > 1 -> throw ManyCardsException()
-                    else -> {
-                        contactsApi.createChannel(userProperties.currentUser!!.identity,
-                                                  interlocutor)
-                                .toSingle { interlocutor }
+    private var atLeastOneItemPresent = false
+
+    override fun execute() =
+            channelsRepository.contacts()
+                    .doOnNext {
+                        if (it.isNotEmpty())
+                            atLeastOneItemPresent = true
                     }
-                }
-            }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error, ::ifEmpty)
+                    .track()
+
+    private fun success(users: List<ChannelInfo>) {
+        liveData.value = GetChannelsDo.Result.OnSuccess(users)
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = GetChannelsDo.Result.OnError(throwable)
+    }
+
+    private fun ifEmpty() {
+        if (!atLeastOneItemPresent)
+            liveData.value = GetChannelsDo.Result.OnEmpty
+    }
 }

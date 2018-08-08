@@ -31,14 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.viewmodel.list
+package com.android.virgilsecurity.feature_channels_list.viewmodel.list
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.feature_contacts.domain.list.GetContactsDo
-import com.android.virgilsecurity.feature_contacts.domain.list.JoinChannelDo
-import com.android.virgilsecurity.feature_contacts.domain.list.ObserveContactsChangesDo
+import com.android.virgilsecurity.feature_channels_list.domain.list.GetChannelsDo
+import com.android.virgilsecurity.feature_channels_list.domain.list.JoinChannelDo
+import com.android.virgilsecurity.feature_channels_list.domain.list.ObserveChannelsChangeDo
 import com.twilio.chat.Channel
 
 /**
@@ -47,24 +47,24 @@ import com.twilio.chat.Channel
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactVMDefault
+ * ChannelsVMDefault
  */
-class ContactsVMDefault(
+class ChannelsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val contactsDo: GetContactsDo,
-        private val observeContactsChangesDo: ObserveContactsChangesDo,
+        private val getChannelsDo: GetChannelsDo,
+        private val observeChannelsChangeDo: ObserveChannelsChangeDo,
         private val joinChannelDo: JoinChannelDo
-) : ContactsVM() {
+) : ChannelsVM() {
 
     init {
-        state.addSource(contactsDo.getLiveData(), ::onLoadContactsResult)
-        state.addSource(observeContactsChangesDo.getLiveData(), ::onContactsChanged)
+        state.addSource(getChannelsDo.getLiveData(), ::onLoadContactsResult)
+        state.addSource(observeChannelsChangeDo.getLiveData(), ::onContactsChanged)
         state.addSource(joinChannelDo.getLiveData(), ::onJoinChannelResult)
     }
 
@@ -72,31 +72,31 @@ class ContactsVMDefault(
 
     override fun contacts() {
         state.value = State.ShowLoading
-        contactsDo.execute()
+        getChannelsDo.execute()
     }
 
-    override fun observeContactsChanges() = observeContactsChangesDo.execute()
+    override fun observeContactsChanges() = observeChannelsChangeDo.execute()
 
     override fun joinChannel(channel: Channel) {
         joinChannelDo.execute(channel)
     }
 
     override fun onCleared() {
-        contactsDo.cleanUp()
-        observeContactsChangesDo.cleanUp()
+        getChannelsDo.cleanUp()
+        observeChannelsChangeDo.cleanUp()
     }
 
-    private fun onLoadContactsResult(result: GetContactsDo.Result?) {
+    private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
         when (result) {
-            is GetContactsDo.Result.OnSuccess -> {
+            is GetChannelsDo.Result.OnSuccess -> {
                 state.value = State.ContactsLoaded(result.contacts)
 
                 if (result.contacts.isNotEmpty()) {
                     state.value = State.ShowContent
                 }
             }
-            is GetContactsDo.Result.OnError -> state.value = State.ShowError
-            GetContactsDo.Result.OnEmpty -> state.value = State.ShowEmpty
+            is GetChannelsDo.Result.OnError -> state.value = State.ShowError
+            GetChannelsDo.Result.OnEmpty -> state.value = State.ShowEmpty
         }
     }
 

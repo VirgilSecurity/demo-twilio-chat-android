@@ -53,7 +53,7 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
 
     private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 
-    protected lateinit var router: Router
+    protected lateinit var routerRoot: Router
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -96,11 +96,11 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
         lifecycleRegistry.markState(Lifecycle.State.CREATED)
         setContentView(layoutResourceId)
 
-        router = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
+        routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
 
         init(savedInstanceState)
         initViewSlices()
-        
+
         setupViewSlices()
         setupVSActionObservers()
         setupVMStateObservers()
@@ -125,7 +125,7 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
     }
 
     override fun onBackPressed() {
-        if (!router.handleBack())
+        if (!routerRoot.handleBack())
             super.onBackPressed()
     }
 

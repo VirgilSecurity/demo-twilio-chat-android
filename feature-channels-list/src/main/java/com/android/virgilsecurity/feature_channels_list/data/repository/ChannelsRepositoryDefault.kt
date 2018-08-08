@@ -31,14 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.interactor
+package com.android.virgilsecurity.feature_channels_list.data.repository
 
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.android.virgilsecurity.common.data.exception.EmptyCardsException
-import com.android.virgilsecurity.common.data.exception.ManyCardsException
-import io.reactivex.Single
+import com.android.virgilsecurity.base.data.dao.ChannelsDao
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Observable
 
 /**
  * . _  _
@@ -46,30 +46,28 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactInteractorDefault
+ * ChannelsRepositoryDefault
  */
-class AddContactInteractorDefault(
+class ChannelsRepositoryDefault(
         private val contactsApi: ChannelsApi,
-        private val virgilHelper: VirgilHelper,
-        private val userProperties: UserProperties
-) : AddContactInteractor {
+        private val contactsDao: ChannelsDao
+) : ChannelsRepository {
 
-    override fun addContact(interlocutor: String): Single<String> =
-            virgilHelper.searchCards(interlocutor).flatMap { cards ->
-                when {
-                    cards.isEmpty() -> throw EmptyCardsException()
-                    cards.size > 1 -> throw ManyCardsException()
-                    else -> {
-                        contactsApi.createChannel(userProperties.currentUser!!.identity,
-                                                  interlocutor)
-                                .toSingle { interlocutor }
-                    }
-                }
-            }
+    override fun addContact(channel: ChannelInfo): Completable =
+            contactsApi.createChannel(channel.sender,
+                                      channel.interlocutor)
+                    .andThen { contactsDao.addChannel(channel) }
+
+    override fun contacts(): Observable<List<ChannelInfo>> =
+            Observable.concatArray(contactsDao.getUserChannels().toObservable(),
+                                   contactsApi.getUserChannels())
+
+    override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
+            contactsApi.observeChannelsChanges()
 }

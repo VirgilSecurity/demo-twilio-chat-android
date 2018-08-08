@@ -108,7 +108,7 @@ val contactsModule: Module = applicationContext {
         bean(TOOLBAR_CONTACTS_LIST) { ToolbarSliceContacts(get(LD_TOOLBAR_CONTACTS)) as com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice }
 
         bean(LD_LIST_CONTACTS) { MutableLiveData<ContactsSlice.Action>() }
-        bean(ITEM_ADAPTER_CONTACT) { ContactItem(get(LD_LIST_CONTACTS)) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo> }
+        bean(ITEM_ADAPTER_CONTACT) { ContactItem(get(LD_LIST_CONTACTS), get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo> }
         bean {
             DelegateAdapter.Builder<ChannelInfo>()
                     .add(get(ITEM_ADAPTER_CONTACT))

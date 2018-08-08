@@ -47,4 +47,8 @@ dependencies {
     support()
     conductor()
     koin()
+    twilio()
+    reactiveness()
+    architectureComponents()
+    glide()
 }

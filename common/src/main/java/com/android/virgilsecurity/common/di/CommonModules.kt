@@ -128,7 +128,7 @@ val paramsModule : Module = applicationContext {
 }
 
 val channelsModule: Module = applicationContext {
-    bean { MapperToChannelInfo() }
+    bean { MapperToChannelInfo(get()) }
     bean { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
     bean { (get() as RoomDB).channelsDao() }
     bean { ChannelsLocalDS(get(), get()) as ChannelsDao }
