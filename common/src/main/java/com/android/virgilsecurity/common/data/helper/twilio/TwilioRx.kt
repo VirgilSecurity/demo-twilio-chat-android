@@ -351,8 +351,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                     }
 
                     override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(
-                            errorInfo))
+                        it.onError(ErrorInfoWrapper(errorInfo))
                     }
                 })
             }

@@ -54,7 +54,7 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
 interface ChannelsSlice : ViewSlice {
 
     sealed class Action {
-        data class ChannelClicked(val contact: ChannelInfo) : Action()
+        data class ChannelClicked(val channel: ChannelInfo) : Action()
         object Idle : Action()
     }
 

@@ -35,24 +35,19 @@ package com.android.virgilsecurity.feature_contacts.di
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItem
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
-import com.android.virgilsecurity.base.view.adapter.DiffCallback
-import com.android.virgilsecurity.common.view.adapter.ItemDecoratorBottomDivider
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
-import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.data.interactor.AddContactInteractor
 import com.android.virgilsecurity.feature_contacts.data.interactor.AddContactInteractorDefault
 import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepository
 import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepositoryDefault
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_CONTACTS
-import com.android.virgilsecurity.feature_contacts.di.Const.DIVIDER_DRAWABLE
 import com.android.virgilsecurity.feature_contacts.di.Const.ITEM_ADAPTER_CONTACT
 import com.android.virgilsecurity.feature_contacts.di.Const.LD_LIST_CONTACTS
 import com.android.virgilsecurity.feature_contacts.di.Const.LD_TOOLBAR_ADD_CONTACT
@@ -97,9 +92,6 @@ import org.koin.dsl.module.applicationContext
  */
 
 val contactsModule: Module = applicationContext {
-    bean { DiffCallback<ChannelInfo>() }
-    bean(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
-    bean { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
     bean { ContactsRepositoryDefault(get(), get()) as ContactsRepository }
     bean(STATE_CONTACTS) { StateSliceContacts() as StateSliceEmptyable }
 
@@ -120,7 +112,7 @@ val contactsModule: Module = applicationContext {
         bean { ContactsSliceDefault(get(LD_LIST_CONTACTS), get(), get(), get()) as ContactsSlice }
 
         bean { GetContactsDoDefault(get()) as GetContactsDo }
-        bean(MLD_CONTACTS) { MediatorLiveData<AddContactVM.State>() }
+        bean(MLD_CONTACTS) { MediatorLiveData<ContactsVM.State>() }
         bean { ObserveContactsChangesDoDefault(get()) as ObserveContactsChangesDo }
         bean { JoinChannelDoDefault(get()) as JoinChannelDo }
         bean { ContactsVMDefault(get(MLD_CONTACTS), get(), get(), get()) as ContactsVM }
@@ -146,7 +138,6 @@ object Const {
     const val LD_LIST_CONTACTS = "LD_LIST_CONTACTS"
     const val MLD_CONTACTS = "MLD_CONTACTS"
     const val STATE_CONTACTS = "STATE_CONTACTS"
-    const val DIVIDER_DRAWABLE = "DIVIDER_DRAWABLE"
     const val ITEM_ADAPTER_CONTACT = "ITEM_ADAPTER_CONTACT"
     const val MLD_ADD_CONTACT = "MLD_ADD_CONTACT"
     const val LD_TOOLBAR_ADD_CONTACT = "LD_TOOLBAR_ADD_CONTACT"

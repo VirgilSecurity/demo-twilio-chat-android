@@ -35,13 +35,13 @@ package com.android.virgilsecurity.feature_contacts.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
-import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_CONTACTS
+import com.android.virgilsecurity.feature_contacts.di.Const.STATE_CONTACTS
 import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.android.virgilsecurity.feature_contacts.viewmodel.list.ContactsVM
 import com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.ContactsSlice
@@ -69,8 +69,9 @@ class ContactsController() : BaseController() {
 
     private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CONTACTS_LIST)
     private val contactsSlice: ContactsSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject()
+    private val stateSlice: StateSliceEmptyable by inject(STATE_CONTACTS)
     private val viewModel: ContactsVM by inject()
+    private val userProperties: UserProperties by inject()
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
@@ -100,7 +101,11 @@ class ContactsController() : BaseController() {
     }
 
     private fun onContactsActionChanged(action: ContactsSlice.Action) = when (action) {
-        is ContactsSlice.Action.ContactClicked -> openChannel(action.contact.interlocutor)
+        is ContactsSlice.Action.ContactClicked -> {
+            (userProperties.currentUser!!.identity == action.contact.interlocutor).run {
+                openChannel(if (this) action.contact.sender else action.contact.interlocutor)
+            }
+        }
         ContactsSlice.Action.Idle -> Unit
     }
 

@@ -70,12 +70,12 @@ class ChannelsVMDefault(
 
     override fun getState(): LiveData<State> = state
 
-    override fun contacts() {
+    override fun channels() {
         state.value = State.ShowLoading
         getChannelsDo.execute()
     }
 
-    override fun observeContactsChanges() = observeChannelsChangeDo.execute()
+    override fun observeChannelsChanges() = observeChannelsChangeDo.execute()
 
     override fun joinChannel(channel: Channel) {
         joinChannelDo.execute(channel)
@@ -89,7 +89,7 @@ class ChannelsVMDefault(
     private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
         when (result) {
             is GetChannelsDo.Result.OnSuccess -> {
-                state.value = State.ContactsLoaded(result.contacts)
+                state.value = State.ChannelsLoaded(result.contacts)
 
                 if (result.contacts.isNotEmpty()) {
                     state.value = State.ShowContent
@@ -101,7 +101,7 @@ class ChannelsVMDefault(
     }
 
     private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
-        state.value = State.ContactChanged(result!!)
+        state.value = State.ChannelChanged(result!!)
     }
 
     private fun onJoinChannelResult(result: JoinChannelDo.Result?) {

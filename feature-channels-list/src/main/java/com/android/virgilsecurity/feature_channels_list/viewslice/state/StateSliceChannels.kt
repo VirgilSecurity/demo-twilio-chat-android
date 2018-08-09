@@ -36,7 +36,6 @@ package com.android.virgilsecurity.feature_channels_list.viewslice.state
 import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
-import com.android.virgilsecurity.feature_channels_list.R.id.clNoContacts
 import kotlinx.android.synthetic.main.controller_channels_list.*
 
 /**

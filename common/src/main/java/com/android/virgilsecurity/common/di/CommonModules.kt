@@ -35,10 +35,14 @@ package com.android.virgilsecurity.common.di
 
 import android.arch.persistence.room.Room
 import android.content.Context
+import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
 import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.view.adapter.DiffCallback
+import com.android.virgilsecurity.common.R
 import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
 import com.android.virgilsecurity.common.data.helper.room.RoomDB
 import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
@@ -53,10 +57,12 @@ import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGenerator
 import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGeneratorDefault
 import com.android.virgilsecurity.common.data.remote.channels.ChannelsRemoteDS
 import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
+import com.android.virgilsecurity.common.di.CommonDiConst.DIVIDER_DRAWABLE
 import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
 import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.common.util.ImageStorage
+import com.android.virgilsecurity.common.view.adapter.ItemDecoratorBottomDivider
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
@@ -127,15 +133,20 @@ val paramsModule : Module = applicationContext {
     bean(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
 }
 
+// This module in common because for now we using it for contacts screen also
 val channelsModule: Module = applicationContext {
     bean { MapperToChannelInfo(get()) }
     bean { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
     bean { (get() as RoomDB).channelsDao() }
     bean { ChannelsLocalDS(get(), get()) as ChannelsDao }
+    bean { DiffCallback<ChannelInfo>() }
+    bean(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
+    bean { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
 }
 
 object CommonDiConst {
     const val KEY_ROOM_DB_NAME = "ROOM_DB_NAME"
+    const val DIVIDER_DRAWABLE = "DIVIDER_DRAWABLE"
 
     const val STORAGE_PATH = "storagePath"
     const val ROOM_DB_NAME = "virgil_messenger_database"

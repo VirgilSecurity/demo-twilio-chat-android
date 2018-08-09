@@ -34,14 +34,19 @@
 package com.android.virgilsecurity.feature_channels_list.view
 
 import android.view.View
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
-import com.android.virgilsecurity.base.extension.removeObservers
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_channels_list.R
+import com.android.virgilsecurity.feature_channels_list.di.Const
 import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
+import com.android.virgilsecurity.feature_channels_list.di.Const.STATE_CHANNELS
+import com.android.virgilsecurity.feature_channels_list.di.Const.TOOLBAR_CHANNELS_LIST
+import com.android.virgilsecurity.feature_channels_list.viewmodel.list.ChannelsVM
+import com.android.virgilsecurity.feature_channels_list.viewslice.list.ChannelsSlice
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
-import kotlinx.android.synthetic.main.controller_channels_list.*
 import org.koin.standalone.inject
 
 
@@ -64,50 +69,96 @@ class ChannelsListController() : BaseController() {
     override val layoutResourceId: Int = R.layout.controller_channels_list
     override val koinContextName: String? = CONTEXT_CHANNELS_LIST
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CHANNELS_LIST)
+    private val channelsSlice: ChannelsSlice by inject()
+    private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNELS)
+    private val viewModel: ChannelsVM by inject()
+    private val userProperties: UserProperties by inject()
 
-    private lateinit var user: User
-    private lateinit var onChatClick: (String) -> Unit
     private lateinit var openDrawer: () -> Unit
+    private lateinit var openChannel: (String) -> Unit
 
-    constructor(user: User, onChatClick: (interlocutor: String) -> Unit, openDrawer: () -> Unit) : this() {
-        this.user = user
-        this.onChatClick = onChatClick
+    constructor(openDrawer: () -> Unit,
+                openChannel: (interlocutor: String) -> Unit) : this() {
         this.openDrawer = openDrawer
+        this.openChannel = openChannel
     }
 
-    override fun init() {
-//        tvUsername.text = user.identity
-//        clNoContacts.setOnClickListener { onChatClick(user.identity) }
-    }
+    override fun init() {}
 
     override fun initViewSlices(view: View) {
         toolbarSlice.init(lifecycle, view)
+        channelsSlice.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
     }
 
-    override fun setupViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupViewSlices(view: View) {}
 
     override fun setupVSActionObservers() {
-        removeObservers(toolbarSlice.getAction())
-        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
+        observe(channelsSlice.getAction(), ::onChannelsActionChanged)
+    }
+
+    private fun onChannelsActionChanged(action: ChannelsSlice.Action) = when (action) {
+        is ChannelsSlice.Action.ChannelClicked -> {
+            (userProperties.currentUser!!.identity == action.channel.interlocutor).run {
+                openChannel(if (this) action.channel.sender else action.channel.interlocutor)
+            }
+        }
+        ChannelsSlice.Action.Idle -> Unit
     }
 
     override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {
-        // TODO Implement body or it will be empty ):
+        viewModel.channels()
+        viewModel.observeChannelsChanges()
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
+    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.HamburgerClicked -> openDrawer()
         ToolbarSlice.Action.Idle -> Unit
     }
 
+    private fun onStateChanged(state: ChannelsVM.State): Unit = when (state) {
+        is ChannelsVM.State.ChannelsLoaded -> channelsSlice.showChannels(state.channels)
+        ChannelsVM.State.ShowEmpty -> stateSlice.showEmpty()
+        ChannelsVM.State.ShowContent -> stateSlice.showContent()
+        ChannelsVM.State.ShowLoading -> stateSlice.showLoading()
+        ChannelsVM.State.ShowError -> stateSlice.showError()
+        is ChannelsVM.State.ChannelChanged -> onChannelChanged(state.change)
+        is ChannelsVM.State.OnJoinSuccess -> {
+            channelsSlice.showChannels(listOf(state.channel))
+            stateSlice.showContent()
+        }
+    }
+
+    private fun onChannelChanged(change: ChannelsApi.ChannelsChanges) = when(change) {
+        is ChannelsApi.ChannelsChanges.ChannelDeleted -> Unit
+        is ChannelsApi.ChannelsChanges.InvitedToChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ClientSynchronization -> Unit
+        ChannelsApi.ChannelsChanges.NotificationSubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.UserSubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelUpdated -> Unit
+        is ChannelsApi.ChannelsChanges.RemovedFromChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.NotificationFailed -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelJoined -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelAdded -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
+        is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
+        is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ChannelInvited -> viewModel.joinChannel(change.channel!!)
+        is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
+        is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
+        is ChannelsApi.ChannelsChanges.Error -> Unit
+        is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
+        is ChannelsApi.ChannelsChanges.Exception -> Unit
+    }
+
     companion object {
         const val KEY_CHANNELS_LIST_CONTROLLER = "KEY_CHANNELS_LIST_CONTROLLER"
+        private val TAG = ChannelsListController::class.java.simpleName
     }
 }

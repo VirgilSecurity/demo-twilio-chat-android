@@ -56,20 +56,20 @@ import com.twilio.chat.Channel
 abstract class ChannelsVM : ViewModel() {
 
     sealed class State {
-        data class ContactsLoaded(val contacts: List<ChannelInfo>) : State()
+        data class ChannelsLoaded(val channels: List<ChannelInfo>) : State()
         object ShowEmpty : State()
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
-        data class ContactChanged(val change: ChannelsApi.ChannelsChanges) : State()
+        data class ChannelChanged(val change: ChannelsApi.ChannelsChanges) : State()
         data class OnJoinSuccess(val channel: ChannelInfo) : State()
     }
 
     abstract fun getState() : LiveData<State>
 
-    abstract fun contacts()
+    abstract fun channels()
 
-    abstract fun observeContactsChanges()
+    abstract fun observeChannelsChanges()
 
     abstract fun joinChannel(channel: Channel)
 }

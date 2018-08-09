@@ -142,12 +142,11 @@ class DrawerNavigationActivity(
                                })
 
     private fun channelsController() =
-            ChannelsListController(user,
-                                   {
-                                       openChannel(it)
+            ChannelsListController({
+                                       stateSlice.openDrawer()
                                    },
                                    {
-                                       stateSlice.openDrawer()
+                                       openChannel(it)
                                    })
 
     private fun settingsController() =
@@ -163,18 +162,18 @@ class DrawerNavigationActivity(
 
     private fun replaceTopController(controller: Controller, tag: String) =
             routerRoot.replaceTopController(RouterTransaction
-                                                .with(controller.apply {
-                                                    retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                                                })
-                                                .pushChangeHandler(SimpleSwapChangeHandler())
-                                                .tag(tag))
+                                                    .with(controller.apply {
+                                                        retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                                    })
+                                                    .pushChangeHandler(SimpleSwapChangeHandler())
+                                                    .tag(tag))
 
     private fun pushController(controller: Controller, tag: String) =
             routerRoot.pushController(RouterTransaction
-                                          .with(controller)
-                                          .pushChangeHandler(HorizontalChangeHandler())
-                                          .popChangeHandler(HorizontalChangeHandler())
-                                          .tag(tag))
+                                              .with(controller)
+                                              .pushChangeHandler(HorizontalChangeHandler())
+                                              .popChangeHandler(HorizontalChangeHandler())
+                                              .tag(tag))
 
     private fun openChannelNotFromChannels(interlocutor: String) {
         routerRoot.setBackstack(
@@ -190,18 +189,19 @@ class DrawerNavigationActivity(
     }
 
     private fun openChannel(interlocutor: String) =
-        pushController(ChannelController(interlocutor), ChannelController.KEY_CHANNEL_CONTROLLER)
+            pushController(ChannelController(interlocutor),
+                           ChannelController.KEY_CHANNEL_CONTROLLER)
 
     private fun initRouter() {
         if (routerRoot.hasNoRootController())
             routerRoot.setRoot(RouterTransaction
-                                   .with(TwilioInitController(user)
-                                         {
-                                             onActionChanged(DrawerSlice.Action.ChannelsListClicked)
-                                         })
-                                   .pushChangeHandler(SimpleSwapChangeHandler())
-                                   .popChangeHandler(SimpleSwapChangeHandler())
-                                   .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
+                                       .with(TwilioInitController(user)
+                                             {
+                                                 onActionChanged(DrawerSlice.Action.ChannelsListClicked)
+                                             })
+                                       .pushChangeHandler(SimpleSwapChangeHandler())
+                                       .popChangeHandler(SimpleSwapChangeHandler())
+                                       .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
 
         routerRoot.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
             override fun onChangeStarted(to: Controller?,
