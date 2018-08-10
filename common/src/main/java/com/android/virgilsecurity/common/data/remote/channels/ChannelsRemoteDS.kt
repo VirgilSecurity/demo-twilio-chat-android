@@ -48,20 +48,20 @@ class ChannelsRemoteDS(
         private val mapper: MapperToChannelInfo
 ) : ChannelsApi {
 
-    override fun getUserChannelById(id: String): Single<Channel> = twilioHelper.getChannelBySid(id)
+    override fun userChannelById(id: String): Single<Channel> = twilioHelper.channelBySid(id)
 
-    override fun getUserChannels(): Observable<List<ChannelInfo>> =
-            Observable.concatArray(twilioHelper.getUserChannels().toObservable(),
-                                   twilioHelper.getPublicChannels().toObservable())
+    override fun userChannels(): Observable<List<ChannelInfo>> =
+            Observable.concatArray(twilioHelper.userChannels().toObservable(),
+                                   twilioHelper.publicChannels().toObservable())
                     .map(mapper::mapDescriptors)
 
-    override fun createChannel(sender: String, interlocutor: String): Completable =
+    override fun createChannel(sender: String, interlocutor: String): Single<ChannelInfo> =
             twilioHelper.createChannel(interlocutor,
-                                       channelIdGenerator.generatedChannelId(sender,
-                                                                             interlocutor))
+                                       channelIdGenerator.generatedChannelId(sender, interlocutor))
+                    .map(mapper::mapChannel)
 
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-            twilioHelper.observeChannelsChanges()
+            twilioHelper.observeChannelsListChanges()
 
     override fun joinChannel(channel: Channel): Single<ChannelInfo> =
             twilioHelper.joinChannel(channel).map(mapper::mapChannel)

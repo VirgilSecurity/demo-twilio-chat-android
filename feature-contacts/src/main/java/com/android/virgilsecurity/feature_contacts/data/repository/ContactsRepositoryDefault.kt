@@ -36,9 +36,16 @@ package com.android.virgilsecurity.feature_contacts.data.repository
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import io.reactivex.Completable
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.extension.comparableListEqual
+import com.android.virgilsecurity.common.data.exception.EmptyCardsException
+import com.android.virgilsecurity.common.data.exception.ManyCardsException
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import kotlin.collections.contentEquals
 
 /**
  * . _  _
@@ -56,17 +63,47 @@ import io.reactivex.Observable
  */
 class ContactsRepositoryDefault(
         private val contactsApi: ChannelsApi, // In the future here will be contacts, not channels
-        private val contactsDao: ChannelsDao
+        private val contactsDao: ChannelsDao,
+        private val virgilHelper: VirgilHelper,
+        private val userProperties: UserProperties
 ) : ContactsRepository {
 
-    override fun addContact(channel: ChannelInfo): Completable =
-            contactsApi.createChannel(channel.sender,
-                                      channel.interlocutor)
-                    .andThen { contactsDao.addChannel(channel) }
+    private val debounceCache = mutableListOf<ChannelInfo>()
+
+    override fun addContact(interlocutor: String): Single<ChannelInfo> =
+            virgilHelper.searchCards(interlocutor)
+                    .flatMap { cards ->
+                        when {
+                            cards.isEmpty() -> throw EmptyCardsException()
+                            cards.size > 1 -> throw ManyCardsException()
+                            else -> {
+                                contactsApi.createChannel(userProperties.currentUser!!.identity,
+                                                          interlocutor)
+                                        .flatMap {
+                                            contactsDao.addChannel(it)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .toSingle { it }
+                                        }
+                            }
+                        }
+                    }
 
     override fun contacts(): Observable<List<ChannelInfo>> =
             Observable.concatArray(contactsDao.getUserChannels().toObservable(),
-                                   contactsApi.getUserChannels())
+                                   contactsApi.userChannels().flatMap {
+                                       contactsDao.addChannels(it)
+                                               .subscribeOn(Schedulers.io())
+                                               .toSingle { it }.toObservable()
+                                   })
+                    .filter {
+                        !(it comparableListEqual debounceCache) && it.isNotEmpty()
+                    }
+                    .doOnNext {
+                        debounceCache.addAll(it)
+                    }
+                    .doOnComplete {
+                        debounceCache.clear()
+                    }
 
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             contactsApi.observeChannelsChanges()

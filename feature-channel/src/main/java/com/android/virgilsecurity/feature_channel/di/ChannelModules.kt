@@ -33,9 +33,33 @@
 
 package com.android.virgilsecurity.feature_channel.di
 
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.android.virgilsecurity.base.data.model.MessageInfo
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItem
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
+import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
+import com.android.virgilsecurity.feature_channel.data.interactor.CardsInteractor
+import com.android.virgilsecurity.feature_channel.data.interactor.CardsInteractorDefault
+import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
+import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepositoryDefault
 import com.android.virgilsecurity.feature_channel.di.Const.CONTEXT_CHANNEL
-import com.android.virgilsecurity.feature_channel.di.Const.LIVE_DATA_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_ME
+import com.android.virgilsecurity.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_YOU
+import com.android.virgilsecurity.feature_channel.di.Const.LD_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.LD_TOOLBAR_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.MLD_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.STATE_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.TOOLBAR_CHANNEL
+import com.android.virgilsecurity.feature_channel.domain.*
+import com.android.virgilsecurity.feature_channel.viewmodel.ChannelVM
+import com.android.virgilsecurity.feature_channel.viewmodel.ChannelVMDefault
+import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSlice
+import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSliceDefault
+import com.android.virgilsecurity.feature_channel.viewslice.list.adapter.MessageItemMe
+import com.android.virgilsecurity.feature_channel.viewslice.list.adapter.MessageItemYou
+import com.android.virgilsecurity.feature_channel.viewslice.state.StateSliceChannel
 import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
 import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSliceChannel
 import org.koin.dsl.module.Module
@@ -56,14 +80,61 @@ import org.koin.dsl.module.applicationContext
  * ChannelModules
  */
 val channelModule: Module = applicationContext {
+    bean { MessagesRepositoryDefault(get(), get()) as MessagesRepository }
+    bean(STATE_CHANNEL) { StateSliceChannel() as StateSliceEmptyable }
+
     context(CONTEXT_CHANNEL) {
-        bean(LIVE_DATA_CHANNEL) { MutableLiveData<ToolbarSlice.Action>() }
-        bean { ToolbarSliceChannel(get(LIVE_DATA_CHANNEL)) as ToolbarSlice }
+        bean(LD_TOOLBAR_CHANNEL) { MutableLiveData<ToolbarSlice.Action>() }
+        bean(TOOLBAR_CHANNEL) { ToolbarSliceChannel(get(LD_TOOLBAR_CHANNEL)) as ToolbarSlice }
+
+        bean(LD_CHANNEL) { MutableLiveData<ChannelSlice.Action>() }
+        bean(ITEM_ADAPTER_MESSAGE_ME) {
+            MessageItemMe(get(LD_CHANNEL),
+                          get(),
+                          get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
+        }
+        bean(ITEM_ADAPTER_MESSAGE_YOU) {
+            MessageItemYou(get(LD_CHANNEL),
+                           get(),
+                           get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
+        }
+        bean {
+            DelegateAdapter.Builder<MessageInfo>()
+                    .add(get(ITEM_ADAPTER_MESSAGE_ME))
+                    .add(get(ITEM_ADAPTER_MESSAGE_YOU))
+                    .diffCallback(get())
+                    .build()
+        }
+
+        bean { ChannelSliceDefault(get(LD_CHANNEL), get(), get()) as ChannelSlice }
+
+        bean { GetMessagesDoDefault(get()) as GetMessagesDo }
+        bean(MLD_CHANNEL) { MediatorLiveData<ChannelVM.State>() }
+        bean { ObserveChannelChangesDoDefault(get(), get()) as ObserveChannelChangesDo }
+        bean { SendMessageDoDefault(get(), get()) as SendMessageDo }
+        bean { CardsInteractorDefault(get()) as CardsInteractor }
+        bean { GetCardDoDefault(get()) as GetCardDo }
+        bean { GetChannelDoDefault(get()) as GetChannelDo }
+        bean {
+            ChannelVMDefault(get(MLD_CHANNEL),
+                             get(),
+                             get(),
+                             get(),
+                             get(),
+                             get(),
+                             get()) as ChannelVM
+        }
     }
 }
 
 object Const {
-    const val LIVE_DATA_CHANNEL = "LIVE_DATA_CHANNEL"
+    const val STATE_CHANNEL = "STATE_CHANNEL"
+    const val LD_TOOLBAR_CHANNEL = "LD_TOOLBAR_CHANNEL"
+    const val TOOLBAR_CHANNEL = "TOOLBAR_CHANNEL"
+    const val LD_CHANNEL = "LD_CHANNEL"
+    const val ITEM_ADAPTER_MESSAGE_ME = "ITEM_ADAPTER_MESSAGE_ME"
+    const val ITEM_ADAPTER_MESSAGE_YOU = "ITEM_ADAPTER_MESSAGE_YOU"
+    const val MLD_CHANNEL = "MLD_CHANNEL"
 
     const val CONTEXT_CHANNEL = "CONTEXT_CHANNEL"
 }

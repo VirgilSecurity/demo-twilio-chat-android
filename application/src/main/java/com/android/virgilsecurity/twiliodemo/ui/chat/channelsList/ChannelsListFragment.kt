@@ -67,7 +67,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //
 //    fun onLogOut() {
 //        adapter.clearItems()
-//        presenter.shutdownChatClient()
+//        presenter.stopChatClient()
 //    }
 //
 //    override fun preInitUi() {
@@ -197,7 +197,7 @@ package com.android.virgilsecurity.twiliodemo.ui.chat.channelsList
 //    }
 //
 //    private fun fetchChannels() {
-//        presenter.getPublicChannelsFirstPage(
+//        presenter.publicChannelsFirstPage(
 //            { paginator, channels ->
 //                UiUtils.log(this.javaClass.simpleName, " -> Channels first page fetched")
 //                adapter.setItems(channels)

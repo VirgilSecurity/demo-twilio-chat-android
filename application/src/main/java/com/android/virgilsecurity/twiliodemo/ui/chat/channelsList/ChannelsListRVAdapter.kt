@@ -37,9 +37,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
 import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.util.GeneralConstants
+import com.android.virgilsecurity.base.util.GeneralConstants.KEY_SENDER
 import com.android.virgilsecurity.twiliodemo.R
 import com.twilio.chat.Channel
 import kotlinx.android.extensions.LayoutContainer
@@ -102,7 +102,7 @@ class ChannelsListRVAdapter constructor(private val userProperties: UserProperti
 
     fun getItemById(interlocutor: String): Channel? {
         for (channel in items) {
-            if ((channel.attributes[ChannelInfo.KEY_INTERLOCUTOR] as String) == interlocutor)
+            if ((channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String) == interlocutor)
                 return channel
         }
 
@@ -121,7 +121,7 @@ class ChannelsListRVAdapter constructor(private val userProperties: UserProperti
         fun bind(channel: Channel) {
             val attributes = channel.attributes
 
-            val receiver = attributes[ChannelInfo.KEY_INTERLOCUTOR] as String
+            val receiver = attributes[GeneralConstants.KEY_INTERLOCUTOR] as String
             val sender = attributes[KEY_SENDER] as String
             val currentUser = userProperties.currentUser!!.identity
 

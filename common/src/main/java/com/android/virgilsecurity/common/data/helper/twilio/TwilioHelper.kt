@@ -35,10 +35,8 @@ package com.android.virgilsecurity.common.data.helper.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.twilio.chat.Channel
-import com.twilio.chat.ChannelDescriptor
-import com.twilio.chat.ChatClient
-import com.twilio.chat.Paginator
+import com.android.virgilsecurity.base.data.api.MessagesApi
+import com.twilio.chat.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -89,42 +87,51 @@ class TwilioHelper(private val context: Context,
         }
     }
 
-    fun shutdownChatClient() {
+    fun stopChatClient() {
         if (chatClient != null) {
             chatClient?.shutdown()
             chatClient = null
         }
     }
 
-    fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-        twilioRx.observeChannelsChanges(chatClient)
+    fun observeChannelsListChanges(): Flowable<ChannelsApi.ChannelsChanges> =
+        twilioRx.observeChannelsListChanges(chatClient)
 
     fun createChannel(interlocutor: String,
                       channelName: String) =
             twilioRx.createChannel(interlocutor, channelName, chatClient)
 
-    fun getPublicChannelsFirstPage() =
-            twilioRx.getPublicChannelsFirstPaginator(chatClient)
+    fun publicChannelsFirstPage() =
+            twilioRx.publicChannelsFirstPaginator(chatClient)
 
-    fun getUserChannels() =
-            twilioRx.getUserChannels(chatClient)
+    fun userChannels() =
+            twilioRx.userChannels(chatClient)
 
-    fun getPublicChannels() =
-            twilioRx.getPublicChannels(chatClient)
+    fun publicChannels() =
+            twilioRx.publicChannels(chatClient)
 
-    fun getChannelsNextPage(paginator: Paginator<ChannelDescriptor>) =
+    fun channelsNextPage(paginator: Paginator<ChannelDescriptor>) =
             twilioRx.getChannelsNextPaginator(paginator)
 
-    fun getChannelFromChannelDescriptor(channelDescriptor: ChannelDescriptor): Single<Channel> =
+    fun channelFromChannelDescriptor(channelDescriptor: ChannelDescriptor): Single<Channel> =
             twilioRx.getChannelFromChannelDescriptor(channelDescriptor)
 
     fun joinChannel(channel: Channel) = twilioRx.joinChannel(channel)
 
-    fun getMessages(channel: Channel) = twilioRx.getMessages(channel)
+    fun messagesCount(channel: Channel) = twilioRx.messagesCount(channel)
+
+    fun messagesAfter(channel: Channel, startIndex: Long, count: Int) =
+            twilioRx.messagesAfter(channel, startIndex, count)
+
+    fun lastMessages(channel: Channel, count: Int): Single<List<Message>> =
+            twilioRx.lastMessages(channel, count)
+
+    fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
+            twilioRx.observeChannelChanges(channel)
 
     fun sendMessage(channel: Channel, body: String, interlocutor: String) =
             twilioRx.sendMessage(channel, body, interlocutor)
 
-    fun getChannelBySid(channelSid: String) =
+    fun channelBySid(channelSid: String) =
             twilioRx.getChannelBySid(chatClient, channelSid)
 }

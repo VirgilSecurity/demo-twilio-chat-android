@@ -31,14 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.data.repository
-
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.dao.ChannelsDao
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
+package com.android.virgilsecurity.base.util
 
 /**
  * . _  _
@@ -46,28 +39,15 @@ import io.reactivex.Observable
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/8/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsRepositoryDefault
+ * GeneralConstants
  */
-class ChannelsRepositoryDefault(
-        private val contactsApi: ChannelsApi,
-        private val contactsDao: ChannelsDao
-) : ChannelsRepository {
-
-    override fun addContact(channel: ChannelInfo): Completable =
-            contactsApi.createChannel(channel.sender,
-                                      channel.interlocutor)
-                    .andThen { contactsDao.addChannel(channel) }
-
-    override fun contacts(): Observable<List<ChannelInfo>> =
-            Observable.concatArray(contactsDao.getUserChannels().toObservable(),
-                                   contactsApi.getUserChannels())
-
-    override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-            contactsApi.observeChannelsChanges()
+object GeneralConstants {
+    const val KEY_SENDER = "sender"
+    const val KEY_INTERLOCUTOR = "interlocutor"
 }

@@ -35,6 +35,7 @@ package com.android.virgilsecurity.common.data.remote.channels
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.util.GeneralConstants
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelDescriptor
 
@@ -52,34 +53,23 @@ import com.twilio.chat.ChannelDescriptor
 /**
  * MapperToChannelInfo
  */
-class MapperToChannelInfo(
-        private val userProperties: UserProperties
-) {
+class MapperToChannelInfo {
 
-    fun mapDescriptors(descriptors: List<ChannelDescriptor>): List<ChannelInfo> {
-        return descriptors.map {
+    fun mapDescriptors(descriptors: List<ChannelDescriptor>): List<ChannelInfo> =
+        descriptors.map {
             ChannelInfo(it.sid,
                         it.attributes.toString(),
                         it.friendlyName,
                         it.uniqueName,
-                        it.attributes[ChannelInfo.KEY_SENDER] as String,
-                        it.attributes[ChannelInfo.KEY_INTERLOCUTOR] as String)
+                        it.attributes[GeneralConstants.KEY_SENDER] as String,
+                        it.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
         }
-    }
 
     fun mapChannel(channel: Channel): ChannelInfo =
-        (userProperties.currentUser == channel.attributes[ChannelInfo.KEY_SENDER]).let {
             ChannelInfo(channel.sid,
                         channel.attributes.toString(),
                         channel.friendlyName,
                         channel.uniqueName,
-                        (if (it)
-                            channel.attributes[ChannelInfo.KEY_SENDER]
-                        else
-                            channel.attributes[ChannelInfo.KEY_INTERLOCUTOR]) as String,
-                        (if (it)
-                            channel.attributes[ChannelInfo.KEY_INTERLOCUTOR]
-                        else
-                            channel.attributes[ChannelInfo.KEY_SENDER]) as String)
-        }
+                        channel.attributes[GeneralConstants.KEY_SENDER] as String,
+                        channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
 }

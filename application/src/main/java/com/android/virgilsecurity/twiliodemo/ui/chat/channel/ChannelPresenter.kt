@@ -124,7 +124,7 @@ class ChannelPresenter(private val twilioHelper: TwilioHelper,
 //    fun requestGetChannelBySid(sid: String,
 //                               onGetChannelSuccess: (ChannelInfo) -> Unit,
 //                               onGetChannelError: (Throwable) -> Unit) {
-//        twilioHelper.getChannelBySid(sid)
+//        twilioHelper.channelBySid(sid)
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribeBy(
 //                    onSuccess = {

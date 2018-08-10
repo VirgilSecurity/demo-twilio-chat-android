@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/clNoContacts"
+        android:id="@+id/clNoMessages"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/rect_primary_dark_rounded_6"
@@ -55,20 +55,20 @@
         app:layout_constraintTop_toBottomOf="@id/toolbarChannel">
 
         <ImageView
-            android:id="@+id/ivNoContacts"
+            android:id="@+id/ivNoMessages"
             android:layout_width="46dp"
             android:layout_height="40dp"
             android:contentDescription="@string/no_messages_image"
             android:scaleType="fitXY"
             android:src="@drawable/ic_dialog_empty"
-            app:layout_constraintBottom_toTopOf="@id/tvNoContacts"
+            app:layout_constraintBottom_toTopOf="@id/tvNoMessages"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/tvNoContacts"
+            android:id="@+id/tvNoMessages"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/half_default_margin"
@@ -80,13 +80,79 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivNoContacts" />
+            app:layout_constraintTop_toBottomOf="@id/ivNoMessages" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvChannelsList"
+        android:id="@+id/rvMessages"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/clEnterMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChannel" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clEnterMessage"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvMessages">
+
+        <EditText
+            android:inputType="text"
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/default_margin"
+            android:background="@drawable/rect_trans"
+            android:hint="@string/message"
+            android:maxLines="1"
+            android:textColor="@color/snow"
+            android:textColorHint="@color/grayLight"
+            android:textSize="@dimen/increased_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivSend"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivSend"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
+            android:paddingEnd="@dimen/default_margin"
+            android:paddingStart="@dimen/default_margin"
+            android:src="@drawable/ic_send"
+            android:tint="@color/virgilGrayLight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        style="@style/AccentProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChannel" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/error_loading_messages"
+        android:textColor="@color/snow"
+        android:textSize="12sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

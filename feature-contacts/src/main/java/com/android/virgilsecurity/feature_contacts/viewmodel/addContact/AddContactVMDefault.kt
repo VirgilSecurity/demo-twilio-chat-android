@@ -85,7 +85,7 @@ class AddContactVMDefault(
 
     private fun onAddContactResult(result: AddContactDo.Result?) {
         when (result) {
-            is AddContactDo.Result.OnSuccess -> state.value = State.ContactAdded(result.identity)
+            is AddContactDo.Result.OnSuccess -> state.value = State.ContactAdded(result.channel)
             is AddContactDo.Result.OnError -> state.value = State.ShowError
         }
     }

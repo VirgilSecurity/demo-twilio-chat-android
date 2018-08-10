@@ -56,11 +56,10 @@ import kotlinx.android.parcel.Parcelize
  */
 
 /**
- * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
+ * User class stores properties of User.
  */
 @Entity(tableName = KEY_USERS_TABLE_NAME)
 @Parcelize
-@SuppressLint("ParcelCreator")
 class User(
         @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
         val identity: String,

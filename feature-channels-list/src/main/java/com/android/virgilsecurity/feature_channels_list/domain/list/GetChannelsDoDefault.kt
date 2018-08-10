@@ -35,7 +35,7 @@ package com.android.virgilsecurity.feature_channels_list.domain.list
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.feature_channels_list.data.repository.ChannelsRepository
+import com.android.virgilsecurity.common.data.repository.ChannelsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -60,7 +60,7 @@ class GetChannelsDoDefault(
     private var atLeastOneItemPresent = false
 
     override fun execute() =
-            channelsRepository.contacts()
+            channelsRepository.channels()
                     .doOnNext {
                         if (it.isNotEmpty())
                             atLeastOneItemPresent = true

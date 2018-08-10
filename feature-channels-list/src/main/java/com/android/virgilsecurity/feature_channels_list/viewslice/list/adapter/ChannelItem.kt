@@ -68,10 +68,8 @@ class ChannelItem(
 
     override fun onBind(item: ChannelInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelInfo>) =
             with(viewHolder) {
-                (item.interlocutor == userProperties.currentUser!!.identity).let {
-                    tvUsernameContact.text = if (it) item.sender else item.interlocutor
-                    tvInitialsContact.text = UserUtils.firstInitials(if (it) item.sender else item.interlocutor)
-                }
+                    tvUsernameContact.text = item.localizedInterlocutor(userProperties)
+                    tvInitialsContact.text = UserUtils.firstInitials(item.localizedInterlocutor(userProperties))
 
                 Glide.with(context)
                         .load(UiUtils.randomDrawable(context, R.array.loginBackgrounds))

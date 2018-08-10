@@ -35,9 +35,10 @@ package com.android.virgilsecurity.common.data.helper.twilio
 
 import android.content.Context
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_INTERLOCUTOR
-import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
+import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.util.GeneralConstants.KEY_INTERLOCUTOR
+import com.android.virgilsecurity.base.util.GeneralConstants.KEY_SENDER
 import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.common.util.UiUtils
@@ -151,7 +152,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
      */
     fun createChannel(interlocutor: String,
                       channelName: String,
-                      chatClient: ChatClient?): Completable = Single.create<Channel> {
+                      chatClient: ChatClient?): Single<Channel> = Single.create<Channel> {
         val attrs = JSONObject()
         attrs.put(KEY_SENDER, userProperties.currentUser!!.identity)
         attrs.put(KEY_INTERLOCUTOR, interlocutor)
@@ -174,10 +175,16 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                             it.onError(ErrorInfoWrapper(errorInfo))
                     }
                 })
-    }.flatMapCompletable { channel ->
-        Completable.concat(listOf(joinChannel(channel).toCompletable(),
-                                  inviteToChannel(channel, interlocutor)))
-                .onErrorResumeNext { destroyChannel(channel) }
+    }.flatMap { channel ->
+        joinChannel(channel).flatMap {
+            inviteToChannel(channel, interlocutor).toSingle {
+                channel
+            }
+        }.onErrorResumeNext {
+            destroyChannel(channel).toSingle {
+                channel
+            }
+        }
     }
 
     /**
@@ -186,13 +193,11 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     fun joinChannel(channel: Channel): Single<Channel> =
             Single.create {
                 channel.join(object : StatusListener() {
-                    override fun onSuccess() {
-                        it.onSuccess(channel)
-                    }
+                    override fun onSuccess() =
+                            it.onSuccess(channel)
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
             }
 
@@ -202,13 +207,11 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     private fun inviteToChannel(channel: Channel, interlocutor: String): Completable =
             Completable.create {
                 channel.members.inviteByIdentity(interlocutor, object : StatusListener() {
-                    override fun onSuccess() {
-                        it.onComplete()
-                    }
+                    override fun onSuccess() =
+                            it.onComplete()
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
             }
 
@@ -227,11 +230,11 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 })
             }
 
-    fun getPublicChannels(chatClient: ChatClient?): Single<List<ChannelDescriptor>> =
+    fun publicChannels(chatClient: ChatClient?): Single<List<ChannelDescriptor>> =
             Single.create<List<ChannelDescriptor>> {
                 val channelDescriptors = ArrayList<ChannelDescriptor>()
 
-                val firstPaginator = getPublicChannelsFirstPaginator(chatClient).blockingGet()
+                val firstPaginator = publicChannelsFirstPaginator(chatClient).blockingGet()
 
                 if (firstPaginator.hasNextPage()) {
                     channelDescriptors.addAll(getAllNextPages(PaginationResult(firstPaginator,
@@ -242,7 +245,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
                 }
             }
 
-    fun getUserChannels(chatClient: ChatClient?): Single<List<ChannelDescriptor>> =
+    fun userChannels(chatClient: ChatClient?): Single<List<ChannelDescriptor>> =
             Single.create<List<ChannelDescriptor>> {
                 val channelDescriptors = ArrayList<ChannelDescriptor>()
 
@@ -274,17 +277,14 @@ class TwilioRx(private val fuelHelper: FuelHelper,
         }
     }
 
-    fun getPublicChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
+    fun publicChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
         return Single.create<Paginator<ChannelDescriptor>> {
             chatClient?.channels?.getPublicChannelsList(object : CallbackListener<Paginator<ChannelDescriptor>>() {
-                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
-                    it.onSuccess(paginator)
-                }
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) =
+                        it.onSuccess(paginator)
 
-                override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(
-                        errorInfo))
-                }
+                override fun onError(errorInfo: ErrorInfo?) =
+                        it.onError(ErrorInfoWrapper(errorInfo))
             })
         }
     }
@@ -292,14 +292,11 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     fun getUserChannelsFirstPaginator(chatClient: ChatClient?): Single<Paginator<ChannelDescriptor>> {
         return Single.create<Paginator<ChannelDescriptor>> {
             chatClient?.channels?.getUserChannelsList(object : CallbackListener<Paginator<ChannelDescriptor>>() {
-                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
-                    it.onSuccess(paginator)
-                }
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) =
+                        it.onSuccess(paginator)
 
-                override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(
-                        errorInfo))
-                }
+                override fun onError(errorInfo: ErrorInfo?) =
+                        it.onError(ErrorInfoWrapper(errorInfo))
             })
         }
     }
@@ -307,14 +304,11 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     fun getChannelsNextPaginator(paginator: Paginator<ChannelDescriptor>): Single<Paginator<ChannelDescriptor>> {
         return Single.create<Paginator<ChannelDescriptor>> {
             paginator.requestNextPage(object : CallbackListener<Paginator<ChannelDescriptor>>() {
-                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) {
-                    it.onSuccess(paginator)
-                }
+                override fun onSuccess(paginator: Paginator<ChannelDescriptor>) =
+                        it.onSuccess(paginator)
 
-                override fun onError(errorInfo: ErrorInfo?) {
-                    it.onError(ErrorInfoWrapper(
-                        errorInfo))
-                }
+                override fun onError(errorInfo: ErrorInfo?) =
+                        it.onError(ErrorInfoWrapper(errorInfo))
             })
         }
     }
@@ -322,38 +316,49 @@ class TwilioRx(private val fuelHelper: FuelHelper,
     fun getChannelFromChannelDescriptor(channelDescriptor: ChannelDescriptor): Single<Channel> =
             Single.create<Channel> {
                 channelDescriptor.getChannel(object : CallbackListener<Channel>() {
-                    override fun onSuccess(channel: Channel?) {
-                        it.onSuccess(channel!!)
-                    }
+                    override fun onSuccess(channel: Channel?) =
+                            it.onSuccess(channel!!)
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(
-                            errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
             }
 
-    fun getMessages(channel: Channel): Single<MutableList<Message>> =
-            Single.create<MutableList<Message>> {
+    fun messagesCount(channel: Channel): Single<Long> =
+            Single.create<Long> {
                 channel.getMessagesCount(object : CallbackListener<Long>() {
-                    override fun onSuccess(messagesCount: Long?) {
-                        channel.messages.getLastMessages(messagesCount!!.toInt(),
-                                                         object : CallbackListener<MutableList<Message>>() {
-                                                             override fun onSuccess(messages: MutableList<Message>?) {
-                                                                 it.onSuccess(messages!!)
-                                                             }
+                    override fun onSuccess(messagesCount: Long) =
+                            it.onSuccess(messagesCount)
 
-                                                             override fun onError(errorInfo: ErrorInfo?) {
-                                                                 it.onError(ErrorInfoWrapper(
-                                                                     errorInfo))
-                                                             }
-                                                         })
-                    }
-
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
+            }
+
+    fun messagesAfter(channel: Channel, startIndex: Long, count: Int): Single<List<Message>> =
+            Single.create<List<Message>> {
+                channel.messages
+                        .getMessagesAfter(startIndex, count,
+                                          object : CallbackListener<List<Message>>() {
+                                              override fun onSuccess(messages: List<Message>) =
+                                                      it.onSuccess(messages)
+
+                                              override fun onError(errorInfo: ErrorInfo?) =
+                                                      it.onError(ErrorInfoWrapper(errorInfo))
+                                          })
+            }
+
+    fun lastMessages(channel: Channel, count: Int): Single<List<Message>> =
+            Single.create<List<Message>> {
+                channel.messages
+                        .getLastMessages(count,
+                                         object : CallbackListener<MutableList<Message>>() {
+                                             override fun onSuccess(messages: MutableList<Message>) =
+                                                     it.onSuccess(messages)
+
+                                             override fun onError(errorInfo: ErrorInfo?) =
+                                                     it.onError(ErrorInfoWrapper(errorInfo))
+                                         })
             }
 
     fun sendMessage(channel: Channel,
@@ -366,116 +371,122 @@ class TwilioRx(private val fuelHelper: FuelHelper,
 
                 val message = Message.options().withBody(body).withAttributes(attributes)
                 channel.messages.sendMessage(message, object : CallbackListener<Message>() {
-                    override fun onSuccess(message: Message?) {
-                        it.onSuccess(message!!)
-                    }
+                    override fun onSuccess(message: Message?) =
+                            it.onSuccess(message!!)
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(
-                            errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
             }
 
     fun getChannelBySid(chatClient: ChatClient?, channelSid: String): Single<Channel> =
             Single.create<Channel> {
                 chatClient?.channels?.getChannel(channelSid, object : CallbackListener<Channel>() {
-                    override fun onSuccess(channel: Channel?) {
-                        it.onSuccess(channel!!)
-                    }
+                    override fun onSuccess(channel: Channel?) =
+                            it.onSuccess(channel!!)
 
-                    override fun onError(errorInfo: ErrorInfo?) {
-                        it.onError(ErrorInfoWrapper(
-                            errorInfo))
-                    }
+                    override fun onError(errorInfo: ErrorInfo?) =
+                            it.onError(ErrorInfoWrapper(errorInfo))
                 })
             }
 
-    fun observeChannelsChanges(chatClient: ChatClient?): Flowable<ChannelsApi.ChannelsChanges> =
-            Flowable.create({
-                                chatClient?.setListener(object : ChatClientListener {
-                                    override fun onChannelDeleted(p0: Channel?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelDeleted(p0))
-                                    }
+    fun observeChannelsListChanges(chatClient: ChatClient?): Flowable<ChannelsApi.ChannelsChanges> =
+            Flowable.create(
+                {
+                    chatClient?.setListener(object : ChatClientListener {
+                        override fun onChannelDeleted(p0: Channel?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelDeleted(p0))
 
-                                    override fun onInvitedToChannelNotification(p0: String?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.InvitedToChannelNotification(
-                                            p0))
-                                    }
+                        override fun onInvitedToChannelNotification(p0: String?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.InvitedToChannelNotification(
+                                    p0))
 
-                                    override fun onClientSynchronization(p0: ChatClient.SynchronizationStatus?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ClientSynchronization(
-                                            p0))
-                                    }
+                        override fun onClientSynchronization(p0: ChatClient.SynchronizationStatus?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ClientSynchronization(p0))
 
-                                    override fun onNotificationSubscribed() {
-                                        it.onNext(ChannelsApi.ChannelsChanges.NotificationSubscribed)
-                                    }
+                        override fun onNotificationSubscribed() =
+                                it.onNext(ChannelsApi.ChannelsChanges.NotificationSubscribed)
 
-                                    override fun onUserSubscribed(p0: User?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.UserSubscribed(p0))
-                                    }
+                        override fun onUserSubscribed(p0: User?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.UserSubscribed(p0))
 
-                                    override fun onChannelUpdated(p0: Channel?, p1: Channel.UpdateReason?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelUpdated(p0,
-                                                                                             p1))
-                                    }
+                        override fun onChannelUpdated(p0: Channel?, p1: Channel.UpdateReason?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelUpdated(p0, p1))
 
-                                    override fun onRemovedFromChannelNotification(p0: String?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.RemovedFromChannelNotification(
-                                            p0))
-                                    }
+                        override fun onRemovedFromChannelNotification(p0: String?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.RemovedFromChannelNotification(
+                                    p0))
 
-                                    override fun onNotificationFailed(p0: ErrorInfo?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.NotificationFailed(p0))
-                                    }
+                        override fun onNotificationFailed(p0: ErrorInfo?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.NotificationFailed(p0))
 
-                                    override fun onChannelJoined(p0: Channel?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelJoined(p0))
-                                    }
+                        override fun onChannelJoined(p0: Channel?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelJoined(p0))
 
-                                    override fun onChannelAdded(p0: Channel?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelAdded(p0))
-                                    }
+                        override fun onChannelAdded(p0: Channel?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelAdded(p0))
 
-                                    override fun onChannelSynchronizationChange(p0: Channel?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelSynchronizationChange(
-                                            p0))
-                                    }
+                        override fun onChannelSynchronizationChange(p0: Channel?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelSynchronizationChange(
+                                    p0))
 
-                                    override fun onUserUnsubscribed(p0: User?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.UserUnsubscribed(p0))
-                                    }
+                        override fun onUserUnsubscribed(p0: User?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.UserUnsubscribed(p0))
 
-                                    override fun onAddedToChannelNotification(p0: String?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.AddedToChannelNotification(
-                                            p0))
-                                    }
+                        override fun onAddedToChannelNotification(p0: String?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.AddedToChannelNotification(p0))
 
-                                    override fun onChannelInvited(p0: Channel?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ChannelInvited(p0))
-                                    }
+                        override fun onChannelInvited(p0: Channel?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ChannelInvited(p0))
 
-                                    override fun onNewMessageNotification(p0: String?, p1: String?, p2: Long) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.NewMessageNotification(
-                                            p0,
-                                            p1,
-                                            p2))
-                                    }
+                        override fun onNewMessageNotification(p0: String?, p1: String?, p2: Long) =
+                                it.onNext(ChannelsApi.ChannelsChanges.NewMessageNotification(p0,
+                                                                                             p1,
+                                                                                             p2))
 
-                                    override fun onConnectionStateChange(p0: ChatClient.ConnectionState?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.ConnectionStateChange(
-                                            p0))
-                                    }
+                        override fun onConnectionStateChange(p0: ChatClient.ConnectionState?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.ConnectionStateChange(p0))
 
-                                    override fun onError(p0: ErrorInfo?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.Error(p0))
-                                    }
+                        override fun onError(p0: ErrorInfo?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.Error(p0))
 
-                                    override fun onUserUpdated(p0: User?, p1: User.UpdateReason?) {
-                                        it.onNext(ChannelsApi.ChannelsChanges.UserUpdated(p0, p1))
-                                    }
+                        override fun onUserUpdated(p0: User?, p1: User.UpdateReason?) =
+                                it.onNext(ChannelsApi.ChannelsChanges.UserUpdated(p0, p1))
 
-                                })
-                            }, BackpressureStrategy.BUFFER)
+                    })
+                }, BackpressureStrategy.BUFFER)
+
+    fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
+            Flowable.create<MessagesApi.ChannelChanges>(
+                {
+                    channel.addListener(object : ChannelListener {
+                        override fun onMemberDeleted(p0: Member?) =
+                                it.onNext(MessagesApi.ChannelChanges.MemberDeleted(p0))
+
+                        override fun onTypingEnded(p0: Channel?, p1: Member?) =
+                                it.onNext(MessagesApi.ChannelChanges.TypingEnded(p0, p1))
+
+                        override fun onMessageAdded(p0: Message?) =
+                                it.onNext(MessagesApi.ChannelChanges.MessageAdded(p0))
+
+                        override fun onMessageDeleted(p0: Message?) =
+                                it.onNext(MessagesApi.ChannelChanges.MessageDeleted(p0))
+
+                        override fun onMemberAdded(p0: Member?) =
+                                it.onNext(MessagesApi.ChannelChanges.MemberAdded(p0))
+
+                        override fun onTypingStarted(p0: Channel?, p1: Member?) =
+                                it.onNext(MessagesApi.ChannelChanges.TypingStarted(p0, p1))
+
+                        override fun onSynchronizationChanged(p0: Channel?) =
+                                it.onNext(MessagesApi.ChannelChanges.SynchronizationChanged(p0))
+
+                        override fun onMessageUpdated(p0: Message?, p1: Message.UpdateReason?) =
+                                it.onNext(MessagesApi.ChannelChanges.MessageUpdated(p0, p1))
+
+                        override fun onMemberUpdated(p0: Member?, p1: Member.UpdateReason?) =
+                                it.onNext(MessagesApi.ChannelChanges.MemberUpdated(p0, p1))
+
+                    })
+                }, BackpressureStrategy.BUFFER)
 }

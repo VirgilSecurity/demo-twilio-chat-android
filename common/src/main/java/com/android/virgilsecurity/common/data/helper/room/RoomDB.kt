@@ -36,8 +36,10 @@ package com.android.virgilsecurity.common.data.helper.room
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.common.data.local.channels.ChannelsQao
+import com.android.virgilsecurity.common.data.local.messages.MessagesQao
 import com.android.virgilsecurity.common.data.local.users.UsersQao
 
 /**
@@ -54,10 +56,12 @@ import com.android.virgilsecurity.common.data.local.users.UsersQao
 /**
  * RoomDB
  */
-@Database(entities = [User::class, ChannelInfo::class], version = 2, exportSchema = false)
+@Database(entities = [User::class, ChannelInfo::class, MessageInfo::class], version = 1, exportSchema = false)
 abstract class RoomDB : RoomDatabase() {
 
-    abstract fun usersDao(): UsersQao
+    abstract fun usersQao(): UsersQao
 
-    abstract fun channelsDao(): ChannelsQao
+    abstract fun channelsQao(): ChannelsQao
+
+    abstract fun messagesQao(): MessagesQao
 }

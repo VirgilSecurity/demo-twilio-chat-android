@@ -31,13 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.domain.list
+package com.android.virgilsecurity.base.data.model
 
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.feature_channels_list.data.repository.ChannelsRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+import android.os.Parcelable
+import com.android.virgilsecurity.base.util.GeneralConstants
+import kotlinx.android.parcel.Parcelize
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -45,31 +47,40 @@ import io.reactivex.schedulers.Schedulers
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/8/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ObserveChannelsChangeDoDefault
+ * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
  */
-class ObserveChannelsChangeDoDefault(
-        private val contactsRepository: ChannelsRepository
-) : BaseDo<ChannelsApi.ChannelsChanges>(), ObserveChannelsChangeDo {
+@Entity
+@Parcelize
+class MessageInfo(
+        @PrimaryKey @ColumnInfo(name = KEY_SID)
+        val sid: String,
+        @ColumnInfo(name = KEY_CHANNEL_ID)
+        val channelSid: String,
+        @ColumnInfo(name = KEY_BODY)
+        val body: String,
+        @ColumnInfo(name = KEY_ATTRIBUTES)
+        val attributesString: String,
+        @ColumnInfo(name = GeneralConstants.KEY_SENDER)
+        val sender: String,
+        @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
+        val interlocutor: String
+) : Comparable<MessageInfo>, Parcelable {
 
-    override fun execute() {
-        contactsRepository.observeChannelsChanges()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::success, ::error)
-                .track()
-    }
+    override fun compareTo(other: MessageInfo): Int = this.sid.compareTo(other.sid)
 
-    private fun success(change: ChannelsApi.ChannelsChanges) {
-        liveData.value = change
-    }
+    fun attributes() = JSONObject(attributesString)
 
-    private fun error(throwable: Throwable) {
-        liveData.value = ChannelsApi.ChannelsChanges.Exception(throwable)
+    companion object {
+        const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
+        const val KEY_SID = "sid"
+        const val KEY_BODY = "body"
+        const val KEY_ATTRIBUTES = "attributes"
+        const val KEY_CHANNEL_ID = "channel_id"
     }
 }

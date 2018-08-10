@@ -35,15 +35,11 @@ package com.android.virgilsecurity.feature_contacts.di
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItem
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
-import com.android.virgilsecurity.feature_contacts.data.interactor.AddContactInteractor
-import com.android.virgilsecurity.feature_contacts.data.interactor.AddContactInteractorDefault
 import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepository
 import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepositoryDefault
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
@@ -92,7 +88,7 @@ import org.koin.dsl.module.applicationContext
  */
 
 val contactsModule: Module = applicationContext {
-    bean { ContactsRepositoryDefault(get(), get()) as ContactsRepository }
+    bean { ContactsRepositoryDefault(get(), get(), get(), get()) as ContactsRepository }
     bean(STATE_CONTACTS) { StateSliceContacts() as StateSliceEmptyable }
 
     context(CONTEXT_CONTACTS) {
@@ -108,7 +104,6 @@ val contactsModule: Module = applicationContext {
                     .build()
         }
 
-        bean { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
         bean { ContactsSliceDefault(get(LD_LIST_CONTACTS), get(), get(), get()) as ContactsSlice }
 
         bean { GetContactsDoDefault(get()) as GetContactsDo }
@@ -120,7 +115,6 @@ val contactsModule: Module = applicationContext {
 }
 
 val addContactModule: Module = applicationContext {
-    bean { AddContactInteractorDefault(get(), get(), get()) as AddContactInteractor }
     bean { StateSliceAddContactDefault() as StateSliceAddContact }
 
     context(CONTEXT_ADD_CONTACT) {

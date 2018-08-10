@@ -31,13 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.data.repository
+package com.android.virgilsecurity.feature_channel.domain
 
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import com.android.virgilsecurity.base.data.api.MessagesApi
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
+import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
+import com.twilio.chat.Channel
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -45,19 +48,37 @@ import io.reactivex.Observable
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/8/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsRepository
+ * ObserveChannelChangesDoDefault
  */
-interface ChannelsRepository {
+class ObserveChannelChangesDoDefault(
+        private val messagesRepository: MessagesRepository,
+        private val mapper: MapperToMessageInfo
+) : BaseDo<MessagesApi.ChannelChanges>(), ObserveChannelChangesDo {
 
-    fun contacts(): Observable<List<ChannelInfo>>
+    override fun execute(channel: Channel) {
+        messagesRepository.observeChannelChanges(channel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+    }
 
-    fun addContact(channel: ChannelInfo): Completable
+    private fun success(change: MessagesApi.ChannelChanges) {
+        if (change is MessagesApi.ChannelChanges.MessageAdded)
+            Single.just(change.message!!)
+                    .map(mapper::mapMessage)
+                    .flatMapCompletable { messagesRepository.addMessage(it) } // TODO move to right place
 
-    fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges>
+        liveData.value = change
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = MessagesApi.ChannelChanges.Exception(throwable)
+    }
 }

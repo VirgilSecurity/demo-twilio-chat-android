@@ -35,11 +35,16 @@ package com.android.virgilsecurity.common.di
 
 import android.arch.persistence.room.Room
 import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.api.MessagesApi
+import com.android.virgilsecurity.base.data.api.VirgilApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
+import com.android.virgilsecurity.base.data.dao.MessagesDao
 import com.android.virgilsecurity.base.data.dao.UsersDao
 import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.view.adapter.DiffCallback
 import com.android.virgilsecurity.common.R
@@ -51,12 +56,19 @@ import com.android.virgilsecurity.common.data.helper.virgil.GetTokenCallbackImpl
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilRx
 import com.android.virgilsecurity.common.data.local.channels.ChannelsLocalDS
+import com.android.virgilsecurity.common.data.local.messages.MessagesLocalDS
+import com.android.virgilsecurity.common.data.local.messages.MessagesQao
 import com.android.virgilsecurity.common.data.local.users.UserPropertiesDefault
 import com.android.virgilsecurity.common.data.local.users.UsersLocalDS
 import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGenerator
 import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGeneratorDefault
 import com.android.virgilsecurity.common.data.remote.channels.ChannelsRemoteDS
 import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
+import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
+import com.android.virgilsecurity.common.data.remote.messages.MessagesRemoteDS
+import com.android.virgilsecurity.common.data.remote.virgil.VirgilRemoteDS
+import com.android.virgilsecurity.common.data.repository.ChannelsRepository
+import com.android.virgilsecurity.common.data.repository.ChannelsRepositoryDefault
 import com.android.virgilsecurity.common.di.CommonDiConst.DIVIDER_DRAWABLE
 import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
@@ -98,6 +110,7 @@ val commonModules: Module = applicationContext {
     }
     bean { UsersLocalDS(get()) as UsersDao }
     bean { ImageStorage(get()) }
+    factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
 }
 
 val utilsModule : Module = applicationContext {
@@ -122,6 +135,7 @@ val virgilModule : Module = applicationContext {
     bean { VirgilHelper(get(), get(), get(), get()) }
     bean { CardManager(get(), get(), get()) }
     bean { VirgilRx(get()) }
+    bean { VirgilRemoteDS(get()) as VirgilApi }
 }
 
 val twilioModule : Module = applicationContext {
@@ -135,13 +149,22 @@ val paramsModule : Module = applicationContext {
 
 // This module in common because for now we using it for contacts screen also
 val channelsModule: Module = applicationContext {
-    bean { MapperToChannelInfo(get()) }
+    bean { MapperToChannelInfo() }
     bean { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
-    bean { (get() as RoomDB).channelsDao() }
+    bean { (get() as RoomDB).channelsQao() }
     bean { ChannelsLocalDS(get(), get()) as ChannelsDao }
     bean { DiffCallback<ChannelInfo>() }
     bean(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
     bean { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
+    bean { ChannelsRepositoryDefault(get(), get()) as ChannelsRepository }
+}
+
+val messagesModule: Module = applicationContext {
+    bean { MapperToMessageInfo() }
+    bean { MessagesRemoteDS(get(), get()) as MessagesApi }
+    bean { (get() as RoomDB).messagesQao() }
+    bean { MessagesLocalDS(get()) as MessagesDao }
+    bean { DiffCallback<MessageInfo>() }
 }
 
 object CommonDiConst {

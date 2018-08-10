@@ -35,7 +35,9 @@ package com.android.virgilsecurity.feature_drawer_navigation.view
 
 import android.os.Bundle
 import android.view.ViewGroup
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.getContentView
 import com.android.virgilsecurity.base.extension.hasNoRootController
 import com.android.virgilsecurity.base.extension.observe
@@ -83,6 +85,7 @@ class DrawerNavigationActivity(
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
     private val screenRouter: ScreenRouter by inject()
+    private val userProperties: UserProperties by inject()
 
     private lateinit var user: User
 
@@ -175,21 +178,22 @@ class DrawerNavigationActivity(
                                               .popChangeHandler(HorizontalChangeHandler())
                                               .tag(tag))
 
-    private fun openChannelNotFromChannels(interlocutor: String) {
-        routerRoot.setBackstack(
-            listOf(RouterTransaction
-                           .with(channelsController().apply {
-                               retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                           })
-                           .pushChangeHandler(SimpleSwapChangeHandler())
-                           .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)),
-            SimpleSwapChangeHandler())
+    private fun openChannelNotFromChannels(channel: ChannelInfo) {
 
-        pushController(ChannelController(interlocutor), ChannelController.KEY_CHANNEL_CONTROLLER)
+            routerRoot.setBackstack(
+                listOf(RouterTransaction
+                               .with(channelsController().apply {
+                                   retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                               })
+                               .pushChangeHandler(SimpleSwapChangeHandler())
+                               .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)),
+                SimpleSwapChangeHandler())
+
+            openChannel(channel)
     }
 
-    private fun openChannel(interlocutor: String) =
-            pushController(ChannelController(interlocutor),
+    private fun openChannel(channel: ChannelInfo) =
+            pushController(ChannelController(channel),
                            ChannelController.KEY_CHANNEL_CONTROLLER)
 
     private fun initRouter() {

@@ -38,7 +38,7 @@ import android.arch.lifecycle.MediatorLiveData
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.feature_channels_list.domain.list.GetChannelsDo
 import com.android.virgilsecurity.feature_channels_list.domain.list.JoinChannelDo
-import com.android.virgilsecurity.feature_channels_list.domain.list.ObserveChannelsChangeDo
+import com.android.virgilsecurity.feature_channels_list.domain.list.ObserveChannelsListChangeDo
 import com.twilio.chat.Channel
 
 /**
@@ -58,13 +58,13 @@ import com.twilio.chat.Channel
 class ChannelsVMDefault(
         private val state: MediatorLiveData<State>,
         private val getChannelsDo: GetChannelsDo,
-        private val observeChannelsChangeDo: ObserveChannelsChangeDo,
+        private val observeChannelsListChangeDo: ObserveChannelsListChangeDo,
         private val joinChannelDo: JoinChannelDo
 ) : ChannelsVM() {
 
     init {
         state.addSource(getChannelsDo.getLiveData(), ::onLoadContactsResult)
-        state.addSource(observeChannelsChangeDo.getLiveData(), ::onContactsChanged)
+        state.addSource(observeChannelsListChangeDo.getLiveData(), ::onContactsChanged)
         state.addSource(joinChannelDo.getLiveData(), ::onJoinChannelResult)
     }
 
@@ -75,15 +75,14 @@ class ChannelsVMDefault(
         getChannelsDo.execute()
     }
 
-    override fun observeChannelsChanges() = observeChannelsChangeDo.execute()
+    override fun observeChannelsChanges() = observeChannelsListChangeDo.execute()
 
-    override fun joinChannel(channel: Channel) {
-        joinChannelDo.execute(channel)
-    }
+    override fun joinChannel(channel: Channel) = joinChannelDo.execute(channel)
 
     override fun onCleared() {
         getChannelsDo.cleanUp()
-        observeChannelsChangeDo.cleanUp()
+        observeChannelsListChangeDo.cleanUp()
+        joinChannelDo.cleanUp()
     }
 
     private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
@@ -101,7 +100,7 @@ class ChannelsVMDefault(
     }
 
     private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
-        state.value = State.ChannelChanged(result!!)
+        state.value = State.ChannelsListChanged(result!!)
     }
 
     private fun onJoinChannelResult(result: JoinChannelDo.Result?) {

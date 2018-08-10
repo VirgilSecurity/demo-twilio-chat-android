@@ -57,7 +57,7 @@ class UsersLocalDS(
         private val roomDB: RoomDB
 ) : UsersDao {
 
-    override fun users(): Single<List<User>> = roomDB.usersDao().users()
+    override fun users(): Single<List<User>> = roomDB.usersQao().users()
 
-    override fun addUser(user: User) = roomDB.usersDao().insertUser(user)
+    override fun addUser(user: User) = roomDB.usersQao().insertUser(user)
 }

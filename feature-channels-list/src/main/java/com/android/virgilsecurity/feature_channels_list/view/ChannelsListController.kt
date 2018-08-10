@@ -35,12 +35,12 @@ package com.android.virgilsecurity.feature_channels_list.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_channels_list.R
-import com.android.virgilsecurity.feature_channels_list.di.Const
 import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
 import com.android.virgilsecurity.feature_channels_list.di.Const.STATE_CHANNELS
 import com.android.virgilsecurity.feature_channels_list.di.Const.TOOLBAR_CHANNELS_LIST
@@ -73,13 +73,12 @@ class ChannelsListController() : BaseController() {
     private val channelsSlice: ChannelsSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNELS)
     private val viewModel: ChannelsVM by inject()
-    private val userProperties: UserProperties by inject()
 
     private lateinit var openDrawer: () -> Unit
-    private lateinit var openChannel: (String) -> Unit
+    private lateinit var openChannel: (ChannelInfo) -> Unit
 
     constructor(openDrawer: () -> Unit,
-                openChannel: (interlocutor: String) -> Unit) : this() {
+                openChannel: (interlocutor: ChannelInfo) -> Unit) : this() {
         this.openDrawer = openDrawer
         this.openChannel = openChannel
     }
@@ -100,11 +99,7 @@ class ChannelsListController() : BaseController() {
     }
 
     private fun onChannelsActionChanged(action: ChannelsSlice.Action) = when (action) {
-        is ChannelsSlice.Action.ChannelClicked -> {
-            (userProperties.currentUser!!.identity == action.channel.interlocutor).run {
-                openChannel(if (this) action.channel.sender else action.channel.interlocutor)
-            }
-        }
+        is ChannelsSlice.Action.ChannelClicked -> openChannel(action.channel)
         ChannelsSlice.Action.Idle -> Unit
     }
 
@@ -128,7 +123,7 @@ class ChannelsListController() : BaseController() {
         ChannelsVM.State.ShowContent -> stateSlice.showContent()
         ChannelsVM.State.ShowLoading -> stateSlice.showLoading()
         ChannelsVM.State.ShowError -> stateSlice.showError()
-        is ChannelsVM.State.ChannelChanged -> onChannelChanged(state.change)
+        is ChannelsVM.State.ChannelsListChanged -> onChannelChanged(state.change)
         is ChannelsVM.State.OnJoinSuccess -> {
             channelsSlice.showChannels(listOf(state.channel))
             stateSlice.showContent()

@@ -33,9 +33,9 @@
 
 package com.android.virgilsecurity.feature_contacts.domain.addContact
 
-import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.feature_contacts.data.interactor.AddContactInteractor
+import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -54,18 +54,18 @@ import io.reactivex.schedulers.Schedulers
  * AddContactsDoDefault
  */
 class AddContactsDoDefault(
-        private val addContactInteractor: AddContactInteractor
+        private val contactsRepository: ContactsRepository
 ) : BaseDo<AddContactDo.Result>(), AddContactDo {
 
     override fun execute(interlocutor: String) =
-            addContactInteractor.addContact(interlocutor)
+            contactsRepository.addContact(interlocutor)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::success, ::error)
                     .track()
 
-    private fun success(interlocutor: String) {
-        liveData.value = AddContactDo.Result.OnSuccess(interlocutor)
+    private fun success(channel: ChannelInfo) {
+        liveData.value = AddContactDo.Result.OnSuccess(channel)
     }
 
     private fun error(throwable: Throwable) {

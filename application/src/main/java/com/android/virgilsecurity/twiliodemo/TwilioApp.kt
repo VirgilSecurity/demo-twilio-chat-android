@@ -70,7 +70,7 @@ class TwilioApp : Application() {
                       // Base modules
                       utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
                       // Common modules
-                      commonModules, appModule,
+                      commonModules, appModule, messagesModule,
                       channelsModule, // used in 'contacts' and 'channels list' for now
                       // Auth modules
                       authActivityModule, loginControllerModule,

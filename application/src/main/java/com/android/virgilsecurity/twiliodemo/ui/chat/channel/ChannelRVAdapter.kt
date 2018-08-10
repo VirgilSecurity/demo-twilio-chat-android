@@ -37,8 +37,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_SENDER
 import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.util.GeneralConstants
+import com.android.virgilsecurity.base.util.GeneralConstants.KEY_SENDER
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.twiliodemo.R
 import com.twilio.chat.Message
@@ -141,7 +142,7 @@ class ChannelRVAdapter internal constructor(private val virgilHelper: VirgilHelp
         fun bind(message: Message) {
             val attributes = message.attributes
 
-            val sender = attributes[KEY_SENDER] as String // TODO get author instead of KEY_SENDER
+            val sender = attributes[GeneralConstants.KEY_SENDER] as String // TODO get author instead of KEY_SENDER
             val currentUser = userProperties.currentUser!!.identity
 
             if (currentUser == sender)

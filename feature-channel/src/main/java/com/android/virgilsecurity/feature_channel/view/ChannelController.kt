@@ -34,11 +34,22 @@
 package com.android.virgilsecurity.feature_channel.view
 
 import android.view.View
+import com.android.virgilsecurity.base.data.api.MessagesApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
+import com.android.virgilsecurity.base.extension.toMessageInfo
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.util.UiUtils
+import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_channel.R
 import com.android.virgilsecurity.feature_channel.di.Const.CONTEXT_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.STATE_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.TOOLBAR_CHANNEL
+import com.android.virgilsecurity.feature_channel.viewmodel.ChannelVM
+import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSlice
 import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
+import kotlinx.android.synthetic.main.controller_channel.*
 import org.koin.standalone.inject
 
 class ChannelController() : BaseController() {
@@ -46,44 +57,97 @@ class ChannelController() : BaseController() {
     override val layoutResourceId: Int = R.layout.controller_channel
     override val koinContextName: String? = CONTEXT_CHANNEL
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CHANNEL)
+    private val channelSlice: ChannelSlice by inject()
+    private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNEL)
+    private val viewModel: ChannelVM by inject()
+    private val userProperties: UserProperties by inject()
 
     private lateinit var interlocutor: String
+    private lateinit var channel: ChannelInfo
 
-    constructor(interlocutor: String) : this() {
-        this.interlocutor = interlocutor
+    constructor(channel: ChannelInfo) : this() {
+        this.interlocutor = channel.interlocutor
+        this.channel = channel
     }
 
     override fun init() {
+        initViewCallbacks()
+    }
 
+    private fun initViewCallbacks() {
+        ivSend.setOnClickListener {
+            if (etMessage.text.isNotBlank())
+            viewModel.sendMessage(etMessage.text.toString(), interlocutor)
+        }
     }
 
     override fun initViewSlices(view: View) {
         toolbarSlice.init(lifecycle, view)
+        channelSlice.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
     }
 
     override fun setupViewSlices(view: View) {
-        toolbarSlice.setTitle(interlocutor)
+        toolbarSlice.setTitle(channel.localizedInterlocutor(userProperties))
     }
 
     override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
+        observe(channelSlice.getAction(), ::onMessageActionChanged)
+    }
+
+    private fun onMessageActionChanged(action: ChannelSlice.Action) = when (action) {
+        is ChannelSlice.Action.MessageClicked -> UiUtils.toast(this, "Message clicked")
+        is ChannelSlice.Action.MessageLongClicked -> UiUtils.toast(this, "Message long clicked")
+        ChannelSlice.Action.Idle -> Unit
     }
 
     override fun setupVMStateObservers() {
-        // TODO Implement body or it will be empty ):
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {
-        // TODO Implement body or it will be empty ):
+        viewModel.messages(channel.sid)
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
+    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
+        ToolbarSlice.Action.BackClicked -> backPressed()
         ToolbarSlice.Action.Idle -> Unit
+    }
+
+    private fun onStateChanged(state: ChannelVM.State): Unit = when (state) {
+        is ChannelVM.State.MessageLoaded -> channelSlice.showMessages(state.messages)
+        ChannelVM.State.ShowEmpty -> stateSlice.showEmpty()
+        ChannelVM.State.ShowContent -> stateSlice.showContent()
+        ChannelVM.State.ShowLoading -> stateSlice.showLoading()
+        ChannelVM.State.ShowError -> stateSlice.showError()
+        is ChannelVM.State.ChannelChanged -> onChannelChanged(state.change)
+        is ChannelVM.State.MessageSent -> Unit
+    }
+
+    private fun onChannelChanged(change: MessagesApi.ChannelChanges) = when(change) {
+        is MessagesApi.ChannelChanges.MemberDeleted -> Unit
+        is MessagesApi.ChannelChanges.TypingEnded -> Unit
+        is MessagesApi.ChannelChanges.MessageAdded -> {
+            channelSlice.addMessage(change.message!!.toMessageInfo())
+            stateSlice.showContent()
+        }
+        is MessagesApi.ChannelChanges.MessageDeleted -> Unit
+        is MessagesApi.ChannelChanges.MemberAdded -> Unit
+        is MessagesApi.ChannelChanges.TypingStarted -> Unit
+        is MessagesApi.ChannelChanges.SynchronizationChanged -> Unit
+        is MessagesApi.ChannelChanges.MessageUpdated -> Unit
+        is MessagesApi.ChannelChanges.MemberUpdated -> Unit
+        is MessagesApi.ChannelChanges.Exception -> Unit
+    }
+
+    private fun backPressed() {
+        router.popCurrentController()
     }
 
     companion object {
         const val KEY_CHANNEL_CONTROLLER = "KEY_CHANNEL_CONTROLLER"
+        private val TAG = ChannelController::class.java.simpleName
     }
 }

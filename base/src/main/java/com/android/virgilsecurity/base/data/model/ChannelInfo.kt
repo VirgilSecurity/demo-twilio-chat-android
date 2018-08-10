@@ -37,6 +37,9 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
+import com.android.virgilsecurity.base.data.model.MessageInfo.Companion.KEY_ATTRIBUTES
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.util.GeneralConstants
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
 
@@ -65,7 +68,9 @@ class ChannelInfo(
         val friendlyName: String,
         @ColumnInfo(name = KEY_UNIQUE_NAME)
         val uniqueName: String,
+        @ColumnInfo(name = GeneralConstants.KEY_SENDER)
         val sender: String,
+        @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
         val interlocutor: String
 ): Comparable<ChannelInfo>, Parcelable {
 
@@ -73,12 +78,20 @@ class ChannelInfo(
 
     override fun compareTo(other: ChannelInfo): Int = this.sid.compareTo(other.sid)
 
+    /**
+     * When user creates channel - you will be as interlocutor for him, while when this channel
+     * on your device you should be as sender, so this function encapsulates get of localized
+     * interlocutor for current case.
+     */
+    fun localizedInterlocutor(userProperties: UserProperties) =
+        (userProperties.currentUser!!.identity == sender).let {
+            if (it) interlocutor else sender
+        }
+
     companion object {
         const val EXTRA_CHANNEL_INFO = "EXTRA_CHANNEL_INFO"
         const val KEY_ATTRIBUTES = "attributes"
         const val KEY_FRIENDLY_NAME = "friendly_name"
         const val KEY_UNIQUE_NAME = "unique_name"
-        const val KEY_SENDER = "sender"
-        const val KEY_INTERLOCUTOR = "interlocutor"
     }
 }

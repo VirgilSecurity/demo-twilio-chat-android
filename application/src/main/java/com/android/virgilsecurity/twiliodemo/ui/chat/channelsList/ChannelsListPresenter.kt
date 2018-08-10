@@ -106,10 +106,10 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
 //        compositeDisposable += createChannelDisposable
 //    }
 
-//    fun getPublicChannelsFirstPage(onGetChannelsSuccess: (Paginator<ChannelDescriptor>, MutableList<Channel>) -> Unit,
+//    fun publicChannelsFirstPage(onGetChannelsSuccess: (Paginator<ChannelDescriptor>, MutableList<Channel>) -> Unit,
 //                                   onGetChannelsError: (Throwable) -> Unit) {
 //        val getPublicChannelsFirstPageDisposable =
-//                twilioHelper.getPublicChannelsFirstPage()
+//                twilioHelper.publicChannelsFirstPage()
 //                        .observeOn(AndroidSchedulers.mainThread())
 //                        .subscribeBy(
 //                            onSuccess = {
@@ -263,8 +263,8 @@ class ChannelsListPresenter(private val twilioHelper: TwilioHelper,
 //        compositeDisposable.clear()
 //    }
 //
-//    fun shutdownChatClient() {
-//        twilioHelper.shutdownChatClient()
+//    fun stopChatClient() {
+//        twilioHelper.stopChatClient()
 //    }
 //
 //    fun setupChatListener(chatClientListener: ChatClientListener) =

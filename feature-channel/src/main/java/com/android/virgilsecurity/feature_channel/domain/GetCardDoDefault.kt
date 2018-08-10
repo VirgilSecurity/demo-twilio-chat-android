@@ -31,9 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.interactor
+package com.android.virgilsecurity.feature_channel.domain
 
-import io.reactivex.Single
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.feature_channel.data.interactor.CardsInteractor
+import com.virgilsecurity.sdk.cards.Card
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -41,15 +45,30 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactInteractor
+ * GetCardDoDefault
  */
-interface AddContactInteractor {
+class GetCardDoDefault(
+    private val cardsInteractor: CardsInteractor
+) : BaseDo<GetCardDo.Result>(), GetCardDo {
 
-    fun addContact(interlocutor: String): Single<String>
+    override fun execute(identity: String) =
+            cardsInteractor.card(identity)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(::success, ::error)
+            .track()
+
+    private fun success(card: Card) {
+        liveData.value = GetCardDo.Result.OnSuccess(card)
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = GetCardDo.Result.OnError(throwable)
+    }
 }

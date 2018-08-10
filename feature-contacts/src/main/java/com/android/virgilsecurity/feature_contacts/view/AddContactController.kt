@@ -37,6 +37,7 @@ import android.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
@@ -74,9 +75,9 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     private val stateSlice: StateSliceAddContact by inject()
     private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_ADD_CONTACT)
 
-    private lateinit var openChannel: (String) -> Unit
+    private lateinit var openChannel: (ChannelInfo) -> Unit
 
-    constructor(openChannel: (interlocutor: String) -> Unit) : this() {
+    constructor(openChannel: (channel: ChannelInfo) -> Unit) : this() {
         this.openChannel = openChannel
     }
 
@@ -129,7 +130,7 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     override fun initData() {}
 
     private fun onStateChanged(state: AddContactVM.State) = when (state) {
-        is AddContactVM.State.ContactAdded -> openChannel(state.identity)
+        is AddContactVM.State.ContactAdded -> openChannel(state.channel)
         AddContactVM.State.ShowLoading -> stateSlice.showLoading()
         is AddContactVM.State.UsernameInvalid -> when (state.causeCode) {
             AddContactVM.KEY_USERNAME_EMPTY -> stateSlice.showUsernameEmpty()

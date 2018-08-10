@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_contacts.view
 
 import android.view.View
 import com.android.virgilsecurity.base.data.api.ChannelsApi
+import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
@@ -75,11 +76,11 @@ class ContactsController() : BaseController() {
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
-    private lateinit var openChannel: (String) -> Unit
+    private lateinit var openChannel: (ChannelInfo) -> Unit
 
     constructor(openDrawer: () -> Unit,
                 addContact: () -> Unit,
-                openChannel: (interlocutor: String) -> Unit) : this() {
+                openChannel: (interlocutor: ChannelInfo) -> Unit) : this() {
         this.openDrawer = openDrawer
         this.addContact = addContact
         this.openChannel = openChannel
@@ -101,11 +102,7 @@ class ContactsController() : BaseController() {
     }
 
     private fun onContactsActionChanged(action: ContactsSlice.Action) = when (action) {
-        is ContactsSlice.Action.ContactClicked -> {
-            (userProperties.currentUser!!.identity == action.contact.interlocutor).run {
-                openChannel(if (this) action.contact.sender else action.contact.interlocutor)
-            }
-        }
+        is ContactsSlice.Action.ContactClicked -> openChannel(action.contact)
         ContactsSlice.Action.Idle -> Unit
     }
 

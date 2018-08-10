@@ -38,7 +38,6 @@ import com.twilio.chat.Channel
 import com.twilio.chat.ChatClient
 import com.twilio.chat.ErrorInfo
 import com.twilio.chat.User
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -59,11 +58,11 @@ import io.reactivex.Single
  */
 interface ChannelsApi {
 
-    fun getUserChannelById(id: String): Single<Channel>
+    fun userChannelById(id: String): Single<Channel>
 
-    fun getUserChannels(): Observable<List<ChannelInfo>>
+    fun userChannels(): Observable<List<ChannelInfo>>
 
-    fun createChannel(sender: String, interlocutor: String): Completable
+    fun createChannel(sender: String, interlocutor: String): Single<ChannelInfo>
 
     fun observeChannelsChanges(): Flowable<ChannelsChanges>
 

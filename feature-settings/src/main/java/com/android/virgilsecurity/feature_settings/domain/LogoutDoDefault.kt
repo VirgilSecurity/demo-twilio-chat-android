@@ -64,7 +64,7 @@ class LogoutDoDefault(
                 userProperties.clearCurrentUser()
             }.doOnComplete {
                 Completable.fromCallable {
-                    twilioHelper.shutdownChatClient()
+                    twilioHelper.stopChatClient()
                 }.subscribe()
             }.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

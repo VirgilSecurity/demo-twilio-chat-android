@@ -77,11 +77,22 @@ class DelegateAdapter<T : Comparable<T>> constructor(
         if (data.isNotEmpty()) {
             diffCallback.setLists(this.data, data)
             val result = DiffUtil.calculateDiff(diffCallback)
-//        this.data.clear()
+            this.data.clear()
             this.data.addAll(data)
 
             result.dispatchUpdatesTo(this)
         }
+    }
+
+    fun setItems(data: List<T>) {
+        this.data.clear()
+        this.data.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun addItem(data: T) {
+        this.data.add(data)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {

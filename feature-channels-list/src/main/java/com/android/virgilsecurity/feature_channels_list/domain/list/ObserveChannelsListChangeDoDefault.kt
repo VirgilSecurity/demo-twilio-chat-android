@@ -34,7 +34,10 @@
 package com.android.virgilsecurity.feature_channels_list.domain.list
 
 import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.domain.Do
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.repository.ChannelsRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -48,9 +51,25 @@ import com.android.virgilsecurity.base.domain.Do
  */
 
 /**
- * ObserveChannelsChangeDo
+ * ObserveChannelsListChangeDoDefault
  */
-interface ObserveChannelsChangeDo : Do<ChannelsApi.ChannelsChanges> {
+class ObserveChannelsListChangeDoDefault(
+        private val contactsRepository: ChannelsRepository
+) : BaseDo<ChannelsApi.ChannelsChanges>(), ObserveChannelsListChangeDo {
 
-    fun execute()
+    override fun execute() {
+        contactsRepository.observeChannelsChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+    }
+
+    private fun success(change: ChannelsApi.ChannelsChanges) {
+        liveData.value = change
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = ChannelsApi.ChannelsChanges.Exception(throwable)
+    }
 }

@@ -35,15 +35,13 @@ package com.android.virgilsecurity.feature_channels_list.di
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItem
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
-import com.android.virgilsecurity.feature_channels_list.data.repository.ChannelsRepository
-import com.android.virgilsecurity.feature_channels_list.data.repository.ChannelsRepositoryDefault
+import com.android.virgilsecurity.common.data.repository.ChannelsRepository
+import com.android.virgilsecurity.common.data.repository.ChannelsRepositoryDefault
 import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
 import com.android.virgilsecurity.feature_channels_list.di.Const.ITEM_ADAPTER_CHANNEL
 import com.android.virgilsecurity.feature_channels_list.di.Const.LD_LIST_CHANNELS
@@ -78,7 +76,6 @@ import org.koin.dsl.module.applicationContext
  * ThreadsListModules
  */
 val channelsListModule: Module = applicationContext {
-    bean { ChannelsRepositoryDefault(get(), get()) as ChannelsRepository }
     bean(STATE_CHANNELS) { StateSliceChannels() as StateSliceEmptyable }
 
     context(CONTEXT_CHANNELS_LIST) {
@@ -97,12 +94,11 @@ val channelsListModule: Module = applicationContext {
                     .build()
         }
 
-        bean { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
         bean { ChannelsSliceDefault(get(LD_LIST_CHANNELS), get(), get(), get()) as ChannelsSlice }
 
         bean { GetChannelsDoDefault(get()) as GetChannelsDo }
         bean(MLD_CHANNELS) { MediatorLiveData<ChannelsVM.State>() }
-        bean { ObserveChannelsChangeDoDefault(get()) as ObserveChannelsChangeDo }
+        bean { ObserveChannelsListChangeDoDefault(get()) as ObserveChannelsListChangeDo }
         bean { JoinChannelDoDefault(get()) as JoinChannelDo }
         bean { ChannelsVMDefault(get(MLD_CHANNELS), get(), get(), get()) as ChannelsVM }
     }
