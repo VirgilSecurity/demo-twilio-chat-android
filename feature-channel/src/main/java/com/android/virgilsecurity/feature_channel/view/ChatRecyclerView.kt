@@ -31,36 +31,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.viewslice.contacts.list
+package com.android.virgilsecurity.feature_channel.view
 
-import android.arch.lifecycle.LiveData
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.AttributeSet
 
-/**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/5/18
- * ...-| | \    at Virgil Security
- * ....|_|-
- */
+class ChatRecyclerView : RecyclerView {
 
-/**
- * ContactsSlice
- */
-interface ContactsSlice : ViewSlice {
+    private var oldHeight: Int = 0
 
-    sealed class Action {
-        data class ContactClicked(val contact: ChannelInfo) : Action()
-        object Idle : Action()
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context,
+                                                                              attrs,
+                                                                              defStyle)
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+        val delta = b - t - this.oldHeight
+        oldHeight = b - t
+        if (canScrollVertically(SCROLLING_DOWN))
+            scrollBy(0, -delta)
     }
 
-    fun getAction(): LiveData<Action>
-
-    fun showContacts(contacts: List<ChannelInfo>)
-
-    fun addContact(contact: ChannelInfo)
+    companion object {
+        const val SCROLLING_DOWN = 1
+    }
 }

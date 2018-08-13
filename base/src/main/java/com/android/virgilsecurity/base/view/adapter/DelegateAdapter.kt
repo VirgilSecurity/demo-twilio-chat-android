@@ -90,6 +90,11 @@ class DelegateAdapter<T : Comparable<T>> constructor(
         notifyDataSetChanged()
     }
 
+    fun addItems(data: List<T>) {
+        this.data.addAll(data)
+        notifyDataSetChanged()
+    }
+
     fun addItem(data: T) {
         this.data.add(data)
         notifyDataSetChanged()

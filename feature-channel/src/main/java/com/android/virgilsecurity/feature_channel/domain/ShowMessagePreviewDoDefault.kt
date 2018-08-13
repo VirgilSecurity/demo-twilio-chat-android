@@ -31,11 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.domain.addContact
+package com.android.virgilsecurity.feature_channel.domain
 
-import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.model.MessageInfo
+import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepository
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
+import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
+import com.twilio.chat.Channel
+import com.virgilsecurity.sdk.crypto.VirgilPublicKey
+import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -45,32 +51,47 @@ import io.reactivex.schedulers.Schedulers
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactsDoDefault
+ * SendMessageDoDefault
  */
-class AddContactsDoDefault(
-        private val contactsRepository: ContactsRepository
-) : BaseDo<AddContactDo.Result>(), AddContactDo {
+class ShowMessagePreviewDoDefault(
+        private val virgilHelper: VirgilHelper,
+        private val userProperties: UserProperties
+) : BaseDo<ShowMessagePreviewDo.Result>(), ShowMessagePreviewDo {
 
-    override fun execute(interlocutor: String) =
-            contactsRepository.addContact(interlocutor)
-                    .subscribeOn(Schedulers.io())
+    override fun execute(body: String,
+                         interlocutor: String,
+                         publicKeys: List<VirgilPublicKey>) =
+            Single.just<MessageInfo>(
+                MessageInfo(
+                    PREVIEW_SID,
+                    PREVIEW_CHANNEL_SID,
+                    virgilHelper.encrypt(body, publicKeys),
+                    PREVIEW_ATTRIBUTES,
+                    userProperties.currentUser!!.identity,
+                    interlocutor
+                )
+            ).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::success, ::error)
                     .track()
 
-    private fun success(channel: ChannelInfo) {
-        liveData.value = AddContactDo.Result.OnSuccess(channel)
+    private fun success(message: MessageInfo) {
+        liveData.value = ShowMessagePreviewDo.Result.OnSuccess(message)
     }
 
     private fun error(throwable: Throwable) {
-        liveData.value = AddContactDo.Result.OnError(throwable)
+        liveData.value = ShowMessagePreviewDo.Result.OnError(throwable)
     }
 
-    // TODO show error "No such user"
+    companion object {
+        const val PREVIEW_SID = "TEMP_SID"
+        const val PREVIEW_CHANNEL_SID = "TEMP_CHANNEL_SID"
+        const val PREVIEW_ATTRIBUTES = "TEMP_ATTRIBUTES"
+    }
 }

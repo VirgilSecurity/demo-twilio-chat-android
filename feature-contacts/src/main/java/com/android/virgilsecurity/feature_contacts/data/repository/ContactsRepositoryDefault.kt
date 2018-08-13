@@ -95,6 +95,9 @@ class ContactsRepositoryDefault(
                                                .subscribeOn(Schedulers.io())
                                                .toSingle { it }.toObservable()
                                    })
+                    .map {
+                        it.sortedBy { channel -> channel.sid }
+                    }
                     .filter {
                         !(it comparableListEqual debounceCache) && it.isNotEmpty()
                     }

@@ -35,10 +35,8 @@ package com.android.virgilsecurity.feature_channel.domain
 
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.domain.BaseDo
-import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
 import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
 import com.twilio.chat.Channel
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -57,8 +55,7 @@ import io.reactivex.schedulers.Schedulers
  * ObserveChannelChangesDoDefault
  */
 class ObserveChannelChangesDoDefault(
-        private val messagesRepository: MessagesRepository,
-        private val mapper: MapperToMessageInfo
+        private val messagesRepository: MessagesRepository
 ) : BaseDo<MessagesApi.ChannelChanges>(), ObserveChannelChangesDo {
 
     override fun execute(channel: Channel) {
@@ -70,11 +67,6 @@ class ObserveChannelChangesDoDefault(
     }
 
     private fun success(change: MessagesApi.ChannelChanges) {
-        if (change is MessagesApi.ChannelChanges.MessageAdded)
-            Single.just(change.message!!)
-                    .map(mapper::mapMessage)
-                    .flatMapCompletable { messagesRepository.addMessage(it) } // TODO move to right place
-
         liveData.value = change
     }
 

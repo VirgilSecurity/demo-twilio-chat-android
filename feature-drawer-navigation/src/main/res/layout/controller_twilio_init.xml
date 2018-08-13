@@ -41,7 +41,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/clContentRoot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/ivError"
@@ -109,9 +110,9 @@
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/small_text"
             android:visibility="invisible"
-            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/btnRetry"
-            app:layout_constraintStart_toEndOf="@id/btnRetry" />
+            app:layout_constraintStart_toEndOf="@id/btnRetry"
+            tools:visibility="visible" />
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar
@@ -129,12 +130,12 @@
     <TextView
         android:id="@+id/tvInitializing"
         android:layout_width="wrap_content"
-        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_margin"
         android:text="@string/initializing"
         android:textColor="@color/snow"
         android:textSize="@dimen/big_text"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pbLoading" />

@@ -33,15 +33,14 @@
 
 package com.android.virgilsecurity.feature_channel.data.repository
 
+import android.arch.lifecycle.Transformations.map
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.dao.MessagesDao
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.extension.comparableListEqual
 import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
 import com.twilio.chat.Channel
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 
@@ -61,7 +60,8 @@ import io.reactivex.schedulers.Schedulers
  */
 class MessagesRepositoryDefault(
         private val messagesApi: MessagesApi,
-        private val messagesDao: MessagesDao
+        private val messagesDao: MessagesDao,
+        private val mapper: MapperToMessageInfo
 ) : MessagesRepository {
 
     private val debounceCache = mutableListOf<MessageInfo>()
@@ -87,9 +87,11 @@ class MessagesRepositoryDefault(
             Observable.zip(messagesApi.messagesCount(channel).toObservable(),
                            messagesDao.messagesCount(channel.sid).toObservable(),
                            BiFunction { remoteCount: Long, localCount: Int -> remoteCount to localCount })
-                    .filter { it.first > it.second.toLong() }
+                    .filter {
+                        it.first > it.second.toLong()
+                    }
                     .flatMap {
-                        if (it.first - it.second.toLong() > Int.MAX_VALUE)
+                        if (it.first - it.second.toLong() > MAX_TWILIO_QUEUE_SIZE)
                             throw Throwable("Too many un-fetched messages );") // Need to add pagination in the future
 
                         messagesApi.messagesAfter(channel,
@@ -100,6 +102,21 @@ class MessagesRepositoryDefault(
 
     override fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
             messagesApi.observeChannelChanges(channel)
+                    .flatMap {change ->
+                        when (change) {
+                            is MessagesApi.ChannelChanges.MessageAdded -> {
+                                Single.just(change.message)
+                                        .map(mapper::mapMessage)
+                                        .flatMap { messageInfo ->
+                                            messagesDao.addMessage(messageInfo)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .toSingle { change }
+                                        }
+                                        .toFlowable()
+                            }
+                            else -> Flowable.just(change)
+                        }
+                    }
 
     override fun sendMessage(channel: Channel, body: String, interlocutor: String): Completable =
             messagesApi.sendMessage(channel, body, interlocutor)
@@ -108,6 +125,7 @@ class MessagesRepositoryDefault(
                                 .subscribeOn(Schedulers.io())
                     }
 
-    override fun addMessage(message: MessageInfo): Completable =
-            messagesDao.addMessage(message)
+    companion object {
+        const val MAX_TWILIO_QUEUE_SIZE = 10000
+    }
 }

@@ -125,7 +125,7 @@ class ChannelsListController() : BaseController() {
         ChannelsVM.State.ShowError -> stateSlice.showError()
         is ChannelsVM.State.ChannelsListChanged -> onChannelChanged(state.change)
         is ChannelsVM.State.OnJoinSuccess -> {
-            channelsSlice.showChannels(listOf(state.channel))
+            channelsSlice.addChannel(state.channel)
             stateSlice.showContent()
         }
     }

@@ -31,11 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.viewslice.contacts.list
+package com.android.virgilsecurity.feature_channel.domain
 
-import android.arch.lifecycle.LiveData
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.viewslice.ViewSlice
+import com.android.virgilsecurity.base.data.model.MessageInfo
+import com.android.virgilsecurity.base.domain.Do
+import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 
 /**
  * . _  _
@@ -43,24 +43,20 @@ import com.android.virgilsecurity.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    8/13/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ContactsSlice
+ * ShowMessagePreviewDo
  */
-interface ContactsSlice : ViewSlice {
+interface ShowMessagePreviewDo : Do<ShowMessagePreviewDo.Result> {
 
-    sealed class Action {
-        data class ContactClicked(val contact: ChannelInfo) : Action()
-        object Idle : Action()
+    sealed class Result {
+        data class OnSuccess(val message: MessageInfo) : Result()
+        data class OnError(val error: Throwable) : Result()
     }
 
-    fun getAction(): LiveData<Action>
-
-    fun showContacts(contacts: List<ChannelInfo>)
-
-    fun addContact(contact: ChannelInfo)
+    fun execute(body: String, interlocutor: String, publicKeys: List<VirgilPublicKey>)
 }

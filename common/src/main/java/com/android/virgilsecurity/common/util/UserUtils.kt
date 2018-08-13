@@ -33,8 +33,6 @@
 
 package com.android.virgilsecurity.common.util
 
-import com.android.virgilsecurity.base.data.properties.UserProperties
-
 /**
  * . _  _
  * .| || | _

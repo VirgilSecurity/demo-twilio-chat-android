@@ -80,7 +80,7 @@ import org.koin.dsl.module.applicationContext
  * ChannelModules
  */
 val channelModule: Module = applicationContext {
-    bean { MessagesRepositoryDefault(get(), get()) as MessagesRepository }
+    bean { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
     bean(STATE_CHANNEL) { StateSliceChannel() as StateSliceEmptyable }
 
     context(CONTEXT_CHANNEL) {
@@ -110,13 +110,15 @@ val channelModule: Module = applicationContext {
 
         bean { GetMessagesDoDefault(get()) as GetMessagesDo }
         bean(MLD_CHANNEL) { MediatorLiveData<ChannelVM.State>() }
-        bean { ObserveChannelChangesDoDefault(get(), get()) as ObserveChannelChangesDo }
+        bean { ObserveChannelChangesDoDefault(get()) as ObserveChannelChangesDo }
         bean { SendMessageDoDefault(get(), get()) as SendMessageDo }
         bean { CardsInteractorDefault(get()) as CardsInteractor }
         bean { GetCardDoDefault(get()) as GetCardDo }
         bean { GetChannelDoDefault(get()) as GetChannelDo }
+        bean { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
         bean {
             ChannelVMDefault(get(MLD_CHANNEL),
+                             get(),
                              get(),
                              get(),
                              get(),

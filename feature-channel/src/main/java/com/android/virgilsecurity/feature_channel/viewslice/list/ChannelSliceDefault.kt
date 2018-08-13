@@ -76,12 +76,12 @@ class ChannelSliceDefault(
     override fun getAction(): LiveData<ChannelSlice.Action> = action
 
     override fun showMessages(messages: List<MessageInfo>) {
-        adapter.setItems(messages)
+        adapter.addItems(messages)
         layoutManager.scrollToPosition(adapter.itemCount - 1)
     }
 
     override fun addMessage(message: MessageInfo)  {
         adapter.addItem(message)
-        layoutManager.scrollToPosition(adapter.itemCount - 1)
+        rvMessages.smoothScrollToPosition(adapter.itemCount - 1)
     }
 }

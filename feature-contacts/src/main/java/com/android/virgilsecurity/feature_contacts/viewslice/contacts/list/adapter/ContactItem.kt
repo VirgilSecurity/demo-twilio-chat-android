@@ -73,7 +73,10 @@ class ContactItem(
                         UserUtils.firstInitials(item.localizedInterlocutor(userProperties))
 
                 Glide.with(context)
-                        .load(UiUtils.randomDrawable(context, R.array.loginBackgrounds))
+                        .load(UiUtils.letterBasedDrawable(context, R.array.loginBackgrounds,
+                                                          tvInitialsContact.text[0]
+                                                                  .toLowerCase()
+                                                                  .toString()))
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivUserPicContact)
 

@@ -97,14 +97,15 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     private fun initViews() {
+        openKeyboard(etUsername)
         tvPolicy2.movementMethod = LinkMovementMethodNoSelection.instance
         tvPolicy4.movementMethod = LinkMovementMethodNoSelection.instance
     }
 
     private fun initViewCallbacks() {
         btnNext.setOnClickListener {
-            viewModel.registration(etUsername.text.toString())
             hideKeyboard()
+            viewModel.registration(etUsername.text.toString())
         }
     }
 
@@ -122,7 +123,10 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
-        ToolbarSlice.Action.BackClicked -> activity!!.onBackPressed()
+        ToolbarSlice.Action.BackClicked -> {
+            hideKeyboard()
+            backPressed()
+        }
         ToolbarSlice.Action.InfoClicked -> UiUtils.toastUnderDevelopment(this)
         ToolbarSlice.Action.Idle -> Unit
     }
@@ -132,6 +136,15 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     override fun initData() {}
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        hideKeyboard()
+    }
+
+    private fun backPressed() {
+        router.popCurrentController()
+    }
 
     private fun onStateChanged(state: RegistrationVM.State) = when (state) {
         is RegistrationVM.State.RegisteredSuccessfully -> login(state.user)

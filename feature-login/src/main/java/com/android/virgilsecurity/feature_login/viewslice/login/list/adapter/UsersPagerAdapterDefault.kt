@@ -138,7 +138,11 @@ class UsersPagerAdapterDefault(
         } else {
             tvInitials.visibility = View.VISIBLE
             tvInitials.text = UserUtils.firstInitials(user.identity)
-            ivUserPic.background = UiUtils.randomDrawable(parent.context, R.array.loginBackgrounds)
+            ivUserPic.background = UiUtils.letterBasedDrawable(parent.context,
+                                                               R.array.loginBackgrounds,
+                                                               tvInitials.text[0]
+                                                                       .toLowerCase()
+                                                                       .toString())
         }
 
         parent.setOnClickListener {

@@ -74,6 +74,8 @@ class StateSliceAddContactDefault : BaseViewSlice(), StateSliceAddContact {
                     if (it) btnAdd.visibility = View.INVISIBLE else btnAdd.visibility = View.VISIBLE
                     if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
                 }
+
+        etUsername.requestFocus()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

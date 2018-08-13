@@ -36,6 +36,7 @@ package com.android.virgilsecurity.common.data.local.messages
 import com.android.virgilsecurity.base.data.dao.MessagesDao
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
+import com.android.virgilsecurity.common.util.UiUtils
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -65,6 +66,12 @@ class MessagesLocalDS(
 
     override fun addMessage(message: MessageInfo): Completable =
             Completable.fromCallable { messagesQao.insertMessage(message) }
+                    .doOnComplete {
+                        UiUtils.log("das", "das")
+                    }
+                    .doOnError {
+                        UiUtils.log("error", "this")
+                    }
 
     override fun messagesCount(channelSid: String): Single<Int> =
             Single.fromCallable { messagesQao.messagesCount(channelSid) }

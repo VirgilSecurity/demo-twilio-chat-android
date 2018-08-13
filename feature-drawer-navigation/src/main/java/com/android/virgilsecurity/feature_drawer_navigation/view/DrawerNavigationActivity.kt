@@ -37,7 +37,6 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.model.User
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.getContentView
 import com.android.virgilsecurity.base.extension.hasNoRootController
 import com.android.virgilsecurity.base.extension.observe
@@ -85,7 +84,6 @@ class DrawerNavigationActivity(
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val userProperties: UserProperties by inject()
 
     private lateinit var user: User
 
@@ -110,22 +108,31 @@ class DrawerNavigationActivity(
 
     override fun setupVMStateObservers() {}
 
-    private fun onActionChanged(action: DrawerSlice.Action) = when (action) {
+    private fun onActionChanged(action: DrawerSlice.Action,
+                                pushChangeHandler: ControllerChangeHandler? = null,
+                                popChangeHandler: ControllerChangeHandler? = null) = when (action) {
         DrawerSlice.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
-            replaceTopController(contactsController(), ContactsController.KEY_CONTACTS_CONTROLLER)
+            replaceTopController(contactsController(), ContactsController.KEY_CONTACTS_CONTROLLER,
+                                 pushChangeHandler,
+                                 popChangeHandler)
         }
         DrawerSlice.Action.ChannelsListClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
             replaceTopController(channelsController(),
-                                 ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)
+                                 ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER,
+                                 pushChangeHandler,
+                                 popChangeHandler)
         }
         DrawerSlice.Action.SettingsClicked -> {
             stateSlice.lockDrawer()
             stateSlice.closeDrawer()
-            pushController(settingsController(), SettingsController.KEY_SETTINGS_CONTROLLER)
+            pushController(settingsController(),
+                           SettingsController.KEY_SETTINGS_CONTROLLER,
+                           pushChangeHandler,
+                           popChangeHandler)
         }
         DrawerSlice.Action.SameItemClicked -> stateSlice.closeDrawer()
         DrawerSlice.Action.Idle -> Unit
@@ -163,33 +170,40 @@ class DrawerNavigationActivity(
                 }
             }
 
-    private fun replaceTopController(controller: Controller, tag: String) =
+    private fun replaceTopController(controller: Controller,
+                                     tag: String,
+                                     pushChangeHandler: ControllerChangeHandler? = SimpleSwapChangeHandler(),
+                                     popChangeHandler: ControllerChangeHandler? = null) =
             routerRoot.replaceTopController(RouterTransaction
                                                     .with(controller.apply {
                                                         retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
                                                     })
-                                                    .pushChangeHandler(SimpleSwapChangeHandler())
+                                                    .pushChangeHandler(pushChangeHandler)
+                                                    .popChangeHandler(popChangeHandler)
                                                     .tag(tag))
 
-    private fun pushController(controller: Controller, tag: String) =
+    private fun pushController(controller: Controller,
+                               tag: String,
+                               pushChangeHandler: ControllerChangeHandler? = HorizontalChangeHandler(),
+                               popChangeHandler: ControllerChangeHandler? = HorizontalChangeHandler()) =
             routerRoot.pushController(RouterTransaction
                                               .with(controller)
-                                              .pushChangeHandler(HorizontalChangeHandler())
-                                              .popChangeHandler(HorizontalChangeHandler())
+                                              .pushChangeHandler(pushChangeHandler)
+                                              .popChangeHandler(popChangeHandler)
                                               .tag(tag))
 
     private fun openChannelNotFromChannels(channel: ChannelInfo) {
 
-            routerRoot.setBackstack(
-                listOf(RouterTransaction
-                               .with(channelsController().apply {
-                                   retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                               })
-                               .pushChangeHandler(SimpleSwapChangeHandler())
-                               .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)),
-                SimpleSwapChangeHandler())
+        routerRoot.setBackstack(
+            listOf(RouterTransaction
+                           .with(channelsController().apply {
+                               retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                           })
+                           .pushChangeHandler(SimpleSwapChangeHandler())
+                           .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)),
+            SimpleSwapChangeHandler())
 
-            openChannel(channel)
+        openChannel(channel)
     }
 
     private fun openChannel(channel: ChannelInfo) =
@@ -201,10 +215,11 @@ class DrawerNavigationActivity(
             routerRoot.setRoot(RouterTransaction
                                        .with(TwilioInitController(user)
                                              {
-                                                 onActionChanged(DrawerSlice.Action.ChannelsListClicked)
+                                                 onActionChanged(DrawerSlice.Action.ChannelsListClicked,
+                                                                 HorizontalChangeHandler())
                                              })
-                                       .pushChangeHandler(SimpleSwapChangeHandler())
-                                       .popChangeHandler(SimpleSwapChangeHandler())
+                                       .pushChangeHandler(HorizontalChangeHandler())
+                                       .popChangeHandler(HorizontalChangeHandler())
                                        .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
 
         routerRoot.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {

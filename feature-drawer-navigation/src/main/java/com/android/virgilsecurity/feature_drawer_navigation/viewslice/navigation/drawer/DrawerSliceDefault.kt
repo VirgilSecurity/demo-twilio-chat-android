@@ -107,15 +107,19 @@ class DrawerSliceDefault(
 
     override fun setHeader(identity: String, picturePath: String?) {
         if (picturePath != null) {
-            nvNavigation.getHeaderView(0).ivUserPicDrawer.setImageBitmap(imageStorage.get(Uri.parse(picturePath)))
+            nvNavigation.getHeaderView(0).ivUserPicDrawer.setImageBitmap(imageStorage.get(Uri.parse(
+                picturePath)))
         } else {
             nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
             nvNavigation.getHeaderView(0).tvInitialsDrawer.visibility = View.VISIBLE
             Glide.with(context)
-                    .load(UiUtils.randomDrawable(context, R.array.loginBackgrounds))
+                    .load(UiUtils.letterBasedDrawable(context, R.array.loginBackgrounds,
+                                                      nvNavigation.getHeaderView(0)
+                                                              .tvInitialsDrawer.text[0]
+                                                              .toLowerCase()
+                                                              .toString()))
                     .apply(RequestOptions.circleCropTransform())
                     .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
-//            nvNavigation.getHeaderView(0).ivUserPicDrawer.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
         }
 
         nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity

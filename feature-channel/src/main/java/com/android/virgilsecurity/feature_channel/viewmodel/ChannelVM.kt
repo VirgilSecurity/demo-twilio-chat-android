@@ -63,6 +63,7 @@ abstract class ChannelVM : ViewModel() {
         object ShowContent : State()
         object ShowError : State()
         data class ChannelChanged(val change: MessagesApi.ChannelChanges) : State()
+        data class MessagePreviewAdded(val message: MessageInfo) : State()
     }
 
     abstract fun getState() : LiveData<State>
@@ -70,4 +71,6 @@ abstract class ChannelVM : ViewModel() {
     abstract fun messages(channelId: String)
 
     abstract fun sendMessage(body: String, interlocutor: String)
+
+    abstract fun showMessagePreview(body: String, interlocutor: String)
 }

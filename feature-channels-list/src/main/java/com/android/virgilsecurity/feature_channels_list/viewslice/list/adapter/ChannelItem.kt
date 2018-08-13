@@ -68,11 +68,15 @@ class ChannelItem(
 
     override fun onBind(item: ChannelInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelInfo>) =
             with(viewHolder) {
-                    tvUsernameContact.text = item.localizedInterlocutor(userProperties)
-                    tvInitialsContact.text = UserUtils.firstInitials(item.localizedInterlocutor(userProperties))
+                tvUsernameContact.text = item.localizedInterlocutor(userProperties)
+                tvInitialsContact.text = UserUtils.firstInitials(item.localizedInterlocutor(
+                    userProperties))
 
                 Glide.with(context)
-                        .load(UiUtils.randomDrawable(context, R.array.loginBackgrounds))
+                        .load(UiUtils.letterBasedDrawable(context, R.array.loginBackgrounds,
+                                                          tvInitialsContact.text[0]
+                                                                  .toLowerCase()
+                                                                  .toString()))
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivUserPicContact)
 

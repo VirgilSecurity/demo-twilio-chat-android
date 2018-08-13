@@ -77,5 +77,7 @@ class ChannelsSliceDefault(
 
     override fun getAction(): LiveData<ChannelsSlice.Action> = actionLiveData
 
-    override fun showChannels(channels: List<ChannelInfo>) = adapter.swapData(channels)
+    override fun showChannels(channels: List<ChannelInfo>) = adapter.addItems(channels)
+
+    override fun addChannel(channel: ChannelInfo) = adapter.addItem(channel)
 }

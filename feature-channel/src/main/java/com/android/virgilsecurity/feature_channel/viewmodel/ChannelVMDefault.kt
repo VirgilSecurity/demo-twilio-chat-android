@@ -64,7 +64,8 @@ class ChannelVMDefault(
         private val observeChannelChangesDo: ObserveChannelChangesDo,
         private val getCardDo: GetCardDo,
         private val getChannelDo: GetChannelDo,
-        private val userProperties: UserProperties
+        private val userProperties: UserProperties,
+        private val showMessagePreviewDo: ShowMessagePreviewDo
 ) : ChannelVM() {
 
     private lateinit var channel: Channel
@@ -76,6 +77,7 @@ class ChannelVMDefault(
         state.addSource(observeChannelChangesDo.getLiveData(), ::onChannelChanged)
         state.addSource(getCardDo.getLiveData(), ::onLoadCardResult)
         state.addSource(getChannelDo.getLiveData(), ::onLoadChannelResult)
+        state.addSource(showMessagePreviewDo.getLiveData(), ::onShowMessagePreviewResult)
     }
 
     override fun getState(): LiveData<State> = state
@@ -91,6 +93,11 @@ class ChannelVMDefault(
                                   interlocutor,
                                   cards.map { it.publicKey as VirgilPublicKey })
 
+    override fun showMessagePreview(body: String, interlocutor: String) =
+            showMessagePreviewDo.execute(body,
+                                         interlocutor,
+                                         cards.map { it.publicKey as VirgilPublicKey })
+
     private fun observeChannelChanges(channel: Channel) =
             observeChannelChangesDo.execute(channel)
 
@@ -100,6 +107,7 @@ class ChannelVMDefault(
         observeChannelChangesDo.cleanUp()
         getCardDo.cleanUp()
         getChannelDo.cleanUp()
+        showMessagePreviewDo.cleanUp()
     }
 
     private fun onLoadMessagesResult(result: GetMessagesDo.Result?) {
@@ -154,6 +162,16 @@ class ChannelVMDefault(
                 getCardDo.execute(identity)
             }
             is GetChannelDo.Result.OnError -> State.ShowError
+        }
+    }
+
+
+    private fun onShowMessagePreviewResult(result: ShowMessagePreviewDo.Result?) {
+        when (result) {
+            is ShowMessagePreviewDo.Result.OnSuccess -> {
+                state.value = ChannelVM.State.MessagePreviewAdded(result.message)
+            }
+            is ShowMessagePreviewDo.Result.OnError -> State.ShowError
         }
     }
 }

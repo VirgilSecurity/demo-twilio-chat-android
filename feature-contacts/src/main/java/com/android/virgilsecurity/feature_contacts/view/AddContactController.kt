@@ -38,7 +38,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
 import com.android.virgilsecurity.feature_contacts.R
@@ -92,6 +91,7 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
 
 
     override fun init() {
+        openKeyboard(etUsername)
         initViewCallbacks()
     }
 
@@ -115,6 +115,17 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
         observe(toolbarSlice.getAction()) { onActionChanged(it) }
     }
 
+    override fun setupVMStateObservers() {
+        observe(viewModel.getState()) { onStateChanged(it) }
+    }
+
+    override fun initData() {}
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        hideKeyboard()
+    }
+
     private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
         ToolbarSlice.Action.BackClicked -> {
             hideKeyboard()
@@ -122,12 +133,6 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
         }
         ToolbarSlice.Action.Idle -> Unit
     }
-
-    override fun setupVMStateObservers() {
-        observe(viewModel.getState()) { onStateChanged(it) }
-    }
-
-    override fun initData() {}
 
     private fun onStateChanged(state: AddContactVM.State) = when (state) {
         is AddContactVM.State.ContactAdded -> openChannel(state.channel)

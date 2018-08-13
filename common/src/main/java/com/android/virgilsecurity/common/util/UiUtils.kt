@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.common.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
@@ -126,5 +127,20 @@ object UiUtils {
                     backgrounds.recycle()
                     result
                 }
+            }
+
+    @SuppressLint("ResourceType")
+    fun letterBasedDrawable(context: Context, drawablesArrayId: Int, letter: String): Drawable =
+            context.resources.obtainTypedArray(drawablesArrayId).let { backgrounds ->
+                val result = when (letter) {
+                    in "a".."h" -> backgrounds.getDrawable(0)
+                    in "i".."q" -> backgrounds.getDrawable(1)
+                    in "r".."z" -> backgrounds.getDrawable(2)
+                    else -> backgrounds.getDrawable(0)
+                }
+
+                backgrounds.recycle()
+
+                result
             }
 }

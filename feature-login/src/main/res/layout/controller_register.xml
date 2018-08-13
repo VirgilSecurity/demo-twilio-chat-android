@@ -63,7 +63,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/etUsername"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarRegistration"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText

@@ -41,6 +41,7 @@ import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import com.android.virgilsecurity.base.util.KoinContextName
 import com.bluelinelabs.conductor.Controller
@@ -169,5 +170,17 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
     protected fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
+    }
+
+    /**
+     * Posts 'open keyboard' event to the queue to wait until all views are drawn.
+     */
+    protected fun openKeyboard(view: View) {
+        if (view.requestFocus()) {
+            view.post {
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+            }
+        }
     }
 }

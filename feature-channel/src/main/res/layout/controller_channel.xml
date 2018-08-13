@@ -83,7 +83,7 @@
             app:layout_constraintTop_toBottomOf="@id/ivNoMessages" />
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.android.virgilsecurity.feature_channel.view.ChatRecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="0dp"
         android:layout_height="0dp"

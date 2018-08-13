@@ -129,7 +129,7 @@ class ContactsController() : BaseController() {
         ContactsVM.State.ShowError -> stateSlice.showError()
         is ContactsVM.State.ContactChanged -> onContactsChanged(state.change)
         is ContactsVM.State.OnJoinSuccess -> {
-            contactsSlice.showContacts(listOf(state.channel))
+            contactsSlice.addContact(state.channel)
             stateSlice.showContent()
         }
     }

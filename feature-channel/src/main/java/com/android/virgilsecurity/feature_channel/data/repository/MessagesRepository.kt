@@ -61,6 +61,4 @@ interface MessagesRepository {
     fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges>
 
     fun sendMessage(channel: Channel, body: String, interlocutor: String): Completable
-
-    fun addMessage(message: MessageInfo): Completable
 }

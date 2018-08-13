@@ -61,4 +61,6 @@ interface ChannelsSlice : ViewSlice {
     fun getAction(): LiveData<Action>
 
     fun showChannels(channels: List<ChannelInfo>)
+
+    fun addChannel(channel: ChannelInfo)
 }

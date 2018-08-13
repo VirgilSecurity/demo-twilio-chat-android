@@ -36,6 +36,7 @@ package com.android.virgilsecurity.feature_channel.view
 import android.view.View
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.extension.toMessageInfo
@@ -77,8 +78,11 @@ class ChannelController() : BaseController() {
 
     private fun initViewCallbacks() {
         ivSend.setOnClickListener {
-            if (etMessage.text.isNotBlank())
-            viewModel.sendMessage(etMessage.text.toString(), interlocutor)
+            if (etMessage.text.isNotBlank()) {
+                viewModel.showMessagePreview(etMessage.text.toString(), interlocutor) // To improve user experience
+                viewModel.sendMessage(etMessage.text.toString(), interlocutor)
+                etMessage.text.clear()
+            }
         }
     }
 
@@ -112,7 +116,10 @@ class ChannelController() : BaseController() {
     }
 
     private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> backPressed()
+        ToolbarSlice.Action.BackClicked -> {
+            hideKeyboard()
+            backPressed()
+        }
         ToolbarSlice.Action.Idle -> Unit
     }
 
@@ -124,13 +131,19 @@ class ChannelController() : BaseController() {
         ChannelVM.State.ShowError -> stateSlice.showError()
         is ChannelVM.State.ChannelChanged -> onChannelChanged(state.change)
         is ChannelVM.State.MessageSent -> Unit
+        is ChannelVM.State.MessagePreviewAdded -> {
+            channelSlice.addMessage(state.message)
+            stateSlice.showContent()
+        }
     }
 
-    private fun onChannelChanged(change: MessagesApi.ChannelChanges) = when(change) {
+    private fun onChannelChanged(change: MessagesApi.ChannelChanges) = when (change) {
         is MessagesApi.ChannelChanges.MemberDeleted -> Unit
         is MessagesApi.ChannelChanges.TypingEnded -> Unit
         is MessagesApi.ChannelChanges.MessageAdded -> {
-            channelSlice.addMessage(change.message!!.toMessageInfo())
+            if (change.message!!.toMessageInfo().sender != userProperties.currentUser!!.identity)
+                channelSlice.addMessage(change.message!!.toMessageInfo())
+
             stateSlice.showContent()
         }
         is MessagesApi.ChannelChanges.MessageDeleted -> Unit
