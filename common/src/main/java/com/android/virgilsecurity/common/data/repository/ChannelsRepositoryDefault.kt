@@ -37,10 +37,12 @@ import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.extension.comparableListEqual
+import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
 import com.twilio.chat.Channel
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -59,18 +61,27 @@ import io.reactivex.schedulers.Schedulers
  */
 class ChannelsRepositoryDefault(
         private val channelsApi: ChannelsApi,
-        private val channelsDao: ChannelsDao
+        private val channelsDao: ChannelsDao,
+        private val mapper: MapperToChannelInfo
 ) : ChannelsRepository {
 
     private val debounceCache = mutableListOf<ChannelInfo>()
 
     override fun channels(): Observable<List<ChannelInfo>> =
             Observable.concatArray(channelsDao.getUserChannels().toObservable(),
-                                   channelsApi.userChannels().flatMap {
-                                       channelsDao.addChannels(it)
-                                               .subscribeOn(Schedulers.io())
-                                               .toSingle { it }.toObservable()
-                                   })
+                                   channelsApi.userChannels()
+                                           .flatMap(::joinFetchedChannels)
+                                           .flatMap {
+                                               channelsDao.addChannels(it)
+                                                       .subscribeOn(Schedulers.io())
+                                                       .toSingle { it }.toObservable()
+                                           })
+                    .map { channels ->
+                        channels.toMutableList().let {
+                            it.removeAll(debounceCache)
+                            it
+                        }
+                    }
                     .map {
                         it.sortedBy { channel -> channel.sid }
                     }
@@ -84,8 +95,54 @@ class ChannelsRepositoryDefault(
                         debounceCache.clear()
                     }
 
+    @Suppress("UNCHECKED_CAST")
+    private fun joinFetchedChannels(userChannels: List<ChannelInfo>): Observable<List<ChannelInfo>> {
+        val fetchChannelStreams = mutableListOf<Observable<Channel>>()
+
+        for (channel in userChannels)
+            fetchChannelStreams.add(channelsApi.userChannelById(channel.sid).toObservable())
+
+        return Observable.zip(fetchChannelStreams) { channels -> channels.toList() }
+                .flatMap { fetchedChannels ->
+                    val joinChannelStreams = mutableListOf<Observable<ChannelInfo>>()
+
+                    for (fetchedChannel in fetchedChannels as List<Channel>)
+                        if (fetchedChannel.status.value == Channel.ChannelStatus.INVITED.value)
+                            joinChannelStreams.add(channelsApi.joinChannel(fetchedChannel).toObservable())
+
+                    Observable.zip(joinChannelStreams) { userChannels }
+                }
+    }
+
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             channelsApi.observeChannelsChanges()
+                    .flatMap { change ->
+                        when (change) {
+                            is ChannelsApi.ChannelsChanges.ChannelInvited -> {
+                                Single.just(change.channel!!)
+                                        .map(mapper::mapChannel)
+                                        .flatMap { channel ->
+                                            joinAndAddToDbChannel(change, channel).let { pair ->
+                                                Single.zip(pair.first,
+                                                           pair.second,
+                                                           BiFunction
+                                                           { _: ChannelInfo,
+                                                             _: ChannelsApi.ChannelsChanges ->
+                                                               change
+                                                           })
+                                            }
+                                        }
+                                        .toFlowable()
+                            }
+                            else -> Flowable.just(change)
+                        }
+                    }
+
+    private fun joinAndAddToDbChannel(change: ChannelsApi.ChannelsChanges.ChannelInvited,
+                                      channel: ChannelInfo) =
+            (channelsApi.joinChannel(change.channel!!).subscribeOn(Schedulers.io())
+                    to
+                    channelsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })
 
     override fun getUserChannelById(id: String): Single<Channel> = channelsApi.userChannelById(id)
 }

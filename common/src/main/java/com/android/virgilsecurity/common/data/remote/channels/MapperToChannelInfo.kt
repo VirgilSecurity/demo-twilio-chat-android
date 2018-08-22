@@ -56,20 +56,33 @@ import com.twilio.chat.ChannelDescriptor
 class MapperToChannelInfo {
 
     fun mapDescriptors(descriptors: List<ChannelDescriptor>): List<ChannelInfo> =
-        descriptors.map {
-            ChannelInfo(it.sid,
-                        it.attributes.toString(),
-                        it.friendlyName,
-                        it.uniqueName,
-                        it.attributes[GeneralConstants.KEY_SENDER] as String,
-                        it.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
-        }
+            descriptors.map { channelDescriptor ->
+                ChannelInfo(channelDescriptor.sid,
+                            channelDescriptor.attributes.toString(),
+                            channelDescriptor.friendlyName,
+                            channelDescriptor.uniqueName,
+                            channelDescriptor.attributes[GeneralConstants.KEY_SENDER] as String,
+                            channelDescriptor.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
+                            channelDescriptor.status.value)
+            }
 
     fun mapChannel(channel: Channel): ChannelInfo =
-            ChannelInfo(channel.sid,
-                        channel.attributes.toString(),
-                        channel.friendlyName,
-                        channel.uniqueName,
-                        channel.attributes[GeneralConstants.KEY_SENDER] as String,
-                        channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
+            System.currentTimeMillis().let {
+                while (channel.attributes.toString() == "{}" ||
+                       (System.currentTimeMillis() - it) < ATTRIBUTES_LOAD_TIMEOUT) {
+                    continue
+                }
+
+                ChannelInfo(channel.sid,
+                            channel.attributes.toString(),
+                            channel.friendlyName,
+                            channel.uniqueName,
+                            channel.attributes[GeneralConstants.KEY_SENDER] as String,
+                            channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
+                            channel.status.value)
+            }
+
+    companion object {
+        const val ATTRIBUTES_LOAD_TIMEOUT = 1000L
+    }
 }

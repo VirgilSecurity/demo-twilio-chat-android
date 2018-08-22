@@ -81,6 +81,4 @@ class ContactsSliceDefault(
     override fun showContacts(contacts: List<ChannelInfo>) = adapter.addItems(contacts)
 
     override fun addContact(contact: ChannelInfo) = adapter.addItem(contact)
-
-    // TODO add swap data when new contact added
 }

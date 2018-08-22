@@ -51,8 +51,6 @@ import kotlinx.android.extensions.LayoutContainer
  * ....|_|-
  */
 
-// TODO extend BaseController
-
 /**
  * BaseController
  */

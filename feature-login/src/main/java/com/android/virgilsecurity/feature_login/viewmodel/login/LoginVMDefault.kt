@@ -71,7 +71,7 @@ class LoginVMDefault(
     override fun getState(): LiveData<State> = state
 
     override fun users() {
-        state.value = State.ShowLoading // TODO add debounce to avoid blinking if users are loaded fast
+        state.value = State.ShowLoading
         loadUsersDo.execute()
     }
 

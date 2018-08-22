@@ -37,5 +37,6 @@
     <string name="no_messages_yet">No messages yet. Write something!</string>
     <string name="error_loading_messages">Error loading messages. Swipe top to refresh.</string>
     <string name="message">Message</string>
+    <string name="send_message_button">Send message button</string>
 
 </resources>

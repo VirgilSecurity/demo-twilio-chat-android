@@ -37,9 +37,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.feature_channels_list.domain.list.GetChannelsDo
-import com.android.virgilsecurity.feature_channels_list.domain.list.JoinChannelDo
 import com.android.virgilsecurity.feature_channels_list.domain.list.ObserveChannelsListChangeDo
-import com.twilio.chat.Channel
 
 /**
  * . _  _
@@ -58,14 +56,12 @@ import com.twilio.chat.Channel
 class ChannelsVMDefault(
         private val state: MediatorLiveData<State>,
         private val getChannelsDo: GetChannelsDo,
-        private val observeChannelsListChangeDo: ObserveChannelsListChangeDo,
-        private val joinChannelDo: JoinChannelDo
+        private val observeChannelsListChangeDo: ObserveChannelsListChangeDo
 ) : ChannelsVM() {
 
     init {
         state.addSource(getChannelsDo.getLiveData(), ::onLoadContactsResult)
         state.addSource(observeChannelsListChangeDo.getLiveData(), ::onContactsChanged)
-        state.addSource(joinChannelDo.getLiveData(), ::onJoinChannelResult)
     }
 
     override fun getState(): LiveData<State> = state
@@ -77,12 +73,9 @@ class ChannelsVMDefault(
 
     override fun observeChannelsChanges() = observeChannelsListChangeDo.execute()
 
-    override fun joinChannel(channel: Channel) = joinChannelDo.execute(channel)
-
     override fun onCleared() {
         getChannelsDo.cleanUp()
         observeChannelsListChangeDo.cleanUp()
-        joinChannelDo.cleanUp()
     }
 
     private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
@@ -101,12 +94,5 @@ class ChannelsVMDefault(
 
     private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
         state.value = State.ChannelsListChanged(result!!)
-    }
-
-    private fun onJoinChannelResult(result: JoinChannelDo.Result?) {
-        when (result) {
-            is JoinChannelDo.Result.OnSuccess -> state.value = State.OnJoinSuccess(result.channel)
-            is JoinChannelDo.Result.OnError -> state.value = State.ShowError
-        }
     }
 }

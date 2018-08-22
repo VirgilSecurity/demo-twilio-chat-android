@@ -39,6 +39,7 @@ import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_CONTACTS
@@ -47,6 +48,8 @@ import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIS
 import com.android.virgilsecurity.feature_contacts.viewmodel.list.ContactsVM
 import com.android.virgilsecurity.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
+import com.twilio.chat.Channel
+import io.reactivex.Single
 import org.koin.standalone.inject
 
 /**
@@ -72,7 +75,7 @@ class ContactsController() : BaseController() {
     private val contactsSlice: ContactsSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CONTACTS)
     private val viewModel: ContactsVM by inject()
-    private val userProperties: UserProperties by inject()
+    private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
@@ -128,10 +131,6 @@ class ContactsController() : BaseController() {
         ContactsVM.State.ShowLoading -> stateSlice.showLoading()
         ContactsVM.State.ShowError -> stateSlice.showError()
         is ContactsVM.State.ContactChanged -> onContactsChanged(state.change)
-        is ContactsVM.State.OnJoinSuccess -> {
-            contactsSlice.addContact(state.channel)
-            stateSlice.showContent()
-        }
     }
 
     private fun onContactsChanged(change: ChannelsApi.ChannelsChanges) = when(change) {
@@ -148,12 +147,21 @@ class ContactsController() : BaseController() {
         is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
         is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
         is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelInvited -> viewModel.joinChannel(change.channel!!)
+        is ChannelsApi.ChannelsChanges.ChannelInvited -> showChannel(change.channel!!)
         is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
         is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
         is ChannelsApi.ChannelsChanges.Error -> Unit
         is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
         is ChannelsApi.ChannelsChanges.Exception -> Unit
+    }
+
+    private fun showChannel(channel: Channel) {
+        Single.just(channel)
+                .map(mapper::mapChannel)
+                .subscribe { channelInfo ->
+                    contactsSlice.addContact(channelInfo)
+                    stateSlice.showContent()
+                }
     }
 
     companion object {

@@ -59,7 +59,9 @@ interface StateSliceAddContact : ViewSlice {
 
     fun showUsernameTooLong()
 
+    fun showYourOwnUsername()
+
     fun showLoading()
 
-    fun showError()
+    fun showTryAgain()
 }

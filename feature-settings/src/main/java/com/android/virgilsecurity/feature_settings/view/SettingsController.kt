@@ -98,14 +98,14 @@ class SettingsController() : BaseController() {
     }
 
     override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction()) { onToolbarActionChanged(it) }
-        observe(menuSlice.getAction()) { onMenuActionChanged(it) }
-        observe(headerSlice.getAction()) { onHeaderActionChanged(it) }
-        observe(footerSlice.getAction()) { onFooterActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
+        observe(menuSlice.getAction(), ::onMenuActionChanged)
+        observe(headerSlice.getAction(), ::onHeaderActionChanged)
+        observe(footerSlice.getAction(), ::onFooterActionChanged)
     }
 
     override fun setupVMStateObservers() {
-        observe(viewModel.getState()) { onStateChanged(it) }
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {}

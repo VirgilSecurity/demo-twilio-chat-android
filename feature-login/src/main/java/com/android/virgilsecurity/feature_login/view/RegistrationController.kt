@@ -83,9 +83,9 @@ class RegistrationController() : BaseControllerBinding() {
 
     override fun initViewBinding(inflater: LayoutInflater, container: ViewGroup?, layoutResourceId: Int): View {
         val binding: ControllerRegisterBinding = DataBindingUtil.inflate(inflater,
-                                                                       layoutResourceId,
-                                                                       container,
-                                                                       false)
+                                                                         layoutResourceId,
+                                                                         container,
+                                                                         false)
         binding.registrationViewModel = viewModel as RegistrationVMDefault
         return binding.root
     }
@@ -119,10 +119,10 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onActionChanged)
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
+    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
         ToolbarSlice.Action.BackClicked -> {
             hideKeyboard()
             backPressed()
@@ -132,7 +132,7 @@ class RegistrationController() : BaseControllerBinding() {
     }
 
     override fun setupVMStateObservers() {
-        observe(viewModel.getState()) { onStateChanged(it) }
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {}
@@ -157,6 +157,10 @@ class RegistrationController() : BaseControllerBinding() {
         }
         RegistrationVM.State.UsernameConsistent -> stateSlice.showConsistent()
         RegistrationVM.State.ShowError -> stateSlice.showError()
+        RegistrationVM.State.AlreadyRegistered -> {
+            UiUtils.toast(this, "User already registered")
+            stateSlice.showConsistent()
+        }
         RegistrationVM.State.Idle -> Unit
     }
 

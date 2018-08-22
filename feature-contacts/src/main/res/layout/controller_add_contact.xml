@@ -92,6 +92,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPickUsername" />
 
+        <TextView
+            android:id="@+id/tvYourUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="6dp"
+            android:text="@string/it_is_your_username"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/small_text"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@id/etUsername"
+            app:layout_constraintStart_toStartOf="@id/etUsername" />
+
         <Button
             android:id="@+id/btnAdd"
             android:layout_width="67dp"

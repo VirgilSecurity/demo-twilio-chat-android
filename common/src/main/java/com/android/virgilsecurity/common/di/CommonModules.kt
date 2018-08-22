@@ -37,6 +37,7 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputFilter
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.api.VirgilApi
@@ -52,12 +53,11 @@ import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
 import com.android.virgilsecurity.common.data.helper.room.RoomDB
 import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import com.android.virgilsecurity.common.data.helper.twilio.TwilioRx
-import com.android.virgilsecurity.common.data.helper.virgil.GetTokenCallbackImpl
+import com.android.virgilsecurity.common.data.helper.virgil.RenewTokenCallbackImpl
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilRx
 import com.android.virgilsecurity.common.data.local.channels.ChannelsLocalDS
 import com.android.virgilsecurity.common.data.local.messages.MessagesLocalDS
-import com.android.virgilsecurity.common.data.local.messages.MessagesQao
 import com.android.virgilsecurity.common.data.local.users.UserPropertiesDefault
 import com.android.virgilsecurity.common.data.local.users.UsersLocalDS
 import com.android.virgilsecurity.common.data.remote.channels.ChannelIdGenerator
@@ -73,12 +73,14 @@ import com.android.virgilsecurity.common.di.CommonDiConst.DIVIDER_DRAWABLE
 import com.android.virgilsecurity.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.android.virgilsecurity.common.di.CommonDiConst.ROOM_DB_NAME
 import com.android.virgilsecurity.common.util.AuthUtils
+import com.android.virgilsecurity.common.util.DefaultSymbolsInputFilter
 import com.android.virgilsecurity.common.util.ImageStorage
 import com.android.virgilsecurity.common.view.adapter.ItemDecoratorBottomDivider
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
 import com.virgilsecurity.sdk.crypto.*
+import com.virgilsecurity.sdk.jwt.accessProviders.CachingJwtProvider
 import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider
 import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
@@ -99,8 +101,9 @@ import org.koin.dsl.module.applicationContext
  */
 
 /**
- * commonModules
+ * CommonModules
  */
+
 val commonModules: Module = applicationContext {
     bean(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
     bean {
@@ -111,6 +114,7 @@ val commonModules: Module = applicationContext {
     bean { UsersLocalDS(get()) as UsersDao }
     bean { ImageStorage(get()) }
     factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
+    factory { DefaultSymbolsInputFilter() as InputFilter }
 }
 
 val utilsModule : Module = applicationContext {
@@ -127,8 +131,8 @@ val virgilModule : Module = applicationContext {
     bean { VirgilCardCrypto() as CardCrypto }
     bean { VirgilCrypto() }
     bean { VirgilCardVerifier(get()) as CardVerifier }
-    bean { GetTokenCallbackImpl(get(), get(), get()) as CallbackJwtProvider.GetTokenCallback }
-    bean { CallbackJwtProvider(get()) as AccessTokenProvider }
+    bean { RenewTokenCallbackImpl(get(), get(), get()) as CachingJwtProvider.RenewJwtCallback }
+    bean { CachingJwtProvider(get()) as AccessTokenProvider }
     bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
     bean { JsonFileKeyStorage(get(CommonDiConst.STORAGE_PATH)) as KeyStorage }
     bean { PrivateKeyStorage(get(), get()) }
@@ -156,7 +160,7 @@ val channelsModule: Module = applicationContext {
     bean { DiffCallback<ChannelInfo>() }
     bean(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
     bean { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
-    bean { ChannelsRepositoryDefault(get(), get()) as ChannelsRepository }
+    bean { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
 }
 
 val messagesModule: Module = applicationContext {

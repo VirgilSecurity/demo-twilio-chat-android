@@ -40,6 +40,7 @@ import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseControllerBinding
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_contacts.R
 import com.android.virgilsecurity.feature_contacts.databinding.ControllerAddContactBinding
 import com.android.virgilsecurity.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
@@ -65,7 +66,7 @@ import org.koin.standalone.inject
 /**
  * AddContactController
  */
-class AddContactController() : BaseControllerBinding() { // TODO try to move layoutResourceId to primary constructor and add : super()
+class AddContactController() : BaseControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
     override val koinContextName: String? = CONTEXT_ADD_CONTACT
@@ -112,11 +113,11 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
     }
 
     override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction()) { onActionChanged(it) }
+        observe(toolbarSlice.getAction(), ::onActionChanged)
     }
 
     override fun setupVMStateObservers() {
-        observe(viewModel.getState()) { onStateChanged(it) }
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {}
@@ -141,10 +142,15 @@ class AddContactController() : BaseControllerBinding() { // TODO try to move lay
             AddContactVM.KEY_USERNAME_EMPTY -> stateSlice.showUsernameEmpty()
             AddContactVM.KEY_USERNAME_SHORT -> stateSlice.showUsernameTooShort()
             AddContactVM.KEY_USERNAME_LONG -> stateSlice.showUsernameTooLong()
+            AddContactVM.KEY_YOUR_OWN_USERNAME -> stateSlice.showYourOwnUsername()
             else -> Unit
         }
         AddContactVM.State.UsernameConsistent -> stateSlice.showConsistent()
-        AddContactVM.State.ShowError -> stateSlice.showError()
+        AddContactVM.State.NoSuchUser -> {
+            UiUtils.toast(this, "No such user")
+            stateSlice.showConsistent()
+        }
+        AddContactVM.State.ShowError -> stateSlice.showTryAgain()
     }
 
     private fun backPress() {

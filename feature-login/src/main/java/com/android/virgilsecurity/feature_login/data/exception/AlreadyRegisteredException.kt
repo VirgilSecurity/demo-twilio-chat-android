@@ -31,12 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_contacts.data.interactor
-
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.twilio.chat.Channel
-import io.reactivex.Single
+package com.android.virgilsecurity.feature_login.data.exception
 
 /**
  * . _  _
@@ -44,17 +39,15 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    8/20/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AddContactInteractorDefault
+ * AlreadyRegisteredException
  */
-class JoinContactInteractorDefault(
-        private val contactsApi: ChannelsApi
-) : JoinContactInteractor {
-
-    override fun joinContact(channel: Channel): Single<ChannelInfo> = contactsApi.joinChannel(channel)
-}
+class AlreadyRegisteredException(
+        message: String? = null,
+        exception: Exception? = null
+) : RuntimeException(message, exception)

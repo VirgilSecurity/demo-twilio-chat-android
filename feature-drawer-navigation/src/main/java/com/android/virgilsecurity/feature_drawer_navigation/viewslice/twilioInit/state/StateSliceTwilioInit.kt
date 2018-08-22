@@ -134,6 +134,6 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
         const val ERROR_FADE_OUT_DURATION = 500L
         const val ERROR_START_OFFSET = 1500L
-        const val DEBOUNCE_INTERVAL = 300L
+        const val DEBOUNCE_INTERVAL = 200L
     }
 }

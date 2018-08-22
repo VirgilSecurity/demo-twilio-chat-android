@@ -95,22 +95,25 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/clEnterMessage"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvMessages">
 
         <EditText
-            android:inputType="text"
             android:id="@+id/etMessage"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
             android:background="@drawable/rect_trans"
             android:hint="@string/message"
-            android:maxLines="1"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:paddingBottom="@dimen/half_default_margin"
+            android:paddingTop="@dimen/half_default_margin"
             android:textColor="@color/snow"
             android:textColorHint="@color/grayLight"
             android:textSize="@dimen/increased_text"
@@ -123,13 +126,14 @@
             android:id="@+id/ivSend"
             android:layout_width="56dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="@string/send_message_button"
             android:paddingEnd="@dimen/default_margin"
             android:paddingStart="@dimen/default_margin"
             android:src="@drawable/ic_send"
             android:tint="@color/virgilGrayLight"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar

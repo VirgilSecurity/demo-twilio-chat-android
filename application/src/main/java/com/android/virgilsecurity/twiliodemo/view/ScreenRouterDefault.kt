@@ -78,7 +78,6 @@ class ScreenRouterDefault : ScreenRouter {
     private fun getScreenClass(screen: Screen) = when (screen) {
         ScreenChat.Login -> AuthActivity::class.java
         ScreenChat.DrawerNavigation -> DrawerNavigationActivity::class.java
-        ScreenChat.Channel -> null // TODO
         else -> null
     }
 }

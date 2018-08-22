@@ -38,5 +38,6 @@
     <string name="error_loading_contacts">Error loading contacts.\nSwipe top to refresh.</string>
     <string name="username">Username</string>
     <string name="interlocutor_identity">Interlocutor identity</string>
+    <string name="it_is_your_username">* It\'s your username</string>
 
 </resources>

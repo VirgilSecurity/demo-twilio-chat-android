@@ -46,7 +46,7 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/4/186/4/18
+ * ....|  _/    6/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
@@ -62,8 +62,8 @@ class AuthUtils(private val userProperties: UserProperties,
                            card: Card = userProperties.currentUser!!.card()): String =
             card.identifier.let { identifier ->
                 (identifier + "." + (System.currentTimeMillis() / 1000L)).let { idAndTimestamp ->
-                    (privateKeyStorage.load(identity).left as VirgilPrivateKey).let {
-                        virgilCrypto.generateSignature(idAndTimestamp.toByteArray(), it).let {
+                    (privateKeyStorage.load(identity).left as VirgilPrivateKey).let { privateKey ->
+                        virgilCrypto.generateSignature(idAndTimestamp.toByteArray(), privateKey).let {
                             idAndTimestamp + "." + ConvertionUtils.toBase64String(it)
                         }
                     }

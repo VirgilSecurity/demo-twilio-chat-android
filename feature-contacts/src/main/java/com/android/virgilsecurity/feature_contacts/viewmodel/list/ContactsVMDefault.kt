@@ -37,7 +37,6 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.feature_contacts.domain.list.GetContactsDo
-import com.android.virgilsecurity.feature_contacts.domain.list.JoinChannelDo
 import com.android.virgilsecurity.feature_contacts.domain.list.ObserveContactsChangesDo
 import com.twilio.chat.Channel
 
@@ -58,14 +57,12 @@ import com.twilio.chat.Channel
 class ContactsVMDefault(
         private val state: MediatorLiveData<State>,
         private val contactsDo: GetContactsDo,
-        private val observeContactsChangesDo: ObserveContactsChangesDo,
-        private val joinChannelDo: JoinChannelDo
+        private val observeContactsChangesDo: ObserveContactsChangesDo
 ) : ContactsVM() {
 
     init {
         state.addSource(contactsDo.getLiveData(), ::onLoadContactsResult)
         state.addSource(observeContactsChangesDo.getLiveData(), ::onContactsChanged)
-        state.addSource(joinChannelDo.getLiveData(), ::onJoinChannelResult)
     }
 
     override fun getState(): LiveData<State> = state
@@ -76,10 +73,6 @@ class ContactsVMDefault(
     }
 
     override fun observeContactsChanges() = observeContactsChangesDo.execute()
-
-    override fun joinChannel(channel: Channel) {
-        joinChannelDo.execute(channel)
-    }
 
     override fun onCleared() {
         contactsDo.cleanUp()
@@ -102,12 +95,5 @@ class ContactsVMDefault(
 
     private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
         state.value = State.ContactChanged(result!!)
-    }
-
-    private fun onJoinChannelResult(result: JoinChannelDo.Result?) {
-        when (result) {
-            is JoinChannelDo.Result.OnSuccess -> state.value = State.OnJoinSuccess(result.channel)
-            is JoinChannelDo.Result.OnError -> state.value = State.ShowError
-        }
     }
 }

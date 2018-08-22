@@ -44,7 +44,7 @@ import kotlinx.android.synthetic.main.controller_no_users.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    5/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */

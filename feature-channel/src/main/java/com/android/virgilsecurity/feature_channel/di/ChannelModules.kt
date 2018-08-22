@@ -71,7 +71,7 @@ import org.koin.dsl.module.applicationContext
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/2/186/2/18
+ * ....|  _/    6/2/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */

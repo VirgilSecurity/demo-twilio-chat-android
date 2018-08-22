@@ -31,13 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.common.data.helper.virgil
+package com.android.virgilsecurity.base.extension
 
-import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
-import com.android.virgilsecurity.common.util.AuthUtils
-import com.virgilsecurity.sdk.jwt.TokenContext
-import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
+import android.databinding.Observable
+import io.reactivex.disposables.Disposables
 
 /**
  * . _  _
@@ -45,23 +42,19 @@ import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/4/186/4/18
+ * ....|  _/    8/20/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * GetTokenCallbackImpl
+ * ObservableExt
  */
-class GetTokenCallbackImpl(private val fuelHelper: FuelHelper,
-                           private val userProperties: UserProperties,
-                           private val utils: AuthUtils) :
-        CallbackJwtProvider.GetTokenCallback {
 
-    // TODO use caching provider instead
-
-    override fun onGetToken(tokenContext: TokenContext?): String {
-        return fuelHelper.getVirgilToken(userProperties.currentUser!!.identity,
-                                         utils.generateAuthHeader()).token
-    }
-}
+fun <T : Observable> T.addOnPropertyChanged(callback: (T) -> Unit) =
+        object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(observable: Observable?, i: Int) =
+                    callback(observable as T)
+        }.also { addOnPropertyChangedCallback(it) }.let {
+            Disposables.fromAction { removeOnPropertyChangedCallback(it) }
+        }

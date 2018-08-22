@@ -54,11 +54,11 @@ import io.reactivex.schedulers.Schedulers
  * ObserveChannelsListChangeDoDefault
  */
 class ObserveChannelsListChangeDoDefault(
-        private val contactsRepository: ChannelsRepository
+        private val channelsRepository: ChannelsRepository
 ) : BaseDo<ChannelsApi.ChannelsChanges>(), ObserveChannelsListChangeDo {
 
     override fun execute() {
-        contactsRepository.observeChannelsChanges()
+        channelsRepository.observeChannelsChanges()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(::success, ::error)

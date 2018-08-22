@@ -62,7 +62,6 @@ abstract class ContactsVM : ViewModel() {
         object ShowContent : State()
         object ShowError : State()
         data class ContactChanged(val change: ChannelsApi.ChannelsChanges) : State()
-        data class OnJoinSuccess(val channel: ChannelInfo) : State()
     }
 
     abstract fun getState() : LiveData<State>
@@ -70,6 +69,4 @@ abstract class ContactsVM : ViewModel() {
     abstract fun contacts()
 
     abstract fun observeContactsChanges()
-
-    abstract fun joinChannel(channel: Channel)
 }

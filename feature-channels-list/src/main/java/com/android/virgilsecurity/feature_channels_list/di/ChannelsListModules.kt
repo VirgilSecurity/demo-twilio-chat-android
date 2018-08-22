@@ -99,8 +99,7 @@ val channelsListModule: Module = applicationContext {
         bean { GetChannelsDoDefault(get()) as GetChannelsDo }
         bean(MLD_CHANNELS) { MediatorLiveData<ChannelsVM.State>() }
         bean { ObserveChannelsListChangeDoDefault(get()) as ObserveChannelsListChangeDo }
-        bean { JoinChannelDoDefault(get()) as JoinChannelDo }
-        bean { ChannelsVMDefault(get(MLD_CHANNELS), get(), get(), get()) as ChannelsVM }
+        bean { ChannelsVMDefault(get(MLD_CHANNELS), get(), get()) as ChannelsVM }
     }
 }
 

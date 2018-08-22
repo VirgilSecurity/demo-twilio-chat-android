@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.viewslice.registration.state
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
+import android.text.InputFilter
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -60,7 +61,9 @@ import java.util.concurrent.TimeUnit
 /**
  * StateSliceRegistrationDefault
  */
-class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
+class StateSliceRegistrationDefault(
+        private val symbolsInputFilter: InputFilter
+) : BaseViewSlice(), StateSliceRegistration {
 
     private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
     private lateinit var debounceDisposable: Disposable
@@ -74,6 +77,8 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
                     if (it) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
                     if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
                 }
+
+        etUsername.filters = arrayOf(symbolsInputFilter)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -142,6 +147,6 @@ class StateSliceRegistrationDefault : BaseViewSlice(), StateSliceRegistration {
     companion object {
         const val ERROR_FADE_OUT_DURATION = 500L
         const val ERROR_START_OFFSET = 1500L
-        const val DEBOUNCE_INTERVAL = 500L
+        const val DEBOUNCE_INTERVAL = 200L
     }
 }

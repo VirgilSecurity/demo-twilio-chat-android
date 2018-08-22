@@ -51,7 +51,6 @@ import com.android.virgilsecurity.base.data.model.User
 /**
  * LoginVM
  */
-
 abstract class LoginVM : ViewModel() {
 
     sealed class State {

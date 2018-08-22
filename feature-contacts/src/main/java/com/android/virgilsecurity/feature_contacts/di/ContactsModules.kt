@@ -55,7 +55,10 @@ import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_ADD_CONTACT
 import com.android.virgilsecurity.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.android.virgilsecurity.feature_contacts.domain.addContact.AddContactDo
 import com.android.virgilsecurity.feature_contacts.domain.addContact.AddContactsDoDefault
-import com.android.virgilsecurity.feature_contacts.domain.list.*
+import com.android.virgilsecurity.feature_contacts.domain.list.GetContactsDo
+import com.android.virgilsecurity.feature_contacts.domain.list.GetContactsDoDefault
+import com.android.virgilsecurity.feature_contacts.domain.list.ObserveContactsChangesDo
+import com.android.virgilsecurity.feature_contacts.domain.list.ObserveContactsChangesDoDefault
 import com.android.virgilsecurity.feature_contacts.viewmodel.addContact.AddContactVM
 import com.android.virgilsecurity.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.android.virgilsecurity.feature_contacts.viewmodel.list.ContactsVM
@@ -88,15 +91,21 @@ import org.koin.dsl.module.applicationContext
  */
 
 val contactsModule: Module = applicationContext {
-    bean { ContactsRepositoryDefault(get(), get(), get(), get()) as ContactsRepository }
+    bean { ContactsRepositoryDefault(get(), get(), get(), get(), get()) as ContactsRepository }
     bean(STATE_CONTACTS) { StateSliceContacts() as StateSliceEmptyable }
 
     context(CONTEXT_CONTACTS) {
         bean(LD_TOOLBAR_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
-        bean(TOOLBAR_CONTACTS_LIST) { ToolbarSliceContacts(get(LD_TOOLBAR_CONTACTS)) as com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice }
+        bean(TOOLBAR_CONTACTS_LIST) {
+            ToolbarSliceContacts(get(LD_TOOLBAR_CONTACTS))
+                    as com.android.virgilsecurity.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
+        }
 
         bean(LD_LIST_CONTACTS) { MutableLiveData<ContactsSlice.Action>() }
-        bean(ITEM_ADAPTER_CONTACT) { ContactItem(get(LD_LIST_CONTACTS), get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo> }
+        bean(ITEM_ADAPTER_CONTACT) {
+            ContactItem(get(LD_LIST_CONTACTS), get())
+                    as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
+        }
         bean {
             DelegateAdapter.Builder<ChannelInfo>()
                     .add(get(ITEM_ADAPTER_CONTACT))
@@ -109,18 +118,17 @@ val contactsModule: Module = applicationContext {
         bean { GetContactsDoDefault(get()) as GetContactsDo }
         bean(MLD_CONTACTS) { MediatorLiveData<ContactsVM.State>() }
         bean { ObserveContactsChangesDoDefault(get()) as ObserveContactsChangesDo }
-        bean { JoinChannelDoDefault(get()) as JoinChannelDo }
-        bean { ContactsVMDefault(get(MLD_CONTACTS), get(), get(), get()) as ContactsVM }
+        bean { ContactsVMDefault(get(MLD_CONTACTS), get(), get()) as ContactsVM }
     }
 }
 
 val addContactModule: Module = applicationContext {
-    bean { StateSliceAddContactDefault() as StateSliceAddContact }
+    bean { StateSliceAddContactDefault(get()) as StateSliceAddContact }
 
     context(CONTEXT_ADD_CONTACT) {
         bean { AddContactsDoDefault(get()) as AddContactDo }
         bean(MLD_ADD_CONTACT) { MediatorLiveData<AddContactVM.State>() }
-        bean { AddContactVMDefault(get(MLD_ADD_CONTACT), get()) as AddContactVM }
+        bean { AddContactVMDefault(get(MLD_ADD_CONTACT), get(), get()) as AddContactVM }
 
         bean(LD_TOOLBAR_ADD_CONTACT) { MutableLiveData<ToolbarSlice.Action>() }
         bean(TOOLBAR_ADD_CONTACT) { ToolbarSliceAddContact(get(LD_TOOLBAR_ADD_CONTACT)) as ToolbarSlice }

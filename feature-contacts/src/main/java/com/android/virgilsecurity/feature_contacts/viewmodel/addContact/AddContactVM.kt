@@ -57,6 +57,7 @@ abstract class AddContactVM : ViewModel() {
         data class ContactAdded(val channel: ChannelInfo) : State()
         object ShowLoading : State()
         object ShowError : State()
+        object NoSuchUser : State()
         object UsernameConsistent : State()
         data class UsernameInvalid(val causeCode: Int) : State()
     }
@@ -69,6 +70,7 @@ abstract class AddContactVM : ViewModel() {
         const val KEY_USERNAME_EMPTY = 0
         const val KEY_USERNAME_SHORT = 1
         const val KEY_USERNAME_LONG = 2
+        const val KEY_YOUR_OWN_USERNAME = 3
 
         const val MIN_LENGTH = 4
         const val MAX_LENGTH = 32

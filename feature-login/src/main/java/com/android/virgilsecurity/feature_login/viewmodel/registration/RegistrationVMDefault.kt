@@ -35,9 +35,12 @@ package com.android.virgilsecurity.feature_login.viewmodel.registration
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
-import android.databinding.Observable
 import android.databinding.ObservableField
+import com.android.virgilsecurity.base.extension.addOnPropertyChanged
+import com.android.virgilsecurity.feature_login.data.exception.AlreadyRegisteredException
 import com.android.virgilsecurity.feature_login.domain.registration.SignUpDo
+import com.github.kittinunf.fuel.core.FuelError
+import io.reactivex.disposables.Disposable
 
 /**
  * . _  _
@@ -59,16 +62,13 @@ class RegistrationVMDefault(
 ) : RegistrationVM() {
 
     val usernameField = ObservableField<String>()
-    private val propertyChangedCallback: Observable.OnPropertyChangedCallback
+    private val propertyChangedCallback: Disposable
 
     init {
         state.addSource(signUpDo.getLiveData(), ::onRegistrationResult)
-        propertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                onUsernameChanged(usernameField.get())
-            }
+        propertyChangedCallback = usernameField.addOnPropertyChanged {
+            onUsernameChanged(usernameField.get())
         }
-        usernameField.addOnPropertyChangedCallback(propertyChangedCallback) // TODO add nice look with https://proandroiddev.com/the-ugly-onpropertychangedcallback-63c78c762394
     }
 
     override fun getState(): LiveData<State> = state
@@ -79,7 +79,7 @@ class RegistrationVMDefault(
     }
 
     override fun onCleared() {
-        usernameField.removeOnPropertyChangedCallback(propertyChangedCallback)
+        propertyChangedCallback.dispose()
         signUpDo.cleanUp()
     }
 
@@ -90,8 +90,15 @@ class RegistrationVMDefault(
                 state.value = State.Idle
             }
             is SignUpDo.Result.OnError -> {
-                state.value = State.ShowError
-                state.value = State.Idle
+                if (result.error is AlreadyRegisteredException ||
+                    result.error is FuelError && result.error.response.statusCode == 400) {
+
+                    state.value = State.AlreadyRegistered
+                    state.value = State.Idle
+                } else {
+                    state.value = State.ShowError
+                    state.value = State.Idle
+                }
             }
         }
     }

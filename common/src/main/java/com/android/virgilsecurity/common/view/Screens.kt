@@ -52,5 +52,4 @@ import com.android.virgilsecurity.base.view.Screen
 sealed class ScreenChat : Screen {
     object Login : ScreenChat()
     object DrawerNavigation : ScreenChat()
-    object Channel : ScreenChat()
 }

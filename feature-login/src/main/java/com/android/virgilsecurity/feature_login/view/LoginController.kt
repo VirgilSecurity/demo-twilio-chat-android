@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.view
 
 import LoginDiConst.CONTEXT_LOGIN_CONTROLLER
 import LoginDiConst.STATE_SLICE_LOGIN
+import android.os.Bundle
 import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.observe
@@ -92,22 +93,15 @@ class LoginController() : BaseController() {
         stateSlice.init(lifecycle, view)
     }
 
-    override fun setupViewSlices(view: View) {
-        // TODO Implement body or it will be empty ):
-    }
+    override fun setupViewSlices(view: View) {}
 
     override fun setupVSActionObservers() =
-            observe(viewPagerSlice.getAction()) { onActionChanged(it) }
+            observe(viewPagerSlice.getAction(), ::onActionChanged)
 
     override fun setupVMStateObservers()
-            = observe(viewModel.getState()) { onStateChanged(it) }
+            = observe(viewModel.getState(), ::onStateChanged)
 
     override fun initData() {}
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        viewPagerSlice.resetIndicator() // Temporary fix cuz indicator doesn't save its state
-    }
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {

@@ -51,4 +51,5 @@ dependencies {
     support()
     viewPagerIndicator()
     conductor()
+    networking()
 }

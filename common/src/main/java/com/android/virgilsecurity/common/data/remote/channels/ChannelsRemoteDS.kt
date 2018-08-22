@@ -42,6 +42,20 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    8/3/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * ChannelsRemoteDS
+ */
 class ChannelsRemoteDS(
         private val twilioHelper: TwilioHelper,
         private val channelIdGenerator: ChannelIdGenerator,

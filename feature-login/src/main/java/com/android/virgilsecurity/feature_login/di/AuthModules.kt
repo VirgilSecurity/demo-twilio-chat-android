@@ -82,8 +82,6 @@ import org.koin.dsl.module.applicationContext
  * ....|_|-
  */
 
-// TODO check dates in print above in all files
-
 /**
  * LoginModules
  */
@@ -111,13 +109,13 @@ val loginControllerModule: Module = applicationContext {
 
 val registrationControllerModule: Module = applicationContext {
     bean { AuthRemote(get()) as AuthApi }
-    bean { AuthInteractorDefault(get(), get(), get(), get(), get()) as AuthInteractor }
+    bean { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
 
     context(CONTEXT_REGISTRATION_CONTROLLER) {
         bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
         bean { SignUpDoDefault(get(), get()) as SignUpDo }
         bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
-        bean { StateSliceRegistrationDefault() as StateSliceRegistration }
+        bean { StateSliceRegistrationDefault(get()) as StateSliceRegistration }
         bean(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
         bean { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
     }

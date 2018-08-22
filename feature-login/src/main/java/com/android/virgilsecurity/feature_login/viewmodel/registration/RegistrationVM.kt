@@ -59,6 +59,7 @@ abstract class RegistrationVM : ViewModel() {
         data class UsernameInvalid(val causeCode: Int) : State()
         object UsernameConsistent : State()
         object ShowError : State()
+        object AlreadyRegistered : State()
         object Idle : State()
     }
 

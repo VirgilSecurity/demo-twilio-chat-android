@@ -95,9 +95,19 @@ class DelegateAdapter<T : Comparable<T>> constructor(
         notifyDataSetChanged()
     }
 
-    fun addItem(data: T) {
+    fun addItemToEnd(data: T) {
         this.data.add(data)
         notifyDataSetChanged()
+    }
+
+    fun addItem(data: T) {
+        this.data.toMutableList()
+                .apply {
+                    add(data)
+                    this.sort()
+                }.run {
+                    swapData(this)
+                }
     }
 
     override fun getItemCount(): Int {

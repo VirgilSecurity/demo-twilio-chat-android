@@ -53,6 +53,20 @@ import com.android.virgilsecurity.feature_channel.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_channel.*
 import org.koin.standalone.inject
 
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    8/2/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * ChannelController
+ */
 class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel

@@ -62,8 +62,8 @@ class ViewPagerSliceDefault(
         private val actionLiveData: MutableLiveData<Action>
 ) : BaseViewSlice(), ViewPagerSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onCreate() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
         setupViewPager()
     }
 
@@ -78,11 +78,6 @@ class ViewPagerSliceDefault(
     }
 
     override fun updateIndicator() {
-        vpIndicatorUsers.setupWithViewPager(vpUsers)
-    }
-
-    override fun resetIndicator() {
-        vpUsers.setCurrentItem(0, false) // While indicator is not saving it's state
         vpIndicatorUsers.setupWithViewPager(vpUsers)
     }
 }

@@ -35,6 +35,21 @@ package com.android.virgilsecurity.common.data.model.request
 
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    8/3/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * Auth requests
+ */
+
 data class SignUpRequest(val rawCard: RawSignedModel)
 
 data class SignInRequest(val identity: String)

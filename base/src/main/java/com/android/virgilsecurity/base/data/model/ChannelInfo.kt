@@ -71,12 +71,29 @@ class ChannelInfo(
         @ColumnInfo(name = GeneralConstants.KEY_SENDER)
         val sender: String,
         @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
-        val interlocutor: String
+        val interlocutor: String,
+        @ColumnInfo(name = KEY_STATUS)
+        val status: Int
 ): Comparable<ChannelInfo>, Parcelable {
 
     fun attributes() = JSONObject(attributesString)
 
     override fun compareTo(other: ChannelInfo): Int = this.sid.compareTo(other.sid)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ChannelInfo
+
+        if (sid != other.sid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return sid.hashCode()
+    }
 
     /**
      * When user creates channel - you will be as interlocutor for him, while when this channel
@@ -93,5 +110,6 @@ class ChannelInfo(
         const val KEY_ATTRIBUTES = "attributes"
         const val KEY_FRIENDLY_NAME = "friendly_name"
         const val KEY_UNIQUE_NAME = "unique_name"
+        const val KEY_STATUS = "status"
     }
 }

@@ -38,6 +38,20 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    8/9/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * ChatRecyclerView
+ */
 class ChatRecyclerView : RecyclerView {
 
     private var oldHeight: Int = 0

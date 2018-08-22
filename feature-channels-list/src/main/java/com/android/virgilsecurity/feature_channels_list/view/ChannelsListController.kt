@@ -33,12 +33,13 @@
 
 package com.android.virgilsecurity.feature_channels_list.view
 
+import android.arch.lifecycle.Transformations.map
 import android.view.View
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.observe
 import com.android.virgilsecurity.base.view.BaseController
+import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
 import com.android.virgilsecurity.common.viewslice.StateSliceEmptyable
 import com.android.virgilsecurity.feature_channels_list.R
 import com.android.virgilsecurity.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
@@ -47,6 +48,8 @@ import com.android.virgilsecurity.feature_channels_list.di.Const.TOOLBAR_CHANNEL
 import com.android.virgilsecurity.feature_channels_list.viewmodel.list.ChannelsVM
 import com.android.virgilsecurity.feature_channels_list.viewslice.list.ChannelsSlice
 import com.android.virgilsecurity.feature_channels_list.viewslice.toolbar.ToolbarSlice
+import com.twilio.chat.Channel
+import io.reactivex.Single
 import org.koin.standalone.inject
 
 
@@ -73,6 +76,7 @@ class ChannelsListController() : BaseController() {
     private val channelsSlice: ChannelsSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNELS)
     private val viewModel: ChannelsVM by inject()
+    private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var openChannel: (ChannelInfo) -> Unit
@@ -124,13 +128,9 @@ class ChannelsListController() : BaseController() {
         ChannelsVM.State.ShowLoading -> stateSlice.showLoading()
         ChannelsVM.State.ShowError -> stateSlice.showError()
         is ChannelsVM.State.ChannelsListChanged -> onChannelChanged(state.change)
-        is ChannelsVM.State.OnJoinSuccess -> {
-            channelsSlice.addChannel(state.channel)
-            stateSlice.showContent()
-        }
     }
 
-    private fun onChannelChanged(change: ChannelsApi.ChannelsChanges) = when(change) {
+    private fun onChannelChanged(change: ChannelsApi.ChannelsChanges) = when (change) {
         is ChannelsApi.ChannelsChanges.ChannelDeleted -> Unit
         is ChannelsApi.ChannelsChanges.InvitedToChannelNotification -> Unit
         is ChannelsApi.ChannelsChanges.ClientSynchronization -> Unit
@@ -144,12 +144,21 @@ class ChannelsListController() : BaseController() {
         is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
         is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
         is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelInvited -> viewModel.joinChannel(change.channel!!)
+        is ChannelsApi.ChannelsChanges.ChannelInvited -> showChannel(change.channel!!)
         is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
         is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
         is ChannelsApi.ChannelsChanges.Error -> Unit
         is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
         is ChannelsApi.ChannelsChanges.Exception -> Unit
+    }
+
+    private fun showChannel(channel: Channel) {
+        Single.just(channel)
+                .map(mapper::mapChannel)
+                .subscribe { channelInfo ->
+                    channelsSlice.addChannel(channelInfo)
+                    stateSlice.showContent()
+                }
     }
 
     companion object {

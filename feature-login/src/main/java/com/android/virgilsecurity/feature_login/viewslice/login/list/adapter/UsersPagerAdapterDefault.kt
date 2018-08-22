@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.viewslice.login.list.adapter
 
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

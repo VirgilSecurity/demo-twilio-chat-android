@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_contacts.viewslice.addContact.state
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
+import android.text.InputFilter
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -60,7 +61,9 @@ import java.util.concurrent.TimeUnit
 /**
  * StateSliceAddContactDefault
  */
-class StateSliceAddContactDefault : BaseViewSlice(), StateSliceAddContact {
+class StateSliceAddContactDefault(
+        private val symbolsInputFilter: InputFilter
+) : BaseViewSlice(), StateSliceAddContact {
 
     private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
     private lateinit var debounceDisposable: Disposable
@@ -75,7 +78,7 @@ class StateSliceAddContactDefault : BaseViewSlice(), StateSliceAddContact {
                     if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
                 }
 
-        etUsername.requestFocus()
+        etUsername.filters = arrayOf(symbolsInputFilter)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -86,27 +89,39 @@ class StateSliceAddContactDefault : BaseViewSlice(), StateSliceAddContact {
     override fun showConsistent() {
         activateButton(true)
         loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
     }
 
     override fun showUsernameEmpty() {
         activateButton(false)
         loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
     }
 
     override fun showUsernameTooShort() {
         activateButton(false)
         loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
     }
 
     override fun showUsernameTooLong() {
         activateButton(false)
         loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+    }
+
+    override fun showYourOwnUsername() {
+        activateButton(false)
+        loading(false)
+        tvYourUsername.visibility = View.VISIBLE
     }
 
     override fun showLoading() = loading(true)
 
-    override fun showError() {
+    override fun showTryAgain() {
         loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+
         if (tvTryAgain.visibility == View.INVISIBLE) {
             tvTryAgain.visibility = View.VISIBLE
             val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
@@ -144,6 +159,6 @@ class StateSliceAddContactDefault : BaseViewSlice(), StateSliceAddContact {
     companion object {
         const val ERROR_FADE_OUT_DURATION = 500L
         const val ERROR_START_OFFSET = 1500L
-        const val DEBOUNCE_INTERVAL = 500L
+        const val DEBOUNCE_INTERVAL = 200L
     }
 }

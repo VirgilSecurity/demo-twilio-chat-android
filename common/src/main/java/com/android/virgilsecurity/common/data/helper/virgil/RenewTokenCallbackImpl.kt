@@ -31,14 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channels_list.domain.list
+package com.android.virgilsecurity.common.data.helper.virgil
 
-import com.android.virgilsecurity.base.data.api.ChannelsApi
-import com.android.virgilsecurity.base.data.model.ChannelInfo
-import com.android.virgilsecurity.base.domain.BaseDo
-import com.twilio.chat.Channel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
+import com.android.virgilsecurity.common.util.AuthUtils
+import com.virgilsecurity.sdk.jwt.Jwt
+import com.virgilsecurity.sdk.jwt.TokenContext
+import com.virgilsecurity.sdk.jwt.accessProviders.CachingJwtProvider
+import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 
 /**
  * . _  _
@@ -46,30 +47,20 @@ import io.reactivex.schedulers.Schedulers
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/8/18
+ * ....|  _/    6/4/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * JoinChannelDoDefault
+ * RenewTokenCallbackImpl
  */
-class JoinChannelDoDefault(
-        private val channelsApi: ChannelsApi
-) : BaseDo<JoinChannelDo.Result>(), JoinChannelDo {
+class RenewTokenCallbackImpl(private val fuelHelper: FuelHelper,
+                             private val userProperties: UserProperties,
+                             private val utils: AuthUtils) :
+        CachingJwtProvider.RenewJwtCallback {
 
-    override fun execute(channel: Channel) =
-            channelsApi.joinChannel(channel)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
-                    .track()
-
-    private fun success(channel: ChannelInfo) {
-        liveData.value = JoinChannelDo.Result.OnSuccess(channel)
-    }
-
-    private fun error(throwable: Throwable) {
-        liveData.value = JoinChannelDo.Result.OnError(throwable)
-    }
+    override fun renewJwt(context: TokenContext?): Jwt =
+            Jwt(fuelHelper.getVirgilToken(userProperties.currentUser!!.identity,
+                                          utils.generateAuthHeader()).token)
 }

@@ -36,6 +36,20 @@ package com.android.virgilsecurity.common.util
 import android.text.InputFilter
 import android.text.Spanned
 
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    8/8/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
+
+/**
+ * DefaultSymbolsInputFilter
+ */
 class DefaultSymbolsInputFilter : InputFilter {
 
     override fun filter(source: CharSequence, start: Int, end: Int,

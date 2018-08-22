@@ -35,9 +35,11 @@ package com.android.virgilsecurity.feature_contacts.viewmodel.addContact
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
-import android.databinding.Observable
 import android.databinding.ObservableField
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.base.extension.addOnPropertyChanged
 import com.android.virgilsecurity.feature_contacts.domain.addContact.AddContactDo
+import io.reactivex.disposables.Disposable
 
 /**
  * . _  _
@@ -55,20 +57,18 @@ import com.android.virgilsecurity.feature_contacts.domain.addContact.AddContactD
  */
 class AddContactVMDefault(
         private val state: MediatorLiveData<State>,
-        private val addContactDo: AddContactDo
+        private val addContactDo: AddContactDo,
+        private val userProperties: UserProperties
 ) : AddContactVM() {
 
     val usernameField = ObservableField<String>()
-    private val propertyChangedCallback: Observable.OnPropertyChangedCallback
+    private val propertyChangedCallback: Disposable
 
     init {
         state.addSource(addContactDo.getLiveData(), ::onAddContactResult)
-        propertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                onUsernameChanged(usernameField.get())
-            }
+        propertyChangedCallback = usernameField.addOnPropertyChanged {
+            onUsernameChanged(usernameField.get())
         }
-        usernameField.addOnPropertyChangedCallback(propertyChangedCallback)
     }
 
     override fun getState(): LiveData<State> = state
@@ -79,13 +79,14 @@ class AddContactVMDefault(
     }
 
     override fun onCleared() {
+        propertyChangedCallback.dispose()
         addContactDo.cleanUp()
-        usernameField.removeOnPropertyChangedCallback(propertyChangedCallback)
     }
 
     private fun onAddContactResult(result: AddContactDo.Result?) {
         when (result) {
             is AddContactDo.Result.OnSuccess -> state.value = State.ContactAdded(result.channel)
+            AddContactDo.Result.NoSuchUser -> state.value = State.NoSuchUser
             is AddContactDo.Result.OnError -> state.value = State.ShowError
         }
     }
@@ -99,6 +100,8 @@ class AddContactVMDefault(
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_SHORT)
                 username.length > AddContactVM.MAX_LENGTH ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_LONG)
+                username == userProperties.currentUser!!.identity ->
+                    state.value = State.UsernameInvalid(AddContactVM.KEY_YOUR_OWN_USERNAME)
                 else -> state.value = State.UsernameConsistent
             }
         }

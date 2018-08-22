@@ -93,11 +93,11 @@ class TwilioInitController() : BaseController() {
     }
 
     override fun setupVSActionObservers() {
-        observe(twilioInitSlice.getAction()) { onActionChanged(it) }
+        observe(twilioInitSlice.getAction(), ::onActionChanged)
     }
 
     override fun setupVMStateObservers() {
-        observe(viewModel.getState(), ::onStateChanged) // TODO change everywhere this part to reference
+        observe(viewModel.getState(), ::onStateChanged)
     }
 
     override fun initData() {}

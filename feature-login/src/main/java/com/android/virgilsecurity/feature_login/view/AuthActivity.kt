@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_login.view
 
 import LoginDiConst.CONTEXT_AUTH_ACTIVITY
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.hasNoRootController
@@ -85,9 +86,7 @@ class AuthActivity(
 
     override fun setupVSActionObservers() {}
 
-    override fun setupVMStateObservers() = observe(loginVM.getState()) {
-        onStateChanged(it)
-    }
+    override fun setupVMStateObservers() = observe(loginVM.getState(), ::onStateChanged)
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
