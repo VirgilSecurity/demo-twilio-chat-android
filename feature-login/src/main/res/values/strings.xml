@@ -47,5 +47,6 @@
     <string name="no_users">Error loading users</string>
     <string name="already_registered">Already registered</string>
     <string name="registration">Registration</string>
+    <string name="loading_picture_indicator">Loading picture indicator</string>
 
 </resources>

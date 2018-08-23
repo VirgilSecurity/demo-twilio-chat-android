@@ -52,4 +52,5 @@ dependencies {
     networking()
     support()
     conductor()
+    vectormaster()
 }

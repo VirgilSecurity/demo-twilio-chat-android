@@ -33,13 +33,17 @@
 
 package com.android.virgilsecurity.common.util
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.support.annotation.IdRes
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
 import com.bluelinelabs.conductor.Controller
+import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import java.util.*
 
 /**
@@ -143,4 +147,30 @@ object UiUtils {
 
                 result
             }
+
+    fun fadeVectorReverse(vectorView: VectorMasterView,
+                          pathToAnimate: String = "outline",
+                          startValue: Float = 1.0f,
+                          endValue: Float = 0.0f,
+                          duration: Long = 900L,
+                          @IdRes fillColor: Int? = null): ValueAnimator {
+        val outline = vectorView.getPathModelByName(pathToAnimate)
+        if (fillColor != null)
+            outline.fillColor = fillColor
+
+        val valueAnimatorIn = ValueAnimator.ofFloat(startValue, endValue)
+
+        valueAnimatorIn.duration = duration
+
+        valueAnimatorIn.addUpdateListener { animator ->
+            outline.fillAlpha = animator.animatedValue as Float
+            vectorView.update()
+        }
+
+        valueAnimatorIn.repeatMode = ValueAnimator.REVERSE
+        valueAnimatorIn.repeatCount = ValueAnimator.INFINITE
+        valueAnimatorIn.start()
+
+        return valueAnimatorIn
+    }
 }

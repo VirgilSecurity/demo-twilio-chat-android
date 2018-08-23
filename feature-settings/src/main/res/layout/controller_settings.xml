@@ -231,12 +231,12 @@
         android:visibility="invisible"
         tools:visibility="visible">
 
-        <ProgressBar
-            android:id="@+id/pbLoading"
-            style="@style/AccentProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+        <com.sdsmdg.harjot.vectormaster.VectorMasterView
+            android:id="@+id/ivLoading"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            app:vector_src="@drawable/ic_virgil_logo_shield" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

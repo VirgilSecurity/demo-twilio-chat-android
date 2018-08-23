@@ -33,8 +33,10 @@
 
 package com.android.virgilsecurity.feature_login.viewslice.login.state
 
+import android.animation.ValueAnimator
 import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import kotlinx.android.synthetic.main.controller_login.*
 
@@ -54,22 +56,27 @@ import kotlinx.android.synthetic.main.controller_login.*
  */
 class StateSliceLogin : BaseViewSlice(), StateSlice {
 
+    private var loadingFader: ValueAnimator? = null
+
     override fun showLoading() {
         clContent.visibility = View.GONE
         tvError.visibility = View.GONE
 
-        pbLoading.visibility = View.VISIBLE
+        ivLoading.visibility = View.VISIBLE
+        loadingFader = UiUtils.fadeVectorReverse(ivLoading)
     }
 
     override fun showContent() {
-        pbLoading.visibility = View.GONE
+        ivLoading.visibility = View.GONE
+        loadingFader?.end()
         tvError.visibility = View.GONE
 
         clContent.visibility = View.VISIBLE
     }
 
     override fun showError() {
-        pbLoading.visibility = View.GONE
+        ivLoading.visibility = View.GONE
+        loadingFader?.end()
         clContent.visibility = View.GONE
 
         tvError.visibility = View.VISIBLE

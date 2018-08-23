@@ -68,6 +68,8 @@ ext.deps = [
 
         'circleImageView' : "de.hdodenhof:circleimageview:$versions.circleImageView",
 
+        'vectormaster' : "com.sdsmdg.harjot:vectormaster:$versions.vectormaster",
+
         // TESTING
 
         'jUnit'             : "junit:junit:$versions.jUnit",

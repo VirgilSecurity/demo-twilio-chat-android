@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.feature_settings.viewslice.state
 
+import android.animation.ValueAnimator
 import android.view.View
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
 import com.android.virgilsecurity.common.util.UiUtils
@@ -55,15 +56,21 @@ import kotlinx.android.synthetic.main.controller_settings.*
  */
 class StateSliceSettings : BaseViewSlice(), StateSlice {
 
+    private lateinit var loadingFader: ValueAnimator
+
     override fun showLoading() = showState(LOADING)
 
     override fun showError() = showState(ERROR)
 
     private fun showState(state: Int) {
         when (state) {
-           LOADING -> flLoading.visibility = View.VISIBLE
+           LOADING -> {
+               flLoading.visibility = View.VISIBLE
+               loadingFader = UiUtils.fadeVectorReverse(ivLoading)
+           }
            ERROR -> {
                flLoading.visibility = View.INVISIBLE
+               loadingFader.end()
                UiUtils.toast(context, resources.getString(R.string.logout_error))
            }
         }

@@ -35,7 +35,6 @@ package com.android.virgilsecurity.feature_login.view
 
 import LoginDiConst.CONTEXT_AUTH_ACTIVITY
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.ViewGroup
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.extension.hasNoRootController
@@ -47,12 +46,17 @@ import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.view.ScreenChat
 import com.android.virgilsecurity.feature_login.R
 import com.android.virgilsecurity.feature_login.viewmodel.login.LoginVM
+import com.android.virgilsecurity.feature_login.viewslice.registration.state.StateSliceRegistrationDefault.Companion.DEBOUNCE_INTERVAL
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import java.util.concurrent.TimeUnit
 
 /**
  * . _  _
@@ -139,27 +143,27 @@ class AuthActivity(
 
     private fun initRouter(controller: Controller, tag: String) =
             routerRoot.setRoot(RouterTransaction
-                                   .with(controller.apply {
-                                       retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                                   })
-                                   .pushChangeHandler(SimpleSwapChangeHandler())
-                                   .popChangeHandler(SimpleSwapChangeHandler())
-                                   .tag(tag))
+                                       .with(controller.apply {
+                                           retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                       })
+                                       .pushChangeHandler(SimpleSwapChangeHandler())
+                                       .popChangeHandler(SimpleSwapChangeHandler())
+                                       .tag(tag))
 
     private fun replaceTopController(controller: Controller, tag: String) =
             routerRoot.replaceTopController(RouterTransaction
-                                                .with(controller.apply {
-                                                    retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                                                })
-                                                .pushChangeHandler(SimpleSwapChangeHandler())
-                                                .tag(tag))
+                                                    .with(controller.apply {
+                                                        retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                                    })
+                                                    .pushChangeHandler(SimpleSwapChangeHandler())
+                                                    .tag(tag))
 
     private fun pushController(controller: Controller, tag: String) =
             routerRoot.pushController(RouterTransaction
-                                          .with(controller)
-                                          .pushChangeHandler(HorizontalChangeHandler())
-                                          .popChangeHandler(HorizontalChangeHandler())
-                                          .tag(tag))
+                                              .with(controller)
+                                              .pushChangeHandler(HorizontalChangeHandler())
+                                              .popChangeHandler(HorizontalChangeHandler())
+                                              .tag(tag))
 
     override fun onBackPressed() {
         if (routerRoot.backstackSize > 1) {
@@ -171,5 +175,4 @@ class AuthActivity(
                 UiUtils.toast(this, getString(R.string.press_exit_once_more))
         }
     }
-    // TODO add wait controller while users are loaded
 }

@@ -33,12 +33,14 @@
 
 package com.android.virgilsecurity.feature_drawer_navigation.viewslice.twilioInit.state
 
+import android.animation.ValueAnimator
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import com.android.virgilsecurity.base.viewslice.BaseViewSlice
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -64,6 +66,7 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
     private val debounceSubject: PublishSubject<Int> = PublishSubject.create()
     private lateinit var debounceDisposable: Disposable
+    private lateinit var loadingFader: ValueAnimator
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -91,18 +94,20 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
     private fun show(state: Int) {
         when (state) {
-            CONTENT, ERROR -> { // For now our content is showing up that something happened
+            CONTENT, ERROR -> { // For now our content is showing that something happened
                 btnRetry.isClickable = true
                 btnRetry.isEnabled = true
                 clContentRoot.visibility = View.VISIBLE
-                pbLoading.visibility = View.INVISIBLE
+                ivLoading.visibility = View.INVISIBLE
+                loadingFader.end()
                 tvInitializing.visibility = View.INVISIBLE
             }
             LOADING -> {
                 btnRetry.isClickable = false
                 btnRetry.isEnabled = false
                 clContentRoot.visibility = View.INVISIBLE
-                pbLoading.visibility = View.VISIBLE
+                ivLoading.visibility = View.VISIBLE
+                loadingFader = UiUtils.fadeVectorReverse(ivLoading)
                 tvInitializing.visibility = View.VISIBLE
             }
         }

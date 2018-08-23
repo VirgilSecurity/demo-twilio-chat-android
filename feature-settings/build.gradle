@@ -50,4 +50,5 @@ dependencies {
     koin()
     reactiveness()
     architectureComponents()
+    vectormaster()
 }

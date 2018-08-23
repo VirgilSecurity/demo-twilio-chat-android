@@ -52,4 +52,5 @@ dependencies {
     viewPagerIndicator()
     conductor()
     networking()
+    vectormaster()
 }
