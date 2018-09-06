@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015-2018, Virgil Security, Inc.
+  ~
+  ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+  ~
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~
+  ~     (1) Redistributions of source code must retain the above copyright notice, this
+  ~     list of conditions and the following disclaimer.
+  ~
+  ~     (2) Redistributions in binary form must reproduce the above copyright notice,
+  ~     this list of conditions and the following disclaimer in the documentation
+  ~     and/or other materials provided with the distribution.
+  ~
+  ~     (3) Neither the name of virgil nor the names of its
+  ~     contributors may be used to endorse or promote products derived from
+  ~     this software without specific prior written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  ~ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  ~ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  ~ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  ~ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  ~ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  ~ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    android:fitsSystemWindows="false"
+    app:behavior_peekHeight="156dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="34dp"
+        android:text="Content dasfdgdsfd\nContent\nContent\nContent\nContent\nContent\nContent\nContent\nContent\nContent\nContent\nContent\nContent"
+        android:textSize="24sp"
+        android:textColor="@color/blackOlive"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:text="Content123"
+        android:textColor="@color/blackOlive"
+        app:layout_constraintBottom_toTopOf="@+id/clBottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/itemRootOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/itemRootTwo"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/itemPictureOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_people"
+                android:tint="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/itemTextOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="People"
+                android:textColor="@color/blackOlive"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemRootTwo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/itemRootThree"
+            app:layout_constraintStart_toEndOf="@id/itemRootOne"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/itemPictureTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_people"
+                android:tint="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/itemTextTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="People"
+                android:textColor="@color/blackOlive"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemRootThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/itemRootTwo"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/itemPictureThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_people"
+                android:tint="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/itemTextThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="People"
+                android:textColor="@color/blackOlive"
+                android:visibility="gone" />
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

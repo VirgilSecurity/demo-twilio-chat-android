@@ -36,11 +36,20 @@ package com.android.virgilsecurity.twiliodemo
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.view.ScreenRouter
 import com.android.virgilsecurity.common.view.ScreenChat
+import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.koin.android.ext.android.inject
+import android.animation.LayoutTransition
+import android.view.animation.OvershootInterpolator
+import android.animation.PropertyValuesHolder
+import android.animation.ObjectAnimator
+import android.support.v4.content.ContextCompat.startActivity
+import junit.framework.Test
+
 
 /**
  * . _  _
@@ -60,12 +69,18 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.bottom_sheet_attachments)
+
+//        initBottomSheet()
 
         if (isAuthenticated())
             startChannelsActivity()
         else
             startLoginActivity()
+    }
 
+    private fun initBottomSheet() {
+//        TestBottomSheet.instance().show(supportFragmentManager, "test_bottom_sheet")
     }
 
     private fun isAuthenticated(): Boolean {

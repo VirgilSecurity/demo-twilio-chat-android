@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -40,20 +39,30 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/icon_big"/>
-    </item>
-
-    <item>
-        <bitmap
-            android:src="@drawable/powered_by_splash"
-            android:gravity="bottom|center_horizontal"/>
+            android:src="@drawable/icon_big" />
     </item>
 
     <item
-        android:bottom="30dp">
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-        </shape>
+        android:right="135dp"
+        android:bottom="80dp">
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/poweredby_splash" />
+    </item>
+
+    <item
+        android:bottom="80dp">
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/twilio_splash" />
+    </item>
+
+    <item
+        android:left="110dp"
+        android:bottom="80dp">
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/virgil_splash" />
     </item>
 
 </layer-list>

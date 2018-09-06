@@ -31,40 +31,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext.versions = [
+package com.android.virgilsecurity.twiliodemo
 
-        // BUILD
+import android.os.Bundle
+import android.support.design.widget.BottomSheetDialogFragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
-        'gradle'                : '3.1.4',
-        'kotlinVersion'         : '1.2.60',
-        'targetSdk'             : 27,
-        'buildTools'            : '27.0.3',
-        'minSdk'                : 21,
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    9/6/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-        // MAIN
+/**
+ * TestBottomSheet
+ */
+class TestBottomSheet : BottomSheetDialogFragment() {
 
-        'suport'                : '27.1.1',
-        'constraintLayout'      : '1.1.0',
-        'koin'                  : '0.9.3',
-        'rxKotlin'              : '2.2.0',
-        'rxAndroid'             : '2.0.2',
-        'architectureComponents': '1.1.1',
-        'dataBindingVersion'    : '3.1.4',
-        'glide'                 : '4.7.1',
-        'twilioSdk'             : '3.1.0',
-        'twilioAccessManager'   : '0.1.0',
-        'fuel'                  : '1.13.0',
-        'gson'                  : '2.7',
-        'virgil'                : '5.0.4',
-        'virgilCrypto'          : '5.0.4@aar',
-        'room'                  : '1.1.0',
-        'viewPagerIndicator'    : '1.1.0',
-        'conductorarchLifecycle': '0.1.1',
-        'conductor'             : '2.1.4',
-        'circleImageView'       : '2.2.0',
-        'vectormaster'          : '1.1.3',
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.bottom_sheet, container, false)
+    }
 
-        // TESTING
-
-        'jUnit'                 : '4.12',
-]
+    companion object {
+        fun instance() = TestBottomSheet()
+    }
+}
