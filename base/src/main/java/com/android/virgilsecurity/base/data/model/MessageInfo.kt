@@ -37,6 +37,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
+import com.android.virgilsecurity.base.data.model.ChannelInfo.Companion.KEY_ATTRIBUTES
 import com.android.virgilsecurity.base.util.GeneralConstants
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
@@ -69,7 +70,9 @@ class MessageInfo(
         @ColumnInfo(name = GeneralConstants.KEY_SENDER)
         val sender: String,
         @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
-        val interlocutor: String
+        val interlocutor: String,
+        @ColumnInfo(name = KEY_HAS_MEDIA)
+        val hasMedia: Boolean
 ) : Comparable<MessageInfo>, Parcelable {
 
     override fun compareTo(other: MessageInfo): Int = this.sid.compareTo(other.sid)
@@ -97,5 +100,6 @@ class MessageInfo(
         const val KEY_BODY = "body"
         const val KEY_ATTRIBUTES = "attributes"
         const val KEY_CHANNEL_ID = "channel_id"
+        const val KEY_HAS_MEDIA = "has_media"
     }
 }

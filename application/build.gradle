@@ -9,8 +9,8 @@ enum BuildType {
     RELEASE
 }
 
-def versionMajor = 1
-def versionMinor = 0
+def versionMajor = 0
+def versionMinor = 1
 def versionPatch = 0
 
 static def getAppName(BuildType buildType) {
@@ -44,10 +44,12 @@ android {
             debuggable true
             minifyEnabled false
             applicationIdSuffix ".debug"
-            resValue "string", "app_name", getAppName(BuildType.DEBUG) + "_" + "v" +
+            def applicationName = getAppName(BuildType.DEBUG) + "_" + "v" +
                     versionMajor + "." +
                     versionMinor + "." +
                     versionPatch + "_"
+            resValue "string", "app_name", applicationName
+            setProperty("archivesBaseName", applicationName)
         }
     }
     compileSdkVersion 27

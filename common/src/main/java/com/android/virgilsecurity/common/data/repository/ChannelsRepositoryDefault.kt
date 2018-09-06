@@ -37,6 +37,7 @@ import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.dao.ChannelsDao
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.extension.comparableListEqual
+import com.android.virgilsecurity.base.util.GeneralConstants
 import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
 import com.twilio.chat.Channel
 import io.reactivex.Flowable
@@ -116,6 +117,10 @@ class ChannelsRepositoryDefault(
 
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             channelsApi.observeChannelsChanges()
+                    .filter { channelChange ->
+                        channelChange !is ChannelsApi.ChannelsChanges.ChannelInvited ||
+                        channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
+                    } // While we don't have group chats
                     .flatMap { change ->
                         when (change) {
                             is ChannelsApi.ChannelsChanges.ChannelInvited -> {

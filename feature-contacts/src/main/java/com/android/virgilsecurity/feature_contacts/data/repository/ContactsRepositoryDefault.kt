@@ -38,6 +38,7 @@ import com.android.virgilsecurity.base.data.dao.ChannelsDao
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.comparableListEqual
+import com.android.virgilsecurity.base.util.GeneralConstants
 import com.android.virgilsecurity.common.data.exception.EmptyCardsException
 import com.android.virgilsecurity.common.data.exception.ManyCardsException
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
@@ -136,6 +137,10 @@ class ContactsRepositoryDefault(
 
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             contactsApi.observeChannelsChanges()
+                    .filter { channelChange ->
+                        channelChange !is ChannelsApi.ChannelsChanges.ChannelInvited ||
+                        channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
+                    } // While we don't have group chats
                     .flatMap { change ->
                         when (change) {
                             is ChannelsApi.ChannelsChanges.ChannelInvited -> {

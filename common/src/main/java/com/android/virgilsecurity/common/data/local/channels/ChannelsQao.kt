@@ -57,7 +57,7 @@ import io.reactivex.Single
 @Dao
 interface ChannelsQao {
 
-    @Query("SELECT * FROM channelinfo WHERE sender LIKE (:identity) OR interlocutor LIKE (:identity)")
+    @Query("SELECT * FROM channelinfo WHERE initiator LIKE (:identity) OR responder LIKE (:identity)")
     fun userChannels(identity: String): Single<List<ChannelInfo>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelsInfo(channelsInfo: List<ChannelInfo>)

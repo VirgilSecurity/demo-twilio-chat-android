@@ -39,6 +39,8 @@ import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.util.GeneralConstants.KEY_INTERLOCUTOR
 import com.android.virgilsecurity.base.util.GeneralConstants.KEY_SENDER
+import com.android.virgilsecurity.base.util.GeneralConstants.KEY_TYPE
+import com.android.virgilsecurity.base.util.GeneralConstants.TYPE_SINGLE
 import com.android.virgilsecurity.common.data.helper.fuel.FuelHelper
 import com.android.virgilsecurity.common.data.model.exception.ErrorInfoWrapper
 import com.android.virgilsecurity.common.util.UiUtils
@@ -156,6 +158,7 @@ class TwilioRx(private val fuelHelper: FuelHelper,
         val attrs = JSONObject()
         attrs.put(KEY_SENDER, userProperties.currentUser!!.identity)
         attrs.put(KEY_INTERLOCUTOR, interlocutor)
+        attrs.put(KEY_TYPE, TYPE_SINGLE)
 
         val builder = chatClient?.channels?.channelBuilder()
 

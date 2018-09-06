@@ -60,7 +60,8 @@ class MapperToMessageInfo {
                             it.messageBody,
                             it.attributes.toString(),
                             it.attributes[GeneralConstants.KEY_SENDER] as String,
-                            it.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
+                            it.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
+                            it.hasMedia())
             }
 
     fun mapMessage(message: Message): MessageInfo =
@@ -69,5 +70,6 @@ class MapperToMessageInfo {
                         message.messageBody,
                         message.attributes.toString(),
                         message.attributes[GeneralConstants.KEY_SENDER] as String,
-                        message.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String)
+                        message.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
+                        message.hasMedia())
 }

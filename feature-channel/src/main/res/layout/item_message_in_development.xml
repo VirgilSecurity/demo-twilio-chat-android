@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
   ~ Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
@@ -31,13 +31,23 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/default_margin"
+    android:padding="10dp">
 
-    <string name="no_messages_image">No messages image</string>
-    <string name="no_messages_yet">No messages yet. Write something!</string>
-    <string name="error_loading_messages">Error loading messages. Swipe top to refresh.</string>
-    <string name="message">Message</string>
-    <string name="send_message_button">Send message button</string>
-    <string name="attachments_are_in_development">Attachments are in development.</string>
-
-</resources>
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/message_background_you"
+        android:maxWidth="238dp"
+        android:padding="10dp"
+        android:textColor="@color/ill_toad"
+        android:textSize="@dimen/increased_text"
+        android:text="@string/attachments_are_in_development"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>

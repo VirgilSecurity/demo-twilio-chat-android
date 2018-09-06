@@ -48,6 +48,9 @@ package com.android.virgilsecurity.base.util
  * GeneralConstants
  */
 object GeneralConstants {
-    const val KEY_SENDER = "sender"
-    const val KEY_INTERLOCUTOR = "interlocutor"
+    const val KEY_SENDER = "initiator"
+    const val KEY_INTERLOCUTOR = "responder"
+    const val KEY_TYPE = "type"
+    const val TYPE_SINGLE = "single"
+    const val TYPE_GROUP = "group"
 }

@@ -45,6 +45,7 @@ import com.android.virgilsecurity.feature_channel.data.interactor.CardsInteracto
 import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
 import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepositoryDefault
 import com.android.virgilsecurity.feature_channel.di.Const.CONTEXT_CHANNEL
+import com.android.virgilsecurity.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT
 import com.android.virgilsecurity.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_ME
 import com.android.virgilsecurity.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_YOU
 import com.android.virgilsecurity.feature_channel.di.Const.LD_CHANNEL
@@ -57,6 +58,7 @@ import com.android.virgilsecurity.feature_channel.viewmodel.ChannelVM
 import com.android.virgilsecurity.feature_channel.viewmodel.ChannelVMDefault
 import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSlice
 import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSliceDefault
+import com.android.virgilsecurity.feature_channel.viewslice.list.adapter.MessageItemInDevelopment
 import com.android.virgilsecurity.feature_channel.viewslice.list.adapter.MessageItemMe
 import com.android.virgilsecurity.feature_channel.viewslice.list.adapter.MessageItemYou
 import com.android.virgilsecurity.feature_channel.viewslice.state.StateSliceChannel
@@ -98,10 +100,14 @@ val channelModule: Module = applicationContext {
                            get(),
                            get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
         }
+        bean(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT) {
+            MessageItemInDevelopment() as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
+        }
         bean {
             DelegateAdapter.Builder<MessageInfo>()
                     .add(get(ITEM_ADAPTER_MESSAGE_ME))
                     .add(get(ITEM_ADAPTER_MESSAGE_YOU))
+                    .add(get(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT))
                     .diffCallback(get())
                     .build()
         }
@@ -136,6 +142,7 @@ object Const {
     const val LD_CHANNEL = "LD_CHANNEL"
     const val ITEM_ADAPTER_MESSAGE_ME = "ITEM_ADAPTER_MESSAGE_ME"
     const val ITEM_ADAPTER_MESSAGE_YOU = "ITEM_ADAPTER_MESSAGE_YOU"
+    const val ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT = "ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT"
     const val MLD_CHANNEL = "MLD_CHANNEL"
 
     const val CONTEXT_CHANNEL = "CONTEXT_CHANNEL"

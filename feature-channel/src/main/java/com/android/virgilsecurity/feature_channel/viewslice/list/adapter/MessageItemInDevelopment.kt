@@ -31,19 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel.domain
+package com.android.virgilsecurity.feature_channel.viewslice.list.adapter
 
+import android.arch.lifecycle.MutableLiveData
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
-import com.twilio.chat.Channel
-import com.virgilsecurity.sdk.crypto.VirgilPublicKey
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.android.virgilsecurity.feature_channel.R
+import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSlice
+import kotlinx.android.synthetic.main.item_message_me.*
 
 /**
  * . _  _
@@ -57,42 +54,16 @@ import io.reactivex.schedulers.Schedulers
  */
 
 /**
- * SendMessageDoDefault
+ * MessageItemMe
  */
-class ShowMessagePreviewDoDefault(
-        private val virgilHelper: VirgilHelper,
-        private val userProperties: UserProperties
-) : BaseDo<ShowMessagePreviewDo.Result>(), ShowMessagePreviewDo {
+class MessageItemInDevelopment(
+        override val layoutResourceId: Int = R.layout.item_message_in_development
+) : DelegateAdapterItemDefault<MessageInfo>() {
 
-    override fun execute(body: String,
-                         interlocutor: String,
-                         publicKeys: List<VirgilPublicKey>) =
-            Single.just<MessageInfo>(
-                MessageInfo(
-                    PREVIEW_SID,
-                    PREVIEW_CHANNEL_SID,
-                    virgilHelper.encrypt(body, publicKeys),
-                    PREVIEW_ATTRIBUTES,
-                    userProperties.currentUser!!.identity,
-                    interlocutor,
-                    false // TODO change when have attachments
-                )
-            ).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
-                    .track()
+    override fun onBind(item: MessageInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
 
-    private fun success(message: MessageInfo) {
-        liveData.value = ShowMessagePreviewDo.Result.OnSuccess(message)
-    }
+    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
 
-    private fun error(throwable: Throwable) {
-        liveData.value = ShowMessagePreviewDo.Result.OnError(throwable)
-    }
-
-    companion object {
-        const val PREVIEW_SID = "TEMP_SID"
-        const val PREVIEW_CHANNEL_SID = "TEMP_CHANNEL_SID"
-        const val PREVIEW_ATTRIBUTES = "TEMP_ATTRIBUTES"
-    }
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            (items[position] as MessageInfo).hasMedia
 }
