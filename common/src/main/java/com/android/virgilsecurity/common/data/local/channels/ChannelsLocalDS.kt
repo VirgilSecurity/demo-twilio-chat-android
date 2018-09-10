@@ -66,4 +66,7 @@ class ChannelsLocalDS(
 
     override fun addChannel(channel: ChannelInfo): Completable =
             Completable.fromCallable { channelsQao.insertChannelInfo(channel) }
+
+    override fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelInfo>> =
+        channelsQao.user(yourIdentity, responderIdentity)
 }

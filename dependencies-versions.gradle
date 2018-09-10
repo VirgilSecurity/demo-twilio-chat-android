@@ -51,7 +51,7 @@ ext.versions = [
         'architectureComponents': '1.1.1',
         'dataBindingVersion'    : '3.1.4',
         'glide'                 : '4.7.1',
-        'twilioSdk'             : '3.1.0',
+        'twilioSdk'             : '3.1.1',
         'twilioAccessManager'   : '0.1.0',
         'fuel'                  : '1.13.0',
         'gson'                  : '2.7',

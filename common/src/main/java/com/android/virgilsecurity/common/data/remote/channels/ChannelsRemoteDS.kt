@@ -35,6 +35,7 @@ package com.android.virgilsecurity.common.data.remote.channels
 
 import com.android.virgilsecurity.base.data.api.ChannelsApi
 import com.android.virgilsecurity.base.data.model.ChannelInfo
+import com.android.virgilsecurity.base.util.GeneralConstants
 import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import com.twilio.chat.Channel
 import io.reactivex.Completable
@@ -67,6 +68,12 @@ class ChannelsRemoteDS(
     override fun userChannels(): Observable<List<ChannelInfo>> =
             Observable.concatArray(twilioHelper.userChannels().toObservable(),
                                    twilioHelper.publicChannels().toObservable())
+                    .map { channelDescriptors ->
+                        channelDescriptors.filter { channelDescriptor ->
+                            channelDescriptor.attributes.toString() != GeneralConstants.EMPTY_ATTRIBUTES &&
+                            channelDescriptor.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE // TODO change when added group chats
+                        }
+                    }
                     .map(mapper::mapDescriptors)
 
     override fun createChannel(sender: String, interlocutor: String): Single<ChannelInfo> =

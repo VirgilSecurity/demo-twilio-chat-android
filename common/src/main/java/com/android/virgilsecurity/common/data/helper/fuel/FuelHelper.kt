@@ -63,7 +63,7 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * FuelHelper helps to work with network requests.
  * @constructor If [baseUrl] is `null` - localhost address will be used (http://10.0.2.2:3000)
  */
-class FuelHelper(private val baseUrl: String? = "http://10.0.2.2:3000") {
+class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsecurity.com") {
 
     private val keyContentType = "Content-Type"
     private val keyAppJson = "application/json"

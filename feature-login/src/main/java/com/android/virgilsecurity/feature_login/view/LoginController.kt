@@ -106,8 +106,9 @@ class LoginController() : BaseController() {
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
             viewPagerSlice.showUsers(state.users)
+            if (state.users.size > 4)
+                viewPagerSlice.updateIndicator()
             stateSlice.showContent()
-            viewPagerSlice.updateIndicator()
         }
         LoginVM.State.ShowLoading -> stateSlice.showLoading()
         LoginVM.State.ShowError -> stateSlice.showError()

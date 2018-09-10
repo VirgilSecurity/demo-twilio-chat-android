@@ -55,6 +55,7 @@ interface AddContactDo : Do<AddContactDo.Result> {
     sealed class Result {
         data class OnSuccess(val channel: ChannelInfo) : Result()
         object NoSuchUser : Result()
+        object UserAlreadyAdded : Result()
         data class OnError(val error: Throwable) : Result()
     }
 

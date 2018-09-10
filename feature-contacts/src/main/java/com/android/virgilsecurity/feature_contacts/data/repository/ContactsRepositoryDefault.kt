@@ -39,10 +39,12 @@ import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.extension.comparableListEqual
 import com.android.virgilsecurity.base.util.GeneralConstants
+import com.android.virgilsecurity.common.data.exception.AddingUserThatExistsException
 import com.android.virgilsecurity.common.data.exception.EmptyCardsException
 import com.android.virgilsecurity.common.data.exception.ManyCardsException
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.common.data.remote.channels.MapperToChannelInfo
+import com.android.virgilsecurity.common.data.repository.ChannelsRepositoryDefault
 import com.twilio.chat.Channel
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -77,7 +79,13 @@ class ContactsRepositoryDefault(
     private val debounceCache = mutableListOf<ChannelInfo>()
 
     override fun addContact(interlocutor: String): Single<ChannelInfo> =
-            virgilHelper.searchCards(interlocutor)
+            contactsDao.user(userProperties.currentUser!!.identity, interlocutor)
+                    .flatMap {
+                        if (it.isNotEmpty())
+                            throw AddingUserThatExistsException()
+                        else
+                            virgilHelper.searchCards(interlocutor)
+                    }
                     .flatMap { cards ->
                         when {
                             cards.isEmpty() -> throw EmptyCardsException()
@@ -138,9 +146,19 @@ class ContactsRepositoryDefault(
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             contactsApi.observeChannelsChanges()
                     .filter { channelChange ->
-                        channelChange !is ChannelsApi.ChannelsChanges.ChannelInvited ||
-                        channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
-                    } // While we don't have group chats
+                        if (channelChange is ChannelsApi.ChannelsChanges.ChannelInvited) { // Thanks for twilio attributes fun
+                            System.currentTimeMillis().let {
+                                while (channelChange.channel!!.attributes.toString() == GeneralConstants.EMPTY_ATTRIBUTES ||
+                                       (System.currentTimeMillis() - it) < ChannelsRepositoryDefault.ATTRIBUTES_LOAD_TIMEOUT) {
+                                    continue
+                                }
+
+                                channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
+                            }
+                        } else {
+                            true
+                        }
+                    } // TODO While we don't have group chats - after change this
                     .flatMap { change ->
                         when (change) {
                             is ChannelsApi.ChannelsChanges.ChannelInvited -> {

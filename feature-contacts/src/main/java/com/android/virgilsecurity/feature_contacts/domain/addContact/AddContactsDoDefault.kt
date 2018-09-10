@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_contacts.domain.addContact
 
 import com.android.virgilsecurity.base.data.model.ChannelInfo
 import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.exception.AddingUserThatExistsException
 import com.android.virgilsecurity.common.data.exception.EmptyCardsException
 import com.android.virgilsecurity.feature_contacts.data.repository.ContactsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,9 +71,10 @@ class AddContactsDoDefault(
     }
 
     private fun error(throwable: Throwable) {
-        if (throwable is EmptyCardsException)
-            liveData.value = AddContactDo.Result.NoSuchUser
-        else
-            liveData.value = AddContactDo.Result.OnError(throwable)
+        when (throwable) {
+            is EmptyCardsException -> liveData.value = AddContactDo.Result.NoSuchUser
+            is AddingUserThatExistsException -> liveData.value = AddContactDo.Result.UserAlreadyAdded
+            else -> liveData.value = AddContactDo.Result.OnError(throwable)
+        }
     }
 }

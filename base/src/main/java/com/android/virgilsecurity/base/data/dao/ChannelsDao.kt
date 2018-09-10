@@ -58,4 +58,6 @@ interface ChannelsDao {
     fun addChannels(channels: List<ChannelInfo>): Completable
 
     fun addChannel(channel: ChannelInfo): Completable
+
+    fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelInfo>>
 }

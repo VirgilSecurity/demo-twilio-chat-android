@@ -59,7 +59,7 @@ class MapperToMessageInfo {
                             it.channelSid,
                             it.messageBody,
                             it.attributes.toString(),
-                            it.attributes[GeneralConstants.KEY_SENDER] as String,
+                            it.author,
                             it.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
                             it.hasMedia())
             }

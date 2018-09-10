@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.base.util
+package com.android.virgilsecurity.common.data.exception
 
 /**
  * . _  _
@@ -39,20 +39,15 @@ package com.android.virgilsecurity.base.util
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    9/10/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * GeneralConstants
+ * AddingUserThatExistsException
  */
-object GeneralConstants {
-    const val KEY_SENDER = "initiator"
-    const val KEY_INTERLOCUTOR = "responder"
-    const val KEY_TYPE = "type"
-    const val TYPE_SINGLE = "single"
-    const val TYPE_GROUP = "group"
-
-    const val EMPTY_ATTRIBUTES = "{}"
-}
+class AddingUserThatExistsException(
+        message: String? = null,
+        exception: Exception? = null
+) : RuntimeException(message, exception)

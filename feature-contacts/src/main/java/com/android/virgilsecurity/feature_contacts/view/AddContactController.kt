@@ -99,7 +99,7 @@ class AddContactController() : BaseControllerBinding() {
     private fun initViewCallbacks() {
         btnAdd.setOnClickListener {
             hideKeyboard()
-            viewModel.addContact(etUsername.text.toString())
+            viewModel.addContact(etUsername.text.toString().toLowerCase())
         }
     }
 
@@ -151,6 +151,10 @@ class AddContactController() : BaseControllerBinding() {
             stateSlice.showConsistent()
         }
         AddContactVM.State.ShowError -> stateSlice.showTryAgain()
+        AddContactVM.State.UserAlreadyAdded -> {
+            UiUtils.toast(this, "User already added")
+            stateSlice.showConsistent()
+        }
     }
 
     private fun backPress() {

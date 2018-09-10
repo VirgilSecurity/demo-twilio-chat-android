@@ -105,7 +105,7 @@ class RegistrationController() : BaseControllerBinding() {
     private fun initViewCallbacks() {
         btnNext.setOnClickListener {
             hideKeyboard()
-            viewModel.registration(etUsername.text.toString())
+            viewModel.registration(etUsername.text.toString().toLowerCase())
         }
     }
 

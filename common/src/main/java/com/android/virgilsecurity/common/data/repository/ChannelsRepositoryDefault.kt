@@ -118,9 +118,19 @@ class ChannelsRepositoryDefault(
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             channelsApi.observeChannelsChanges()
                     .filter { channelChange ->
-                        channelChange !is ChannelsApi.ChannelsChanges.ChannelInvited ||
-                        channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
-                    } // While we don't have group chats
+                        if (channelChange is ChannelsApi.ChannelsChanges.ChannelInvited) { // Thanks for twilio attributes fun
+                            System.currentTimeMillis().let {
+                                while (channelChange.channel!!.attributes.toString() == GeneralConstants.EMPTY_ATTRIBUTES ||
+                                       (System.currentTimeMillis() - it) < ATTRIBUTES_LOAD_TIMEOUT) {
+                                    continue
+                                }
+
+                                channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
+                            }
+                        } else {
+                            true
+                        }
+                    } // TODO While we don't have group chats - after change this
                     .flatMap { change ->
                         when (change) {
                             is ChannelsApi.ChannelsChanges.ChannelInvited -> {
@@ -150,4 +160,8 @@ class ChannelsRepositoryDefault(
                     channelsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })
 
     override fun getUserChannelById(id: String): Single<Channel> = channelsApi.userChannelById(id)
+
+    companion object {
+        const val ATTRIBUTES_LOAD_TIMEOUT = 2500L
+    }
 }

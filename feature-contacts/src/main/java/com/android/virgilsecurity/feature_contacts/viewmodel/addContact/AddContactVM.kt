@@ -60,6 +60,7 @@ abstract class AddContactVM : ViewModel() {
         object NoSuchUser : State()
         object UsernameConsistent : State()
         data class UsernameInvalid(val causeCode: Int) : State()
+        object UserAlreadyAdded : State()
     }
 
     abstract fun getState() : LiveData<State>

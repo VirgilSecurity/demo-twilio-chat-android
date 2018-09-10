@@ -60,6 +60,11 @@ interface ChannelsQao {
     @Query("SELECT * FROM channelinfo WHERE initiator LIKE (:identity) OR responder LIKE (:identity)")
     fun userChannels(identity: String): Single<List<ChannelInfo>>
 
+    @Query("SELECT * FROM channelinfo WHERE " +
+           "(initiator LIKE (:yourIdentity) AND responder LIKE (:responderIdentity)) OR " +
+           "(initiator LIKE (:responderIdentity) AND responder LIKE (:yourIdentity))")
+    fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelInfo>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelsInfo(channelsInfo: List<ChannelInfo>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelInfo(channelInfo: ChannelInfo)

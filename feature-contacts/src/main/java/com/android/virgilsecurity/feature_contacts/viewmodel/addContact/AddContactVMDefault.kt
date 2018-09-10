@@ -88,11 +88,12 @@ class AddContactVMDefault(
             is AddContactDo.Result.OnSuccess -> state.value = State.ContactAdded(result.channel)
             AddContactDo.Result.NoSuchUser -> state.value = State.NoSuchUser
             is AddContactDo.Result.OnError -> state.value = State.ShowError
+            AddContactDo.Result.UserAlreadyAdded -> state.value = State.UserAlreadyAdded
         }
     }
 
     private fun onUsernameChanged(username: String?) {
-        if (username != null) {
+        username?.toLowerCase()?.run {
             when {
                 username.isEmpty() ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_EMPTY)

@@ -81,7 +81,7 @@ class ChannelSliceDefault(
     }
 
     override fun addMessage(message: MessageInfo)  {
-        adapter.addItem(message)
+        adapter.addItemToEnd(message)
         rvMessages.smoothScrollToPosition(adapter.itemCount - 1)
     }
 }
