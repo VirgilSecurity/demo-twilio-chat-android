@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.twiliodemo
+package com.android.virgilsecurity.virgilmessenger
 
 import android.app.Application
 import android.os.StrictMode
@@ -44,7 +44,7 @@ import com.android.virgilsecurity.feature_contacts.di.contactsModule
 import com.android.virgilsecurity.feature_drawer_navigation.di.drawerNavigationModule
 import com.android.virgilsecurity.feature_drawer_navigation.di.twilioInitModule
 import com.android.virgilsecurity.feature_settings.di.settingsModule
-import com.android.virgilsecurity.twiliodemo.di.appModule
+import com.android.virgilsecurity.virgilmessenger.di.appModule
 import loginControllerModule
 import org.koin.android.ext.android.startKoin
 import registrationControllerModule

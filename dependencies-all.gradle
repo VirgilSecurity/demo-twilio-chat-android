@@ -5,6 +5,8 @@ ext.deps = [
         'build'             : [
                 'gradle'            : "com.android.tools.build:gradle:$versions.gradle",
                 'kotlinGradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
+                'googleServices'    : "com.google.gms:google-services:$versions.googleServices",
+                'crashlytics'       : "com.google.gms:google-services:$versions.googleServices",
         ],
 
         // MAIN
@@ -66,9 +68,19 @@ ext.deps = [
                 'archLifecycle': "com.bluelinelabs:conductor-archlifecycle:$versions.conductorarchLifecycle",
         ],
 
-        'circleImageView' : "de.hdodenhof:circleimageview:$versions.circleImageView",
+        'circleImageView'   : "de.hdodenhof:circleimageview:$versions.circleImageView",
 
-        'vectormaster' : "com.sdsmdg.harjot:vectormaster:$versions.vectormaster",
+        'vectormaster'      : "com.sdsmdg.harjot:vectormaster:$versions.vectormaster",
+
+        'firebase'          : [
+                'firebaseCore'  : "com.google.firebase:firebase-core:$versions.firebaseCore",
+                'crashlyticsSdk': "com.crashlytics.sdk.android:crashlytics:$versions.crashlyticsSdk",
+                'crashlytics'   : "io.fabric.tools:gradle:$versions.crashlytics",
+        ],
+
+        'google'            : [
+                'googleServices': "com.google.gms:google-services:$versions.googleServices",
+        ],
 
         // TESTING
 

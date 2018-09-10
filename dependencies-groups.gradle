@@ -112,6 +112,11 @@ ext {
         implementation deps.vectormaster
     }
 
+    firebase = Group {
+        implementation deps.firebase.firebaseCore
+        implementation deps.firebase.crashlyticsSdk
+    }
+
     testing = Group {
         testImplementation(deps.jUnit) {
             exclude group: 'org.hamcrest'

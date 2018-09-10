@@ -3,6 +3,7 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
@@ -11,6 +12,9 @@ buildscript {
 
         classpath deps.build.gradle
         classpath deps.build.kotlinGradlePlugin
+
+        classpath deps.google.googleServices
+        classpath deps.firebase.crashlytics
     }
 }
 
@@ -24,6 +28,7 @@ allprojects {
     dependencies {
         apply from: "$rootProject.rootDir/dependencies-groups.gradle"
     }
+
 }
 
 task clean(type: Delete) {

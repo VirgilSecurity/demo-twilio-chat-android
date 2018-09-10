@@ -63,6 +63,10 @@ ext.versions = [
         'conductor'             : '2.1.4',
         'circleImageView'       : '2.2.0',
         'vectormaster'          : '1.1.3',
+        'googleServices'        : '4.1.0',
+        'crashlytics'           : '1.25.4',
+        'crashlyticsSdk'        : '2.9.5',
+        'firebaseCore'          : '16.0.1',
 
         // TESTING
 

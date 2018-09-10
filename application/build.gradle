@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 apply from: '../config-android.gradle'
 
@@ -27,7 +28,7 @@ static def getAppName(BuildType buildType) {
 
 android {
     defaultConfig {
-        applicationId 'com.android.virgilsecurity.twiliodemo'
+        applicationId 'com.android.virgilsecurity.virgilmessenger'
         versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -43,7 +44,6 @@ android {
         debug {
             debuggable true
             minifyEnabled false
-            applicationIdSuffix ".debug"
             def applicationName = getAppName(BuildType.DEBUG) + "_" + "v" +
                     versionMajor + "." +
                     versionMinor + "." +
@@ -62,15 +62,10 @@ dependencies {
     implementation project(':common')
     implementation project(':feature-login')
     api project(':feature-drawer-navigation')
-    //    implementation project(":feature-channels-list")
-    //    implementation project(":feature-channel")
-    //    implementation project(":feature-contacts")
-    //    implementation project(":feature-settings")
 }
 
 // Outer dependencies
 dependencies {
-
     kotlin()
     support()
     networking()
@@ -80,5 +75,7 @@ dependencies {
     virgil()
     glide()
     architectureComponents()
-//    circleImageView()
+    firebase()
 }
+
+apply plugin: 'com.google.gms.google-services'
