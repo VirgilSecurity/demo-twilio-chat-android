@@ -47,6 +47,7 @@ import com.android.virgilsecurity.feature_settings.viewslice.menu.MenuSlice
 import com.android.virgilsecurity.feature_settings.viewslice.state.StateSlice
 import com.android.virgilsecurity.feature_settings.viewslice.toolbar.ToolbarSlice
 import org.koin.standalone.inject
+import kotlin.math.log
 
 /**
  * . _  _
@@ -114,6 +115,7 @@ class SettingsController() : BaseController() {
         SettingsVM.State.LogoutSuccessful -> logout()
         SettingsVM.State.ShowLoading -> stateSlice.showLoading()
         SettingsVM.State.ShowError -> stateSlice.showError()
+        SettingsVM.State.DeleteAccountSuccess -> logout()
         SettingsVM.State.Idle -> Unit
     }
 
@@ -129,6 +131,7 @@ class SettingsController() : BaseController() {
     private fun onMenuActionChanged(action: MenuSlice.Action) = when (action) {
         MenuSlice.Action.EditClicked -> UiUtils.toast(this, "Touch once more (;")
         MenuSlice.Action.LogoutClicked -> viewModel.logout()
+        MenuSlice.Action.DeleteAccountClicked -> viewModel.deleteAccount()
         MenuSlice.Action.Idle -> Unit
     }
 

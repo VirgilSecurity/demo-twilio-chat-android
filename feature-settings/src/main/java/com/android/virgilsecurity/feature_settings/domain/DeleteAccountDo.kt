@@ -31,10 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_login.data.repository
+package com.android.virgilsecurity.feature_settings.domain
 
-import com.android.virgilsecurity.base.data.model.User
-import io.reactivex.Single
+import com.android.virgilsecurity.base.domain.Do
 
 /**
  * . _  _
@@ -42,21 +41,20 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/22/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UsersRepository
+ * LogoutDo
  */
-interface UsersRepository {
+interface DeleteAccountDo : Do<DeleteAccountDo.Result> {
 
-    fun users() : Single<List<User>>
+    sealed class Result {
+        object OnSuccess : Result()
+        data class OnError(val error: Throwable) : Result()
+    }
 
-    fun addUser(user: User)
-
-    fun currentUser() : User?
-
-    fun setCurrentUser(user: User)
+    fun execute()
 }

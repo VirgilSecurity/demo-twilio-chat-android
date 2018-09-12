@@ -55,8 +55,9 @@ interface SendMessageDo : Do<SendMessageDo.Result> {
 
     sealed class Result {
         object OnSuccess : Result()
+        object MessageIsTooLong : Result()
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(channel: Channel, body: String, interlocutor: String, publicKeys: List<VirgilPublicKey>)
+    fun execute(channel: Channel, body: String, publicKeys: List<VirgilPublicKey>)
 }

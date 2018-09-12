@@ -33,10 +33,7 @@
 
 package com.android.virgilsecurity.common.data.local.users
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.android.virgilsecurity.base.data.model.User
 import io.reactivex.Single
 
@@ -60,4 +57,6 @@ interface UsersQao {
     @Query("SELECT * FROM users") fun users(): Single<List<User>>
 
     @Insert(onConflict = OnConflictStrategy.FAIL) fun insertUser(user: User)
+
+    @Delete fun deleteUser(user: User)
 }

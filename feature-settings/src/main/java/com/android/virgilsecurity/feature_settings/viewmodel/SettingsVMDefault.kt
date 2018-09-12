@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_settings.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
+import com.android.virgilsecurity.feature_settings.domain.DeleteAccountDo
 import com.android.virgilsecurity.feature_settings.domain.LogoutDo
 
 /**
@@ -53,20 +54,30 @@ import com.android.virgilsecurity.feature_settings.domain.LogoutDo
  */
 class SettingsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val logoutDo: LogoutDo
+        private val logoutDo: LogoutDo,
+        private val deleteAccountDo: DeleteAccountDo
 ) : SettingsVM() {
 
     init {
         state.addSource(logoutDo.getLiveData(), ::onLogoutResult)
+        state.addSource(deleteAccountDo.getLiveData(), ::onDeleteAccountResult)
     }
 
-    override fun onCleared() = logoutDo.cleanUp()
+    override fun onCleared() {
+        logoutDo.cleanUp()
+        deleteAccountDo.cleanUp()
+    }
 
     override fun getState(): LiveData<State> = state
 
     override fun logout() {
         state.value = SettingsVM.State.ShowLoading
         logoutDo.execute()
+    }
+
+    override fun deleteAccount() {
+        state.value = SettingsVM.State.ShowLoading
+        deleteAccountDo.execute()
     }
 
     private fun onLogoutResult(result: LogoutDo.Result?) {
@@ -76,6 +87,19 @@ class SettingsVMDefault(
                 state.value = State.Idle
             }
             is LogoutDo.Result.OnError -> {
+                state.value = State.ShowError
+                state.value = State.Idle
+            }
+        }
+    }
+
+    private fun onDeleteAccountResult(result: DeleteAccountDo.Result?) {
+        when (result) {
+            is DeleteAccountDo.Result.OnSuccess -> {
+                state.value = State.DeleteAccountSuccess
+                state.value = State.Idle
+            }
+            is DeleteAccountDo.Result.OnError -> {
                 state.value = State.ShowError
                 state.value = State.Idle
             }

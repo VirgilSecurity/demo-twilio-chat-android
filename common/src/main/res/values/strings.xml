@@ -46,5 +46,6 @@
     <string name="add">Add</string>
     <string name="add_contact">Add Contact</string>
     <string name="try_again_please">Try again, please</string>
+    <string name="delete_account">Delete Account</string>
 
 </resources>

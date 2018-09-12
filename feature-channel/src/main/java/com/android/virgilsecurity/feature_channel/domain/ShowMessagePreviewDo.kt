@@ -55,8 +55,9 @@ interface ShowMessagePreviewDo : Do<ShowMessagePreviewDo.Result> {
 
     sealed class Result {
         data class OnSuccess(val message: MessageInfo) : Result()
+        object MessageIsTooLong : Result()
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(body: String, interlocutor: String, publicKeys: List<VirgilPublicKey>)
+    fun execute(body: String, publicKeys: List<VirgilPublicKey>)
 }

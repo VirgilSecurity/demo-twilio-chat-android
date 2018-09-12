@@ -57,6 +57,5 @@ fun Message.toMessageInfo(): MessageInfo =
                     this.channelSid,
                     this.messageBody,
                     this.attributes.toString(),
-                    this.attributes[GeneralConstants.KEY_SENDER] as String,
-                    this.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String,
+                    this.author,
                     this.hasMedia())

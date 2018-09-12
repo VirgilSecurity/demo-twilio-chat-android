@@ -95,13 +95,13 @@ class AddContactVMDefault(
     private fun onUsernameChanged(username: String?) {
         username?.toLowerCase()?.run {
             when {
-                username.isEmpty() ->
+                this.isEmpty() ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_EMPTY)
-                username.length < AddContactVM.MIN_LENGTH ->
+                this.length < AddContactVM.MIN_LENGTH ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_SHORT)
-                username.length > AddContactVM.MAX_LENGTH ->
+                this.length > AddContactVM.MAX_LENGTH ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_LONG)
-                username == userProperties.currentUser!!.identity ->
+                this == userProperties.currentUser!!.identity ->
                     state.value = State.UsernameInvalid(AddContactVM.KEY_YOUR_OWN_USERNAME)
                 else -> state.value = State.UsernameConsistent
             }

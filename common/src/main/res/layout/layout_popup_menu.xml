@@ -33,7 +33,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/llPopupRoot"
-    android:layout_width="128dp"
+    android:layout_width="160dp"
     android:layout_height="wrap_content"
     android:background="@drawable/rect_white_rounded_2"
     android:orientation="vertical"
@@ -56,6 +56,24 @@
         android:layout_marginStart="@dimen/default_margin"
         android:layout_marginTop="@dimen/twenty_margin"
         android:text="@string/logout"
+        android:textColor="@color/colorAccentLight"
+        android:textSize="@dimen/big_text" />
+
+    <View
+        android:layout_marginTop="@dimen/twenty_margin"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blackCoral"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/twenty_margin"/>
+
+    <TextView
+        android:id="@+id/tvMenuDeleteAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/delete_account"
         android:textColor="@color/colorAccentLight"
         android:textSize="@dimen/big_text" />
 

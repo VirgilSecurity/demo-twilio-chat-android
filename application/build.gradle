@@ -14,8 +14,8 @@ def versionMajor = 0
 def versionMinor = 1
 def versionPatch = 0
 
-static def getAppName(BuildType buildType) {
-    String APP_NAME = "Virgil Messenger"
+static def getApkName(BuildType buildType) {
+    String APP_NAME = "Virgil Messenger "
     switch (buildType) {
         case BuildType.DEBUG:
             return APP_NAME + BuildType.DEBUG.name()
@@ -29,31 +29,49 @@ static def getAppName(BuildType buildType) {
 android {
     defaultConfig {
         applicationId 'com.android.virgilsecurity.virgilmessenger'
-        versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
     }
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            resValue "string", "app_name", getAppName(BuildType.RELEASE) + "_" + "v" +
-                    versionMajor + "." +
-                    versionMinor + "." +
-                    versionPatch + "_"
+            jniDebuggable false
         }
         debug {
             debuggable true
             minifyEnabled false
-            def applicationName = getAppName(BuildType.DEBUG) + "_" + "v" +
+        }
+    }
+    applicationVariants.all { variant ->
+
+        def applicationName = "Virgil Messenger"
+        def apkName
+
+        if (variant.name == android.buildTypes.debug.name) {
+            apkName = getApkName(BuildType.DEBUG) + " v" +
                     versionMajor + "." +
                     versionMinor + "." +
-                    versionPatch + "_"
-            resValue "string", "app_name", applicationName
-            setProperty("archivesBaseName", applicationName)
+                    versionPatch
+        } else {
+            apkName = getApkName(BuildType.RELEASE) + " v" +
+                    versionMajor + "." +
+                    versionMinor + "." +
+                    versionPatch
+        }
+
+        resValue "string", "app_name", applicationName
+
+        variant.outputs.all { output ->
+            outputFileName = "${apkName}.apk"
         }
     }
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
+    productFlavors {
+    }
 }
 
 // Inner dependencies

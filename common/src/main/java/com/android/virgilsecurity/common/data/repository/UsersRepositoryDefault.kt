@@ -31,17 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel.viewslice.list
+package com.android.virgilsecurity.common.data.repository
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.support.v7.widget.RecyclerView
-import com.android.virgilsecurity.base.data.model.MessageInfo
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_channel.*
+import com.android.virgilsecurity.base.data.dao.UsersDao
+import com.android.virgilsecurity.base.data.model.User
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import io.reactivex.Single
+
 
 /**
  * . _  _
@@ -49,39 +45,28 @@ import kotlinx.android.synthetic.main.controller_channel.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    6/22/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelSliceDefault
+ * com.android.virgilsecurity.common.data.repository.UsersRepositoryDefault
  */
-class ChannelSliceDefault(
-        private val action: MutableLiveData<ChannelSlice.Action>,
-        private val adapter: DelegateAdapter<MessageInfo>,
-        private val layoutManager: RecyclerView.LayoutManager
-) : BaseViewSlice(), ChannelSlice {
+class UsersRepositoryDefault(
+        private val usersDao: UsersDao,
+        private val userProperties: UserProperties
+) : UsersRepository {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        setupRecyclerView()
+    override fun users(): Single<List<User>> = usersDao.users()
+
+    override fun addUser(user: User) = usersDao.addUser(user)
+
+    override fun currentUser(): User? = userProperties.currentUser
+
+    override fun setCurrentUser(user: User) {
+        userProperties.currentUser = user
     }
 
-    private fun setupRecyclerView() {
-        rvMessages.adapter = adapter
-        rvMessages.layoutManager = layoutManager
-    }
-
-    override fun getAction(): LiveData<ChannelSlice.Action> = action
-
-    override fun showMessages(messages: List<MessageInfo>) {
-        adapter.addItems(messages)
-        layoutManager.scrollToPosition(adapter.itemCount - 1)
-    }
-
-    override fun addMessage(message: MessageInfo)  {
-        adapter.addItemToEnd(message)
-        rvMessages.scrollToPosition(adapter.itemCount - 1)
-    }
+    override fun deleteUser(user: User) = usersDao.deleteUser(user)
 }

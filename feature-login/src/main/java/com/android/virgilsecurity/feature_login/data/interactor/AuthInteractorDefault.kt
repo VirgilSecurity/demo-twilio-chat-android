@@ -39,11 +39,8 @@ import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import com.android.virgilsecurity.feature_login.data.exception.AlreadyRegisteredException
-import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.HttpException
+import com.android.virgilsecurity.common.data.repository.UsersRepository
 import io.reactivex.Single
-import java.net.HttpRetryException
 
 /**
  * . _  _

@@ -60,4 +60,6 @@ class UsersLocalDS(
     override fun users(): Single<List<User>> = roomDB.usersQao().users()
 
     override fun addUser(user: User) = roomDB.usersQao().insertUser(user)
+
+    override fun deleteUser(user: User) = roomDB.usersQao().deleteUser(user)
 }

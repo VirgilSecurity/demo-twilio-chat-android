@@ -39,10 +39,12 @@ import com.android.virgilsecurity.base.data.dao.MessagesDao
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.extension.comparableListEqual
 import com.android.virgilsecurity.common.data.remote.messages.MapperToMessageInfo
+import com.android.virgilsecurity.feature_channel.data.model.exception.TooLongMessageException
 import com.twilio.chat.Channel
 import io.reactivex.*
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import java.nio.charset.Charset
 
 /**
  * . _  _
@@ -102,7 +104,7 @@ class MessagesRepositoryDefault(
 
     override fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
             messagesApi.observeChannelChanges(channel)
-                    .flatMap {change ->
+                    .flatMap { change ->
                         when (change) {
                             is MessagesApi.ChannelChanges.MessageAdded -> {
                                 Single.just(change.message)
@@ -118,14 +120,18 @@ class MessagesRepositoryDefault(
                         }
                     }
 
-    override fun sendMessage(channel: Channel, body: String, interlocutor: String): Completable =
-            messagesApi.sendMessage(channel, body, interlocutor)
-                    .flatMapCompletable {
-                        messagesDao.addMessage(it)
-                                .subscribeOn(Schedulers.io())
-                    }
+    override fun sendMessage(channel: Channel, body: String): Completable =
+            if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_TWILIO_MESSAGE_BODY_SIZE)
+                Completable.error { TooLongMessageException() }
+            else
+                messagesApi.sendMessage(channel, body)
+                        .flatMapCompletable {
+                            messagesDao.addMessage(it)
+                                    .subscribeOn(Schedulers.io())
+                        }
 
     companion object {
         const val MAX_TWILIO_QUEUE_SIZE = 10000
+        const val MAX_TWILIO_MESSAGE_BODY_SIZE = 32000 // 32Kb
     }
 }

@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_channel.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
+import android.content.Context
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.twilio.chat.Channel
@@ -58,19 +59,23 @@ abstract class ChannelVM : ViewModel() {
     sealed class State {
         data class MessageLoaded(val messages: List<MessageInfo>) : State()
         object MessageSent : State()
+        object MessageIsTooLong : State()
         object ShowEmpty : State()
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
         data class ChannelChanged(val change: MessagesApi.ChannelChanges) : State()
         data class MessagePreviewAdded(val message: MessageInfo) : State()
+        object MessageCopied : State()
     }
 
     abstract fun getState() : LiveData<State>
 
     abstract fun messages(channelId: String)
 
-    abstract fun sendMessage(body: String, interlocutor: String)
+    abstract fun sendMessage(body: String)
 
-    abstract fun showMessagePreview(body: String, interlocutor: String)
+    abstract fun showMessagePreview(body: String)
+
+    abstract fun copyMessage(body: String?, context: Context)
 }

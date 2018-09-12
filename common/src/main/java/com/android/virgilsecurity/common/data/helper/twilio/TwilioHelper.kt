@@ -129,8 +129,8 @@ class TwilioHelper(private val context: Context,
     fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
             twilioRx.observeChannelChanges(channel)
 
-    fun sendMessage(channel: Channel, body: String, interlocutor: String) =
-            twilioRx.sendMessage(channel, body, interlocutor)
+    fun sendMessage(channel: Channel, body: String) =
+            twilioRx.sendMessage(channel, body)
 
     fun channelBySid(channelSid: String) =
             twilioRx.getChannelBySid(chatClient, channelSid)

@@ -36,8 +36,8 @@ package com.android.virgilsecurity.feature_drawer_navigation.di
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.virgilsecurity.common.viewslice.StateSlice
-import com.android.virgilsecurity.feature_drawer_navigation.data.repository.InitTwilioInteractor
-import com.android.virgilsecurity.feature_drawer_navigation.data.repository.InitTwilioInteractorDefault
+import com.android.virgilsecurity.feature_drawer_navigation.data.interactor.InitTwilioInteractor
+import com.android.virgilsecurity.feature_drawer_navigation.data.interactor.InitTwilioInteractorDefault
 import com.android.virgilsecurity.feature_drawer_navigation.di.Const.CONTEXT_DRAWER_NAVIGATION
 import com.android.virgilsecurity.feature_drawer_navigation.di.Const.CONTEXT_TWILIO_INIT
 import com.android.virgilsecurity.feature_drawer_navigation.di.Const.LIVE_DATA_DRAWER

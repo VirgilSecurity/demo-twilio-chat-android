@@ -365,14 +365,10 @@ class TwilioRx(private val fuelHelper: FuelHelper,
             }
 
     fun sendMessage(channel: Channel,
-                    body: String,
-                    interlocutor: String): Single<Message> =
+                    body: String): Single<Message> =
             Single.create<Message> {
-                val attributes = JSONObject()
-                attributes.put(KEY_SENDER, userProperties.currentUser!!.identity)
-                attributes.put(KEY_INTERLOCUTOR, interlocutor)
 
-                val message = Message.options().withBody(body).withAttributes(attributes)
+                val message = Message.options().withBody(body)
                 channel.messages.sendMessage(message, object : CallbackListener<Message>() {
                     override fun onSuccess(message: Message?) =
                             it.onSuccess(message!!)

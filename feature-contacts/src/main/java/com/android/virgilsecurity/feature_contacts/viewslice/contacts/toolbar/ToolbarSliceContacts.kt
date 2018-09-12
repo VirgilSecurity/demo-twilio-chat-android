@@ -72,7 +72,7 @@ class ToolbarSliceContacts(
         toolbarField.setTitle(resources.getString(R.string.messenger))
 
         toolbarField.showHamburgerButton()
-        toolbarField.showSearchButton()
+//        toolbarField.showSearchButton()
         toolbarField.showAddPersonButton()
 
         toolbarField.setOnToolbarItemClickListener {

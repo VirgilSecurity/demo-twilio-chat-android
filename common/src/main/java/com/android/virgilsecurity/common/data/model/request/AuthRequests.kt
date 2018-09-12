@@ -33,6 +33,7 @@
 
 package com.android.virgilsecurity.common.data.model.request
 
+import com.google.gson.annotations.SerializedName
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 
 /**
@@ -50,8 +51,17 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
  * Auth requests
  */
 
-data class SignUpRequest(val rawCard: RawSignedModel)
+data class SignUpRequest(
+        @SerializedName("rawCard")
+        val rawCard: RawSignedModel
+)
 
-data class SignInRequest(val identity: String)
+data class SignInRequest(
+        @SerializedName("identity")
+        val identity: String
+)
 
-data class TokenRequest(val identity: String)
+data class TokenRequest(
+        @SerializedName("identity")
+        val identity: String
+)

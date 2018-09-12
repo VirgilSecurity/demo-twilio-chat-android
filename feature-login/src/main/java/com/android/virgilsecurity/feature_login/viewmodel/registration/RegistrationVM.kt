@@ -72,7 +72,7 @@ abstract class RegistrationVM : ViewModel() {
         const val KEY_USERNAME_SHORT = 1
         const val KEY_USERNAME_LONG = 2
 
-        const val MIN_LENGTH = 4
+        const val MIN_LENGTH = 1
         const val MAX_LENGTH = 32
     }
 }

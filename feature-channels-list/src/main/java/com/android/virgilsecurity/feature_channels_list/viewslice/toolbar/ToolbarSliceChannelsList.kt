@@ -72,7 +72,7 @@ class ToolbarSliceChannelsList(
         toolbarField.setTitle(resources.getString(R.string.messenger))
 
         toolbarField.showHamburgerButton()
-        toolbarField.showSearchButton()
+//        toolbarField.showSearchButton()
 
         toolbarField.setOnToolbarItemClickListener {
             when (it.id) {

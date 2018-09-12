@@ -35,6 +35,7 @@ package com.android.virgilsecurity.feature_channel.domain
 
 import com.android.virgilsecurity.base.domain.BaseDo
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
+import com.android.virgilsecurity.feature_channel.data.model.exception.TooLongMessageException
 import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
 import com.twilio.chat.Channel
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
@@ -62,11 +63,9 @@ class SendMessageDoDefault(
 
     override fun execute(channel: Channel,
                          body: String,
-                         interlocutor: String,
                          publicKeys: List<VirgilPublicKey>) =
             messagesRepository.sendMessage(channel,
-                                           virgilHelper.encrypt(body, publicKeys),
-                                           interlocutor)
+                                           virgilHelper.encrypt(body, publicKeys))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::success, ::error)
@@ -77,6 +76,9 @@ class SendMessageDoDefault(
     }
 
     private fun error(throwable: Throwable) {
-        liveData.value = SendMessageDo.Result.OnError(throwable)
+        if (throwable is TooLongMessageException)
+            liveData.value = SendMessageDo.Result.MessageIsTooLong
+        else
+            liveData.value = SendMessageDo.Result.OnError(throwable)
     }
 }

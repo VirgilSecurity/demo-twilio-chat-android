@@ -47,7 +47,6 @@ import com.android.virgilsecurity.common.util.DoubleBack
 import com.android.virgilsecurity.common.viewslice.StateSlice
 import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractor
 import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractorDefault
-import com.android.virgilsecurity.feature_login.data.repository.UsersRepository
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDo
 import com.android.virgilsecurity.feature_login.domain.login.LoadUsersDoDefault
 import com.android.virgilsecurity.feature_login.domain.registration.SignInDo
@@ -88,7 +87,6 @@ import org.koin.dsl.module.applicationContext
 val authActivityModule: Module = applicationContext {
     bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
     bean { DoubleBack() }
-    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
 
     context(CONTEXT_AUTH_ACTIVITY) {
         bean { LoadUsersDoDefault(get()) as LoadUsersDo }

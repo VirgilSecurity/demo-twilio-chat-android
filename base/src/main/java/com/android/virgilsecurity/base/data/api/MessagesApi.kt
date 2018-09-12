@@ -64,7 +64,7 @@ interface MessagesApi {
 
     fun observeChannelChanges(channel: Channel): Flowable<ChannelChanges>
 
-    fun sendMessage(channel: Channel, body: String, interlocutor: String): Single<MessageInfo>
+    fun sendMessage(channel: Channel, body: String): Single<MessageInfo>
 
     sealed class ChannelChanges {
         data class MemberDeleted(val member: Member?) : ChannelChanges()

@@ -59,7 +59,7 @@ class MessagesRemoteDS(
     override fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
             twilioHelper.observeChannelChanges(channel)
 
-    override fun sendMessage(channel: Channel, body: String, interlocutor: String): Single<MessageInfo> =
-            twilioHelper.sendMessage(channel, body, interlocutor)
+    override fun sendMessage(channel: Channel, body: String): Single<MessageInfo> =
+            twilioHelper.sendMessage(channel, body)
                     .map(mapper::mapMessage)
 }

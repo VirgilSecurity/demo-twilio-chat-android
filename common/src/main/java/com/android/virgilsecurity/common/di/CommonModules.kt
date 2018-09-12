@@ -76,18 +76,19 @@ import com.android.virgilsecurity.common.util.AuthUtils
 import com.android.virgilsecurity.common.util.DefaultSymbolsInputFilter
 import com.android.virgilsecurity.common.util.ImageStorage
 import com.android.virgilsecurity.common.view.adapter.ItemDecoratorBottomDivider
+import com.android.virgilsecurity.common.data.repository.UsersRepository
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
 import com.virgilsecurity.sdk.crypto.*
 import com.virgilsecurity.sdk.jwt.accessProviders.CachingJwtProvider
-import com.virgilsecurity.sdk.jwt.accessProviders.CallbackJwtProvider
 import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider
 import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
 import com.virgilsecurity.sdk.storage.KeyStorage
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
+import com.android.virgilsecurity.common.data.repository.UsersRepositoryDefault
 
 /**
  * . _  _
@@ -115,6 +116,7 @@ val commonModules: Module = applicationContext {
     bean { ImageStorage(get()) }
     factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
+    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
 
 val utilsModule : Module = applicationContext {

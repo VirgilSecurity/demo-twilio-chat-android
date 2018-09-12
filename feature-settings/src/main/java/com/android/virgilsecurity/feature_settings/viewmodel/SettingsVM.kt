@@ -53,6 +53,7 @@ import android.arch.lifecycle.ViewModel
 abstract class SettingsVM : ViewModel() {
 
     sealed class State {
+        object DeleteAccountSuccess : State()
         object LogoutSuccessful : State()
         object ShowLoading : State()
         object ShowError : State()
@@ -62,4 +63,6 @@ abstract class SettingsVM : ViewModel() {
     abstract fun getState() : LiveData<State>
 
     abstract fun logout()
+
+    abstract fun deleteAccount()
 }

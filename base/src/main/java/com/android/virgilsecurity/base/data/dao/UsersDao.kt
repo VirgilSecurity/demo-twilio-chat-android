@@ -56,4 +56,6 @@ interface UsersDao {
     fun users(): Single<List<User>>
 
     fun addUser(user: User)
+
+    fun deleteUser(user: User)
 }

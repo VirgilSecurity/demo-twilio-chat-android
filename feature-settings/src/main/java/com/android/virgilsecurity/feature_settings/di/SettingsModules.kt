@@ -41,6 +41,8 @@ import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_H
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
 import com.android.virgilsecurity.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
 import com.android.virgilsecurity.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS_FOOTER
+import com.android.virgilsecurity.feature_settings.domain.DeleteAccountDo
+import com.android.virgilsecurity.feature_settings.domain.DeleteAccountDoDefault
 import com.android.virgilsecurity.feature_settings.domain.LogoutDo
 import com.android.virgilsecurity.feature_settings.domain.LogoutDoDefault
 import com.android.virgilsecurity.feature_settings.viewmodel.SettingsVM
@@ -91,7 +93,8 @@ val settingsModule: Module = applicationContext {
 
         bean { LogoutDoDefault(get(), get()) as LogoutDo }
         bean(MEDIATOR_DATA_SETTINGS_FOOTER) { MediatorLiveData<SettingsVM.State>() }
-        bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get()) as SettingsVM }
+        bean { DeleteAccountDoDefault(get(), get(), get(), get()) as DeleteAccountDo }
+        bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get(), get()) as SettingsVM }
     }
 }
 

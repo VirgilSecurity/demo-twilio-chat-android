@@ -31,17 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel.viewslice.list
+package com.android.virgilsecurity.feature_channel.domain
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.support.v7.widget.RecyclerView
-import com.android.virgilsecurity.base.data.model.MessageInfo
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapter
-import com.android.virgilsecurity.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_channel.*
+import android.content.Context
+import com.android.virgilsecurity.base.domain.Do
+import io.reactivex.Completable
 
 /**
  * . _  _
@@ -49,39 +43,20 @@ import kotlinx.android.synthetic.main.controller_channel.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    9/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelSliceDefault
+ * CopyMessageDo
  */
-class ChannelSliceDefault(
-        private val action: MutableLiveData<ChannelSlice.Action>,
-        private val adapter: DelegateAdapter<MessageInfo>,
-        private val layoutManager: RecyclerView.LayoutManager
-) : BaseViewSlice(), ChannelSlice {
+interface CopyMessageDo : Do<CopyMessageDo.Result> {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        setupRecyclerView()
+    sealed class Result {
+        object OnSuccess : Result()
+        data class OnError(val error: Throwable) : Result()
     }
 
-    private fun setupRecyclerView() {
-        rvMessages.adapter = adapter
-        rvMessages.layoutManager = layoutManager
-    }
-
-    override fun getAction(): LiveData<ChannelSlice.Action> = action
-
-    override fun showMessages(messages: List<MessageInfo>) {
-        adapter.addItems(messages)
-        layoutManager.scrollToPosition(adapter.itemCount - 1)
-    }
-
-    override fun addMessage(message: MessageInfo)  {
-        adapter.addItemToEnd(message)
-        rvMessages.scrollToPosition(adapter.itemCount - 1)
-    }
+    fun execute(body: String?, context: Context)
 }

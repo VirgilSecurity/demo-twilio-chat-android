@@ -37,13 +37,13 @@ import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.domain.BaseDo
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepository
-import com.twilio.chat.Channel
+import com.android.virgilsecurity.feature_channel.data.model.exception.TooLongMessageException
+import com.android.virgilsecurity.feature_channel.data.repository.MessagesRepositoryDefault
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.nio.charset.Charset
 
 /**
  * . _  _
@@ -65,19 +65,21 @@ class ShowMessagePreviewDoDefault(
 ) : BaseDo<ShowMessagePreviewDo.Result>(), ShowMessagePreviewDo {
 
     override fun execute(body: String,
-                         interlocutor: String,
                          publicKeys: List<VirgilPublicKey>) =
-            Single.just<MessageInfo>(
-                MessageInfo(
-                    PREVIEW_SID,
-                    PREVIEW_CHANNEL_SID,
-                    virgilHelper.encrypt(body, publicKeys),
-                    PREVIEW_ATTRIBUTES,
-                    userProperties.currentUser!!.identity,
-                    interlocutor,
-                    false // TODO change when have attachments
-                )
-            ).subscribeOn(Schedulers.io())
+            (if (body.toByteArray(Charset.forName("UTF-8")).size >
+                 MessagesRepositoryDefault.MAX_TWILIO_MESSAGE_BODY_SIZE)
+                Single.error { TooLongMessageException() }
+            else
+                Single.just<MessageInfo>(
+                    MessageInfo(
+                        PREVIEW_SID,
+                        PREVIEW_CHANNEL_SID,
+                        virgilHelper.encrypt(body, publicKeys),
+                        PREVIEW_ATTRIBUTES,
+                        userProperties.currentUser!!.identity,
+                        false // TODO change when have attachments
+                    )
+                )).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::success, ::error)
                     .track()
@@ -87,7 +89,10 @@ class ShowMessagePreviewDoDefault(
     }
 
     private fun error(throwable: Throwable) {
-        liveData.value = ShowMessagePreviewDo.Result.OnError(throwable)
+        if (throwable is TooLongMessageException)
+            liveData.value = ShowMessagePreviewDo.Result.MessageIsTooLong
+        else
+            liveData.value = ShowMessagePreviewDo.Result.OnError(throwable)
     }
 
     companion object {

@@ -122,8 +122,10 @@ val channelModule: Module = applicationContext {
         bean { GetCardDoDefault(get()) as GetCardDo }
         bean { GetChannelDoDefault(get()) as GetChannelDo }
         bean { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
+        bean { CopyMessageDoDefault(get()) as CopyMessageDo }
         bean {
             ChannelVMDefault(get(MLD_CHANNEL),
+                             get(),
                              get(),
                              get(),
                              get(),

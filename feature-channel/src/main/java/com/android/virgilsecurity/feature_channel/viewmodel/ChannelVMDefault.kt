@@ -35,6 +35,9 @@ package com.android.virgilsecurity.feature_channel.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import com.android.virgilsecurity.base.data.api.MessagesApi
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.util.GeneralConstants
@@ -65,7 +68,8 @@ class ChannelVMDefault(
         private val getCardDo: GetCardDo,
         private val getChannelDo: GetChannelDo,
         private val userProperties: UserProperties,
-        private val showMessagePreviewDo: ShowMessagePreviewDo
+        private val showMessagePreviewDo: ShowMessagePreviewDo,
+        private val copyMessageDo: CopyMessageDo
 ) : ChannelVM() {
 
     private lateinit var channel: Channel
@@ -78,6 +82,7 @@ class ChannelVMDefault(
         state.addSource(getCardDo.getLiveData(), ::onLoadCardResult)
         state.addSource(getChannelDo.getLiveData(), ::onLoadChannelResult)
         state.addSource(showMessagePreviewDo.getLiveData(), ::onShowMessagePreviewResult)
+        state.addSource(copyMessageDo.getLiveData(), ::onCopyMessageResult)
     }
 
     override fun getState(): LiveData<State> = state
@@ -87,16 +92,17 @@ class ChannelVMDefault(
         getChannelDo.execute(channelId)
     }
 
-    override fun sendMessage(body: String, interlocutor: String) =
+    override fun sendMessage(body: String) =
             sendMessageDo.execute(channel,
                                   body,
-                                  interlocutor,
                                   cards.map { it.publicKey as VirgilPublicKey })
 
-    override fun showMessagePreview(body: String, interlocutor: String) =
+    override fun showMessagePreview(body: String) =
             showMessagePreviewDo.execute(body,
-                                         interlocutor,
                                          cards.map { it.publicKey as VirgilPublicKey })
+
+    override fun copyMessage(body: String?, context: Context) =
+            copyMessageDo.execute(body, context)
 
     private fun observeChannelChanges(channel: Channel) =
             observeChannelChangesDo.execute(channel)
@@ -108,6 +114,7 @@ class ChannelVMDefault(
         getCardDo.cleanUp()
         getChannelDo.cleanUp()
         showMessagePreviewDo.cleanUp()
+        copyMessageDo.cleanUp()
     }
 
     private fun onLoadMessagesResult(result: GetMessagesDo.Result?) {
@@ -126,6 +133,7 @@ class ChannelVMDefault(
     private fun onMessageSentResult(result: SendMessageDo.Result?) {
         when (result) {
             is SendMessageDo.Result.OnSuccess -> state.value = State.MessageSent
+            is SendMessageDo.Result.MessageIsTooLong -> state.value = State.MessageIsTooLong
             is SendMessageDo.Result.OnError -> state.value = State.ShowError
         }
     }
@@ -165,13 +173,21 @@ class ChannelVMDefault(
         }
     }
 
-
     private fun onShowMessagePreviewResult(result: ShowMessagePreviewDo.Result?) {
         when (result) {
             is ShowMessagePreviewDo.Result.OnSuccess -> {
                 state.value = ChannelVM.State.MessagePreviewAdded(result.message)
             }
+            ShowMessagePreviewDo.Result.MessageIsTooLong -> state.value = State.MessageIsTooLong
             is ShowMessagePreviewDo.Result.OnError -> State.ShowError
+        }
+    }
+
+
+    private fun onCopyMessageResult(result: CopyMessageDo.Result?) {
+        when (result) {
+            is CopyMessageDo.Result.OnSuccess -> state.value = ChannelVM.State.MessageCopied
+            is CopyMessageDo.Result.OnError -> State.ShowError
         }
     }
 }

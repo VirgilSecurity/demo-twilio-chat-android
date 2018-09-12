@@ -31,12 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigation.data.repository
+package com.android.virgilsecurity.feature_channel.domain
 
-import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
-import com.android.virgilsecurity.common.util.AuthUtils
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
  * . _  _
@@ -44,24 +47,39 @@ import io.reactivex.Completable
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/26/18
+ * ....|  _/    9/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * InitTwilioInteractorDefault
+ * CopyMessageDoDefault
  */
-class InitTwilioInteractorDefault(
-        private val twilioHelper: TwilioHelper,
-        private val authUtils: AuthUtils,
-        private val userProperties: UserProperties
-) : InitTwilioInteractor {
+class CopyMessageDoDefault(
+        private val virgilHelper: VirgilHelper
+) : BaseDo<CopyMessageDo.Result>(), CopyMessageDo {
 
-    override fun initClient(identity: String): Completable =
-            userProperties.currentUser.let { user ->
-                twilioHelper.startChatClient(identity) {
-                    authUtils.generateAuthHeader(identity, user!!.card())
-                }
-            }
+    override fun execute(body: String?, context: Context) =
+            Completable.create {
+                if (body != null && body.isNotBlank())
+                    (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).apply {
+                        primaryClip = ClipData.newPlainText(COPIED_MESSAGE,
+                                                            virgilHelper.decrypt(body))
+                        it.onComplete()
+                    }
+            }.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
+
+    private fun success() {
+        liveData.value = CopyMessageDo.Result.OnSuccess
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = CopyMessageDo.Result.OnError(throwable)
+    }
+
+    companion object {
+        const val COPIED_MESSAGE = "COPIED_MESSAGE"
+    }
 }

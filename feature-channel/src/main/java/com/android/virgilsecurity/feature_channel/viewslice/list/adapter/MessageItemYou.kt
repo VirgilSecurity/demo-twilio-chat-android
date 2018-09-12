@@ -34,6 +34,7 @@
 package com.android.virgilsecurity.feature_channel.viewslice.list.adapter
 
 import android.arch.lifecycle.MutableLiveData
+import android.text.method.LinkMovementMethod
 import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
 import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
@@ -64,7 +65,7 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
 
     override fun onBind(item: MessageInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) =
             with(viewHolder) {
-                tvMessage.text = virgilHelper.decrypt(item.body)
+                tvMessage.text = virgilHelper.decrypt(item.body!!)
 
                 containerView.setOnClickListener {
                     actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
@@ -81,5 +82,6 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
     override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageInfo).sender != userProperties.currentUser!!.identity
+            (items[position] as MessageInfo).sender != userProperties.currentUser!!.identity &&
+            (items[position] as MessageInfo).hasNoMedia()
 }

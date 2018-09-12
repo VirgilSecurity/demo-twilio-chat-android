@@ -79,6 +79,10 @@ class MenuSliceSettings(
                     actionLiveData.value = MenuSlice.Action.LogoutClicked
                     actionLiveData.value = MenuSlice.Action.Idle
                 }
+                R.id.tvMenuDeleteAccount -> {
+                    actionLiveData.value = MenuSlice.Action.DeleteAccountClicked
+                    actionLiveData.value = MenuSlice.Action.Idle
+                }
             }
         }
         menu.setupPopup(context)

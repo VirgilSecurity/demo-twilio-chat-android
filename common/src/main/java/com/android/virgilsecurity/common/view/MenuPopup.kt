@@ -86,6 +86,7 @@ class MenuPopup : PopupWindow(), LayoutContainer {
 
         tvMenuItemEdit.setOnClickListener(onClick)
         tvMenuItemLogout.setOnClickListener(onClick)
+        tvMenuDeleteAccount.setOnClickListener(onClick)
     }
 
     fun showPopup(showPoint: Point) {
@@ -97,7 +98,7 @@ class MenuPopup : PopupWindow(), LayoutContainer {
     }
 
     companion object {
-        const val LAYOUT_PARAMS_WIDTH = 128
+        const val LAYOUT_PARAMS_WIDTH = 160
         const val LAYOUT_PARAMS_HEIGHT = LinearLayout.LayoutParams.WRAP_CONTENT
         const val PADDING_TOP = 24
         const val PADDING_BOTTOM = 24

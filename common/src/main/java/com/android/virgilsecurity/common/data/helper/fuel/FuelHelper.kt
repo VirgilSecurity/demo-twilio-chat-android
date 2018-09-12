@@ -41,9 +41,11 @@ import com.android.virgilsecurity.common.data.model.request.SignUpRequest
 import com.android.virgilsecurity.common.data.model.request.TokenRequest
 import com.android.virgilsecurity.common.util.UiUtils
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
 import com.virgilsecurity.sdk.utils.ConvertionUtils
@@ -77,25 +79,35 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
 
     init {
         FuelManager.instance.basePath = baseUrl
-        FuelManager.instance.addResponseInterceptor(responseInterceptor())
+//        FuelManager.instance.addResponseInterceptor(responseInterceptor())
         gson = Gson()
     }
 
-    private fun responseInterceptor() =
-            { next: (Request, Response) -> Response ->
-                { req: Request, res: Response ->
-                    UiUtils.log(this.javaClass.simpleName, " -> Request\n$req")
-                    UiUtils.log(this.javaClass.simpleName, " -> Response\n$res")
+//    private fun responseInterceptor() =
+//            { next: (Request, Response) -> Response ->
+//                { req: Request, res: Response ->
+//                    UiUtils.log(LOG_TAG, " -> Request\n$req")
+//                    UiUtils.log(LOG_TAG, " -> Response\n$res")
+//
+//                    next(req, res)
+//                }
+//            }
 
-                    next(req, res)
-                }
-            }
+    private fun Triple<Request, Response, Result<String, FuelError>>.debugLog():
+            Triple<Request, Response, Result<String, FuelError>> {
+
+        UiUtils.log(LOG_TAG, "Request:\n${this.first}")
+        UiUtils.log(LOG_TAG, "Response:\n${this.second}")
+
+        return this
+    }
 
     fun getVirgilToken(identity: String, authHeader: String) = Fuel.post(virgilTokenPath)
             .header("Authorization" to "Bearer $authHeader")
             .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))
             .responseString()
+            .debugLog()
             .third
             .get()
             .toObject(TokenResponse::class.java)
@@ -105,6 +117,7 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
             .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))
             .responseString()
+            .debugLog()
             .third
             .get()
             .toObject(TokenResponse::class.java)
@@ -113,6 +126,7 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
             .header(keyContentType to keyAppJson)
             .body(ConvertionUtils.serializeToJson(SignUpRequest(rawCard)))
             .responseString()
+            .debugLog()
             .third
             .get()
             .toObject(SignInResponse::class.java)
@@ -121,7 +135,12 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
             .header(keyContentType to keyAppJson)
             .body(ConvertionUtils.serializeToJson(SignInRequest(identity)))
             .responseString()
+            .debugLog()
             .third
             .get()
             .toObject(SignInResponse::class.java)
+
+    companion object {
+        private val LOG_TAG = FuelHelper::class.java.simpleName
+    }
 }

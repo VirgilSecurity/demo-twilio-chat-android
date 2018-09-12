@@ -31,17 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_channel.viewslice.list.adapter
+package com.android.virgilsecurity.feature_settings.domain
 
-import android.arch.lifecycle.MutableLiveData
-import android.text.method.LinkMovementMethod
-import com.android.virgilsecurity.base.data.model.MessageInfo
 import com.android.virgilsecurity.base.data.properties.UserProperties
-import com.android.virgilsecurity.base.view.adapter.DelegateAdapterItemDefault
+import com.android.virgilsecurity.base.domain.BaseDo
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
-import com.android.virgilsecurity.feature_channel.R
-import com.android.virgilsecurity.feature_channel.viewslice.list.ChannelSlice
-import kotlinx.android.synthetic.main.item_message_me.*
+import com.android.virgilsecurity.common.data.repository.UsersRepository
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -49,39 +48,48 @@ import kotlinx.android.synthetic.main.item_message_me.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * MessageItemMe
+ * LogoutDoDefault
  */
-class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Action>,
-                    private val userProperties: UserProperties,
-                    private val virgilHelper: VirgilHelper,
-                    override val layoutResourceId: Int = R.layout.item_message_me
-) : DelegateAdapterItemDefault<MessageInfo>() {
+class DeleteAccountDoDefault(
+        private val userProperties: UserProperties,
+        private val twilioHelper: TwilioHelper,
+        private val virgilHelper: VirgilHelper,
+        private val usersRepository: UsersRepository
+) : BaseDo<DeleteAccountDo.Result>(), DeleteAccountDo {
 
-    override fun onBind(item: MessageInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) =
-            with(viewHolder) {
-                tvMessage.text = virgilHelper.decrypt(item.body!!)
+    override fun execute() {
+        mutableListOf<Completable>().apply {
+            add(Completable.fromCallable {
+                usersRepository.deleteUser(userProperties.currentUser!!)
+            })
+            add(Completable.fromCallable {
+                virgilHelper.deletePrivateKey(userProperties.currentUser!!.identity)
+            })
+            add(Completable.fromCallable { userProperties.clearCurrentUser() })
+        }.run {
+            Completable.concat(this)
+                    .subscribeOn(Schedulers.io())
+                    .doOnComplete {
+                        Completable.fromCallable {
+                            twilioHelper.stopChatClient()
+                        }.subscribe()
+                    }.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
+        }
+    }
 
-                containerView.setOnClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                }
+    private fun success() {
+        liveData.value = DeleteAccountDo.Result.OnSuccess
+    }
 
-                containerView.setOnLongClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                    true
-                }
-            }
-
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
-
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageInfo).sender == userProperties.currentUser!!.identity &&
-            (items[position] as MessageInfo).hasNoMedia()
+    private fun error(throwable: Throwable) {
+        liveData.value = DeleteAccountDo.Result.OnError(throwable)
+    }
 }

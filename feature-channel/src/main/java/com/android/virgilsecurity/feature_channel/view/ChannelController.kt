@@ -93,9 +93,8 @@ class ChannelController() : BaseController() {
     private fun initViewCallbacks() {
         ivSend.setOnClickListener {
             if (etMessage.text.isNotBlank()) {
-                viewModel.showMessagePreview(etMessage.text.toString(), interlocutor) // To improve user experience
-                viewModel.sendMessage(etMessage.text.toString(), interlocutor)
-                etMessage.text.clear()
+                viewModel.showMessagePreview(etMessage.text.toString()) // To improve user experience
+                viewModel.sendMessage(etMessage.text.toString())
             }
         }
     }
@@ -116,8 +115,10 @@ class ChannelController() : BaseController() {
     }
 
     private fun onMessageActionChanged(action: ChannelSlice.Action) = when (action) {
-        is ChannelSlice.Action.MessageClicked -> UiUtils.toast(this, "Message clicked")
-        is ChannelSlice.Action.MessageLongClicked -> UiUtils.toast(this, "Message long clicked")
+        is ChannelSlice.Action.MessageClicked -> {
+//            viewModel.copyMessage(action.message.body, activity!!)
+        }
+        is ChannelSlice.Action.MessageLongClicked -> Unit
         ChannelSlice.Action.Idle -> Unit
     }
 
@@ -146,9 +147,12 @@ class ChannelController() : BaseController() {
         is ChannelVM.State.ChannelChanged -> onChannelChanged(state.change)
         is ChannelVM.State.MessageSent -> Unit
         is ChannelVM.State.MessagePreviewAdded -> {
+            etMessage.text.clear()
             channelSlice.addMessage(state.message)
             stateSlice.showContent()
         }
+        ChannelVM.State.MessageCopied -> UiUtils.toast(this, "Message copied")
+        ChannelVM.State.MessageIsTooLong -> UiUtils.toast(this, "Message is too long")
     }
 
     private fun onChannelChanged(change: MessagesApi.ChannelChanges) = when (change) {

@@ -36,12 +36,12 @@ package com.android.virgilsecurity.common.util
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.support.annotation.IdRes
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import com.android.virgilsecurity.common.BuildConfig
 import com.bluelinelabs.conductor.Controller
 import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import java.util.*
@@ -83,7 +83,8 @@ object UiUtils {
     fun toastUnderDevelopment(context: Context) = toast(context, "Under development")
 
     fun log(tag: String, text: String) {
-        Log.d(tag, text)
+        if (BuildConfig.DEBUG)
+            Log.d(tag, text)
     }
 
     /**

@@ -31,8 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.android.virgilsecurity.feature_drawer_navigation.data.repository
+package com.android.virgilsecurity.feature_drawer_navigation.data.interactor
 
+import com.android.virgilsecurity.base.data.properties.UserProperties
+import com.android.virgilsecurity.common.data.helper.twilio.TwilioHelper
+import com.android.virgilsecurity.common.util.AuthUtils
 import io.reactivex.Completable
 
 /**
@@ -47,9 +50,18 @@ import io.reactivex.Completable
  */
 
 /**
- * InitTwilioInteractor
+ * InitTwilioInteractorDefault
  */
-interface InitTwilioInteractor {
+class InitTwilioInteractorDefault(
+        private val twilioHelper: TwilioHelper,
+        private val authUtils: AuthUtils,
+        private val userProperties: UserProperties
+) : InitTwilioInteractor {
 
-    fun initClient(identity: String) : Completable
+    override fun initClient(identity: String): Completable =
+            userProperties.currentUser.let { user ->
+                twilioHelper.startChatClient(identity) {
+                    authUtils.generateAuthHeader(identity, user!!.card())
+                }
+            }
 }

@@ -64,13 +64,11 @@ class MessageInfo(
         @ColumnInfo(name = KEY_CHANNEL_ID)
         val channelSid: String,
         @ColumnInfo(name = KEY_BODY)
-        val body: String,
+        val body: String?,
         @ColumnInfo(name = KEY_ATTRIBUTES)
         val attributesString: String,
         @ColumnInfo(name = GeneralConstants.KEY_SENDER)
         val sender: String,
-        @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
-        val interlocutor: String,
         @ColumnInfo(name = KEY_HAS_MEDIA)
         val hasMedia: Boolean
 ) : Comparable<MessageInfo>, Parcelable {
@@ -78,6 +76,8 @@ class MessageInfo(
     override fun compareTo(other: MessageInfo): Int = this.sid.compareTo(other.sid)
 
     fun attributes() = JSONObject(attributesString)
+
+    fun hasNoMedia() = !hasMedia
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

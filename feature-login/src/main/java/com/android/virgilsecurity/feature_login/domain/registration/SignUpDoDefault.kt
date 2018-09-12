@@ -37,6 +37,7 @@ import com.android.virgilsecurity.base.data.model.SignInResponse
 import com.android.virgilsecurity.base.data.model.User
 import com.android.virgilsecurity.base.domain.BaseDo
 import com.android.virgilsecurity.common.data.helper.virgil.VirgilHelper
+import com.android.virgilsecurity.common.util.UiUtils
 import com.android.virgilsecurity.feature_login.data.interactor.AuthInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -61,6 +62,7 @@ class SignUpDoDefault(
 ) : BaseDo<SignUpDo.Result>(), SignUpDo {
 
     override fun execute(identity: String) {
+        UiUtils.log("SignUpDoDefault identity: ", identity)
         authInteractor.signUp(identity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -75,6 +77,7 @@ class SignUpDoDefault(
     }
 
     private fun error(throwable: Throwable) {
+        UiUtils.log("SignUpDoDefault", throwable.message?: "no message")
         liveData.value = SignUpDo.Result.OnError(throwable)
     }
 }

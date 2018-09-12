@@ -56,6 +56,7 @@ interface MenuSlice : ViewSlice {
     sealed class Action {
         object EditClicked : Action()
         object LogoutClicked : Action()
+        object DeleteAccountClicked : Action()
         object Idle : Action()
     }
 
