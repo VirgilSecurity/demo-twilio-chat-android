@@ -32,7 +32,7 @@
   -->
 
 <manifest
-    package="com.android.virgilsecurity.feature_contacts">
+    package="com.virgilsecurity.android.feature_contacts">
 
     <application>
 

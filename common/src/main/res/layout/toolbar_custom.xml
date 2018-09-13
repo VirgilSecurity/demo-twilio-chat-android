@@ -31,7 +31,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<com.android.virgilsecurity.common.view.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.virgilsecurity.android.common.view.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbarCustom"
@@ -177,4 +177,4 @@
         app:layout_constraintStart_toEndOf="@id/ivBack"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="invisible" />
-</com.android.virgilsecurity.common.view.Toolbar>
+</com.virgilsecurity.android.common.view.Toolbar>

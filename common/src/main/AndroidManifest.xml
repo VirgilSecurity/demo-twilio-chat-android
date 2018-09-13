@@ -31,4 +31,4 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="com.android.virgilsecurity.common" />
+<manifest package="com.virgilsecurity.android.common" />

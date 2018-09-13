@@ -56,10 +56,6 @@ android {
     }
 }
 
-//allprojects {
-//    firebase()
-//}
-
 // Common flags
 androidExtensions {
     experimental = true

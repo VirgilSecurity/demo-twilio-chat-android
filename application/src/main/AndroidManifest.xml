@@ -33,10 +33,10 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.virgilsecurity.virgilmessenger">
+    package="com.virgilsecurity.android.virgilmessenger">
 
     <application
-        android:name="com.android.virgilsecurity.virgilmessenger.TwilioApp"
+        android:name="com.virgilsecurity.android.virgilmessenger.TwilioApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -45,7 +45,7 @@
         tools:replace="android:supportsRtl"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.android.virgilsecurity.virgilmessenger.SplashActivity"
+            android:name="com.virgilsecurity.android.virgilmessenger.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -54,10 +54,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.android.virgilsecurity.feature_login.view.AuthActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

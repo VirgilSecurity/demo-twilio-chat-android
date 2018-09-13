@@ -39,7 +39,7 @@
 
         <variable
             name="addContactVM"
-            type="com.android.virgilsecurity.feature_contacts.viewmodel.addContact.AddContactVMDefault" />
+            type="com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault" />
     </data>
 
     <android.support.constraint.ConstraintLayout

@@ -31,7 +31,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="com.android.virgilsecurity.feature_settings">
+<manifest package="com.virgilsecurity.android.feature_settings">
 
     <application>
 

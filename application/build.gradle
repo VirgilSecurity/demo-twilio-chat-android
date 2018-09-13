@@ -28,7 +28,7 @@ static def getApkName(BuildType buildType) {
 
 android {
     defaultConfig {
-        applicationId 'com.android.virgilsecurity.virgilmessenger'
+        applicationId 'com.virgilsecurity.android.virgilmessenger'
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
     }

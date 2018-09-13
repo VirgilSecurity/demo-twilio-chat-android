@@ -31,7 +31,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="com.android.virgilsecurity.feature_channels_list">
+<manifest package="com.virgilsecurity.android.feature_channels_list">
 
     <application>
 

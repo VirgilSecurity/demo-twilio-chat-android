@@ -32,11 +32,11 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.virgilsecurity.feature_drawer_navigation">
+    package="com.virgilsecurity.android.feature_drawer_navigation">
 
     <application>
         <activity
-            android:name="com.android.virgilsecurity.feature_drawer_navigation.view.DrawerNavigationActivity"
+            android:name="com.virgilsecurity.android.feature_drawer_navigation.view.DrawerNavigationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DrawerNavigationTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
