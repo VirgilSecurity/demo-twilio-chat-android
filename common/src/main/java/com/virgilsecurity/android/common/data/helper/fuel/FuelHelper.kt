@@ -40,7 +40,7 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
-import com.virgilsecurity.android.base.data.model.SignInResponse
+import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.TokenResponse
 import com.virgilsecurity.android.base.extension.toObject
 import com.virgilsecurity.android.common.data.model.request.SignInRequest
@@ -118,16 +118,7 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
             .debugLog()
             .third
             .get()
-            .toObject(SignInResponse::class.java)
-
-    fun signIn(identity: String) = Fuel.post(signInPath)
-            .header(keyContentType to keyAppJson)
-            .body(ConvertionUtils.serializeToJson(SignInRequest(identity)))
-            .responseString()
-            .debugLog()
-            .third
-            .get()
-            .toObject(SignInResponse::class.java)
+            .toObject(SignUpResponse::class.java)
 
     companion object {
         private val LOG_TAG = FuelHelper::class.java.simpleName

@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_login.data.interactor
 
 import com.virgilsecurity.android.base.data.api.AuthApi
-import com.virgilsecurity.android.base.data.model.SignInResponse
+import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
@@ -63,17 +63,7 @@ class AuthInteractorDefault(
         private val usersRepository: UsersRepository
 ) : AuthInteractor {
 
-    override fun signIn(identity: String): Single<SignInResponse> =
-            authApi.signIn(identity).flatMap { response ->
-                Single.fromCallable {
-                    userProperties.currentUser = User(identity,
-                                                      response.rawSignedModel.exportAsBase64String())
-                }.map {
-                    response
-                }
-            }
-
-    override fun signUp(identity: String): Single<SignInResponse> =
+    override fun signUp(identity: String): Single<SignUpResponse> =
             virgilHelper.ifExistsPrivateKey(identity).let {
                 if (!it) {
                     virgilHelper.generateKeyPair().let { keyPair ->

@@ -116,7 +116,6 @@ class AuthActivity(
                     replaceTopController(this, LoginController.KEY_LOGIN_CONTROLLER)
             }
         }
-        is LoginVM.State.LoginSuccess -> login(state.user)
     }
 
     fun login(user: User) =

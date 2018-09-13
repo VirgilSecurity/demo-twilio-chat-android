@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.domain.registration
 
-import com.virgilsecurity.android.base.data.model.SignInResponse
+import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
@@ -70,8 +70,8 @@ class SignUpDoDefault(
                 .track()
     }
 
-    private fun success(signInResponse: SignInResponse) {
-        virgilHelper.parseCard(signInResponse.rawSignedModel).let {
+    private fun success(signUpResponse: SignUpResponse) {
+        virgilHelper.parseCard(signUpResponse.rawSignedModel).let {
             liveData.value = SignUpDo.Result.OnSuccess(User(it.identity, it.rawCard.exportAsBase64String()))
         }
     }

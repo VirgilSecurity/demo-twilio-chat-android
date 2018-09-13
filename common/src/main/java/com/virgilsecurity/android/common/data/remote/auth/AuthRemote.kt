@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.common.data.remote.auth
 
 import com.virgilsecurity.android.base.data.api.AuthApi
-import com.virgilsecurity.android.base.data.model.SignInResponse
+import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.TokenResponse
 import com.virgilsecurity.android.common.data.helper.fuel.FuelHelper
 import com.virgilsecurity.sdk.cards.model.RawSignedModel
@@ -58,11 +58,7 @@ class AuthRemote(
         private val fuelHelper: FuelHelper
 ) : AuthApi {
 
-    override fun signIn(identity: String): Single<SignInResponse> = Single.fromCallable {
-        fuelHelper.signIn(identity)
-    }
-
-    override fun signUp(rawCard: RawSignedModel): Single<SignInResponse> = Single.fromCallable {
+    override fun signUp(rawCard: RawSignedModel): Single<SignUpResponse> = Single.fromCallable {
         fuelHelper.signUp(rawCard)
     }
 

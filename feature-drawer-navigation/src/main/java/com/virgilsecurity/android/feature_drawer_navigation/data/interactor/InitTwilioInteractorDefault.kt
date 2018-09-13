@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 
+import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
 import com.virgilsecurity.android.common.util.AuthUtils
@@ -58,10 +59,11 @@ class InitTwilioInteractorDefault(
         private val userProperties: UserProperties
 ) : InitTwilioInteractor {
 
-    override fun initClient(identity: String): Completable =
-            userProperties.currentUser.let { user ->
-                twilioHelper.startChatClient(identity) {
-                    authUtils.generateAuthHeader(identity, user!!.card())
-                }
-            }
+    override fun initClient(user: User): Completable {
+        userProperties.currentUser = user
+
+        return twilioHelper.startChatClient(user.identity) {
+            authUtils.generateAuthHeader(user.identity, user.card())
+        }
+    }
 }

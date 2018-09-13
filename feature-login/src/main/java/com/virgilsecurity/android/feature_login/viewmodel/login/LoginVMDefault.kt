@@ -36,7 +36,6 @@ package com.virgilsecurity.android.feature_login.viewmodel.login
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
-import com.virgilsecurity.android.feature_login.domain.registration.SignInDo
 
 /**
  * . _  _
@@ -54,18 +53,15 @@ import com.virgilsecurity.android.feature_login.domain.registration.SignInDo
  */
 class LoginVMDefault(
         private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo,
-        private val signInDo: SignInDo
+        private val loadUsersDo: LoadUsersDo
 ) : LoginVM() {
 
     init {
         state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
-        state.addSource(signInDo.getLiveData(), ::onSignInResult)
     }
 
     override fun onCleared() {
         loadUsersDo.cleanUp()
-        signInDo.cleanUp()
     }
 
     override fun getState(): LiveData<State> = state
@@ -77,7 +73,6 @@ class LoginVMDefault(
 
     override fun login(identity: String) {
         state.value = State.ShowLoading
-        signInDo.execute(identity)
     }
 
     private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
@@ -90,15 +85,6 @@ class LoginVMDefault(
                 }
             }
             is LoadUsersDo.Result.OnError -> state.value = State.ShowError
-        }
-    }
-
-    private fun onSignInResult(result: SignInDo.Result?) {
-        when (result) {
-            is SignInDo.Result.OnSuccess -> {
-                    state.value = State.LoginSuccess(result.user)
-            }
-            is SignInDo.Result.OnError -> state.value = State.LoginError
         }
     }
 }

@@ -35,6 +35,7 @@ package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
+import com.virgilsecurity.android.base.data.model.User
 
 /**
  * . _  _
@@ -61,5 +62,5 @@ abstract class InitTwilioVM : ViewModel(){
 
     abstract fun getState() : LiveData<State>
 
-    abstract fun initChatClient(identity: String)
+    abstract fun initChatClient(user: User)
 }

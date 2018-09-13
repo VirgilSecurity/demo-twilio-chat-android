@@ -66,7 +66,7 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
 
     private val debounceSubject: PublishSubject<Int> = PublishSubject.create()
     private lateinit var debounceDisposable: Disposable
-    private lateinit var loadingFader: ValueAnimator
+    private var loadingFader: ValueAnimator? = null
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -99,7 +99,8 @@ class StateSliceTwilioInit : BaseViewSlice(), StateSlice {
                 btnRetry.isEnabled = true
                 clContentRoot.visibility = View.VISIBLE
                 ivLoading.visibility = View.INVISIBLE
-                loadingFader.end()
+                if (loadingFader != null)
+                    loadingFader!!.end()
                 tvInitializing.visibility = View.INVISIBLE
             }
             LOADING -> {

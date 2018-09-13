@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 
+import com.virgilsecurity.android.base.data.model.User
 import io.reactivex.Completable
 
 /**
@@ -51,5 +52,5 @@ import io.reactivex.Completable
  */
 interface InitTwilioInteractor {
 
-    fun initClient(identity: String) : Completable
+    fun initClient(user: User) : Completable
 }

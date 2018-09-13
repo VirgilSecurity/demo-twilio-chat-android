@@ -77,7 +77,7 @@ class TwilioInitController() : BaseController() {
     }
 
     override fun init() {
-        viewModel.initChatClient(user.identity)
+        viewModel.initChatClient(user)
     }
 
     override fun initViewSlices(view: View) {
@@ -88,7 +88,7 @@ class TwilioInitController() : BaseController() {
     override fun setupViewSlices(view: View) { }
 
     private fun onActionChanged(action: TwilioInitSlice.Action) = when (action) {
-        TwilioInitSlice.Action.RetryClicked -> viewModel.initChatClient(user.identity)
+        TwilioInitSlice.Action.RetryClicked -> viewModel.initChatClient(user)
         TwilioInitSlice.Action.Idle -> Unit
     }
 

@@ -12,7 +12,7 @@ enum BuildType {
 
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 
 static def getApkName(BuildType buildType) {
     String APP_NAME = "Virgil Messenger "

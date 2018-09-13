@@ -35,6 +35,7 @@ package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
+import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
 
 /**
@@ -64,9 +65,9 @@ class InitTwilioVMDefault(
 
     override fun getState(): LiveData<State> = state
 
-    override fun initChatClient(identity: String) {
+    override fun initChatClient(user: User) {
         state.value = InitTwilioVM.State.ShowLoading
-        initTwilioDo.execute(identity)
+        initTwilioDo.execute(user)
     }
 
     private fun onInitTwilioResult(result: InitTwilioDo.Result?) {

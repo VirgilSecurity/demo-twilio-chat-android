@@ -118,7 +118,7 @@ class LoginController() : BaseController() {
     }
 
     private fun onActionChanged(action: ViewPagerSlice.Action) = when (action) {
-        is ViewPagerSlice.Action.UserClicked -> viewModel.login(action.user.identity)
+        is ViewPagerSlice.Action.UserClicked -> login(action.user)
         ViewPagerSlice.Action.Idle -> Unit
     }
 

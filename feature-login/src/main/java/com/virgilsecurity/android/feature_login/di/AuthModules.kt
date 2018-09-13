@@ -49,8 +49,6 @@ import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractor
 import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractorDefault
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDoDefault
-import com.virgilsecurity.android.feature_login.domain.registration.SignInDo
-import com.virgilsecurity.android.feature_login.domain.registration.SignInDoDefault
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDo
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDoDefault
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
@@ -89,9 +87,8 @@ val authActivityModule: Module = applicationContext {
 
     context(CONTEXT_AUTH_ACTIVITY) {
         bean { LoadUsersDoDefault(get()) as LoadUsersDo }
-        bean { SignInDoDefault(get(), get()) as SignInDo }
         bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<LoginVM.State>() }
-        bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get(), get()) as LoginVM }
+        bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get()) as LoginVM }
     }
 }
 

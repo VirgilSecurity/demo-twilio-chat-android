@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.data.interactor
 
-import com.virgilsecurity.android.base.data.model.SignInResponse
+import com.virgilsecurity.android.base.data.model.SignUpResponse
 import io.reactivex.Single
 
 /**
@@ -52,7 +52,5 @@ import io.reactivex.Single
  */
 interface AuthInteractor {
 
-    fun signIn(identity: String): Single<SignInResponse>
-
-    fun signUp(identity: String): Single<SignInResponse>
+    fun signUp(identity: String): Single<SignUpResponse>
 }

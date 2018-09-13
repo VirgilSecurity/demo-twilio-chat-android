@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.domain
 
+import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.domain.Do
 
 /**
@@ -56,5 +57,5 @@ interface InitTwilioDo : Do<InitTwilioDo.Result> {
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(identity: String)
+    fun execute(user: User)
 }
