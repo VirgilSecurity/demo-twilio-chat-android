@@ -128,7 +128,7 @@ class SettingsController() : BaseController() {
     }
 
     private fun onMenuActionChanged(action: MenuSlice.Action) = when (action) {
-        MenuSlice.Action.EditClicked -> UiUtils.toast(this, "Touch once more (;")
+        MenuSlice.Action.EditClicked -> UiUtils.toastUnderDevelopment(this)
         MenuSlice.Action.LogoutClicked -> viewModel.logout()
         MenuSlice.Action.DeleteAccountClicked -> viewModel.deleteAccount()
         MenuSlice.Action.Idle -> Unit

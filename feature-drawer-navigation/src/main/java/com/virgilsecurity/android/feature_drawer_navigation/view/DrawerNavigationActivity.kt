@@ -193,7 +193,7 @@ class DrawerNavigationActivity(
                                               .tag(tag))
 
     private fun openChannelNotFromChannels(channel: ChannelInfo) {
-
+        stateSlice.lockDrawer()
         routerRoot.setBackstack(
             listOf(RouterTransaction
                            .with(channelsController().apply {
@@ -206,9 +206,11 @@ class DrawerNavigationActivity(
         openChannel(channel)
     }
 
-    private fun openChannel(channel: ChannelInfo) =
-            pushController(ChannelController(channel),
-                           ChannelController.KEY_CHANNEL_CONTROLLER)
+    private fun openChannel(channel: ChannelInfo) {
+        stateSlice.lockDrawer()
+        pushController(ChannelController(channel),
+                       ChannelController.KEY_CHANNEL_CONTROLLER)
+    }
 
     private fun initRouter() {
         if (routerRoot.hasNoRootController())
@@ -236,10 +238,13 @@ class DrawerNavigationActivity(
                                            container: ViewGroup,
                                            changeHandler: ControllerChangeHandler) {
 
-                if (to is ContactsController)
+                if (to is ContactsController) {
                     drawerSlice.setItemSelected(0)
-                else if (to is ChannelsListController)
+                    stateSlice.unLockDrawer()
+                } else if (to is ChannelsListController) {
                     drawerSlice.setItemSelected(1)
+                    stateSlice.unLockDrawer()
+                }
             }
 
         })

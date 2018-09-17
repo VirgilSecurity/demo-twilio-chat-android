@@ -103,7 +103,7 @@ class MenuPopup : PopupWindow(), LayoutContainer {
         const val PADDING_TOP = 24
         const val PADDING_BOTTOM = 24
         const val IS_FOCUSABLE = true
-        const val OFFSET_X = LAYOUT_PARAMS_WIDTH * (-1)
+        const val OFFSET_X = LAYOUT_PARAMS_WIDTH * (-1) - 24
         const val OFFSET_Y = 95
     }
 }

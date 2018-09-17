@@ -65,7 +65,7 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils
  * FuelHelper helps to work with network requests.
  * @constructor If [baseUrl] is `null` - localhost address will be used (http://10.0.2.2:3000)
  */
-class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsecurity.com") {
+class FuelHelper(private val baseUrl: String? = "https://messenger.virgilsecurity.com") {
 
     private val keyContentType = "Content-Type"
     private val keyAppJson = "application/json"
@@ -73,7 +73,6 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-dev.virgilsec
     private val virgilTokenPath = "get-virgil-jwt"
     private val twilioTokenPath = "get-twilio-jwt"
     private val signUpPath = "signup"
-    private val signInPath = "signin"
 
     private val gson: Gson
 
