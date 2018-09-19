@@ -10,9 +10,9 @@ enum BuildType {
     RELEASE
 }
 
-def versionMajor = 0
-def versionMinor = 1
-def versionPatch = 5
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 1
 
 static def getApkName(BuildType buildType) {
     String APP_NAME = "Virgil Messenger "
@@ -43,11 +43,12 @@ android {
         debug {
             debuggable true
             minifyEnabled false
+            applicationIdSuffix ".debug"
         }
     }
     applicationVariants.all { variant ->
 
-        def applicationName = "Virgil Messenger"
+        def applicationName
         def apkName
 
         if (variant.name == android.buildTypes.debug.name) {
@@ -55,11 +56,15 @@ android {
                     versionMajor + "." +
                     versionMinor + "." +
                     versionPatch
+
+            applicationName = "Virgil Messenger Debug"
         } else {
             apkName = getApkName(BuildType.RELEASE) + " v" +
                     versionMajor + "." +
                     versionMinor + "." +
                     versionPatch
+
+            applicationName = "Virgil Messenger"
         }
 
         resValue "string", "app_name", applicationName
@@ -67,10 +72,6 @@ android {
         variant.outputs.all { output ->
             outputFileName = "${apkName}.apk"
         }
-    }
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
-    productFlavors {
     }
 }
 

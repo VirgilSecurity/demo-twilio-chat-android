@@ -38,6 +38,7 @@
         <activity
             android:name="com.virgilsecurity.android.feature_drawer_navigation.view.DrawerNavigationActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/DrawerNavigationTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>

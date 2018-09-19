@@ -36,7 +36,6 @@ ext.deps = [
                 'viewModel'        : "android.arch.lifecycle:viewmodel:$versions.architectureComponents",
                 'liveData'         : "android.arch.lifecycle:livedata:$versions.architectureComponents",
                 'lifecycleCompiler': "android.arch.lifecycle:compiler:$versions.architectureComponents",
-                'databinding'      : "com.android.databinding:compiler:$versions.dataBindingVersion",
                 'roomRuntime'      : "android.arch.persistence.room:runtime:$versions.room",
                 'roomCompiler'     : "android.arch.persistence.room:compiler:$versions.room",
                 'roomRxJava2'      : "android.arch.persistence.room:rxjava2:$versions.room",

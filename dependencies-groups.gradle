@@ -63,8 +63,6 @@ ext {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
         kapt deps.ac.lifecycleCompiler // was annotationProcessor
-
-        kapt deps.ac.databinding
     }
 
     room = Group {
