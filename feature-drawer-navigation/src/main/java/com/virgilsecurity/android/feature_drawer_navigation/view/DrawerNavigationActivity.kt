@@ -57,6 +57,7 @@ import com.virgilsecurity.android.feature_drawer_navigation.di.Const.CONTEXT_DRA
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
 import com.virgilsecurity.android.feature_settings.view.SettingsController
+import com.virgilsecurity.android.feature_settings.view.SettingsEditController
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
 
@@ -160,7 +161,22 @@ class DrawerNavigationActivity(
                                    })
 
     private fun settingsController() =
-            SettingsController(user)
+            SettingsController(user,
+                               {
+                                   pushController(settingsEditController(),
+                                                  SettingsEditController.KEY_EDIT_SETTINGS_CONTROLLER)
+                               },
+                               {
+                                   screenRouter.getScreenIntent(this, ScreenChat.Login).run {
+                                       startActivity(this)
+                                       overridePendingTransition(R.anim.animation_slide_from_start_activity,
+                                                                 R.anim.animation_slide_to_end_activity)
+                                       finish()
+                                   }
+                               })
+
+    private fun settingsEditController() =
+            SettingsEditController(user)
             {
                 screenRouter.getScreenIntent(this, ScreenChat.Login).run {
                     startActivity(this)

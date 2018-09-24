@@ -31,23 +31,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer
+package com.virgilsecurity.android.feature_settings.viewslice.edit.header
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.net.Uri
-import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
-import com.virgilsecurity.android.feature_drawer_navigation.R
-import kotlinx.android.synthetic.main.activity_drawer_navigation.*
-import kotlinx.android.synthetic.main.layout_drawer_header.view.*
+import com.virgilsecurity.android.feature_settings.R
+import kotlinx.android.synthetic.main.controller_settings.*
+import kotlinx.android.synthetic.main.controller_settings_edit.*
 
 /**
  * . _  _
@@ -55,79 +54,52 @@ import kotlinx.android.synthetic.main.layout_drawer_header.view.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/12/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * DrawerSliceDefault
+ * HeaderSliceSettings
  */
-class DrawerSliceDefault(
-        private val actionLiveData: MutableLiveData<DrawerSlice.Action>,
+class HeaderSliceSettingsEdit(
+        private val mutableLiveData: MutableLiveData<HeaderSlice.Action>,
         private val imageStorage: ImageStorage
-) : BaseViewSlice(), DrawerSlice {
+) : BaseViewSlice(), HeaderSlice {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        setupDrawer()
+        setupViews()
     }
 
-    private fun setupDrawer() {
-        nvNavigation.menu.getItem(1).isChecked = true
-
-        nvNavigation.setNavigationItemSelectedListener {
-            if (!it.isChecked) {
-                when (it.itemId) {
-                    R.id.itemContacts -> {
-                        actionLiveData.value = DrawerSlice.Action.ContactsClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
-                    }
-                    R.id.itemChats -> {
-                        actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
-                    }
-                    R.id.itemSettings -> {
-                        actionLiveData.value = DrawerSlice.Action.SettingsClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
-                    }
-                }
-
-                it.isChecked = true
-            } else {
-                actionLiveData.value = DrawerSlice.Action.SameItemClicked
-                actionLiveData.value = DrawerSlice.Action.Idle
-            }
-
-            return@setNavigationItemSelectedListener true
+    private fun setupViews() {
+        ivUserPicEdit.setOnClickListener {
+            mutableLiveData.value = HeaderSlice.Action.ChangePicClicked
+            mutableLiveData.value = HeaderSlice.Action.Idle
         }
     }
 
-    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
+    override fun setName(name: String) {
+        tvUsernameEditSettingsHeader.text = name
+        etUsername.setText(name)
+    }
 
-    override fun setHeader(identity: String, picturePath: String?) {
+    override fun setUserPic(identity: String, picturePath: String?) {
         if (picturePath != null) {
             Glide.with(context)
                     .load(imageStorage.get(Uri.parse(picturePath)))
                     .apply(RequestOptions.circleCropTransform())
-                    .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
+                    .into(ivUserPicEdit)
         } else {
-            nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
-            nvNavigation.getHeaderView(0).tvInitialsDrawer.visibility = View.VISIBLE
             Glide.with(context)
                     .load(UiUtils.letterBasedDrawable(context, R.array.loginBackgrounds,
-                                                      nvNavigation.getHeaderView(0)
-                                                              .tvInitialsDrawer.text[0]
+                                                      UserUtils.firstInitials(identity)[0]
                                                               .toLowerCase()
                                                               .toString()))
                     .apply(RequestOptions.circleCropTransform())
-                    .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
+                    .into(ivUserPicEdit)
         }
-
-        nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity
     }
 
-    override fun setItemSelected(position: Int) {
-        nvNavigation.menu.getItem(position).isChecked = true
-    }
+    override fun getAction(): LiveData<HeaderSlice.Action> = mutableLiveData
 }

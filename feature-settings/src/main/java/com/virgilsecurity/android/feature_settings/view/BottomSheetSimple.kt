@@ -31,20 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.view
+package com.virgilsecurity.android.feature_settings.view
 
 import android.content.Context
-import android.graphics.Point
-import android.view.Gravity
+import android.support.annotation.LayoutRes
+import android.support.design.widget.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import com.virgilsecurity.android.common.R
-import com.virgilsecurity.android.common.util.UiUtils
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.layout_popup_menu.*
-
+import android.widget.TextView
+import com.virgilsecurity.android.feature_settings.R
+import kotlinx.android.synthetic.main.bottom_sheet_dialog_simple.*
 
 /**
  * . _  _
@@ -52,57 +48,42 @@ import kotlinx.android.synthetic.main.layout_popup_menu.*
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/24/18
+ * ....|  _/    9/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * MenuPopup
+ * BottomSheetSimple
  */
-class MenuPopup : PopupWindow(), LayoutContainer {
+class BottomSheetSimple(context: Context,
+                        @LayoutRes private val layoutResId: Int = R.layout.bottom_sheet_dialog_simple
+) : BottomSheetDialog(context) {
 
-    override lateinit var containerView: View
-
-    private lateinit var layout: View
     private lateinit var onClick: (View) -> Unit
 
-    fun setupPopup(context: Context) {
-        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        layout = layoutInflater.inflate(R.layout.layout_popup_menu, null)
-        containerView = layout
+    fun setup() {
+        LayoutInflater.from(context)
+                .inflate(layoutResId, null)
+                .run {
+                    setContentView(this)
 
-        contentView = layout
-        width = UiUtils.dpToPixels(LAYOUT_PARAMS_WIDTH, context)
-        height = LAYOUT_PARAMS_HEIGHT
-        layout.setPadding(0,
-                          UiUtils.dpToPixels(PADDING_TOP, context),
-                          0,
-                          UiUtils.dpToPixels(PADDING_BOTTOM, context))
-
-        isFocusable = IS_FOCUSABLE
-        setBackgroundDrawable(context.getDrawable(R.drawable.rect_white_rounded_2))
-        animationStyle = R.style.popup_window_animation
-
-        tvMenuItemEdit.setOnClickListener(onClick)
-        tvMenuItemLogout.setOnClickListener(onClick)
+                    this.findViewById<TextView>(R.id.btnBottomSheetSubmit)
+                            .setOnClickListener(onClick)
+                    this.findViewById<TextView>(R.id.btnBottomSheetCancel)
+                            .setOnClickListener(onClick)
+                }
     }
 
-    fun showPopup(showPoint: Point) {
-        showAtLocation(layout, Gravity.NO_GRAVITY, showPoint.x + OFFSET_X, showPoint.y + OFFSET_Y)
+    fun setBottomTitle(title: String) {
+        tvBottomSheetTitle.text = title
     }
 
-    fun setOnClickListener(onClick: (View) -> Unit) {
+    fun setBottomBody(body: String) {
+        tvBottomSheetBody.text = body
+    }
+
+    fun setClickListener(onClick: (View) -> Unit) {
         this.onClick = onClick
-    }
-
-    companion object {
-        const val LAYOUT_PARAMS_WIDTH = 128
-        const val LAYOUT_PARAMS_HEIGHT = LinearLayout.LayoutParams.WRAP_CONTENT
-        const val PADDING_TOP = 24
-        const val PADDING_BOTTOM = 24
-        const val IS_FOCUSABLE = true
-        const val OFFSET_X = LAYOUT_PARAMS_WIDTH * (-1) - 24
-        const val OFFSET_Y = 95
     }
 }

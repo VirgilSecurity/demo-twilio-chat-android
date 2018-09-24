@@ -31,11 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.menu
+package com.virgilsecurity.android.feature_settings.viewslice.settings.menu
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
 import android.graphics.Point
-import com.virgilsecurity.android.base.viewslice.ViewSlice
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.common.view.MenuPopup
+import com.virgilsecurity.android.feature_settings.R
 
 /**
  * . _  _
@@ -49,18 +54,41 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
  */
 
 /**
- * MenuSlice
+ * MenuSliceSettings
  */
-interface MenuSlice : ViewSlice {
+class MenuSliceSettings(
+        private val actionLiveData: MutableLiveData<MenuSlice.Action>
+) : BaseViewSlice(), MenuSlice {
 
-    sealed class Action {
-        object EditClicked : Action()
-        object LogoutClicked : Action()
-        object DeleteAccountClicked : Action()
-        object Idle : Action()
+    private lateinit var menu: MenuPopup
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupMenu()
     }
 
-    fun getAction(): LiveData<Action>
+    private fun setupMenu() {
+        menu = MenuPopup()
+        menu.setOnClickListener {
+            when (it.id) {
+                R.id.tvMenuItemEdit -> {
+                    actionLiveData.value = MenuSlice.Action.EditClicked
+                    actionLiveData.value = MenuSlice.Action.Idle
+                }
+                R.id.tvMenuItemLogout -> {
+                    actionLiveData.value = MenuSlice.Action.LogoutClicked
+                    actionLiveData.value = MenuSlice.Action.Idle
+                }
+            }
+        }
+        menu.setupPopup(context)
+    }
 
-    fun showMenu(showPoint: Point)
+    override fun show(showPoint: Point) {
+        menu.showPopup(showPoint)
+    }
+
+    override fun dismiss() = menu.dismiss()
+
+    override fun getAction(): LiveData<MenuSlice.Action> = actionLiveData
 }

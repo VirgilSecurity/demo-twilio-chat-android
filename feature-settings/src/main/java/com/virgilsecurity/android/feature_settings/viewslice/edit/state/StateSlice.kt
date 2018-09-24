@@ -31,15 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.footer
+package com.virgilsecurity.android.feature_settings.viewslice.edit.state
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.view.View
-import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_settings.*
+import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -53,39 +47,11 @@ import kotlinx.android.synthetic.main.controller_settings.*
  */
 
 /**
- * FooterSliceSettings
+ * StateSlice
  */
-class FooterSliceSettings(
-        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
-) : BaseViewSlice(), FooterSlice, View.OnClickListener {
+interface StateSlice : ViewSlice {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        setupViews()
-    }
+    fun showLoading()
 
-    private fun setupViews() {
-        tvAbout.setOnClickListener(this)
-        tvAskQuestion.setOnClickListener(this)
-        tvVersionHistory.setOnClickListener(this)
-    }
-
-    override fun onClick(view: View) {
-        when (view) {
-            tvAbout -> {
-                mutableLiveData.value = FooterSlice.Action.AboutClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
-            }
-            tvAskQuestion -> {
-                mutableLiveData.value = FooterSlice.Action.AskQuestionClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
-            }
-            tvVersionHistory -> {
-                mutableLiveData.value = FooterSlice.Action.VersionClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
-            }
-        }
-    }
-
-    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
+    fun showError()
 }

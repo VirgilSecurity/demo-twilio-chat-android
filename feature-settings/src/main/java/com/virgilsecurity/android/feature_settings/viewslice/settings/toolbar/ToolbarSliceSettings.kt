@@ -31,10 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewmodel
+package com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import android.graphics.Point
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.common.view.Toolbar
+import com.virgilsecurity.android.feature_settings.R
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -42,27 +50,48 @@ import android.arch.lifecycle.ViewModel
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/25/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * SettingsVM
+ * ToolbarSliceSettings
  */
-abstract class SettingsVM : ViewModel() {
+class ToolbarSliceSettings(
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
 
-    sealed class State {
-        object DeleteAccountSuccess : State()
-        object LogoutSuccessful : State()
-        object ShowLoading : State()
-        object ShowError : State()
-        object Idle : State()
+    private lateinit var toolbar: Toolbar
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        this.toolbar = toolbarSettings as Toolbar
+        setupToolbar()
     }
 
-    abstract fun getState() : LiveData<State>
+    private fun setupToolbar() {
+        toolbar.background = context.getDrawable(R.color.colorPrimaryNight)
 
-    abstract fun logout()
+        toolbar.showBackButton()
+        toolbar.showMenuButton()
 
-    abstract fun deleteAccount()
+        toolbar.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivBack -> {
+                    actionLiveData.value = ToolbarSlice.Action.BackClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+                R.id.ivMenu -> {
+                    actionLiveData.value = ToolbarSlice.Action.MenuClicked(
+                        Point(it.x.toInt() + UiUtils.pixelsToDp(it.width, context),
+                              it.y.toInt())
+                    )
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+            }
+        }
+    }
+
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
 }

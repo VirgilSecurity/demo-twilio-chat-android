@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.header
+package com.virgilsecurity.android.feature_settings.viewslice.edit.footer
 
 import android.arch.lifecycle.LiveData
 import com.virgilsecurity.android.base.viewslice.ViewSlice
@@ -48,21 +48,14 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
  */
 
 /**
- * HeaderSlice
+ * FooterSlice
  */
-interface HeaderSlice : ViewSlice {
+interface FooterSlice : ViewSlice {
 
     sealed class Action {
-        object ChangePicClicked : Action()
+        object DeleteAccountClicked : Action()
         object Idle : Action()
     }
 
-    fun getAction(): LiveData<Action>
-
-    fun setName(name: String)
-
-    /**
-     * If picture path is null - then user's name initials will be shown, taken from the identity.
-     */
-    fun setUserPic(identity: String, picturePath: String?)
+    fun getAction(): LiveData<FooterSlice.Action>
 }

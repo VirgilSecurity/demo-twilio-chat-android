@@ -51,4 +51,5 @@ dependencies {
     reactiveness()
     architectureComponents()
     vectormaster()
+    glide()
 }

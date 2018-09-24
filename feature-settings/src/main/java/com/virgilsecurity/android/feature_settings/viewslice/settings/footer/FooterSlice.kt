@@ -31,16 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.menu
+package com.virgilsecurity.android.feature_settings.viewslice.settings.footer
 
-import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.graphics.Point
-import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.view.MenuPopup
-import com.virgilsecurity.android.feature_settings.R
+import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -48,49 +42,22 @@ import com.virgilsecurity.android.feature_settings.R
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/24/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * MenuSliceSettings
+ * FooterSlice
  */
-class MenuSliceSettings(
-        private val actionLiveData: MutableLiveData<MenuSlice.Action>
-) : BaseViewSlice(), MenuSlice {
+interface FooterSlice : ViewSlice {
 
-    private lateinit var menu: MenuPopup
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        setupMenu()
+    sealed class Action {
+        object AboutClicked : Action()
+        object AskQuestionClicked : Action()
+        object VersionClicked : Action()
+        object Idle : Action()
     }
 
-    private fun setupMenu() {
-        menu = MenuPopup()
-        menu.setOnClickListener {
-            when (it.id) {
-                R.id.tvMenuItemEdit -> {
-                    actionLiveData.value = MenuSlice.Action.EditClicked
-                    actionLiveData.value = MenuSlice.Action.Idle
-                }
-                R.id.tvMenuItemLogout -> {
-                    actionLiveData.value = MenuSlice.Action.LogoutClicked
-                    actionLiveData.value = MenuSlice.Action.Idle
-                }
-                R.id.tvMenuDeleteAccount -> {
-                    actionLiveData.value = MenuSlice.Action.DeleteAccountClicked
-                    actionLiveData.value = MenuSlice.Action.Idle
-                }
-            }
-        }
-        menu.setupPopup(context)
-    }
-
-    override fun showMenu(showPoint: Point) {
-        menu.showPopup(showPoint)
-    }
-
-    override fun getAction(): LiveData<MenuSlice.Action> = actionLiveData
+    fun getAction(): LiveData<FooterSlice.Action>
 }

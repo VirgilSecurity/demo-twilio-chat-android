@@ -31,8 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.state
+package com.virgilsecurity.android.feature_settings.viewslice.edit.header
 
+import android.arch.lifecycle.LiveData
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
@@ -41,17 +42,27 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/25/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSlice
+ * HeaderSlice
  */
-interface StateSlice : ViewSlice {
+interface HeaderSlice : ViewSlice {
 
-    fun showLoading()
+    sealed class Action {
+        object ChangePicClicked : Action()
+        object Idle : Action()
+    }
 
-    fun showError()
+    fun getAction(): LiveData<Action>
+
+    fun setName(name: String)
+
+    /**
+     * If picture path is null - then user's name initials will be shown, taken from the identity.
+     */
+    fun setUserPic(identity: String, picturePath: String?)
 }

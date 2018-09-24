@@ -47,7 +47,7 @@
         android:background="@drawable/message_background_you"
         android:maxWidth="238dp"
         android:padding="10dp"
-        android:textColor="@color/ill_toad"
+        android:textColor="@color/illToad"
         android:textSize="@dimen/increased_text"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?" />

@@ -67,6 +67,16 @@
             tools:src="@color/colorAccent" />
 
         <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/circle_gray_transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/ivUserPicEdit"
+            app:layout_constraintEnd_toEndOf="@id/ivUserPicEdit"
+            app:layout_constraintStart_toStartOf="@id/ivUserPicEdit"
+            app:layout_constraintTop_toTopOf="@id/ivUserPicEdit"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
             android:id="@+id/ivChangeUserPic"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -80,7 +90,7 @@
             app:layout_constraintTop_toTopOf="@id/ivUserPicEdit" />
 
         <TextView
-            android:id="@+id/tvUsernameEdit"
+            android:id="@+id/tvUsernameEditSettingsHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin"
@@ -95,4 +105,73 @@
             tools:text="User Name" />
     </android.support.constraint.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/tvUsernameEditSettingsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="49dp"
+        android:text="@string/username"
+        android:textColor="@color/virgilGrayLight"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llHeader" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/edittext_not_focused"
+        android:hint="@string/username"
+        android:imeOptions="actionDone"
+        android:enabled="false"
+        android:inputType="textPersonName"
+        android:paddingBottom="12dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:textColor="@color/snow"
+        android:textColorHint="@color/virgilGrayMiddle"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvUsernameEditSettingsInfo"
+        tools:text="GoodGuy" />
+
+    <TextView
+        android:id="@+id/tvDeleteAccount"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/default_margin"
+        android:paddingStart="@dimen/default_margin"
+        android:text="@string/delete_account"
+        android:textColor="@color/virgilShine"
+        android:textSize="@dimen/increased_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/flLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/virgilGrayTrans"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <com.sdsmdg.harjot.vectormaster.VectorMasterView
+            android:id="@+id/ivLoading"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            app:vector_src="@drawable/ic_virgil_logo_shield" />
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

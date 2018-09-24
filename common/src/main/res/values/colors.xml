@@ -53,6 +53,7 @@
     <color name="virgilLight">#ae4244</color>
     <color name="virgilLightTrans">#97ae4244</color>
     <color name="virgilGray">#1effffff</color>
+    <color name="virgilGrayDeepTrans">#94000000</color>
     <color name="virgilGrayTrans">#0fffffff</color>
     <color name="virgilGrayMiddle">#42ffffff</color>
     <color name="virgilGrayLight">#64ffffff</color>
@@ -63,6 +64,7 @@
     <color name="waterDark">#009DFF</color>
     <color name="seaWave">#21999E</color>
     <color name="seaWaveDark">#135F5F</color>
-    <color name="ill_toad">#E4E4E4</color>
+    <color name="illToad">#E4E4E4</color>
+    <color name="virgilShine">#DD3918</color>
 
 </resources>

@@ -31,12 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewmodel
+package com.virgilsecurity.android.feature_settings.viewmodel.edit
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDo
-import com.virgilsecurity.android.feature_settings.domain.LogoutDo
+import android.arch.lifecycle.ViewModel
 
 /**
  * . _  _
@@ -50,59 +48,18 @@ import com.virgilsecurity.android.feature_settings.domain.LogoutDo
  */
 
 /**
- * SettingsVMDefault
+ * SettingsVM
  */
-class SettingsVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val logoutDo: LogoutDo,
-        private val deleteAccountDo: DeleteAccountDo
-) : SettingsVM() {
+abstract class SettingsEditVM : ViewModel() {
 
-    init {
-        state.addSource(logoutDo.getLiveData(), ::onLogoutResult)
-        state.addSource(deleteAccountDo.getLiveData(), ::onDeleteAccountResult)
+    sealed class State {
+        object DeleteAccountSuccess : State()
+        object ShowLoading : State()
+        object ShowError : State()
+        object Idle : State()
     }
 
-    override fun onCleared() {
-        logoutDo.cleanUp()
-        deleteAccountDo.cleanUp()
-    }
+    abstract fun getState() : LiveData<State>
 
-    override fun getState(): LiveData<State> = state
-
-    override fun logout() {
-        state.value = SettingsVM.State.ShowLoading
-        logoutDo.execute()
-    }
-
-    override fun deleteAccount() {
-        state.value = SettingsVM.State.ShowLoading
-        deleteAccountDo.execute()
-    }
-
-    private fun onLogoutResult(result: LogoutDo.Result?) {
-        when (result) {
-            is LogoutDo.Result.OnSuccess -> {
-                state.value = State.LogoutSuccessful
-                state.value = State.Idle
-            }
-            is LogoutDo.Result.OnError -> {
-                state.value = State.ShowError
-                state.value = State.Idle
-            }
-        }
-    }
-
-    private fun onDeleteAccountResult(result: DeleteAccountDo.Result?) {
-        when (result) {
-            is DeleteAccountDo.Result.OnSuccess -> {
-                state.value = State.DeleteAccountSuccess
-                state.value = State.Idle
-            }
-            is DeleteAccountDo.Result.OnError -> {
-                state.value = State.ShowError
-                state.value = State.Idle
-            }
-        }
-    }
+    abstract fun deleteAccount()
 }

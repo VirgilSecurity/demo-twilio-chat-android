@@ -31,19 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.header
+package com.virgilsecurity.android.feature_settings.viewslice.edit.footer
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
-import android.net.Uri
 import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.util.ImageStorage
-import com.virgilsecurity.android.common.util.UserUtils
-import com.virgilsecurity.android.feature_settings.R
-import kotlinx.android.synthetic.main.controller_settings.*
+import kotlinx.android.synthetic.main.controller_settings_edit.*
 
 /**
  * . _  _
@@ -57,12 +53,11 @@ import kotlinx.android.synthetic.main.controller_settings.*
  */
 
 /**
- * HeaderSliceSettings
+ * FooterSliceSettings
  */
-class HeaderSliceSettings(
-        private val mutableLiveData: MutableLiveData<HeaderSlice.Action>,
-        private val imageStorage: ImageStorage
-) : BaseViewSlice(), HeaderSlice {
+class FooterSliceSettingsEdit(
+        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
+) : BaseViewSlice(), FooterSlice, View.OnClickListener {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -70,27 +65,17 @@ class HeaderSliceSettings(
     }
 
     private fun setupViews() {
-        ivChangeUserPic.setOnClickListener {
-            mutableLiveData.value = HeaderSlice.Action.ChangePicClicked
-            mutableLiveData.value = HeaderSlice.Action.Idle
+        tvDeleteAccount.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            tvDeleteAccount -> {
+                mutableLiveData.value = FooterSlice.Action.DeleteAccountClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
         }
     }
 
-    override fun setName(name: String) {
-        tvUsernameSettings.text = name
-        tvUsernameSettingsInfo.text = name
-    }
-
-    override fun setUserPic(identity: String, picturePath: String?) {
-        if (picturePath != null) {
-            ivUserPicSettings.setImageBitmap(imageStorage.get(Uri.parse(picturePath)))
-        } else {
-            tvInitials.text = UserUtils.firstInitials(identity)
-            tvInitials.visibility = View.VISIBLE
-            ivUserPicSettings.background = context.getDrawable(R.drawable.dark_red_red_gradient_oval)
-        }
-
-    }
-
-    override fun getAction(): LiveData<HeaderSlice.Action> = mutableLiveData
+    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
 }

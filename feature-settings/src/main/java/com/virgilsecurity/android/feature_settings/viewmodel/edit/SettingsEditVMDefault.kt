@@ -31,11 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.toolbar
+package com.virgilsecurity.android.feature_settings.viewmodel.edit
 
 import android.arch.lifecycle.LiveData
-import android.graphics.Point
-import com.virgilsecurity.android.base.viewslice.ViewSlice
+import android.arch.lifecycle.MediatorLiveData
+import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDo
 
 /**
  * . _  _
@@ -43,21 +43,44 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ToolbarSlice
+ * SettingsVMDefault
  */
-interface ToolbarSlice : ViewSlice {
+class SettingsEditVMDefault(
+        private val state: MediatorLiveData<State>,
+        private val deleteAccountDo: DeleteAccountDo
+) : SettingsEditVM() {
 
-    sealed class Action {
-        object BackClicked : Action()
-        data class MenuClicked(val showPoint: Point) : Action()
-        object Idle : Action()
+    init {
+        state.addSource(deleteAccountDo.getLiveData(), ::onDeleteAccountResult)
     }
 
-    fun getAction(): LiveData<Action>
+    override fun onCleared() {
+        deleteAccountDo.cleanUp()
+    }
+
+    override fun getState(): LiveData<State> = state
+
+    override fun deleteAccount() {
+        state.value = State.ShowLoading
+        deleteAccountDo.execute()
+    }
+
+    private fun onDeleteAccountResult(result: DeleteAccountDo.Result?) {
+        when (result) {
+            is DeleteAccountDo.Result.OnSuccess -> {
+                state.value = State.DeleteAccountSuccess
+                state.value = State.Idle
+            }
+            is DeleteAccountDo.Result.OnError -> {
+                state.value = State.ShowError
+                state.value = State.Idle
+            }
+        }
+    }
 }

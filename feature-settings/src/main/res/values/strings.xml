@@ -42,5 +42,8 @@
     <string name="version_history">Version history</string>
     <string name="change_profile_picture">Change profile picture</string>
     <string name="logout_error">Logout not completed</string>
+    <string name="delete_account_question">Delete account?</string>
+    <string name="delete_account_beware">It can not be recovered.</string>
+    <string name="delete">Delete</string>
 
 </resources>

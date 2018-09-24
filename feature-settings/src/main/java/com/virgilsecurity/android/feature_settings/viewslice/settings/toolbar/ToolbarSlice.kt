@@ -31,17 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger
+package com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar
 
-import android.content.Intent
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.common.view.ScreenChat
-import org.koin.android.ext.android.inject
-
+import android.arch.lifecycle.LiveData
+import android.graphics.Point
+import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -49,53 +43,21 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/17/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class SplashActivity : AppCompatActivity() {
+/**
+ * ToolbarSlice
+ */
+interface ToolbarSlice : ViewSlice {
 
-    private val userProperties: UserProperties by inject()
-    private val screenRouter: ScreenRouter by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.bottom_sheet_attachments)
-
-//        initBottomSheet()
-
-        if (isAuthenticated())
-            startChannelsActivity()
-        else
-            startLoginActivity()
+    sealed class Action {
+        object BackClicked : Action()
+        data class MenuClicked(val showPoint: Point) : Action()
+        object Idle : Action()
     }
 
-    private fun isAuthenticated(): Boolean {
-        return userProperties.currentUser != null
-    }
-
-    override fun onBackPressed() {
-
-    }
-
-    private fun startChannelsActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
-                                     User.EXTRA_USER, userProperties.currentUser!!)
-                .run {
-                    startActivity(this)
-                    finish()
-                }
-    }
-
-    private fun startLoginActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.Login)
-                .apply {
-                    this?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                .run {
-                    startActivity(this)
-                    finish()
-                }
-    }
+    fun getAction(): LiveData<Action>
 }

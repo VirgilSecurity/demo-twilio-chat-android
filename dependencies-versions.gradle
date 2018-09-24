@@ -35,7 +35,7 @@ ext.versions = [
 
         // BUILD
 
-        'gradle'                : '3.3.0-alpha10',
+        'gradle'                : '3.1.4',
         'kotlinVersion'         : '1.2.70',
         'targetSdk'             : 28,
         'buildTools'            : '28.0.2',
@@ -44,7 +44,7 @@ ext.versions = [
         // MAIN
 
         'suport'                : '27.1.1',
-        'constraintLayout'      : '1.1.0',
+        'constraintLayout'      : '1.1.2',
         'koin'                  : '0.9.3',
         'rxKotlin'              : '2.2.0',
         'rxAndroid'             : '2.0.2',

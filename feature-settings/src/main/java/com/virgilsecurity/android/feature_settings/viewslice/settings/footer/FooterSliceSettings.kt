@@ -31,17 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger
+package com.virgilsecurity.android.feature_settings.viewslice.settings.footer
 
-import android.content.Intent
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.common.view.ScreenChat
-import org.koin.android.ext.android.inject
-
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import android.view.View
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _
@@ -49,53 +47,45 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    7/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class SplashActivity : AppCompatActivity() {
+/**
+ * FooterSliceSettings
+ */
+class FooterSliceSettings(
+        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
+) : BaseViewSlice(), FooterSlice, View.OnClickListener {
 
-    private val userProperties: UserProperties by inject()
-    private val screenRouter: ScreenRouter by inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.bottom_sheet_attachments)
-
-//        initBottomSheet()
-
-        if (isAuthenticated())
-            startChannelsActivity()
-        else
-            startLoginActivity()
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupViews()
     }
 
-    private fun isAuthenticated(): Boolean {
-        return userProperties.currentUser != null
+    private fun setupViews() {
+        tvAbout.setOnClickListener(this)
+        tvAskQuestion.setOnClickListener(this)
+        tvVersionHistory.setOnClickListener(this)
     }
 
-    override fun onBackPressed() {
-
+    override fun onClick(view: View) {
+        when (view) {
+            tvAbout -> {
+                mutableLiveData.value = FooterSlice.Action.AboutClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
+            tvAskQuestion -> {
+                mutableLiveData.value = FooterSlice.Action.AskQuestionClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
+            tvVersionHistory -> {
+                mutableLiveData.value = FooterSlice.Action.VersionClicked
+                mutableLiveData.value = FooterSlice.Action.Idle
+            }
+        }
     }
 
-    private fun startChannelsActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
-                                     User.EXTRA_USER, userProperties.currentUser!!)
-                .run {
-                    startActivity(this)
-                    finish()
-                }
-    }
-
-    private fun startLoginActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.Login)
-                .apply {
-                    this?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                .run {
-                    startActivity(this)
-                    finish()
-                }
-    }
+    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
 }

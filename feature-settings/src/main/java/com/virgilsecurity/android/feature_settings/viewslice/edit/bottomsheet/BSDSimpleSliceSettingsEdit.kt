@@ -31,17 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger
+package com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet
 
-import android.content.Intent
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.common.view.ScreenChat
-import org.koin.android.ext.android.inject
-
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_settings.R
+import com.virgilsecurity.android.feature_settings.view.BottomSheetSimple
 
 /**
  * . _  _
@@ -49,53 +47,49 @@ import org.koin.android.ext.android.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/29/18
+ * ....|  _/    9/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-class SplashActivity : AppCompatActivity() {
+/**
+ * BSDSimpleSliceSettingsEdit
+ */
+class BSDSimpleSliceSettingsEdit(
+        private val mutableLiveData: MutableLiveData<BSDSimpleSlice.Action>
+) : BaseViewSlice(), BSDSimpleSlice {
 
-    private val userProperties: UserProperties by inject()
-    private val screenRouter: ScreenRouter by inject()
+    private lateinit var bottomSheetSimple: BottomSheetSimple
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.bottom_sheet_attachments)
-
-//        initBottomSheet()
-
-        if (isAuthenticated())
-            startChannelsActivity()
-        else
-            startLoginActivity()
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupBottomSheet()
     }
 
-    private fun isAuthenticated(): Boolean {
-        return userProperties.currentUser != null
-    }
-
-    override fun onBackPressed() {
-
-    }
-
-    private fun startChannelsActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
-                                     User.EXTRA_USER, userProperties.currentUser!!)
-                .run {
-                    startActivity(this)
-                    finish()
+    private fun setupBottomSheet() {
+        bottomSheetSimple = BottomSheetSimple(context)
+        bottomSheetSimple.setClickListener {
+            when (it.id) {
+                R.id.btnBottomSheetSubmit -> {
+                    mutableLiveData.value = BSDSimpleSlice.Action.YesClicked
+                    mutableLiveData.value = BSDSimpleSlice.Action.Idle
                 }
+                R.id.btnBottomSheetCancel -> {
+                    mutableLiveData.value = BSDSimpleSlice.Action.NoClicked
+                    mutableLiveData.value = BSDSimpleSlice.Action.Idle
+                }
+            }
+        }
+        bottomSheetSimple.setup()
     }
 
-    private fun startLoginActivity() {
-        screenRouter.getScreenIntent(this, ScreenChat.Login)
-                .apply {
-                    this?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                .run {
-                    startActivity(this)
-                    finish()
-                }
-    }
+    override fun getAction(): LiveData<BSDSimpleSlice.Action> = mutableLiveData
+
+    override fun setTitle(title: String) = bottomSheetSimple.setBottomTitle(title)
+
+    override fun setBody(body: String) = bottomSheetSimple.setBottomBody(body)
+
+    override fun show() = bottomSheetSimple.show()
+
+    override fun dismiss() = bottomSheetSimple.dismiss()
 }

@@ -73,7 +73,7 @@
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginTop="4dp"
-            android:background="@drawable/username_bottomline"
+            android:background="@drawable/edittext_bottomline"
             android:ems="10"
             android:hint="@string/username"
             android:imeOptions="actionDone"

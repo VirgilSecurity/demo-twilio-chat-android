@@ -36,27 +36,41 @@ package com.virgilsecurity.android.feature_settings.di
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS
+import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS_EDIT
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_BSD
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_FOOTER
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_HEADER
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_TOOLBAR
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_FOOTER
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_HEADER
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
-import com.virgilsecurity.android.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS_FOOTER
+import com.virgilsecurity.android.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS
+import com.virgilsecurity.android.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDo
 import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDoDefault
 import com.virgilsecurity.android.feature_settings.domain.LogoutDo
 import com.virgilsecurity.android.feature_settings.domain.LogoutDoDefault
-import com.virgilsecurity.android.feature_settings.viewmodel.SettingsVM
-import com.virgilsecurity.android.feature_settings.viewmodel.SettingsVMDefault
-import com.virgilsecurity.android.feature_settings.viewslice.footer.FooterSlice
-import com.virgilsecurity.android.feature_settings.viewslice.footer.FooterSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.header.HeaderSlice
-import com.virgilsecurity.android.feature_settings.viewslice.header.HeaderSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.menu.MenuSlice
-import com.virgilsecurity.android.feature_settings.viewslice.menu.MenuSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.state.StateSlice
-import com.virgilsecurity.android.feature_settings.viewslice.state.StateSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.toolbar.ToolbarSlice
-import com.virgilsecurity.android.feature_settings.viewslice.toolbar.ToolbarSliceSettings
+import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
+import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVMDefault
+import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
+import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVMDefault
+import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
+import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSliceSettings
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -77,8 +91,15 @@ import org.koin.dsl.module.applicationContext
 
 val settingsModule: Module = applicationContext {
     bean { StateSliceSettings() as StateSlice }
+    bean {
+        StateSliceSettingsEdit() as
+                com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSlice
+    }
 
     context(CONTEXT_SETTINGS) {
+
+        // Settings
+
         bean(LIVE_DATA_SETTINGS_TOOLBAR) { MutableLiveData<ToolbarSlice.Action>() }
         bean { ToolbarSliceSettings(get(LIVE_DATA_SETTINGS_TOOLBAR)) as ToolbarSlice }
 
@@ -92,9 +113,44 @@ val settingsModule: Module = applicationContext {
         bean { FooterSliceSettings(get(LIVE_DATA_SETTINGS_FOOTER)) as FooterSlice }
 
         bean { LogoutDoDefault(get(), get()) as LogoutDo }
-        bean(MEDIATOR_DATA_SETTINGS_FOOTER) { MediatorLiveData<SettingsVM.State>() }
+        bean(MEDIATOR_DATA_SETTINGS) { MediatorLiveData<SettingsVM.State>() }
+        bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS), get()) as SettingsVM }
+    }
+
+    context(CONTEXT_SETTINGS_EDIT) {
+
+        // Settings edit
+
+        bean(LIVE_DATA_SETTINGS_EDIT_TOOLBAR) {
+            MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice.Action>()
+        }
+        bean {
+            ToolbarSliceSettingsEdit(get(LIVE_DATA_SETTINGS_EDIT_TOOLBAR)) as
+                    com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice
+        }
+
+        bean(LIVE_DATA_SETTINGS_EDIT_HEADER) {
+            MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice.Action>()
+        }
+        bean {
+            HeaderSliceSettingsEdit(get(LIVE_DATA_SETTINGS_EDIT_HEADER), get()) as
+                    com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice
+        }
+
+        bean(LIVE_DATA_SETTINGS_EDIT_FOOTER) {
+            MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice.Action>()
+        }
+        bean {
+            FooterSliceSettingsEdit(get(LIVE_DATA_SETTINGS_EDIT_FOOTER)) as
+                    com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice
+        }
+
+        bean(LIVE_DATA_SETTINGS_EDIT_BSD) { MutableLiveData<BSDSimpleSlice.Action>() }
+        bean { BSDSimpleSliceSettingsEdit(get(LIVE_DATA_SETTINGS_EDIT_BSD)) as BSDSimpleSlice }
+
+        bean(MEDIATOR_DATA_SETTINGS_EDIT) { MediatorLiveData<SettingsEditVM.State>() }
         bean { DeleteAccountDoDefault(get(), get(), get(), get()) as DeleteAccountDo }
-        bean { SettingsVMDefault(get(MEDIATOR_DATA_SETTINGS_FOOTER), get(), get()) as SettingsVM }
+        bean { SettingsEditVMDefault(get(MEDIATOR_DATA_SETTINGS_EDIT), get()) as SettingsEditVM }
     }
 }
 
@@ -103,8 +159,14 @@ object Const {
     const val LIVE_DATA_SETTINGS_MENU = "LIVE_DATA_SETTINGS_MENU"
     const val LIVE_DATA_SETTINGS_HEADER = "LIVE_DATA_SETTINGS_HEADER"
     const val LIVE_DATA_SETTINGS_FOOTER = "LIVE_DATA_SETTINGS_FOOTER"
+    const val MEDIATOR_DATA_SETTINGS = "MEDIATOR_DATA_SETTINGS"
 
-    const val MEDIATOR_DATA_SETTINGS_FOOTER = "MEDIATOR_DATA_SETTINGS_FOOTER"
+    const val LIVE_DATA_SETTINGS_EDIT_TOOLBAR = "LIVE_DATA_SETTINGS_EDIT_TOOLBAR"
+    const val LIVE_DATA_SETTINGS_EDIT_HEADER = "LIVE_DATA_SETTINGS_EDIT_HEADER"
+    const val LIVE_DATA_SETTINGS_EDIT_FOOTER = "LIVE_DATA_SETTINGS_EDIT_FOOTER"
+    const val LIVE_DATA_SETTINGS_EDIT_BSD = "LIVE_DATA_SETTINGS_EDIT_BSD"
+    const val MEDIATOR_DATA_SETTINGS_EDIT = "MEDIATOR_DATA_SETTINGS_EDIT"
 
     const val CONTEXT_SETTINGS = "CONTEXT_SETTINGS"
+    const val CONTEXT_SETTINGS_EDIT = "CONTEXT_SETTINGS_EDIT"
 }

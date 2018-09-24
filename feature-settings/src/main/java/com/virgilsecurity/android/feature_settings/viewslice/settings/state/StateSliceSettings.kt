@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.state
+package com.virgilsecurity.android.feature_settings.viewslice.settings.state
 
 import android.animation.ValueAnimator
 import android.view.View
@@ -71,7 +71,6 @@ class StateSliceSettings : BaseViewSlice(), StateSlice {
            ERROR -> {
                flLoading.visibility = View.INVISIBLE
                loadingFader.end()
-               UiUtils.toast(context, resources.getString(R.string.logout_error))
            }
         }
     }

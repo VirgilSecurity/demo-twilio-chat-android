@@ -31,9 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.footer
+package com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar
 
 import android.arch.lifecycle.LiveData
+import android.graphics.Point
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
@@ -48,16 +49,14 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
  */
 
 /**
- * FooterSlice
+ * ToolbarSlice
  */
-interface FooterSlice : ViewSlice {
+interface ToolbarSlice : ViewSlice {
 
     sealed class Action {
-        object AboutClicked : Action()
-        object AskQuestionClicked : Action()
-        object VersionClicked : Action()
+        object BackClicked : Action()
         object Idle : Action()
     }
 
-    fun getAction(): LiveData<FooterSlice.Action>
+    fun getAction(): LiveData<Action>
 }

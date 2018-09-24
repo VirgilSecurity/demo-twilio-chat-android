@@ -138,10 +138,10 @@ object UiUtils {
     fun letterBasedDrawable(context: Context, drawablesArrayId: Int, letter: String): Drawable =
             context.resources.obtainTypedArray(drawablesArrayId).let { backgrounds ->
                 val result = when (letter) {
-                    in "a".."h" -> backgrounds.getDrawable(0)
-                    in "i".."q" -> backgrounds.getDrawable(1)
-                    in "r".."z" -> backgrounds.getDrawable(2)
-                    else -> backgrounds.getDrawable(0)
+                    in "a".."h" -> backgrounds.getDrawable(0)!!
+                    in "i".."q" -> backgrounds.getDrawable(1)!!
+                    in "r".."z" -> backgrounds.getDrawable(2)!!
+                    else -> backgrounds.getDrawable(0)!!
                 }
 
                 backgrounds.recycle()

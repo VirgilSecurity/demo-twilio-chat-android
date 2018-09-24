@@ -60,7 +60,6 @@
             android:id="@+id/ivUserPicSettings"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/dark_red_red_gradient_oval"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

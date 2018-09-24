@@ -45,7 +45,7 @@
         android:background="@drawable/message_background_you"
         android:maxWidth="160dp"
         android:padding="10dp"
-        android:textColor="@color/ill_toad"
+        android:textColor="@color/illToad"
         android:textSize="@dimen/increased_text"
         android:text="@string/attachments_are_in_development"
         app:layout_constraintStart_toStartOf="parent" />
