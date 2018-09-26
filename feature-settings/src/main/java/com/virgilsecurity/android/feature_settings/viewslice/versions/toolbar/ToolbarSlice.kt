@@ -31,44 +31,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext.versions = [
+package com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar
 
-        // BUILD
+import android.arch.lifecycle.LiveData
+import android.graphics.Point
+import com.virgilsecurity.android.base.viewslice.ViewSlice
 
-        'gradle'                : '3.1.4',
-        'kotlinVersion'         : '1.2.70',
-        'targetSdk'             : 28,
-        'buildTools'            : '28.0.2',
-        'minSdk'                : 21,
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/17/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-        // MAIN
+/**
+ * ToolbarSlice
+ */
+interface ToolbarSlice : ViewSlice {
 
-        'suport'                : '27.1.1',
-        'constraintLayout'      : '1.1.2',
-        'koin'                  : '1.0.1',
-        'rxKotlin'              : '2.2.0',
-        'rxAndroid'             : '2.0.2',
-        'architectureComponents': '1.1.1',
-        'dataBindingVersion'    : '3.2.0-alpha16',
-        'glide'                 : '4.7.1',
-        'twilioSdk'             : '3.1.1',
-        'twilioAccessManager'   : '0.1.0',
-        'fuel'                  : '1.13.0',
-        'gson'                  : '2.7',
-        'virgil'                : '5.0.4',
-        'virgilCrypto'          : '5.0.4@aar',
-        'room'                  : '1.1.0',
-        'viewPagerIndicator'    : '1.1.0',
-        'conductorarchLifecycle': '0.1.1',
-        'conductor'             : '2.1.4',
-        'circleImageView'       : '2.2.0',
-        'vectormaster'          : '1.1.3',
-        'googleServices'        : '4.0.1',
-        'crashlytics'           : '1.25.4',
-        'crashlyticsSdk'        : '2.9.5',
-        'firebaseCore'          : '16.0.3',
+    sealed class Action {
+        object BackClicked : Action()
+        object Idle : Action()
+    }
 
-        // TESTING
-
-        'jUnit'                 : '4.12',
-]
+    fun getAction(): LiveData<Action>
+}

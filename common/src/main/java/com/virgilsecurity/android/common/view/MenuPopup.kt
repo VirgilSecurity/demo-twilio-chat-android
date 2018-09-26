@@ -73,7 +73,7 @@ class MenuPopup : PopupWindow(), LayoutContainer {
         containerView = layout
 
         contentView = layout
-        width = UiUtils.dpToPixels(LAYOUT_PARAMS_WIDTH, context)
+        width = UiUtils.dpToPixels(LAYOUT_PARAMS_WIDTH, context) // TODO rework menu offset for different screens
         height = LAYOUT_PARAMS_HEIGHT
         layout.setPadding(0,
                           UiUtils.dpToPixels(PADDING_TOP, context),

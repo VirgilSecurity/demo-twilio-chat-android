@@ -35,8 +35,11 @@ package com.virgilsecurity.android.feature_settings.di
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_ABOUT
 import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS
 import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS_EDIT
+import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_VERSIONS
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_ABOUT_TOOLBAR
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_BSD
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_FOOTER
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_HEADER
@@ -45,6 +48,7 @@ import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_F
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_HEADER
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
+import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_VERSION_HISTORY_TOOLBAR
 import com.virgilsecurity.android.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS
 import com.virgilsecurity.android.feature_settings.di.Const.MEDIATOR_DATA_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDo
@@ -55,6 +59,7 @@ import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVMDefault
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVMDefault
+import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSliceSettingsAbout
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSliceSettingsEdit
 import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSliceSettingsEdit
@@ -71,6 +76,7 @@ import com.virgilsecurity.android.feature_settings.viewslice.settings.state.Stat
 import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSliceSettings
 import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSliceSettingsVersions
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
@@ -152,6 +158,32 @@ val settingsModule: Module = applicationContext {
         bean { DeleteAccountDoDefault(get(), get(), get(), get()) as DeleteAccountDo }
         bean { SettingsEditVMDefault(get(MEDIATOR_DATA_SETTINGS_EDIT), get()) as SettingsEditVM }
     }
+
+    context(CONTEXT_ABOUT) {
+
+        // About screen
+
+        bean(LIVE_DATA_ABOUT_TOOLBAR) {
+            MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice.Action>()
+        }
+        bean {
+            ToolbarSliceSettingsAbout(get(LIVE_DATA_ABOUT_TOOLBAR)) as
+                    com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
+        }
+    }
+
+    context(CONTEXT_VERSIONS) {
+
+        // Version history screen
+
+        bean(LIVE_DATA_VERSION_HISTORY_TOOLBAR) {
+            MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice.Action>()
+        }
+        bean {
+            ToolbarSliceSettingsVersions(get(LIVE_DATA_VERSION_HISTORY_TOOLBAR)) as
+                    com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice
+        }
+    }
 }
 
 object Const {
@@ -167,6 +199,11 @@ object Const {
     const val LIVE_DATA_SETTINGS_EDIT_BSD = "LIVE_DATA_SETTINGS_EDIT_BSD"
     const val MEDIATOR_DATA_SETTINGS_EDIT = "MEDIATOR_DATA_SETTINGS_EDIT"
 
+    const val LIVE_DATA_ABOUT_TOOLBAR = "LIVE_DATA_ABOUT_TOOLBAR"
+    const val LIVE_DATA_VERSION_HISTORY_TOOLBAR = "LIVE_DATA_VERSION_HISTORY_TOOLBAR"
+
     const val CONTEXT_SETTINGS = "CONTEXT_SETTINGS"
     const val CONTEXT_SETTINGS_EDIT = "CONTEXT_SETTINGS_EDIT"
+    const val CONTEXT_ABOUT = "CONTEXT_ABOUT"
+    const val CONTEXT_VERSIONS = "CONTEXT_VERSIONS"
 }

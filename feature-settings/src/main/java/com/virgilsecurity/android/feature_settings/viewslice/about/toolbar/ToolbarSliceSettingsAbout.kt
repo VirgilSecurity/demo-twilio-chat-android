@@ -31,44 +31,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext.versions = [
+package com.virgilsecurity.android.feature_settings.viewslice.about.toolbar
 
-        // BUILD
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.OnLifecycleEvent
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.common.view.Toolbar
+import com.virgilsecurity.android.feature_settings.R
+import kotlinx.android.synthetic.main.controller_about.*
 
-        'gradle'                : '3.1.4',
-        'kotlinVersion'         : '1.2.70',
-        'targetSdk'             : 28,
-        'buildTools'            : '28.0.2',
-        'minSdk'                : 21,
+/**
+ * . _  _
+ * .| || | _
+ * -| || || |   Created by:
+ * .| || || |-  Danylo Oliinyk
+ * ..\_  || |   on
+ * ....|  _/    7/17/18
+ * ...-| | \    at Virgil Security
+ * ....|_|-
+ */
 
-        // MAIN
+/**
+ * ToolbarSliceSettings
+ */
+class ToolbarSliceSettingsAbout(
+        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
+) : BaseViewSlice(), ToolbarSlice {
 
-        'suport'                : '27.1.1',
-        'constraintLayout'      : '1.1.2',
-        'koin'                  : '1.0.1',
-        'rxKotlin'              : '2.2.0',
-        'rxAndroid'             : '2.0.2',
-        'architectureComponents': '1.1.1',
-        'dataBindingVersion'    : '3.2.0-alpha16',
-        'glide'                 : '4.7.1',
-        'twilioSdk'             : '3.1.1',
-        'twilioAccessManager'   : '0.1.0',
-        'fuel'                  : '1.13.0',
-        'gson'                  : '2.7',
-        'virgil'                : '5.0.4',
-        'virgilCrypto'          : '5.0.4@aar',
-        'room'                  : '1.1.0',
-        'viewPagerIndicator'    : '1.1.0',
-        'conductorarchLifecycle': '0.1.1',
-        'conductor'             : '2.1.4',
-        'circleImageView'       : '2.2.0',
-        'vectormaster'          : '1.1.3',
-        'googleServices'        : '4.0.1',
-        'crashlytics'           : '1.25.4',
-        'crashlyticsSdk'        : '2.9.5',
-        'firebaseCore'          : '16.0.3',
+    private lateinit var toolbar: Toolbar
 
-        // TESTING
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        this.toolbar = toolbarAbout as Toolbar
+        setupToolbar()
+    }
 
-        'jUnit'                 : '4.12',
-]
+    private fun setupToolbar() {
+        toolbar.background = context.getDrawable(R.color.colorPrimaryNight)
+
+        toolbar.showBackButton()
+
+        toolbar.setOnToolbarItemClickListener {
+            when (it.id) {
+                R.id.ivBack -> {
+                    actionLiveData.value = ToolbarSlice.Action.BackClicked
+                    actionLiveData.value = ToolbarSlice.Action.Idle
+                }
+            }
+        }
+    }
+
+    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+}

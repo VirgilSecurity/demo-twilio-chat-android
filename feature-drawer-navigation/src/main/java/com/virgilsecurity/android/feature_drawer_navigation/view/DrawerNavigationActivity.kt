@@ -56,8 +56,10 @@ import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.CONTEXT_DRAWER_NAVIGATION
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
+import com.virgilsecurity.android.feature_settings.view.AboutController
 import com.virgilsecurity.android.feature_settings.view.SettingsController
 import com.virgilsecurity.android.feature_settings.view.SettingsEditController
+import com.virgilsecurity.android.feature_settings.view.VersionHistoryController
 import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
 
@@ -173,6 +175,14 @@ class DrawerNavigationActivity(
                                                                  R.anim.animation_slide_to_end_activity)
                                        finish()
                                    }
+                               },
+                               {
+                                   pushController(AboutController(),
+                                                  AboutController.KEY_ABOUT_CONTROLLER)
+                               },
+                               {
+                                   pushController(VersionHistoryController(),
+                                                  VersionHistoryController.KEY_VERSIONS_CONTROLLER)
                                })
 
     private fun settingsEditController() =

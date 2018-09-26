@@ -51,7 +51,8 @@ ext {
     }
 
     koin = Group {
-        implementation deps.koin.koinAndroid
+        implementation deps.koin.android
+        implementation deps.koin.scope
     }
 
     reactiveness = Group {
@@ -99,7 +100,7 @@ ext {
 
     conductor = Group {
         implementation deps.conductor.core
-        implementation deps.conductor.archLifecycle
+//        implementation deps.conductor.archLifecycle
     }
 
     circleImageView = Group {

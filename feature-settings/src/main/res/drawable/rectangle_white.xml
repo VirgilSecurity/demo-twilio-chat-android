@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2015-2018, Virgil Security, Inc.
   ~
@@ -31,25 +32,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-
-    <string name="info_settings">Info</string>
-    <string name="username">Username</string>
-    <string name="help">Help</string>
-    <string name="ask_question">Ask question</string>
-    <string name="about_settings">About</string>
-    <string name="version_history">Version history</string>
-    <string name="change_profile_picture">Change profile picture</string>
-    <string name="logout_error">Logout not completed</string>
-    <string name="delete_account_question">Delete account?</string>
-    <string name="delete_account_beware">It can not be recovered.</string>
-    <string name="delete">Delete</string>
-    <string name="about_text">\tVirgil Messenger is a simple and secure messaging app which uses the frontier encryption technologies so that no-one can access your messages. It is a perfect solution for those who care about their privacy.\n\n\tFeatures:\nText and audio messages - Chat with you friends, colleagues and family in any convenient way.\n\nPhotos - Share your visual experience with others\nSimple - Minimalist user-friendly and intuitive design\nReliable - Requires as little internet data as possible\nEnd-to-end encryption - The messenger hides your chats from any other curious eyes by using the asymmetric cryptography methods\n(Passwordless - Don\'t spend your time trying to remember your password)</string>
-    <string name="versions_text">
-        Version 1.0.0 :\n
-        \t- Release of Virgil Messenger
-    </string>
-
-
-</resources>
+    <solid
+        android:color="@color/snow" />
+</shape>

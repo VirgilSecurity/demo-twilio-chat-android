@@ -39,6 +39,7 @@ import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
+import com.virgilsecurity.android.feature_settings.TestKoinContext
 import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
@@ -73,17 +74,24 @@ class SettingsController() : BaseController() {
     private val footerSlice: FooterSlice by inject()
     private val stateSlice: StateSlice by inject()
     private val viewModel: SettingsVM by inject()
+    private val testKoinContext: TestKoinContext by inject()
 
     private lateinit var edit: () -> Unit
     private lateinit var logout: () -> Unit
+    private lateinit var about: () -> Unit
+    private lateinit var versionHistory: () -> Unit
     private lateinit var user: User
 
     constructor(user: User,
                 edit: () -> Unit,
-                logout: () -> Unit) : this() {
+                logout: () -> Unit,
+                about: () -> Unit,
+                versionHistory: () -> Unit) : this() {
         this.user = user
         this.edit = edit
         this.logout = logout
+        this.about = about
+        this.versionHistory = versionHistory
     }
 
     override fun init() {}
@@ -111,7 +119,9 @@ class SettingsController() : BaseController() {
         observe(viewModel.getState(), ::onStateChanged)
     }
 
-    override fun initData() {}
+    override fun initData() {
+        testKoinContext.text = "Beach"
+    }
 
     private fun onStateChanged(state: SettingsVM.State) = when (state) {
         SettingsVM.State.LogoutSuccessful -> logout()
@@ -150,9 +160,9 @@ class SettingsController() : BaseController() {
     }
 
     private fun onFooterActionChanged(action: FooterSlice.Action) = when (action) {
-        FooterSlice.Action.AboutClicked -> UiUtils.toastUnderDevelopment(this)
+        FooterSlice.Action.AboutClicked -> about()
         FooterSlice.Action.AskQuestionClicked -> UiUtils.toastUnderDevelopment(this)
-        FooterSlice.Action.VersionClicked -> UiUtils.toastUnderDevelopment(this)
+        FooterSlice.Action.VersionClicked -> versionHistory()
         FooterSlice.Action.Idle -> Unit
     }
 
