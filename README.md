@@ -37,8 +37,11 @@ Virgil Security has a powerful set of APIs, and the documentation is there to ge
 * [Reference API][_reference_api]
 
 ## Support
+Our developer support team is here to help you. Find out more information on our [Help Center](https://help.virgilsecurity.com/).
 
-Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) or send us email support@virgilsecurity.com
+You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
+
+Also, get extra help from our support team on [Slack](https://virgilsecurity.com/join-community).
 
 [_getstarted_root]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_guides]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
