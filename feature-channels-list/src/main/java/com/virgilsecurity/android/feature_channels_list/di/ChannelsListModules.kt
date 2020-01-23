@@ -39,18 +39,19 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
+import com.virgilsecurity.android.common.di.CommonDiConst
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
-import com.virgilsecurity.android.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
+import com.virgilsecurity.android.feature_channels_list.di.Const.ADAPTER_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.di.Const.ITEM_ADAPTER_CHANNEL
 import com.virgilsecurity.android.feature_channels_list.di.Const.LD_LIST_CHANNELS
 import com.virgilsecurity.android.feature_channels_list.di.Const.LD_TOOLBAR_CHANNELS_LIST
-import com.virgilsecurity.android.feature_channels_list.di.Const.MLD_CHANNELS
 import com.virgilsecurity.android.feature_channels_list.di.Const.STATE_CHANNELS
-import com.virgilsecurity.android.feature_channels_list.di.Const.TOOLBAR_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDo
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDoDefault
 import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChannelsListChangeDo
 import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChannelsListChangeDoDefault
+import com.virgilsecurity.android.feature_channels_list.view.ChannelsListController
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVMDefault
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
@@ -60,7 +61,7 @@ import com.virgilsecurity.android.feature_channels_list.viewslice.state.StateSli
 import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSliceChannelsList
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * . _  _
@@ -76,41 +77,39 @@ import org.koin.dsl.module.applicationContext
 /**
  * ThreadsListModules
  */
-val channelsListModule: Module = applicationContext {
-    bean(STATE_CHANNELS) { StateSliceChannels() as StateSliceEmptyable }
+val channelsListModule: Module = module {
+    single(STATE_CHANNELS) { StateSliceChannels() as StateSliceEmptyable }
 
-    context(CONTEXT_CHANNELS_LIST) {
-        bean(LD_TOOLBAR_CHANNELS_LIST) { MutableLiveData<ToolbarSlice.Action>() }
-        bean(TOOLBAR_CHANNELS_LIST) { ToolbarSliceChannelsList(get(LD_TOOLBAR_CHANNELS_LIST)) as ToolbarSlice }
+    factory(LD_TOOLBAR_CHANNELS_LIST) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceChannelsList(get(LD_TOOLBAR_CHANNELS_LIST)) as ToolbarSlice }
 
-        bean(LD_LIST_CHANNELS) { MutableLiveData<ChannelsSlice.Action>() }
-        bean(ITEM_ADAPTER_CHANNEL) {
-            ChannelItem(get(LD_LIST_CHANNELS),
-                             get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
-        }
-        bean {
-            DelegateAdapter.Builder<ChannelInfo>()
-                    .add(get(ITEM_ADAPTER_CHANNEL))
-                    .diffCallback(get())
-                    .build()
-        }
+    factory(LD_LIST_CHANNELS) { MutableLiveData<ChannelsSlice.Action>() }
+    factory(ITEM_ADAPTER_CHANNEL) {
+        ChannelItem(get(LD_LIST_CHANNELS),
+                    get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
+    }
 
-        bean { ChannelsSliceDefault(get(LD_LIST_CHANNELS), get(), get(), get()) as ChannelsSlice }
+    factory { GetChannelsDoDefault(get()) as GetChannelsDo }
+    factory { ObserveChannelsListChangeDoDefault(get()) as ObserveChannelsListChangeDo }
 
-        bean { GetChannelsDoDefault(get()) as GetChannelsDo }
-        bean(MLD_CHANNELS) { MediatorLiveData<ChannelsVM.State>() }
-        bean { ObserveChannelsListChangeDoDefault(get()) as ObserveChannelsListChangeDo }
-        bean { ChannelsVMDefault(get(MLD_CHANNELS), get(), get()) as ChannelsVM }
+    factory(ADAPTER_CHANNELS_LIST) {
+        DelegateAdapter.Builder<ChannelInfo>()
+                .add(get(ITEM_ADAPTER_CHANNEL))
+                .diffCallback(get(KEY_DIFF_CALLBACK_CHANNEL_INFO))
+                .build()
+    }
+    factory { ChannelsSliceDefault(get(LD_LIST_CHANNELS), get(ADAPTER_CHANNELS_LIST), get(), get()) as ChannelsSlice }
+
+    module(ChannelsListController::class.java.simpleName) {
+        factory { MediatorLiveData<ChannelsVM.State>() }
+        factory { ChannelsVMDefault(get(), get(), get()) as ChannelsVM }
     }
 }
 
 object Const {
     const val STATE_CHANNELS = "STATE_CHANNELS"
     const val LD_TOOLBAR_CHANNELS_LIST = "LD_TOOLBAR_CHANNELS_LIST"
-    const val TOOLBAR_CHANNELS_LIST = "TOOLBAR_CHANNELS_LIST"
     const val LD_LIST_CHANNELS = "LD_LIST_CHANNELS"
     const val ITEM_ADAPTER_CHANNEL = "ITEM_ADAPTER_CHANNEL"
-    const val MLD_CHANNELS = "MLD_CHANNELS"
-
-    const val CONTEXT_CHANNELS_LIST = "CONTEXT_CHANNELS_LIST"
+    const val ADAPTER_CHANNELS_LIST = "ADAPTER_CHANNELS_LIST"
 }

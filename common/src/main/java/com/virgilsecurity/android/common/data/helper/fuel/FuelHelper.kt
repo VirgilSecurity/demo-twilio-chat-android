@@ -43,7 +43,6 @@ import com.google.gson.Gson
 import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.TokenResponse
 import com.virgilsecurity.android.base.extension.toObject
-import com.virgilsecurity.android.common.data.model.request.SignInRequest
 import com.virgilsecurity.android.common.data.model.request.SignUpRequest
 import com.virgilsecurity.android.common.data.model.request.TokenRequest
 import com.virgilsecurity.android.common.util.UiUtils

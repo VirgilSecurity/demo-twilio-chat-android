@@ -36,11 +36,10 @@ package com.virgilsecurity.android.feature_settings.view
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.TestKoinContext
-import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSlice
@@ -66,15 +65,13 @@ import org.koin.standalone.inject
 class SettingsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings
-    override val koinContextName: String? = CONTEXT_SETTINGS
 
     private val toolbarSlice: ToolbarSlice by inject()
     private val menuSlice: MenuSlice by inject()
     private val headerSlice: HeaderSlice by inject()
     private val footerSlice: FooterSlice by inject()
     private val stateSlice: StateSlice by inject()
-    private val viewModel: SettingsVM by inject()
-    private val testKoinContext: TestKoinContext by inject()
+    private val viewModel: SettingsVM by inject(this::class toKoinPath SettingsVM::class)
 
     private lateinit var edit: () -> Unit
     private lateinit var logout: () -> Unit
@@ -101,6 +98,7 @@ class SettingsController() : BaseController() {
         menuSlice.init(lifecycle, view)
         headerSlice.init(lifecycle, view)
         footerSlice.init(lifecycle, view)
+        stateSlice.init(lifecycle, view)
     }
 
     override fun setupViewSlices(view: View) {
@@ -119,9 +117,7 @@ class SettingsController() : BaseController() {
         observe(viewModel.getState(), ::onStateChanged)
     }
 
-    override fun initData() {
-        testKoinContext.text = "Beach"
-    }
+    override fun initData() {}
 
     private fun onStateChanged(state: SettingsVM.State) = when (state) {
         SettingsVM.State.LogoutSuccessful -> logout()

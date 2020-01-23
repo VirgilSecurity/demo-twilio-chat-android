@@ -31,14 +31,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.view
+package com.virgilsecurity.android.base.extension
 
-import android.view.View
-import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseController
-import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice
-import org.koin.standalone.inject
+import kotlin.reflect.KClass
 
 /**
  * . _  _
@@ -46,49 +41,15 @@ import org.koin.standalone.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    9/24/18
+ * ....|  _/    9/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AboutController
+ * ClassExt
  */
-class VersionHistoryController : BaseController() {
 
-    override val layoutResourceId: Int = R.layout.controller_version_history
-
-    private val toolbarSlice: ToolbarSlice by inject()
-
-    override fun init() {}
-
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-    }
-
-    override fun setupViewSlices(view: View) {}
-
-    override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
-    }
-
-    override fun setupVMStateObservers() {}
-
-    override fun initData() {}
-
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
-            hideKeyboard()
-            backPress()
-        }
-        ToolbarSlice.Action.Idle -> Unit
-    }
-
-    private fun backPress() {
-        router.popCurrentController()
-    }
-
-    companion object {
-        const val KEY_VERSIONS_CONTROLLER = "KEY_VERSIONS_CONTROLLER"
-    }
+infix fun <A : Any, B: Any> KClass<A>.toKoinPath(secondClass: KClass<B>): String {
+    return this.java.simpleName + "." + secondClass.java.simpleName
 }

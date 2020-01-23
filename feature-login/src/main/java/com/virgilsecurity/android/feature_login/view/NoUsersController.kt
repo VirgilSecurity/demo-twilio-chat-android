@@ -56,7 +56,6 @@ import kotlinx.android.synthetic.main.controller_no_users.*
 class NoUsersController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_no_users
-    override val koinContextName: String? = null
 
     private lateinit var registration: () -> Unit
 

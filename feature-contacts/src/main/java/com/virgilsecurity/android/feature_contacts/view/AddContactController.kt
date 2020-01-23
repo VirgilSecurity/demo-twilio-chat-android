@@ -39,12 +39,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
+import com.virgilsecurity.android.base.view.BaseCBWithScope
 import com.virgilsecurity.android.base.view.BaseControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
-import com.virgilsecurity.android.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
-import com.virgilsecurity.android.feature_contacts.di.Const.TOOLBAR_ADD_CONTACT
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
@@ -66,14 +66,13 @@ import org.koin.standalone.inject
 /**
  * AddContactController
  */
-class AddContactController() : BaseControllerBinding() {
+class AddContactController() : BaseCBWithScope() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
-    override val koinContextName: String? = CONTEXT_ADD_CONTACT
 
-    private val viewModel: AddContactVM by inject()
+    private val viewModel: AddContactVM by inject(this::class toKoinPath AddContactVM::class)
     private val stateSlice: StateSliceAddContact by inject()
-    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_ADD_CONTACT)
+    private val toolbarSlice: ToolbarSlice by inject()
 
     private lateinit var openChannel: (ChannelInfo) -> Unit
 

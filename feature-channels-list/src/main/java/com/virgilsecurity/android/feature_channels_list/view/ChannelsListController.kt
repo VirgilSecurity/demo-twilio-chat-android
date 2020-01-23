@@ -38,13 +38,13 @@ import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.BaseControllerWithScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channels_list.R
-import com.virgilsecurity.android.feature_channels_list.di.Const.CONTEXT_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.di.Const.STATE_CHANNELS
-import com.virgilsecurity.android.feature_channels_list.di.Const.TOOLBAR_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
 import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSlice
@@ -66,12 +66,11 @@ import org.koin.standalone.inject
 /**
  * ChannelsListController
  */
-class ChannelsListController() : BaseController() {
+class ChannelsListController() : BaseControllerWithScope() {
 
     override val layoutResourceId: Int = R.layout.controller_channels_list
-    override val koinContextName: String? = CONTEXT_CHANNELS_LIST
 
-    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CHANNELS_LIST)
+    private val toolbarSlice: ToolbarSlice by inject()
     private val channelsSlice: ChannelsSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNELS)
     private val viewModel: ChannelsVM by inject()

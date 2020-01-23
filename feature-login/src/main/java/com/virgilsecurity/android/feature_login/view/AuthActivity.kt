@@ -33,7 +33,6 @@
 
 package com.virgilsecurity.android.feature_login.view
 
-import LoginDiConst.CONTEXT_AUTH_ACTIVITY
 import android.os.Bundle
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
@@ -43,7 +42,8 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseActivityController
+import com.virgilsecurity.android.base.extension.toKoinPath
+import com.virgilsecurity.android.base.view.BaseACWithScope
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.common.util.DoubleBack
 import com.virgilsecurity.android.common.util.UiUtils
@@ -66,14 +66,13 @@ import org.koin.android.ext.android.inject
 
 class AuthActivity(
         override val layoutResourceId: Int = R.layout.activity_login
-) : BaseActivityController() {
+) : BaseACWithScope() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
-    override val koinContextName: String? = CONTEXT_AUTH_ACTIVITY
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val loginVM: LoginVM by inject()
+    private val loginVM: LoginVM by inject(this::class toKoinPath LoginVM::class)
 
     override fun init(savedInstanceState: Bundle?) {
         loginVM.users()

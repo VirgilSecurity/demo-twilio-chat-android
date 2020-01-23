@@ -33,18 +33,19 @@
 
 package com.virgilsecurity.android.feature_contacts.view
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.BaseControllerWithScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_contacts.R
-import com.virgilsecurity.android.feature_contacts.di.Const.CONTEXT_CONTACTS
 import com.virgilsecurity.android.feature_contacts.di.Const.STATE_CONTACTS
-import com.virgilsecurity.android.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
@@ -65,15 +66,14 @@ import org.koin.standalone.inject
 /**
  * ContactsController
  */
-class ContactsController() : BaseController() {
+class ContactsController() : BaseControllerWithScope() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
-    override val koinContextName: String? = CONTEXT_CONTACTS
 
-    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CONTACTS_LIST)
+    private val toolbarSlice: ToolbarSlice by inject()
     private val contactsSlice: ContactsSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CONTACTS)
-    private val viewModel: ContactsVM by inject()
+    private val viewModel: ContactsVM by inject(this::class toKoinPath ContactsVM::class)
     private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit
@@ -154,6 +154,7 @@ class ContactsController() : BaseController() {
         is ChannelsApi.ChannelsChanges.Exception -> Unit
     }
 
+    @SuppressLint("CheckResult")
     private fun showChannel(channel: Channel) {
         Single.just(channel)
                 .map(mapper::mapChannel)

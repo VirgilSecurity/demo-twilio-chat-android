@@ -54,7 +54,3 @@ import android.arch.lifecycle.Observer
 fun <T> LifecycleOwner.observe(liveData: LiveData<T>, action: (t: T) -> Unit) {
     liveData.observe(this, Observer { it?.let { action(it) } })
 }
-
-fun <T> LifecycleOwner.removeObservers(liveData: LiveData<T>) {
-    liveData.removeObservers(this)
-}

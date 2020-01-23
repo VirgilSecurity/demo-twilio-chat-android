@@ -38,12 +38,12 @@ import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.extension.toMessageInfo
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channel.R
-import com.virgilsecurity.android.feature_channel.di.Const.CONTEXT_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.STATE_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.TOOLBAR_CHANNEL
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
@@ -69,12 +69,11 @@ import org.koin.standalone.inject
 class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel
-    override val koinContextName: String? = CONTEXT_CHANNEL
 
     private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CHANNEL)
     private val channelSlice: ChannelSlice by inject()
     private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNEL)
-    private val viewModel: ChannelVM by inject()
+    private val viewModel: ChannelVM by inject(this::class toKoinPath ChannelVM::class)
     private val userProperties: UserProperties by inject()
 
     private lateinit var interlocutor: String

@@ -45,7 +45,9 @@ import android.view.inputmethod.InputMethodManager
 import com.bluelinelabs.conductor.Controller
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.*
+import org.koin.core.scope.Scope
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.getKoin
 
 /**
  * . _  _
@@ -61,9 +63,12 @@ import org.koin.standalone.KoinComponent
 /**
  * BaseController
  */
-abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
+abstract class BaseControllerWithScope : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
 
     protected val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+
+    private lateinit var session: Scope
+    private val koinScopeName = this::class.java.simpleName
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -111,6 +116,8 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
+        session = getKoin().createScope(koinScopeName)
+
         init()
         initViewSlices(containerView)
 
@@ -148,6 +155,8 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.markState(Lifecycle.State.CREATED)
+
+        session.close()
     }
 
     override fun onDestroy() {

@@ -72,6 +72,8 @@ import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefau
 import com.virgilsecurity.android.common.data.repository.UsersRepository
 import com.virgilsecurity.android.common.data.repository.UsersRepositoryDefault
 import com.virgilsecurity.android.common.di.CommonDiConst.DIVIDER_DRAWABLE
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_INFO
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.virgilsecurity.android.common.di.CommonDiConst.ROOM_DB_NAME
 import com.virgilsecurity.android.common.util.AuthUtils
@@ -88,7 +90,7 @@ import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
 import com.virgilsecurity.sdk.storage.KeyStorage
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * . _  _
@@ -105,77 +107,79 @@ import org.koin.dsl.module.applicationContext
  * CommonModules
  */
 
-val commonModules: Module = applicationContext {
-    bean(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
-    bean {
+val commonModules: Module = module {
+    single(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
+    single {
         Room.databaseBuilder(get(), RoomDB::class.java, get(KEY_ROOM_DB_NAME))
                 .fallbackToDestructiveMigration()
                 .build()
     }
-    bean { UsersLocalDS(get()) as UsersDao }
-    bean { ImageStorage(get()) }
+    single { UsersLocalDS(get()) as UsersDao }
+    single { ImageStorage(get()) }
     factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
-    bean { UsersRepositoryDefault(get(), get()) as UsersRepository }
+    single { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
 
-val utilsModule : Module = applicationContext {
-    bean { UserPropertiesDefault(get()) as UserProperties }
-    bean { AuthUtils(get(), get(), get()) }
-    bean { ChannelIdGeneratorDefault(get()) as ChannelIdGenerator }
+val utilsModule : Module = module {
+    single { UserPropertiesDefault(get()) as UserProperties }
+    single { AuthUtils(get(), get(), get()) }
+    single { ChannelIdGeneratorDefault(get()) as ChannelIdGenerator }
 }
 
-val networkModule : Module = applicationContext {
-    bean { FuelHelper() }
+val networkModule : Module = module {
+    single { FuelHelper() }
 }
 
-val virgilModule : Module = applicationContext {
-    bean { VirgilCardCrypto() as CardCrypto }
-    bean { VirgilCrypto() }
-    bean { VirgilCardVerifier(get()) as CardVerifier }
-    bean { RenewTokenCallbackImpl(get(), get(), get()) as CachingJwtProvider.RenewJwtCallback }
-    bean { CachingJwtProvider(get()) as AccessTokenProvider }
-    bean { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    bean { JsonFileKeyStorage(get(CommonDiConst.STORAGE_PATH)) as KeyStorage }
-    bean { PrivateKeyStorage(get(), get()) }
-    bean { VirgilHelper(get(), get(), get(), get()) }
-    bean { CardManager(get(), get(), get()) }
-    bean { VirgilRx(get()) }
-    bean { VirgilRemoteDS(get()) as VirgilApi }
+val virgilModule : Module = module {
+    single { VirgilCardCrypto() as CardCrypto }
+    single { VirgilCrypto() }
+    single { VirgilCardVerifier(get()) as CardVerifier }
+    single { RenewTokenCallbackImpl(get(), get(), get()) as CachingJwtProvider.RenewJwtCallback }
+    single { CachingJwtProvider(get()) as AccessTokenProvider }
+    single { VirgilPrivateKeyExporter() as PrivateKeyExporter }
+    single { JsonFileKeyStorage(get(CommonDiConst.STORAGE_PATH)) as KeyStorage }
+    single { PrivateKeyStorage(get(), get()) }
+    single { VirgilHelper(get(), get(), get(), get()) }
+    single { CardManager(get(), get(), get()) }
+    single { VirgilRx(get()) }
+    single { VirgilRemoteDS(get()) as VirgilApi }
 }
 
-val twilioModule : Module = applicationContext {
-    bean { TwilioRx(get(), get()) }
-    bean { TwilioHelper(get(), get()) }
+val twilioModule : Module = module {
+    single { TwilioRx(get(), get()) }
+    single { TwilioHelper(get(), get()) }
 }
 
-val paramsModule : Module = applicationContext {
-    bean(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
+val paramsModule : Module = module {
+    single(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
 }
 
 // This module in common because for now we using it for contacts screen also
-val channelsModule: Module = applicationContext {
-    bean { MapperToChannelInfo() }
-    bean { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
-    bean { (get() as RoomDB).channelsQao() }
-    bean { ChannelsLocalDS(get(), get()) as ChannelsDao }
-    bean { DiffCallback<ChannelInfo>() }
-    bean(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
-    bean { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
-    bean { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
+val channelsModule: Module = module {
+    single { MapperToChannelInfo() }
+    single { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
+    single { (get() as RoomDB).channelsQao() }
+    single { ChannelsLocalDS(get(), get()) as ChannelsDao }
+    single(KEY_DIFF_CALLBACK_CHANNEL_INFO) { DiffCallback<ChannelInfo>() }
+    single(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
+    single { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
+    single { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
 }
 
-val messagesModule: Module = applicationContext {
-    bean { MapperToMessageInfo() }
-    bean { MessagesRemoteDS(get(), get()) as MessagesApi }
-    bean { (get() as RoomDB).messagesQao() }
-    bean { MessagesLocalDS(get()) as MessagesDao }
-    bean { DiffCallback<MessageInfo>() }
+val messagesModule: Module = module {
+    single { MapperToMessageInfo() }
+    single { MessagesRemoteDS(get(), get()) as MessagesApi }
+    single { (get() as RoomDB).messagesQao() }
+    single { MessagesLocalDS(get()) as MessagesDao }
+    single(KEY_DIFF_CALLBACK_MESSAGE_INFO) { DiffCallback<MessageInfo>() }
 }
 
 object CommonDiConst {
     const val KEY_ROOM_DB_NAME = "ROOM_DB_NAME"
     const val DIVIDER_DRAWABLE = "DIVIDER_DRAWABLE"
+    const val KEY_DIFF_CALLBACK_CHANNEL_INFO = "KEY_DIFF_CALLBACK_CHANNEL_INFO"
+    const val KEY_DIFF_CALLBACK_MESSAGE_INFO = "KEY_DIFF_CALLBACK_MESSAGE_INFO"
 
     const val STORAGE_PATH = "storagePath"
     const val ROOM_DB_NAME = "virgil_messenger_database"

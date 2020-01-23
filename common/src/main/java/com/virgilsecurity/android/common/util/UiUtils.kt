@@ -43,8 +43,8 @@ import android.util.Log
 import android.widget.Toast
 import com.bluelinelabs.conductor.Controller
 import com.sdsmdg.harjot.vectormaster.VectorMasterView
-import java.util.*
 import com.virgilsecurity.android.common.BuildConfig
+import java.util.*
 
 /**
  * . _  _

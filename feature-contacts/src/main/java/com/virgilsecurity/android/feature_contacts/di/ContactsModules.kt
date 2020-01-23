@@ -39,41 +39,41 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
+import com.virgilsecurity.android.common.di.CommonDiConst
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepository
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepositoryDefault
-import com.virgilsecurity.android.feature_contacts.di.Const.CONTEXT_ADD_CONTACT
-import com.virgilsecurity.android.feature_contacts.di.Const.CONTEXT_CONTACTS
+import com.virgilsecurity.android.feature_contacts.di.Const.ADAPTER_CONTACTS
 import com.virgilsecurity.android.feature_contacts.di.Const.ITEM_ADAPTER_CONTACT
 import com.virgilsecurity.android.feature_contacts.di.Const.LD_LIST_CONTACTS
 import com.virgilsecurity.android.feature_contacts.di.Const.LD_TOOLBAR_ADD_CONTACT
 import com.virgilsecurity.android.feature_contacts.di.Const.LD_TOOLBAR_CONTACTS
-import com.virgilsecurity.android.feature_contacts.di.Const.MLD_ADD_CONTACT
 import com.virgilsecurity.android.feature_contacts.di.Const.MLD_CONTACTS
 import com.virgilsecurity.android.feature_contacts.di.Const.STATE_CONTACTS
-import com.virgilsecurity.android.feature_contacts.di.Const.TOOLBAR_ADD_CONTACT
-import com.virgilsecurity.android.feature_contacts.di.Const.TOOLBAR_CONTACTS_LIST
 import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactDo
 import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactsDoDefault
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDo
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDoDefault
 import com.virgilsecurity.android.feature_contacts.domain.list.ObserveContactsChangesDo
 import com.virgilsecurity.android.feature_contacts.domain.list.ObserveContactsChangesDoDefault
+import com.virgilsecurity.android.feature_contacts.view.AddContactController
+import com.virgilsecurity.android.feature_contacts.view.ContactsController
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContactDefault
+import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSliceAddContact
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSliceDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.adapter.ContactItem
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.state.StateSliceContacts
-import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSliceContacts
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * . _  _
@@ -90,48 +90,49 @@ import org.koin.dsl.module.applicationContext
  * ContactsModules
  */
 
-val contactsModule: Module = applicationContext {
-    bean { ContactsRepositoryDefault(get(), get(), get(), get(), get()) as ContactsRepository }
-    bean(STATE_CONTACTS) { StateSliceContacts() as StateSliceEmptyable }
+val contactsModule: Module = module {
+    single { ContactsRepositoryDefault(get(), get(), get(), get(), get()) as ContactsRepository }
+    single(STATE_CONTACTS) { StateSliceContacts() as StateSliceEmptyable }
 
-    context(CONTEXT_CONTACTS) {
-        bean(LD_TOOLBAR_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
-        bean(TOOLBAR_CONTACTS_LIST) {
-            ToolbarSliceContacts(get(LD_TOOLBAR_CONTACTS))
-                    as com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
-        }
+    factory(LD_TOOLBAR_CONTACTS) { MutableLiveData<ToolbarSlice.Action>() }
+    factory {
+        ToolbarSliceContacts(get(LD_TOOLBAR_CONTACTS))
+                as com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
+    }
 
-        bean(LD_LIST_CONTACTS) { MutableLiveData<ContactsSlice.Action>() }
-        bean(ITEM_ADAPTER_CONTACT) {
-            ContactItem(get(LD_LIST_CONTACTS), get())
-                    as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
-        }
-        bean {
-            DelegateAdapter.Builder<ChannelInfo>()
-                    .add(get(ITEM_ADAPTER_CONTACT))
-                    .diffCallback(get())
-                    .build()
-        }
+    factory(LD_LIST_CONTACTS) { MutableLiveData<ContactsSlice.Action>() }
+    factory(ITEM_ADAPTER_CONTACT) {
+        ContactItem(get(LD_LIST_CONTACTS), get())
+                as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
+    }
 
-        bean { ContactsSliceDefault(get(LD_LIST_CONTACTS), get(), get(), get()) as ContactsSlice }
+    factory(ADAPTER_CONTACTS) {
+        DelegateAdapter.Builder<ChannelInfo>()
+                .add(get(ITEM_ADAPTER_CONTACT))
+                .diffCallback(get(KEY_DIFF_CALLBACK_CHANNEL_INFO))
+                .build()
+    }
+    factory { ContactsSliceDefault(get(LD_LIST_CONTACTS), get(ADAPTER_CONTACTS), get(), get()) as ContactsSlice }
 
-        bean { GetContactsDoDefault(get()) as GetContactsDo }
-        bean(MLD_CONTACTS) { MediatorLiveData<ContactsVM.State>() }
-        bean { ObserveContactsChangesDoDefault(get()) as ObserveContactsChangesDo }
-        bean { ContactsVMDefault(get(MLD_CONTACTS), get(), get()) as ContactsVM }
+    factory { GetContactsDoDefault(get()) as GetContactsDo }
+    factory { ObserveContactsChangesDoDefault(get()) as ObserveContactsChangesDo }
+
+    module(ContactsController::class.java.simpleName) {
+        factory(MLD_CONTACTS) { MediatorLiveData<ContactsVM.State>() }
+        factory { ContactsVMDefault(get(MLD_CONTACTS), get(), get()) as ContactsVM }
     }
 }
 
-val addContactModule: Module = applicationContext {
-    bean { StateSliceAddContactDefault(get()) as StateSliceAddContact }
+val addContactModule: Module = module {
+    single { StateSliceAddContactDefault(get()) as StateSliceAddContact }
 
-    context(CONTEXT_ADD_CONTACT) {
-        bean { AddContactsDoDefault(get()) as AddContactDo }
-        bean(MLD_ADD_CONTACT) { MediatorLiveData<AddContactVM.State>() }
-        bean { AddContactVMDefault(get(MLD_ADD_CONTACT), get(), get()) as AddContactVM }
+    factory { AddContactsDoDefault(get()) as AddContactDo }
+    factory(LD_TOOLBAR_ADD_CONTACT) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceAddContact(get(LD_TOOLBAR_ADD_CONTACT)) as ToolbarSlice }
 
-        bean(LD_TOOLBAR_ADD_CONTACT) { MutableLiveData<ToolbarSlice.Action>() }
-        bean(TOOLBAR_ADD_CONTACT) { ToolbarSliceAddContact(get(LD_TOOLBAR_ADD_CONTACT)) as ToolbarSlice }
+    module(AddContactController::class.java.simpleName) {
+        factory { MediatorLiveData<AddContactVM.State>() }
+        factory { AddContactVMDefault(get(), get(), get()) as AddContactVM }
     }
 }
 
@@ -141,11 +142,6 @@ object Const {
     const val MLD_CONTACTS = "MLD_CONTACTS"
     const val STATE_CONTACTS = "STATE_CONTACTS"
     const val ITEM_ADAPTER_CONTACT = "ITEM_ADAPTER_CONTACT"
-    const val MLD_ADD_CONTACT = "MLD_ADD_CONTACT"
     const val LD_TOOLBAR_ADD_CONTACT = "LD_TOOLBAR_ADD_CONTACT"
-    const val TOOLBAR_CONTACTS_LIST = "TOOLBAR_CONTACTS_LIST"
-    const val TOOLBAR_ADD_CONTACT = "TOOLBAR_ADD_CONTACT"
-
-    const val CONTEXT_CONTACTS = "CONTEXT_CONTACTS"
-    const val CONTEXT_ADD_CONTACT = "CONTEXT_ADD_CONTACT"
+    const val ADAPTER_CONTACTS = "ADAPTER_CONTACTS"
 }

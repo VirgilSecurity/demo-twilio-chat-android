@@ -33,19 +33,21 @@
 
 package com.virgilsecurity.android.base.view
 
+import android.app.Activity
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.content.Context
+import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.Controller
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
-import org.koin.standalone.KoinComponent
+import android.widget.Toolbar
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Router
+import com.virgilsecurity.android.base.util.ContainerView
+import org.koin.android.ext.android.getKoin
+import org.koin.core.scope.Scope
 
 /**
  * . _  _
@@ -53,37 +55,45 @@ import org.koin.standalone.KoinComponent
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/16/18
+ * ....|  _/    9/12/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
-/**
- * BaseController
+/*
+ * Base Activity Controller (AC) With Scope - Base class for activities which have koin scope
+ * injections.
  */
-abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
+abstract class BaseACWithScope : Activity(), LifecycleOwner {
 
-    protected val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+
+    protected lateinit var routerRoot: Router
+    private lateinit var session: Scope
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
 
+    private val koinScopeName = this::class.java.simpleName
+
+    @ContainerView protected abstract fun provideContainer(): ViewGroup
+
     /**
      * Used to initialize general options
      */
-    protected abstract fun init()
+    protected abstract fun init(savedInstanceState: Bundle?)
 
     /**
      * Used to initialize view slices *Before*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
-    protected abstract fun initViewSlices(view: View)
+    protected abstract fun initViewSlices()
 
     /**
      * Used to setup view slices *After*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
-    protected abstract fun setupViewSlices(view: View)
+    protected abstract fun setupViewSlices()
 
     /**
      * Used to setup view slices action observers *After*
@@ -97,82 +107,54 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
      */
     protected abstract fun setupVMStateObservers()
 
-    /**
-     * Used to request data *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     * and all View Slices and ViewModels are set up.
-     */
-    protected abstract fun initData()
-
-    override lateinit var containerView: View
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        containerView = inflater.inflate(layoutResourceId, container, false)
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-
-        init()
-        initViewSlices(containerView)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        setContentView(layoutResourceId)
 
-        setupViewSlices(containerView)
+        routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
+
+        session = getKoin().createScope(koinScopeName)
+
+        init(savedInstanceState)
+        initViewSlices()
+
+        setupViewSlices()
         setupVSActionObservers()
         setupVMStateObservers()
-        initData()
-
-        return containerView
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
+    override fun onStart() {
+        super.onStart()
         lifecycleRegistry.markState(Lifecycle.State.STARTED)
+    }
 
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun onResume() {
+        super.onResume()
         lifecycleRegistry.markState(Lifecycle.State.RESUMED)
-    }
-
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-
-        lifecycleRegistry.markState(Lifecycle.State.STARTED)
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-
-        clearFindViewByIdCache()
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
+
+        session.close()
+    }
+
+    override fun onBackPressed() {
+        if (!routerRoot.handleBack())
+            super.onBackPressed()
+    }
+
+    protected fun initToolbar(toolbar: Toolbar, title: String) {
+        setActionBar(toolbar)
+        actionBar?.title = title
+    }
+
+    protected fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 
     override fun getLifecycle(): Lifecycle = lifecycleRegistry
-
-    protected fun hideKeyboard() {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
-    }
-
-    /**
-     * Posts 'open keyboard' event to the queue to wait until all views are drawn.
-     */
-    protected fun openKeyboard(view: View) {
-        if (view.requestFocus()) {
-            view.post {
-                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
-            }
-        }
-    }
 }

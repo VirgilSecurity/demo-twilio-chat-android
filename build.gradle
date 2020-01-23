@@ -28,7 +28,6 @@ allprojects {
     dependencies {
         apply from: "$rootProject.rootDir/dependencies-groups.gradle"
     }
-
 }
 
 task clean(type: Delete) {

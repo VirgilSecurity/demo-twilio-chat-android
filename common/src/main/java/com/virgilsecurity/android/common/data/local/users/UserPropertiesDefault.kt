@@ -38,9 +38,9 @@ import com.google.gson.Gson
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.common.data.helper.preferences.PreferenceHelper
+import com.virgilsecurity.android.common.data.helper.preferences.PreferenceHelper.edit
 import com.virgilsecurity.android.common.data.helper.preferences.PreferenceHelper.get
 import com.virgilsecurity.android.common.data.helper.preferences.PreferenceHelper.set
-import com.virgilsecurity.android.common.data.helper.preferences.PreferenceHelper.edit
 
 /**
  * . _  _

@@ -46,8 +46,6 @@ import android.widget.Toolbar
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.virgilsecurity.android.base.util.ContainerView
-import com.virgilsecurity.android.base.util.KoinContextName
-import org.koin.android.ext.android.releaseContext
 
 abstract class BaseActivityController : Activity(), LifecycleOwner {
 
@@ -57,8 +55,6 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
-    @get:KoinContextName
-    protected abstract val koinContextName: String?
 
     @ContainerView protected abstract fun provideContainer(): ViewGroup
 
@@ -119,9 +115,6 @@ abstract class BaseActivityController : Activity(), LifecycleOwner {
     override fun onDestroy() {
         super.onDestroy()
         lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
-
-        if (koinContextName != null)
-            releaseContext(koinContextName!!)
     }
 
     override fun onBackPressed() {

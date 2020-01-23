@@ -37,7 +37,6 @@ import android.view.View
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.di.Const
 import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
 import org.koin.standalone.inject
 
@@ -58,7 +57,6 @@ import org.koin.standalone.inject
 class AboutController : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_about
-    override val koinContextName: String? = Const.CONTEXT_ABOUT
 
     private val toolbarSlice: ToolbarSlice by inject()
 

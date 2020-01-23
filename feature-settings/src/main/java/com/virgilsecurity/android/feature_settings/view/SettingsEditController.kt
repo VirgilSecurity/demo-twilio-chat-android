@@ -36,11 +36,12 @@ package com.virgilsecurity.android.feature_settings.view
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.di.Const.CONTEXT_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
+import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice
@@ -65,14 +66,13 @@ import org.koin.standalone.inject
 class SettingsEditController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings_edit
-    override val koinContextName: String? = CONTEXT_SETTINGS_EDIT
 
     private val toolbarSlice: ToolbarSlice by inject()
     private val stateSlice: StateSlice by inject()
     private val headerSlice: HeaderSlice by inject()
     private val footerSlice: FooterSlice by inject()
     private val bottomSheetSlice: BSDSimpleSlice by inject()
-    private val viewModel: SettingsEditVM by inject()
+    private val viewModel: SettingsEditVM by inject(this::class toKoinPath SettingsEditVM::class)
 
     private lateinit var logout: () -> Unit
     private lateinit var user: User

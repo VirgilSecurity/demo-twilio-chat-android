@@ -31,14 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.view
+package com.virgilsecurity.android.base.view
 
+import android.arch.lifecycle.Lifecycle
+import android.support.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.View
-import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseController
-import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice
-import org.koin.standalone.inject
+import android.view.ViewGroup
+import kotlinx.android.extensions.LayoutContainer
+import org.koin.core.scope.Scope
+import org.koin.standalone.getKoin
 
 /**
  * . _  _
@@ -46,49 +48,51 @@ import org.koin.standalone.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    9/24/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AboutController
+ * BaseController
  */
-class VersionHistoryController : BaseController() {
+abstract class BaseCBWithScope : BaseController(), LayoutContainer {
 
-    override val layoutResourceId: Int = R.layout.controller_version_history
+    private lateinit var session: Scope
+    private val koinScopeName = this::class.java.simpleName
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    /**
+     * Used to initialize view binding
+     */
+    protected abstract fun initViewBinding(inflater: LayoutInflater,
+                                           container: ViewGroup?,
+                                           @LayoutRes layoutResourceId: Int): View
 
-    override fun init() {}
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        containerView = initViewBinding(inflater, container, layoutResourceId)
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
+        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+
+        session = getKoin().createScope(koinScopeName)
+
+        init()
+        initViewSlices(containerView)
+
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+
+        setupViewSlices(containerView)
+        setupVSActionObservers()
+        setupVMStateObservers()
+        initData()
+
+        return containerView
     }
 
-    override fun setupViewSlices(view: View) {}
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
 
-    override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
-    }
-
-    override fun setupVMStateObservers() {}
-
-    override fun initData() {}
-
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
-            hideKeyboard()
-            backPress()
-        }
-        ToolbarSlice.Action.Idle -> Unit
-    }
-
-    private fun backPress() {
-        router.popCurrentController()
-    }
-
-    companion object {
-        const val KEY_VERSIONS_CONTROLLER = "KEY_VERSIONS_CONTROLLER"
+        session.close()
     }
 }

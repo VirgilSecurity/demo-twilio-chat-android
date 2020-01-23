@@ -35,10 +35,10 @@ ext.versions = [
 
         // BUILD
 
-        'gradle'                : '3.1.4',
-        'kotlinVersion'         : '1.2.70',
+        'gradle'                : '3.2.1',
+        'kotlinVersion'         : '1.2.71',
         'targetSdk'             : 28,
-        'buildTools'            : '28.0.2',
+        'buildTools'            : '28.0.3',
         'minSdk'                : 21,
 
         // MAIN
@@ -59,7 +59,6 @@ ext.versions = [
         'virgilCrypto'          : '5.0.4@aar',
         'room'                  : '1.1.0',
         'viewPagerIndicator'    : '1.1.0',
-        'conductorarchLifecycle': '0.1.1',
         'conductor'             : '2.1.4',
         'circleImageView'       : '2.2.0',
         'vectormaster'          : '1.1.3',

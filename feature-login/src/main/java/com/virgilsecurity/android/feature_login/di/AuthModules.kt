@@ -31,13 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import LoginDiConst.CONTEXT_AUTH_ACTIVITY
-import LoginDiConst.CONTEXT_LOGIN_CONTROLLER
-import LoginDiConst.CONTEXT_REGISTRATION_CONTROLLER
-import LoginDiConst.KEY_MEDIATOR_LOGIN
-import LoginDiConst.KEY_MEDIATOR_REGISTRATION
+import LoginDiConst.KEY_SPAN_COUNT
 import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
+import LoginDiConst.SPAN_COUNT
 import LoginDiConst.STATE_SLICE_LOGIN
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
@@ -51,6 +48,8 @@ import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDoDefault
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDo
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDoDefault
+import com.virgilsecurity.android.feature_login.view.AuthActivity
+import com.virgilsecurity.android.feature_login.view.RegistrationController
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVMDefault
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
@@ -65,7 +64,7 @@ import com.virgilsecurity.android.feature_login.viewslice.registration.state.Sta
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * . _  _
@@ -81,51 +80,45 @@ import org.koin.dsl.module.applicationContext
 /**
  * LoginModules
  */
-val authActivityModule: Module = applicationContext {
-    bean(name = LoginDiConst.KEY_SPAN_COUNT) { LoginDiConst.SPAN_COUNT }
-    bean { DoubleBack() }
+val authActivityModule: Module = module {
+    single(KEY_SPAN_COUNT) { SPAN_COUNT }
+    single { DoubleBack() }
 
-    context(CONTEXT_AUTH_ACTIVITY) {
-        bean { LoadUsersDoDefault(get()) as LoadUsersDo }
-        bean(KEY_MEDIATOR_LOGIN) { MediatorLiveData<LoginVM.State>() }
-        bean { LoginVMDefault(get(KEY_MEDIATOR_LOGIN), get()) as LoginVM }
+    factory { LoadUsersDoDefault(get()) as LoadUsersDo }
+
+    module(AuthActivity::class.java.simpleName) {
+        scope(AuthActivity::class.java.simpleName) { MediatorLiveData<LoginVM.State>() }
+        scope(AuthActivity::class.java.simpleName) { LoginVMDefault(get(), get()) as LoginVM }
     }
 }
 
-val loginControllerModule: Module = applicationContext {
-    context(CONTEXT_LOGIN_CONTROLLER) {
-        bean(LIVE_DATA_LOGIN) { MutableLiveData<ViewPagerSlice.Action>() }
-        bean { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
-        bean { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
-        bean(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
-    }
+val loginControllerModule: Module = module {
+    single(LIVE_DATA_LOGIN) { MutableLiveData<ViewPagerSlice.Action>() }
+    factory { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
+    factory { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
+    factory(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
 }
 
-val registrationControllerModule: Module = applicationContext {
-    bean { AuthRemote(get()) as AuthApi }
-    bean { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
+val registrationControllerModule: Module = module {
+    single { AuthRemote(get()) as AuthApi }
+    single { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
 
-    context(CONTEXT_REGISTRATION_CONTROLLER) {
-        bean(KEY_MEDIATOR_REGISTRATION) { MediatorLiveData<RegistrationVM.State>() }
-        bean { SignUpDoDefault(get(), get()) as SignUpDo }
-        bean { RegistrationVMDefault(get(KEY_MEDIATOR_REGISTRATION), get()) as RegistrationVM }
-        bean { StateSliceRegistrationDefault(get()) as StateSliceRegistration }
-        bean(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
-        bean { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
+    factory { SignUpDoDefault(get(), get()) as SignUpDo }
+    factory { StateSliceRegistrationDefault(get()) as StateSliceRegistration }
+    factory(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
+
+    module(RegistrationController::class.java.simpleName) {
+        factory { MediatorLiveData<RegistrationVM.State>() }
+        factory { RegistrationVMDefault(get(), get()) as RegistrationVM }
     }
 }
 
 object LoginDiConst {
     const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
-    const val KEY_MEDIATOR_REGISTRATION = "KEY_MEDIATOR_REGISTRATION"
-    const val KEY_MEDIATOR_LOGIN = "KEY_MEDIATOR_LOGIN"
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
     const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
-
-    const val CONTEXT_AUTH_ACTIVITY = "CONTEXT_AUTH_ACTIVITY"
-    const val CONTEXT_LOGIN_CONTROLLER = "CONTEXT_LOGIN_CONTROLLER"
-    const val CONTEXT_REGISTRATION_CONTROLLER = "CONTEXT_REGISTRATION_CONTROLLER"
 
     const val SPAN_COUNT = 2
 }

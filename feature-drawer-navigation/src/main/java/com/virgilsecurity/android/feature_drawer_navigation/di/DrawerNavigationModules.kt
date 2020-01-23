@@ -38,14 +38,13 @@ import android.arch.lifecycle.MutableLiveData
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractor
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractorDefault
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.CONTEXT_DRAWER_NAVIGATION
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.CONTEXT_TWILIO_INIT
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.LIVE_DATA_DRAWER
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.LIVE_DATA_TWILIO_INIT
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.MEDIATOR_LIVE_DATA_INIT_TWILIO
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDoDefault
+import com.virgilsecurity.android.feature_drawer_navigation.view.TwilioInitController
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVMDefault
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
@@ -56,7 +55,7 @@ import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSliceDefault
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceTwilioInit
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * . _  _
@@ -73,26 +72,25 @@ import org.koin.dsl.module.applicationContext
  * DrawerNavigationModules
  */
 
-val drawerNavigationModule: Module = applicationContext {
-    context(CONTEXT_DRAWER_NAVIGATION) {
-        bean(LIVE_DATA_DRAWER) { MutableLiveData<DrawerSlice.Action>() }
-        bean { DrawerSliceDefault(get(LIVE_DATA_DRAWER), get()) as DrawerSlice }
-        bean { DrawerStateSliceDefault() as DrawerStateSlice }
-    }
+val drawerNavigationModule: Module = module {
+    factory(LIVE_DATA_DRAWER) { MutableLiveData<DrawerSlice.Action>() }
+    factory { DrawerSliceDefault(get(LIVE_DATA_DRAWER), get()) as DrawerSlice }
+    factory { DrawerStateSliceDefault() as DrawerStateSlice }
 }
 
-val twilioInitModule: Module = applicationContext {
-    bean { InitTwilioInteractorDefault(get(), get(), get()) as InitTwilioInteractor }
+val twilioInitModule: Module = module {
+    single { InitTwilioInteractorDefault(get(), get(), get()) as InitTwilioInteractor }
 
-    context(CONTEXT_TWILIO_INIT) {
-        bean { InitTwilioDoDefault(get()) as InitTwilioDo }
-        bean(MEDIATOR_LIVE_DATA_INIT_TWILIO) { MediatorLiveData<InitTwilioVM.State>() }
-        bean { InitTwilioVMDefault(get(MEDIATOR_LIVE_DATA_INIT_TWILIO), get()) as InitTwilioVM }
+    factory { InitTwilioDoDefault(get()) as InitTwilioDo }
 
-        bean(LIVE_DATA_TWILIO_INIT) { MutableLiveData<TwilioInitSlice.Action>() }
-        bean { TwilioInitSliceDefault(get(LIVE_DATA_TWILIO_INIT)) as TwilioInitSlice }
+    factory(LIVE_DATA_TWILIO_INIT) { MutableLiveData<TwilioInitSlice.Action>() }
+    factory { TwilioInitSliceDefault(get(LIVE_DATA_TWILIO_INIT)) as TwilioInitSlice }
 
-        bean(STATE_SLICE_TWILIO_INIT) { StateSliceTwilioInit() as StateSlice }
+    factory(STATE_SLICE_TWILIO_INIT) { StateSliceTwilioInit() as StateSlice }
+
+    module(TwilioInitController::class.java.simpleName) {
+        factory(MEDIATOR_LIVE_DATA_INIT_TWILIO) { MediatorLiveData<InitTwilioVM.State>() }
+        factory { InitTwilioVMDefault(get(MEDIATOR_LIVE_DATA_INIT_TWILIO), get()) as InitTwilioVM }
     }
 }
 
@@ -101,7 +99,4 @@ object Const {
     const val LIVE_DATA_DRAWER = "LIVE_DATA_DRAWER"
     const val LIVE_DATA_TWILIO_INIT = "LIVE_DATA_TWILIO_INIT"
     const val MEDIATOR_LIVE_DATA_INIT_TWILIO = "MEDIATOR_LIVE_DATA_INIT_TWILIO"
-
-    const val CONTEXT_DRAWER_NAVIGATION = "CONTEXT_DRAWER_NAVIGATION"
-    const val CONTEXT_TWILIO_INIT = "CONTEXT_TWILIO_INIT"
 }

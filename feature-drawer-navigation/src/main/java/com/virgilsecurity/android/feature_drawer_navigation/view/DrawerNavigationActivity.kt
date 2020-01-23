@@ -53,7 +53,6 @@ import com.virgilsecurity.android.feature_channels_list.view.ChannelsListControl
 import com.virgilsecurity.android.feature_contacts.view.AddContactController
 import com.virgilsecurity.android.feature_contacts.view.ContactsController
 import com.virgilsecurity.android.feature_drawer_navigation.R
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.CONTEXT_DRAWER_NAVIGATION
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
 import com.virgilsecurity.android.feature_settings.view.AboutController
@@ -82,7 +81,6 @@ class DrawerNavigationActivity(
 ) : BaseActivityController() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
-    override val koinContextName: String? = CONTEXT_DRAWER_NAVIGATION
 
     private val drawerSlice: DrawerSlice by inject()
     private val stateSlice: DrawerStateSlice by inject()
@@ -213,7 +211,9 @@ class DrawerNavigationActivity(
                                pushChangeHandler: ControllerChangeHandler? = HorizontalChangeHandler(),
                                popChangeHandler: ControllerChangeHandler? = HorizontalChangeHandler()) =
             routerRoot.pushController(RouterTransaction
-                                              .with(controller)
+                                              .with(controller.apply {
+                                                  retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                                              })
                                               .pushChangeHandler(pushChangeHandler)
                                               .popChangeHandler(popChangeHandler)
                                               .tag(tag))
