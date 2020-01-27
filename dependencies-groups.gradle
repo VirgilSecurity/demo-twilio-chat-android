@@ -90,8 +90,8 @@ ext {
     }
 
     virgil = Group {
-        implementation deps.virgilSecurity.sdk
-        implementation deps.virgilSecurity.cryptoAndroid
+        implementation deps.virgilSecurity.sdkAndroid
+        implementation deps.virgilSecurity.ethree
     }
 
     viewPagerIndicator = Group {

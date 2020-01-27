@@ -6,7 +6,6 @@ ext.deps = [
                 'gradle'            : "com.android.tools.build:gradle:$versions.gradle",
                 'kotlinGradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
                 'googleServices'    : "com.google.gms:google-services:$versions.googleServices",
-                'crashlytics'       : "com.google.gms:google-services:$versions.googleServices",
         ],
 
         // MAIN
@@ -59,12 +58,12 @@ ext.deps = [
         'viewPagerIndicator': "com.github.vivchar:ViewPagerIndicator:$versions.viewPagerIndicator",
 
         'virgilSecurity'    : [
-                'sdk'          : "com.virgilsecurity.sdk:sdk:$versions.virgil",
-                'cryptoAndroid': "com.virgilsecurity.sdk:crypto-android:$versions.virgilCrypto",
+                'sdkAndroid'   : "com.virgilsecurity.sdk:sdk-android:$versions.virgilSdk",
+                'ethree'       : "com.virgilsecurity:ethree:$versions.ethree",
         ],
 
         'conductor'         : [
-                'core'         : "com.bluelinelabs:conductor:$versions.conductor",
+                'core': "com.bluelinelabs:conductor:$versions.conductor",
         ],
 
         'circleImageView'   : "de.hdodenhof:circleimageview:$versions.circleImageView",
@@ -74,7 +73,7 @@ ext.deps = [
         'firebase'          : [
                 'firebaseCore'  : "com.google.firebase:firebase-core:$versions.firebaseCore",
                 'crashlyticsSdk': "com.crashlytics.sdk.android:crashlytics:$versions.crashlyticsSdk",
-                'crashlytics'   : "io.fabric.tools:gradle:$versions.crashlytics",
+                'crashlytics'   : "io.fabric.tools:gradle:$versions.crashlytics", // Move to firebase crashlytics https://firebase.google.com/products/crashlytics
         ],
 
         'google'            : [
