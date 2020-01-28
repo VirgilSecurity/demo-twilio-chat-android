@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**

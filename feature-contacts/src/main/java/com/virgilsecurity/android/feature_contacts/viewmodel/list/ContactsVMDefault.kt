@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_contacts.viewmodel.list
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDo
 import com.virgilsecurity.android.feature_contacts.domain.list.ObserveContactsChangesDo

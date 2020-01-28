@@ -33,10 +33,10 @@
 
 package com.virgilsecurity.android.common.di
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.api.MessagesApi
@@ -116,7 +116,7 @@ val commonModules: Module = module {
     }
     single { UsersLocalDS(get()) as UsersDao }
     single { ImageStorage(get()) }
-    factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
+    factory { androidx.recyclerview.widget.LinearLayoutManager(get()) as androidx.recyclerview.widget.RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
@@ -163,7 +163,7 @@ val channelsModule: Module = module {
     single { ChannelsLocalDS(get(), get()) as ChannelsDao }
     single(KEY_DIFF_CALLBACK_CHANNEL_INFO) { DiffCallback<ChannelInfo>() }
     single(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
-    single { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as RecyclerView.ItemDecoration }
+    single { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as androidx.recyclerview.widget.RecyclerView.ItemDecoration }
     single { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
 }
 

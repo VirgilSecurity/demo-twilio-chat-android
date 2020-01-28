@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.common.data.local.users
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.virgilsecurity.android.base.data.model.User
 import io.reactivex.Single
 

@@ -33,11 +33,11 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.list
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.support.v7.widget.RecyclerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
@@ -60,8 +60,8 @@ import kotlinx.android.synthetic.main.controller_contacts.*
 class ContactsSliceDefault(
         private val actionLiveData: MutableLiveData<ContactsSlice.Action>,
         private val adapter: DelegateAdapter<ChannelInfo>,
-        private val itemDecoratorBottomDivider: RecyclerView.ItemDecoration,
-        private val layoutManager: RecyclerView.LayoutManager
+        private val itemDecoratorBottomDivider: androidx.recyclerview.widget.RecyclerView.ItemDecoration,
+        private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
 ) : BaseViewSlice(), ContactsSlice {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

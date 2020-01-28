@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.base.view.adapter
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 
 open class DiffCallback<T : Comparable<T>> : DiffUtil.Callback() {
 

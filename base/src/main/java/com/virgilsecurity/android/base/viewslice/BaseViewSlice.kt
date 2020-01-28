@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.base.viewslice
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.content.res.Resources
 import android.view.View

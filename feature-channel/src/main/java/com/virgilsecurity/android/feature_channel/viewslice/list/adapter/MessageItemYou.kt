@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.MessageInfo
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault

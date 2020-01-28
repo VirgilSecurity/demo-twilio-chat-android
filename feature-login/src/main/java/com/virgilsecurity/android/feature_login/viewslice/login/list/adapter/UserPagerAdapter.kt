@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.login.list.adapter
 
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.virgilsecurity.android.base.data.model.User
 
 /**
@@ -50,7 +50,7 @@ import com.virgilsecurity.android.base.data.model.User
 /**
  * UserPagerAdapter
  */
-abstract class UserPagerAdapter : PagerAdapter() {
+abstract class UserPagerAdapter : androidx.viewpager.widget.PagerAdapter() {
 
     abstract fun setUsers(users: List<User>)
 

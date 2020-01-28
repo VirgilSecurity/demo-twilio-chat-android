@@ -46,7 +46,10 @@ import com.virgilsecurity.android.feature_drawer_navigation.di.twilioInitModule
 import com.virgilsecurity.android.feature_settings.di.settingsModule
 import com.virgilsecurity.android.virgilmessenger.di.appModule
 import loginControllerModule
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import registrationControllerModule
 
 /**
@@ -60,35 +63,46 @@ import registrationControllerModule
  * ....|_|-
  */
 
-class TwilioApp : Application() {
+class VirgilMorseApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        startKoin(this,
-                  listOf(
-                      // Base modules
-                      utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
-                      // Common modules
-                      commonModules, appModule, messagesModule,
-                      channelsModule, // used in 'contacts' and 'channels list' for now
-                      // Auth modules
-                      authActivityModule, loginControllerModule,
-                      registrationControllerModule,
-                      // Drawer navigation modules
-                      drawerNavigationModule, twilioInitModule,
-                      // Contacts modules
-                      contactsModule, addContactModule,
-                      // Channels list modules
-                      channelsListModule,
-                      // Channel modules
-                      channelModule,
-                      // Settings modules
-                      settingsModule)
-        )
+        startKoin {
+            androidContext(this@VirgilMorseApp)
+            modules(
+                // Base modules
+                utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
+
+                // Common modules
+                commonModules, appModule, messagesModule,
+                channelsModule, // used in 'contacts' and 'channels list' for now
+
+                // Auth modules
+                authActivityModule, loginControllerModule, registrationControllerModule,
+
+                // Drawer navigation modules
+                drawerNavigationModule, twilioInitModule,
+
+                // Contacts modules
+                contactsModule, addContactModule,
+
+                // Channels list modules
+                channelsListModule,
+
+                // Channel modules
+                channelModule,
+
+                // Settings modules
+                settingsModule
+            )
+        }
 
         initStrictMode()
     }
+
+    private fun KoinApplication.modules(vararg modules: Module): KoinApplication =
+            modules(modules.toList())
 
     private fun initStrictMode() {
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()

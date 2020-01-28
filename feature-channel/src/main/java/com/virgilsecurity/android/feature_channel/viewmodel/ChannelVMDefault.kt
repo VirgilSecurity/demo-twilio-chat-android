@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_channel.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import android.content.Context
 import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.MessagesApi

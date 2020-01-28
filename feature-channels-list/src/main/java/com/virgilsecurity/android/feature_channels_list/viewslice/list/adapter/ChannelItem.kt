@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channels_list.viewslice.list.adapter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions

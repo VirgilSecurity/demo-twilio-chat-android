@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.base.extension
 
-import android.databinding.Observable
+import androidx.databinding.Observable
 import io.reactivex.disposables.Disposables
 
 /**

@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_settings.viewmodel.edit
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 
 /**
  * . _  _

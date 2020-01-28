@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_settings.di
 
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_ABOUT_TOOLBAR
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_BSD
 import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_FOOTER

@@ -34,12 +34,12 @@
 package com.virgilsecurity.android.base.view
 
 import android.app.Activity
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
@@ -114,7 +114,7 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
 
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
 
-        session = getKoin().createScope(koinScopeName)
+        session = getKoin().createScope(koinScopeName, )
 
         init(savedInstanceState)
         initViewSlices()

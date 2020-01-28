@@ -35,7 +35,7 @@ package com.virgilsecurity.android.common.view.adapter
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.common.util.UiUtils
 
 /**
@@ -54,9 +54,9 @@ import com.virgilsecurity.android.common.util.UiUtils
  */
 class ItemDecoratorBottomDivider(
         private val mDivider: Drawable
-) : RecyclerView.ItemDecoration() {
+) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
-    override fun onDrawOver(canvas: Canvas?, parent: RecyclerView, state: RecyclerView.State?) {
+    override fun onDrawOver(canvas: Canvas?, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State?) {
         val left = UiUtils.dpToPixels(72, parent.context)
         val right = parent.width - parent.paddingRight
 
@@ -64,7 +64,7 @@ class ItemDecoratorBottomDivider(
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
 
-            val params = child.layoutParams as RecyclerView.LayoutParams
+            val params = child.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
 
             val top = child.bottom + params.bottomMargin
             val bottom = top + mDivider.intrinsicHeight

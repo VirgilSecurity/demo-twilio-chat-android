@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_settings.viewmodel.settings
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.feature_settings.domain.LogoutDo
 
 /**

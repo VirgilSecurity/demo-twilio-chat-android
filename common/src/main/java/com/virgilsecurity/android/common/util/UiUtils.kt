@@ -37,7 +37,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.annotation.IdRes
+import androidx.annotation.IdRes
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast

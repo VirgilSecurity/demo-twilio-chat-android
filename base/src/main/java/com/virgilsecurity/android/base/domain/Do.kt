@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.base.domain
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 
 interface Do<T> {
 

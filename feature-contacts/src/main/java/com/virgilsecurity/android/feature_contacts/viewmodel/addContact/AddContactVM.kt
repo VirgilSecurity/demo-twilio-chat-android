@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_contacts.viewmodel.addContact
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 
 /**

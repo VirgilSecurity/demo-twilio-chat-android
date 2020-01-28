@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.di
 
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractor
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractorDefault

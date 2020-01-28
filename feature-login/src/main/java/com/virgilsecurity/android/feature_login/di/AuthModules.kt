@@ -36,8 +36,8 @@ import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
 import LoginDiConst.SPAN_COUNT
 import LoginDiConst.STATE_SLICE_LOGIN
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.common.data.remote.auth.AuthRemote
 import com.virgilsecurity.android.common.util.DoubleBack

@@ -33,9 +33,9 @@
 
 package com.virgilsecurity.android.base.data.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import android.os.Parcelable
 import com.virgilsecurity.android.base.util.GeneralConstants
 import kotlinx.android.parcel.Parcelize

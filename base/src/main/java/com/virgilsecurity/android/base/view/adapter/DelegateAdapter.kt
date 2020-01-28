@@ -33,15 +33,15 @@
 
 package com.virgilsecurity.android.base.view.adapter
 
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseArray
 import android.view.ViewGroup
 
 class DelegateAdapter<T : Comparable<T>> constructor(
         private val diffCallback: DiffCallback<T>,
         private val typeToAdapterMap: SparseArray<DelegateAdapterItem<BaseViewHolder<T>, T>>
-) : RecyclerView.Adapter<BaseViewHolder<T>>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<BaseViewHolder<T>>() {
 
     private val data: MutableList<T> = mutableListOf()
 

@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**

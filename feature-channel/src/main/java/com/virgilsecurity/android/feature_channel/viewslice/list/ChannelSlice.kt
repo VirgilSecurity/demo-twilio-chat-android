@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.data.model.MessageInfo
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 

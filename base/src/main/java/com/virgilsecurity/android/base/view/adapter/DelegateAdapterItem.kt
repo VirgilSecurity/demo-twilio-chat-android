@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.base.view.adapter
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.view.ViewGroup
 import com.virgilsecurity.android.base.extension.inflate

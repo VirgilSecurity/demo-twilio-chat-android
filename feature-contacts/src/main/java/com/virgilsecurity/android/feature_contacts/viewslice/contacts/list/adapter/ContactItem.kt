@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.adapter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions

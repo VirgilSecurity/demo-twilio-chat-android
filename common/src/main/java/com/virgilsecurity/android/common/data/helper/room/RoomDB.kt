@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.common.data.helper.room
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.data.model.MessageInfo
 import com.virgilsecurity.android.base.data.model.User

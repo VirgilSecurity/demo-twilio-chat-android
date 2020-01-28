@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.base.view
 
-import android.arch.lifecycle.Lifecycle
-import android.support.annotation.LayoutRes
+import androidx.lifecycle.Lifecycle
+import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

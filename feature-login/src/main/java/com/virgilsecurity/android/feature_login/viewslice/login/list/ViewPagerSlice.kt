@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.login.list
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 

@@ -34,8 +34,8 @@
 package com.virgilsecurity.android.feature_settings.view
 
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.design.widget.BottomSheetDialog
+import androidx.annotation.LayoutRes
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView

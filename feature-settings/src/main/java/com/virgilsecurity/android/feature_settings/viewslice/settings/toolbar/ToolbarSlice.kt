@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import android.graphics.Point
 import com.virgilsecurity.android.base.viewslice.ViewSlice
 

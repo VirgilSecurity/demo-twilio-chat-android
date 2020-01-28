@@ -33,10 +33,10 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.settings.footer
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import kotlinx.android.synthetic.main.controller_settings.*

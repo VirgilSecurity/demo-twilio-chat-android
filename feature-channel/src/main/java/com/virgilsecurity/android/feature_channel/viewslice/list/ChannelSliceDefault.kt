@@ -33,11 +33,11 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
-import android.support.v7.widget.RecyclerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.MessageInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
@@ -60,7 +60,7 @@ import kotlinx.android.synthetic.main.controller_channel.*
 class ChannelSliceDefault(
         private val action: MutableLiveData<ChannelSlice.Action>,
         private val adapter: DelegateAdapter<MessageInfo>,
-        private val layoutManager: RecyclerView.LayoutManager
+        private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
 ) : BaseViewSlice(), ChannelSlice {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

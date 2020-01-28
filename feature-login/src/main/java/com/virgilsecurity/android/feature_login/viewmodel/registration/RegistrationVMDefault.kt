@@ -33,9 +33,9 @@
 
 package com.virgilsecurity.android.feature_login.viewmodel.registration
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.databinding.ObservableField
 import com.github.kittinunf.fuel.core.FuelError
 import com.virgilsecurity.android.base.extension.addOnPropertyChanged
 import com.virgilsecurity.android.feature_login.data.exception.AlreadyRegisteredException

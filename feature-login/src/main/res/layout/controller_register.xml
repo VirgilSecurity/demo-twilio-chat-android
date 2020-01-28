@@ -41,7 +41,7 @@
             type="com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
@@ -181,5 +181,5 @@
             app:layout_constraintStart_toEndOf="@id/tvPolicy3"
             app:layout_constraintTop_toTopOf="@id/tvPolicy3"
             tools:textColor="@color/colorAccent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

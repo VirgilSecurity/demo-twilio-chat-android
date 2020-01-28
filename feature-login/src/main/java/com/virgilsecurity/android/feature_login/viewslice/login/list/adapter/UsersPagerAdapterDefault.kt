@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.login.list.adapter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View

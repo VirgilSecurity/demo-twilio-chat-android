@@ -33,9 +33,9 @@
 
 package com.virgilsecurity.android.feature_contacts.viewmodel.addContact
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.databinding.ObservableField
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.addOnPropertyChanged
 import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactDo

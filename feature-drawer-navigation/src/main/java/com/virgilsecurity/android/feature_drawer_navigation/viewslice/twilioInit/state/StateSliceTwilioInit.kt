@@ -34,8 +34,8 @@
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state
 
 import android.animation.ValueAnimator
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation

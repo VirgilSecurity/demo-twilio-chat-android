@@ -33,8 +33,8 @@
 
 package com.virgilsecurity.android.feature_login.viewmodel.registration
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.virgilsecurity.android.base.data.model.User
 
 /**
