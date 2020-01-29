@@ -39,7 +39,6 @@ import com.virgilsecurity.android.base.data.model.MessageInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.di.CommonDiConst
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_INFO
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channel.data.interactor.CardsInteractor
@@ -54,6 +53,7 @@ import com.virgilsecurity.android.feature_channel.di.Const.LD_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.LD_TOOLBAR_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.STATE_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.TOOLBAR_CHANNEL
+import com.virgilsecurity.android.feature_channel.di.Const.VM_CHANNEL
 import com.virgilsecurity.android.feature_channel.domain.*
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
@@ -66,8 +66,9 @@ import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.Message
 import com.virgilsecurity.android.feature_channel.viewslice.state.StateSliceChannel
 import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSliceChannel
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.core.module.Module
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 /**
  * . _  _
@@ -85,35 +86,35 @@ import org.koin.dsl.module.module
  */
 val channelModule: Module = module {
     single { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
-    single(STATE_CHANNEL) { StateSliceChannel() as StateSliceEmptyable }
+    single(named(STATE_CHANNEL)) { StateSliceChannel() as StateSliceEmptyable }
 
-    factory(LD_TOOLBAR_CHANNEL) { MutableLiveData<ToolbarSlice.Action>() }
-    factory(TOOLBAR_CHANNEL) { ToolbarSliceChannel(get(LD_TOOLBAR_CHANNEL)) as ToolbarSlice }
+    factory(named(LD_TOOLBAR_CHANNEL)) { MutableLiveData<ToolbarSlice.Action>() }
+    factory(named(TOOLBAR_CHANNEL)) { ToolbarSliceChannel(get(named(LD_TOOLBAR_CHANNEL))) as ToolbarSlice }
 
-    factory(LD_CHANNEL) { MutableLiveData<ChannelSlice.Action>() }
-    factory(ITEM_ADAPTER_MESSAGE_ME) {
-        MessageItemMe(get(LD_CHANNEL),
+    factory(named(LD_CHANNEL)) { MutableLiveData<ChannelSlice.Action>() }
+    factory(named(ITEM_ADAPTER_MESSAGE_ME)) {
+        MessageItemMe(get(named(LD_CHANNEL)),
                       get(),
                       get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
     }
-    factory(ITEM_ADAPTER_MESSAGE_YOU) {
-        MessageItemYou(get(LD_CHANNEL),
+    factory(named(ITEM_ADAPTER_MESSAGE_YOU)) {
+        MessageItemYou(get(named(LD_CHANNEL)),
                        get(),
                        get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
     }
-    factory(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT) {
+    factory(named(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT)) {
         MessageItemInDevelopment() as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
     }
 
-    factory(ADAPTER_CHANNEL) {
+    factory(named(ADAPTER_CHANNEL)) {
         DelegateAdapter.Builder<MessageInfo>()
-                .add(get(ITEM_ADAPTER_MESSAGE_ME))
-                .add(get(ITEM_ADAPTER_MESSAGE_YOU))
-                .add(get(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT))
-                .diffCallback(get(KEY_DIFF_CALLBACK_MESSAGE_INFO))
+                .add(get(named(ITEM_ADAPTER_MESSAGE_ME)))
+                .add(get(named(ITEM_ADAPTER_MESSAGE_YOU)))
+                .add(get(named(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT)))
+                .diffCallback(get(named(KEY_DIFF_CALLBACK_MESSAGE_INFO)))
                 .build()
     }
-    factory { ChannelSliceDefault(get(LD_CHANNEL), get(ADAPTER_CHANNEL), get()) as ChannelSlice }
+    factory { ChannelSliceDefault(get(named(LD_CHANNEL)), get(named(ADAPTER_CHANNEL)), get()) as ChannelSlice }
 
     factory { GetMessagesDoDefault(get()) as GetMessagesDo }
     factory { ObserveChannelChangesDoDefault(get()) as ObserveChannelChangesDo }
@@ -124,9 +125,9 @@ val channelModule: Module = module {
     factory { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
     factory { CopyMessageDoDefault(get()) as CopyMessageDo }
 
-    module(ChannelController::class.java.simpleName) {
+    module {
         factory { MediatorLiveData<ChannelVM.State>() }
-        factory {
+        factory(named(VM_CHANNEL)) {
             ChannelVMDefault(get(),
                              get(),
                              get(),
@@ -149,4 +150,5 @@ object Const {
     const val ITEM_ADAPTER_MESSAGE_YOU = "ITEM_ADAPTER_MESSAGE_YOU"
     const val ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT = "ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT"
     const val ADAPTER_CHANNEL = "ADAPTER_CHANNEL"
+    const val VM_CHANNEL = "VM_CHANNEL"
 }

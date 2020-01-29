@@ -40,17 +40,18 @@ import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.extension.toKoinPath
-import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.base.view.BaseControllerWithScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.di.Const.STATE_CONTACTS
+import com.virgilsecurity.android.feature_contacts.di.Const.VM_CONTACTS
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
 import io.reactivex.Single
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -72,8 +73,8 @@ class ContactsController() : BaseControllerWithScope() {
 
     private val toolbarSlice: ToolbarSlice by inject()
     private val contactsSlice: ContactsSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(STATE_CONTACTS)
-    private val viewModel: ContactsVM by inject(this::class toKoinPath ContactsVM::class)
+    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CONTACTS))
+    private val viewModel: ContactsVM by inject(named(VM_CONTACTS))
     private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit

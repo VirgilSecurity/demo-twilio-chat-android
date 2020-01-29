@@ -59,7 +59,7 @@ class VirgilHelper(private val cardManager: CardManager,
                    private val privateKeyStorage: PrivateKeyStorage,
                    private val virgilRx: VirgilRx) {
 
-    val cardCrypto: CardCrypto = cardManager.crypto
+    val cardCrypto: VirgilCardCrypto = cardManager.crypto
 
     val virgilCrypto: VirgilCrypto
         get() = (cardManager.crypto as VirgilCardCrypto).virgilCrypto
@@ -84,7 +84,7 @@ class VirgilHelper(private val cardManager: CardManager,
     }
 
     fun generateKeyPair(): VirgilKeyPair {
-        return virgilCrypto.generateKeys()
+        return virgilCrypto.generateKeyPair()
     }
 
     fun generateRawCard(keyPair: VirgilKeyPair, identity: String) =
@@ -92,7 +92,9 @@ class VirgilHelper(private val cardManager: CardManager,
                                         keyPair.publicKey,
                                         identity)
 
-    fun storePrivateKey(privateKey: PrivateKey, identity: String, meta: Map<String, String>? = null) =
+    fun storePrivateKey(privateKey: VirgilPrivateKey,
+                        identity: String,
+                        meta: Map<String, String>? = null) =
             privateKeyStorage.store(privateKey, identity, meta)
 
     fun ifExistsPrivateKey(identity: String) = privateKeyStorage.exists(identity)

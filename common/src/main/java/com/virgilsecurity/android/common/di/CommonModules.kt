@@ -89,8 +89,9 @@ import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider
 import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
 import com.virgilsecurity.sdk.storage.KeyStorage
 import com.virgilsecurity.sdk.storage.PrivateKeyStorage
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.core.module.Module
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 /**
  * . _  _
@@ -108,15 +109,15 @@ import org.koin.dsl.module.module
  */
 
 val commonModules: Module = module {
-    single(KEY_ROOM_DB_NAME) { ROOM_DB_NAME }
+    single(named(KEY_ROOM_DB_NAME)) { ROOM_DB_NAME }
     single {
-        Room.databaseBuilder(get(), RoomDB::class.java, get(KEY_ROOM_DB_NAME))
+        Room.databaseBuilder(get(), RoomDB::class.java, get(named(KEY_ROOM_DB_NAME)))
                 .fallbackToDestructiveMigration()
                 .build()
     }
     single { UsersLocalDS(get()) as UsersDao }
     single { ImageStorage(get()) }
-    factory { androidx.recyclerview.widget.LinearLayoutManager(get()) as androidx.recyclerview.widget.RecyclerView.LayoutManager }
+    factory { androidx.recyclerview.widget.LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
@@ -132,13 +133,13 @@ val networkModule : Module = module {
 }
 
 val virgilModule : Module = module {
-    single { VirgilCardCrypto() as CardCrypto }
+    single { VirgilCardCrypto() }
     single { VirgilCrypto() }
     single { VirgilCardVerifier(get()) as CardVerifier }
     single { RenewTokenCallbackImpl(get(), get(), get()) as CachingJwtProvider.RenewJwtCallback }
     single { CachingJwtProvider(get()) as AccessTokenProvider }
-    single { VirgilPrivateKeyExporter() as PrivateKeyExporter }
-    single { JsonFileKeyStorage(get(CommonDiConst.STORAGE_PATH)) as KeyStorage }
+    single { VirgilPrivateKeyExporter() }
+    single { JsonFileKeyStorage(get(named(CommonDiConst.STORAGE_PATH))) as KeyStorage }
     single { PrivateKeyStorage(get(), get()) }
     single { VirgilHelper(get(), get(), get(), get()) }
     single { CardManager(get(), get(), get()) }
@@ -152,7 +153,7 @@ val twilioModule : Module = module {
 }
 
 val paramsModule : Module = module {
-    single(CommonDiConst.STORAGE_PATH) { ((get() as Context).filesDir.absolutePath) as String }
+    single(named(CommonDiConst.STORAGE_PATH)) { ((get() as Context).filesDir.absolutePath) as String }
 }
 
 // This module in common because for now we using it for contacts screen also
@@ -161,9 +162,9 @@ val channelsModule: Module = module {
     single { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
     single { (get() as RoomDB).channelsQao() }
     single { ChannelsLocalDS(get(), get()) as ChannelsDao }
-    single(KEY_DIFF_CALLBACK_CHANNEL_INFO) { DiffCallback<ChannelInfo>() }
-    single(DIVIDER_DRAWABLE) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
-    single { ItemDecoratorBottomDivider(get(DIVIDER_DRAWABLE)) as androidx.recyclerview.widget.RecyclerView.ItemDecoration }
+    single(named(KEY_DIFF_CALLBACK_CHANNEL_INFO)) { DiffCallback<ChannelInfo>() }
+    single(named(DIVIDER_DRAWABLE)) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
+    single { ItemDecoratorBottomDivider(get(named(DIVIDER_DRAWABLE))) as RecyclerView.ItemDecoration }
     single { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
 }
 
@@ -172,7 +173,7 @@ val messagesModule: Module = module {
     single { MessagesRemoteDS(get(), get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
-    single(KEY_DIFF_CALLBACK_MESSAGE_INFO) { DiffCallback<MessageInfo>() }
+    single(named(KEY_DIFF_CALLBACK_MESSAGE_INFO)) { DiffCallback<MessageInfo>() }
 }
 
 object CommonDiConst {

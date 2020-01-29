@@ -47,6 +47,7 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.virgilsecurity.android.base.util.ContainerView
 import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
 /**
@@ -74,7 +75,8 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
 
-    private val koinScopeName = this::class.java.simpleName
+    protected val koinScopeQualifier = this::class.java.simpleName
+    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
     @ContainerView protected abstract fun provideContainer(): ViewGroup
 
@@ -114,7 +116,7 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
 
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
 
-        session = getKoin().createScope(koinScopeName, )
+        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
 
         init(savedInstanceState)
         initViewSlices()

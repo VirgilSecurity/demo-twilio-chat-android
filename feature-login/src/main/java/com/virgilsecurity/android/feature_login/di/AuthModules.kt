@@ -36,6 +36,8 @@ import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
 import LoginDiConst.SPAN_COUNT
 import LoginDiConst.STATE_SLICE_LOGIN
+import LoginDiConst.VM_LOGIN
+import LoginDiConst.VM_REGISTRATION
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.api.AuthApi
@@ -63,8 +65,9 @@ import com.virgilsecurity.android.feature_login.viewslice.registration.state.Sta
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistrationDefault
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.core.module.Module
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 /**
  * . _  _
@@ -81,22 +84,22 @@ import org.koin.dsl.module.module
  * LoginModules
  */
 val authActivityModule: Module = module {
-    single(KEY_SPAN_COUNT) { SPAN_COUNT }
+    single(named(KEY_SPAN_COUNT)) { SPAN_COUNT }
     single { DoubleBack() }
 
     factory { LoadUsersDoDefault(get()) as LoadUsersDo }
 
-    module(AuthActivity::class.java.simpleName) {
-        scope(AuthActivity::class.java.simpleName) { MediatorLiveData<LoginVM.State>() }
-        scope(AuthActivity::class.java.simpleName) { LoginVMDefault(get(), get()) as LoginVM }
+    module {
+        factory(named(VM_LOGIN)) { MediatorLiveData<LoginVM.State>() }
+        factory(named(VM_LOGIN)) { LoginVMDefault(get(), get()) as LoginVM }
     }
 }
 
 val loginControllerModule: Module = module {
-    single(LIVE_DATA_LOGIN) { MutableLiveData<ViewPagerSlice.Action>() }
-    factory { UsersPagerAdapterDefault(get(), get(LIVE_DATA_LOGIN)) as UserPagerAdapter }
-    factory { ViewPagerSliceDefault(get(), get(LIVE_DATA_LOGIN)) as ViewPagerSlice }
-    factory(STATE_SLICE_LOGIN) { StateSliceLogin() as StateSlice }
+    single(named(LIVE_DATA_LOGIN)) { MutableLiveData<ViewPagerSlice.Action>() }
+    factory { UsersPagerAdapterDefault(get(), get(named(LIVE_DATA_LOGIN))) as UserPagerAdapter }
+    factory { ViewPagerSliceDefault(get(), get(named(LIVE_DATA_LOGIN))) as ViewPagerSlice }
+    factory(named(STATE_SLICE_LOGIN)) { StateSliceLogin() as StateSlice }
 }
 
 val registrationControllerModule: Module = module {
@@ -105,12 +108,12 @@ val registrationControllerModule: Module = module {
 
     factory { SignUpDoDefault(get(), get()) as SignUpDo }
     factory { StateSliceRegistrationDefault(get()) as StateSliceRegistration }
-    factory(LIVE_DATA_REGISTRATION) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceRegistration(get(LIVE_DATA_REGISTRATION)) as ToolbarSlice }
+    factory(named(LIVE_DATA_REGISTRATION)) { MutableLiveData<ToolbarSlice.Action>() }
+    factory { ToolbarSliceRegistration(get(named(LIVE_DATA_REGISTRATION))) as ToolbarSlice }
 
-    module(RegistrationController::class.java.simpleName) {
+    module {
         factory { MediatorLiveData<RegistrationVM.State>() }
-        factory { RegistrationVMDefault(get(), get()) as RegistrationVM }
+        factory(named(VM_REGISTRATION)) { RegistrationVMDefault(get(), get()) as RegistrationVM }
     }
 }
 
@@ -119,6 +122,8 @@ object LoginDiConst {
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
     const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
+    const val VM_LOGIN = "VM_LOGIN"
+    const val VM_REGISTRATION = "VM_REGISTRATION"
 
     const val SPAN_COUNT = 2
 }

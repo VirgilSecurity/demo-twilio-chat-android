@@ -45,7 +45,7 @@ import android.view.inputmethod.InputMethodManager
 import com.bluelinelabs.conductor.Controller
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.*
-import org.koin.standalone.KoinComponent
+import org.koin.core.KoinComponent
 
 /**
  * . _  _

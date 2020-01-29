@@ -35,8 +35,8 @@ package com.virgilsecurity.android.virgilmessenger.di
 
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.virgilmessenger.view.ScreenRouterDefault
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 /**
  * . _  _

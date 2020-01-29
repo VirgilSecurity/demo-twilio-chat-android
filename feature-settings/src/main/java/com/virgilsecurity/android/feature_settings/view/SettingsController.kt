@@ -40,13 +40,15 @@ import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
+import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSlice
 import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSlice
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -71,7 +73,7 @@ class SettingsController() : BaseController() {
     private val headerSlice: HeaderSlice by inject()
     private val footerSlice: FooterSlice by inject()
     private val stateSlice: StateSlice by inject()
-    private val viewModel: SettingsVM by inject(this::class toKoinPath SettingsVM::class)
+    private val viewModel: SettingsVM by inject(named(VM_SETTINGS))
 
     private lateinit var edit: () -> Unit
     private lateinit var logout: () -> Unit

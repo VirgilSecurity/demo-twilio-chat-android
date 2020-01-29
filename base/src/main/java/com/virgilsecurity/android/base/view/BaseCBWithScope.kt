@@ -39,8 +39,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.extensions.LayoutContainer
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
+import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
-import org.koin.standalone.getKoin
 
 /**
  * . _  _
@@ -59,7 +61,8 @@ import org.koin.standalone.getKoin
 abstract class BaseCBWithScope : BaseController(), LayoutContainer {
 
     private lateinit var session: Scope
-    private val koinScopeName = this::class.java.simpleName
+    protected val koinScopeQualifier = this::class.java.simpleName
+    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
     /**
      * Used to initialize view binding
@@ -74,7 +77,7 @@ abstract class BaseCBWithScope : BaseController(), LayoutContainer {
         lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
-        session = getKoin().createScope(koinScopeName)
+        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
 
         init()
         initViewSlices(containerView)

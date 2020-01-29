@@ -15,7 +15,7 @@ def versionMinor = 0
 def versionPatch = 1
 
 static def getApkName(BuildType buildType) {
-    String APP_NAME = "Virgil Messenger "
+    def APP_NAME = "Virgil Messenger "
     switch (buildType) {
         case BuildType.DEBUG:
             return APP_NAME + BuildType.DEBUG.name()

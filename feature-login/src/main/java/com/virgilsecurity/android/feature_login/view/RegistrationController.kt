@@ -33,13 +33,13 @@
 
 package com.virgilsecurity.android.feature_login.view
 
-import androidx.databinding.DataBindingUtil
+import LoginDiConst.VM_REGISTRATION
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseCBWithScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
@@ -50,7 +50,8 @@ import com.virgilsecurity.android.feature_login.viewmodel.registration.Registrat
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistration
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_register.*
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -70,7 +71,7 @@ class RegistrationController() : BaseCBWithScope() {
 
     override val layoutResourceId: Int = R.layout.controller_register
 
-    private val viewModel: RegistrationVM by inject(this::class toKoinPath RegistrationVM::class)
+    private val viewModel: RegistrationVM by inject(named(VM_REGISTRATION))
     private val stateSlice: StateSliceRegistration by inject()
     private val toolbarSlice: ToolbarSlice by inject()
 

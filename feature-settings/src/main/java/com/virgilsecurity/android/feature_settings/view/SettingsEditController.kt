@@ -40,6 +40,7 @@ import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
+import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
@@ -47,7 +48,8 @@ import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterS
 import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -72,7 +74,7 @@ class SettingsEditController() : BaseController() {
     private val headerSlice: HeaderSlice by inject()
     private val footerSlice: FooterSlice by inject()
     private val bottomSheetSlice: BSDSimpleSlice by inject()
-    private val viewModel: SettingsEditVM by inject(this::class toKoinPath SettingsEditVM::class)
+    private val viewModel: SettingsEditVM by inject(named(VM_SETTINGS_EDIT))
 
     private lateinit var logout: () -> Unit
     private lateinit var user: User

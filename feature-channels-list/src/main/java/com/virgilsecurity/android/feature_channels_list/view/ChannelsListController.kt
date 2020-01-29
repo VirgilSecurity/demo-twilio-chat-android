@@ -38,18 +38,18 @@ import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toKoinPath
-import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.base.view.BaseControllerWithScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channels_list.R
 import com.virgilsecurity.android.feature_channels_list.di.Const.STATE_CHANNELS
+import com.virgilsecurity.android.feature_channels_list.di.Const.VM_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
 import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSlice
 import io.reactivex.Single
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 
 /**
@@ -72,8 +72,8 @@ class ChannelsListController() : BaseControllerWithScope() {
 
     private val toolbarSlice: ToolbarSlice by inject()
     private val channelsSlice: ChannelsSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNELS)
-    private val viewModel: ChannelsVM by inject()
+    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CHANNELS))
+    private val viewModel: ChannelsVM by inject(named(VM_CHANNELS_LIST))
     private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit

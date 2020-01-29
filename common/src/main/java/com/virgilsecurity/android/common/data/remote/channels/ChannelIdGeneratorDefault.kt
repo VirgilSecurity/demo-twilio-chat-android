@@ -58,11 +58,11 @@ class ChannelIdGeneratorDefault(
     override fun generatedChannelId(sender: String, interlocutor: String): String =
             if (sender >= interlocutor) {
                 virgilHelper.virgilCrypto
-                        .generateHash((sender + interlocutor).toByteArray(),
+                        .computeHash((sender + interlocutor).toByteArray(),
                                       HashAlgorithm.SHA256)
             } else {
                 virgilHelper.virgilCrypto
-                        .generateHash((interlocutor + sender).toByteArray(),
+                        .computeHash((interlocutor + sender).toByteArray(),
                                       HashAlgorithm.SHA256)
             }.let { concatenatedHashedUsersData ->
                 ConvertionUtils.toHex(concatenatedHashedUsersData).toLowerCase()

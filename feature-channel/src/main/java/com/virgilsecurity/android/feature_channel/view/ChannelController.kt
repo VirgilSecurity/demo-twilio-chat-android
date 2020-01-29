@@ -46,11 +46,13 @@ import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.di.Const.STATE_CHANNEL
 import com.virgilsecurity.android.feature_channel.di.Const.TOOLBAR_CHANNEL
+import com.virgilsecurity.android.feature_channel.di.Const.VM_CHANNEL
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
 import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_channel.*
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -70,10 +72,10 @@ class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel
 
-    private val toolbarSlice: ToolbarSlice by inject(TOOLBAR_CHANNEL)
+    private val toolbarSlice: ToolbarSlice by inject(named(TOOLBAR_CHANNEL))
     private val channelSlice: ChannelSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(STATE_CHANNEL)
-    private val viewModel: ChannelVM by inject(this::class toKoinPath ChannelVM::class)
+    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CHANNEL))
+    private val viewModel: ChannelVM by inject(named(VM_CHANNEL))
     private val userProperties: UserProperties by inject()
 
     private lateinit var interlocutor: String

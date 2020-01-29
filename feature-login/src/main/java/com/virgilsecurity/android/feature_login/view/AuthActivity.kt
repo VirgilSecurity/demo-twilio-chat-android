@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.view
 
+import LoginDiConst.VM_LOGIN
 import android.os.Bundle
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
@@ -52,6 +53,7 @@ import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -72,7 +74,7 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val loginVM: LoginVM by inject(this::class toKoinPath LoginVM::class)
+    private val loginVM: LoginVM by inject(named(VM_LOGIN))
 
     override fun init(savedInstanceState: Bundle?) {
         loginVM.users()

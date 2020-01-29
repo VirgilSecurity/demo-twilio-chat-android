@@ -36,15 +36,15 @@ package com.virgilsecurity.android.feature_drawer_navigation.view
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toKoinPath
-import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.base.view.BaseControllerWithScope
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
+import com.virgilsecurity.android.feature_drawer_navigation.di.Const.VM_INIT_TWILIO
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -65,10 +65,8 @@ class TwilioInitController() : BaseControllerWithScope() {
     override val layoutResourceId: Int = R.layout.controller_twilio_init
 
     private val twilioInitSlice: TwilioInitSlice by inject()
-    private val stateSlice: StateSlice by inject(STATE_SLICE_TWILIO_INIT)
-    private val viewModel: InitTwilioVM by inject(this::class
-                                                          toKoinPath
-                                                          InitTwilioVM::class)
+    private val stateSlice: StateSlice by inject(named(STATE_SLICE_TWILIO_INIT))
+    private val viewModel: InitTwilioVM by inject(named(VM_INIT_TWILIO)) // TODO move all viewModels to corresponding impl in koin
 
     private lateinit var user: User
     private lateinit var initSuccess: () -> Unit

@@ -33,24 +33,24 @@
 
 package com.virgilsecurity.android.feature_contacts.view
 
-import androidx.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseCBWithScope
-import com.virgilsecurity.android.base.view.BaseControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
+import com.virgilsecurity.android.feature_contacts.di.Const.VM_ADD_CONTACT
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
 import kotlinx.android.synthetic.main.controller_add_contact.*
-import org.koin.standalone.inject
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -70,7 +70,7 @@ class AddContactController() : BaseCBWithScope() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
 
-    private val viewModel: AddContactVM by inject(this::class toKoinPath AddContactVM::class)
+    private val viewModel: AddContactVM by inject(named(VM_ADD_CONTACT))
     private val stateSlice: StateSliceAddContact by inject()
     private val toolbarSlice: ToolbarSlice by inject()
 

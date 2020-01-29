@@ -38,7 +38,7 @@ import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.BaseController
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
-import org.koin.standalone.inject
+import org.koin.core.inject
 
 /**
  * . _  _
