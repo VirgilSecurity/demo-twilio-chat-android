@@ -74,7 +74,7 @@ class User(
     fun rawSignedModel(): RawSignedModel = RawSignedModel.fromString(rawSignedModelString)
 
     companion object {
-        const val EXTRA_USER = "EXTRA_USER"
+        const val KEY = "EXTRA_USER"
         const val KEY_IDENTITY = "identity"
         const val KEY_RAW_SIGNED_MODEL = "raw_signed_model"
         const val KEY_USER_PIC_PATH = "user_pic_path"

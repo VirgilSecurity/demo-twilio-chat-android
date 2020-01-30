@@ -52,5 +52,4 @@ dependencies {
     architectureComponents()
     virgil()
     glide()
-    twilio()
 }

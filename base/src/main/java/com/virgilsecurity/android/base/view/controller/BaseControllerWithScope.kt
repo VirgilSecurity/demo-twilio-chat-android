@@ -31,21 +31,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view
+package com.virgilsecurity.android.base.view.controller
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import android.content.Context
-import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import com.bluelinelabs.conductor.Controller
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.*
 import org.koin.core.KoinComponent
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 
 /**
  * . _  _
@@ -61,9 +63,13 @@ import org.koin.core.KoinComponent
 /**
  * BaseController
  */
-abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
+abstract class BaseControllerWithScope : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
 
     protected val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+
+    private lateinit var session: Scope
+    protected val koinScopeQualifier = this::class.java.simpleName
+    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -111,6 +117,8 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
+        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
+
         init()
         initViewSlices(containerView)
 
@@ -148,6 +156,8 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.markState(Lifecycle.State.CREATED)
+
+        session.close()
     }
 
     override fun onDestroy() {

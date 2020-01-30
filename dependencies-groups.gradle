@@ -78,11 +78,9 @@ ext {
         kapt deps.glide.glideCompiler
     }
 
-    twilio = Group {
-        implementation(deps.twilio.chatAndroid) {
-            exclude group: "com.android.support", module: "support-v4"
-        }
-        implementation deps.twilio.accessManager
+    smack = Group {
+        implementation deps.smack.smackExt
+        implementation deps.smack.smackTcp
     }
 
     networking = Group {

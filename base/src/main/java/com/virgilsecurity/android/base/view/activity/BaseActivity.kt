@@ -31,45 +31,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view
+package com.virgilsecurity.android.base.view.activity
 
 import android.app.Activity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
-import androidx.annotation.LayoutRes
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
-import com.bluelinelabs.conductor.Conductor
-import com.bluelinelabs.conductor.Router
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import com.virgilsecurity.android.base.util.ContainerView
-import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    9/12/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * Base Activity with LifecycleRegistry and ViewModel setup function.
  */
-
-/*
- * Base Activity Controller (AC) With Scope - Base class for activities which have koin scope
- * injections.
- */
-abstract class BaseACWithScope : Activity(), LifecycleOwner {
+abstract class BaseActivity : Activity(), LifecycleOwner {
 
     private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
-
-    protected lateinit var routerRoot: Router
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -77,67 +58,41 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
     @ContainerView protected abstract fun provideContainer(): ViewGroup
 
     /**
-     * Used to initialize general options
+     * Used to initialize general options.
      */
     protected abstract fun init(savedInstanceState: Bundle?)
 
     /**
-     * Used to initialize view slices *Before*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun initViewSlices()
-
-    /**
-     * Used to setup view slices *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupViewSlices()
-
-    /**
-     * Used to setup view slices action observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVSActionObservers()
-
-    /**
      * Used to setup view model state observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
+     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
      */
     protected abstract fun setupVMStateObservers()
 
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.markState(Lifecycle.State.CREATED) // TODO deprecated, update
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
         setContentView(layoutResourceId)
 
-        routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
-
         init(savedInstanceState)
-        initViewSlices()
 
-        setupViewSlices()
-        setupVSActionObservers()
         setupVMStateObservers()
     }
 
     override fun onStart() {
         super.onStart()
-        lifecycleRegistry.markState(Lifecycle.State.STARTED)
+        lifecycleRegistry.currentState = Lifecycle.State.STARTED
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
+        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
-    }
-
-    override fun onBackPressed() {
-        if (!routerRoot.handleBack())
-            super.onBackPressed()
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
     protected fun initToolbar(toolbar: Toolbar, title: String) {
@@ -149,6 +104,4 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }

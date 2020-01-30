@@ -51,6 +51,8 @@ import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.common.R
 import com.virgilsecurity.android.common.data.helper.fuel.FuelHelper
 import com.virgilsecurity.android.common.data.helper.room.RoomDB
+import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
+import com.virgilsecurity.android.common.data.helper.smack.SmackRx
 import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
 import com.virgilsecurity.android.common.data.helper.twilio.TwilioRx
 import com.virgilsecurity.android.common.data.helper.virgil.RenewTokenCallbackImpl
@@ -117,7 +119,7 @@ val commonModules: Module = module {
     }
     single { UsersLocalDS(get()) as UsersDao }
     single { ImageStorage(get()) }
-    factory { androidx.recyclerview.widget.LinearLayoutManager(get()) as RecyclerView.LayoutManager }
+    factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
@@ -147,9 +149,9 @@ val virgilModule : Module = module {
     single { VirgilRemoteDS(get()) as VirgilApi }
 }
 
-val twilioModule : Module = module {
-    single { TwilioRx(get(), get()) }
-    single { TwilioHelper(get(), get()) }
+val smackModule : Module = module {
+    single { SmackRx() }
+    single { SmackHelper(get()) }
 }
 
 val paramsModule : Module = module {

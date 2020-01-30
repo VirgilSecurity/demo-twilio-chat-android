@@ -53,6 +53,6 @@ import org.koin.dsl.module
  * AppModules
  */
 
-val appModule : Module = module {
+val appModule: Module = module {
     single { ScreenRouterDefault() as ScreenRouter }
 }

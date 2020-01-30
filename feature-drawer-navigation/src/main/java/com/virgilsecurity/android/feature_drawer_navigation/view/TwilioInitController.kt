@@ -36,7 +36,7 @@ package com.virgilsecurity.android.feature_drawer_navigation.view
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseControllerWithScope
+import com.virgilsecurity.android.base.view.controller.BaseControllerWithScope
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT

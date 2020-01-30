@@ -90,7 +90,6 @@ dependencies {
     networking()
     reactiveness()
     koin()
-    twilio()
     virgil()
     glide()
     architectureComponents()

@@ -72,7 +72,7 @@ class VirgilMorseApp : Application() {
             androidContext(this@VirgilMorseApp)
             modules(
                 // Base modules
-                utilsModule, networkModule, virgilModule, twilioModule, paramsModule,
+                utilsModule, networkModule, virgilModule, smackModule, paramsModule,
 
                 // Common modules
                 commonModules, appModule, messagesModule,

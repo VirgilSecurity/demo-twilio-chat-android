@@ -39,7 +39,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseCBWithScope
+import com.virgilsecurity.android.base.view.controller.BaseCBWithScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding

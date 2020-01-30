@@ -31,35 +31,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger
+package com.virgilsecurity.android.base.view.activity
 
+import android.app.Activity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import android.content.Context
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import android.view.LayoutInflater
-import android.view.View
+import androidx.annotation.LayoutRes
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toolbar
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Router
+import com.virgilsecurity.android.base.util.ContainerView
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    9/6/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * Base Activity With Cotroller
  */
+abstract class BActivityControllerSlices : BActivityController() {
 
-/**
- * TestBottomSheet
- */
-class TestBottomSheet : BottomSheetDialogFragment() {
+    /**
+     * Used to initialize view slices *Before*
+     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
+     */
+    protected abstract fun initViewSlices()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottom_sheet, container, false)
-    }
+    /**
+     * Used to setup view slices *After*
+     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
+     */
+    protected abstract fun setupViewSlices()
 
-    companion object {
-        fun instance() = TestBottomSheet()
+    /**
+     * Used to setup view slices action observers *After*
+     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
+     */
+    protected abstract fun setupVSActionObservers()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initViewSlices()
+
+        setupViewSlices()
+        setupVSActionObservers()
     }
 }

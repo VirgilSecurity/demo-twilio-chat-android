@@ -38,7 +38,7 @@ import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseControllerWithScope
+import com.virgilsecurity.android.base.view.controller.BaseControllerWithScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channels_list.R

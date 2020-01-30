@@ -40,7 +40,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseCBWithScope
+import com.virgilsecurity.android.base.view.controller.BaseCBWithScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
 import com.virgilsecurity.android.feature_login.R

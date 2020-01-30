@@ -31,64 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.view
-
-import android.view.View
-import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
-import org.koin.core.inject
+package com.virgilsecurity.android.common.data.helper.smack
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    9/24/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * SmackRx
  */
-
-/**
- * AboutController
- */
-class AboutController : BaseController() {
-
-    override val layoutResourceId: Int = R.layout.controller_about
-
-    private val toolbarSlice: ToolbarSlice by inject()
-
-    override fun init() {}
-
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-    }
-
-    override fun setupViewSlices(view: View) {}
-
-    override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
-    }
-
-    override fun setupVMStateObservers() {}
-
-    override fun initData() {}
-
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
-            hideKeyboard()
-            backPress()
-        }
-        ToolbarSlice.Action.Idle -> Unit
-    }
-
-    private fun backPress() {
-        router.popCurrentController()
-    }
-
-    companion object {
-        const val KEY_ABOUT_CONTROLLER = "KEY_ABOUT_CONTROLLER"
-    }
+class SmackRx {
 }

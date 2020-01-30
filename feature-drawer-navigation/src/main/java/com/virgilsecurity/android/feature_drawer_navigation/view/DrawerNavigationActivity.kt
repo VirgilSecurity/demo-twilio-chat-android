@@ -45,7 +45,7 @@ import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.getContentView
 import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseActivityController
+import com.virgilsecurity.android.base.view.activity.BActivityController
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.common.view.ScreenChat
 import com.virgilsecurity.android.feature_channel.view.ChannelController
@@ -78,7 +78,7 @@ import org.koin.android.ext.android.inject
  */
 class DrawerNavigationActivity(
         override val layoutResourceId: Int = R.layout.activity_drawer_navigation
-) : BaseActivityController() {
+) : BActivityController() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
 
@@ -89,7 +89,7 @@ class DrawerNavigationActivity(
     private lateinit var user: User
 
     override fun init(savedInstanceState: Bundle?) {
-        user = intent.getParcelableExtra(User.EXTRA_USER)
+        user = intent.getParcelableExtra(User.KEY)
 
         initRouter()
     }

@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_login.view
 
 import android.view.View
-import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.feature_login.R
 import kotlinx.android.synthetic.main.controller_no_users.*
 

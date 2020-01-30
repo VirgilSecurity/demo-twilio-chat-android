@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view
+package com.virgilsecurity.android.base.view.controller
 
 import androidx.lifecycle.Lifecycle
 import androidx.annotation.LayoutRes
@@ -39,8 +39,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.extensions.LayoutContainer
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.GlobalContext
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 

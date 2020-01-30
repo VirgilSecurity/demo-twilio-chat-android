@@ -31,14 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.view
+package com.virgilsecurity.android.base.view.controller
 
+import androidx.lifecycle.Lifecycle
+import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.View
-import com.virgilsecurity.android.base.extension.observe
+import android.view.ViewGroup
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
-import org.koin.core.inject
+import kotlinx.android.extensions.LayoutContainer
 
 /**
  * . _  _
@@ -46,49 +47,40 @@ import org.koin.core.inject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    9/24/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AboutController
+ * BaseController
  */
-class AboutController : BaseController() {
+abstract class BaseControllerBinding : BaseController(), LayoutContainer {
 
-    override val layoutResourceId: Int = R.layout.controller_about
+    /**
+     * Used to initialize view binding
+     */
+    protected abstract fun initViewBinding(inflater: LayoutInflater,
+                                           container: ViewGroup?,
+                                           @LayoutRes layoutResourceId: Int): View
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        containerView = initViewBinding(inflater, container, layoutResourceId)
 
-    override fun init() {}
+        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-    }
+        init()
+        initViewSlices(containerView)
 
-    override fun setupViewSlices(view: View) {}
+        lifecycleRegistry.markState(Lifecycle.State.CREATED)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
-    override fun setupVSActionObservers() {
-        observe(toolbarSlice.getAction(), ::onToolbarActionChanged)
-    }
+        setupViewSlices(containerView)
+        setupVSActionObservers()
+        setupVMStateObservers()
+        initData()
 
-    override fun setupVMStateObservers() {}
-
-    override fun initData() {}
-
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
-            hideKeyboard()
-            backPress()
-        }
-        ToolbarSlice.Action.Idle -> Unit
-    }
-
-    private fun backPress() {
-        router.popCurrentController()
-    }
-
-    companion object {
-        const val KEY_ABOUT_CONTROLLER = "KEY_ABOUT_CONTROLLER"
+        return containerView
     }
 }

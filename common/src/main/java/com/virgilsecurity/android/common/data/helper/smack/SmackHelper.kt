@@ -31,55 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view
-
-import androidx.lifecycle.Lifecycle
-import androidx.annotation.LayoutRes
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import kotlinx.android.extensions.LayoutContainer
+package com.virgilsecurity.android.common.data.helper.smack
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/16/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * SmackHelper
  */
+class SmackHelper(private val smackRx: SmackRx) {
 
-/**
- * BaseController
- */
-abstract class BaseControllerBinding : BaseController(), LayoutContainer {
-
-    /**
-     * Used to initialize view binding
-     */
-    protected abstract fun initViewBinding(inflater: LayoutInflater,
-                                           container: ViewGroup?,
-                                           @LayoutRes layoutResourceId: Int): View
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        containerView = initViewBinding(inflater, container, layoutResourceId)
-
-        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-
-        init()
-        initViewSlices(containerView)
-
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-
-        setupViewSlices(containerView)
-        setupVSActionObservers()
-        setupVMStateObservers()
-        initData()
-
-        return containerView
-    }
 }

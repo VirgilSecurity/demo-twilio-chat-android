@@ -36,12 +36,11 @@ package com.virgilsecurity.android.feature_settings.view
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
-import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice
 import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice

@@ -63,8 +63,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.bottom_sheet_attachments)
 
-//        initBottomSheet()
-
         if (isAuthenticated())
             startChannelsActivity()
         else
@@ -81,7 +79,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun startChannelsActivity() {
         screenRouter.getScreenIntent(this, ScreenChat.DrawerNavigation,
-                                     User.EXTRA_USER, userProperties.currentUser!!)
+                                     User.KEY, userProperties.currentUser!!)
                 .run {
                     startActivity(this)
                     finish()

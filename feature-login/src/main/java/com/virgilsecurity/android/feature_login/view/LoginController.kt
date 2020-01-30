@@ -37,7 +37,7 @@ import LoginDiConst.STATE_SLICE_LOGIN
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_login.R

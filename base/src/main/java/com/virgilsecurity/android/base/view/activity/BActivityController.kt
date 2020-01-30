@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view
+package com.virgilsecurity.android.base.view.activity
 
 import android.app.Activity
 import androidx.lifecycle.Lifecycle
@@ -47,90 +47,21 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.virgilsecurity.android.base.util.ContainerView
 
-abstract class BaseActivityController : Activity(), LifecycleOwner {
-
-    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+/**
+ * Base Activity With Cotroller
+ */
+abstract class BActivityController : BaseActivity() {
 
     protected lateinit var routerRoot: Router
 
-    @get:LayoutRes
-    protected abstract val layoutResourceId: Int
-
-    @ContainerView protected abstract fun provideContainer(): ViewGroup
-
-    /**
-     * Used to initialize general options
-     */
-    protected abstract fun init(savedInstanceState: Bundle?)
-
-    /**
-     * Used to initialize view slices *Before*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun initViewSlices()
-
-    /**
-     * Used to setup view slices *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupViewSlices()
-
-    /**
-     * Used to setup view slices action observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVSActionObservers()
-
-    /**
-     * Used to setup view model state observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
-    protected abstract fun setupVMStateObservers()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        setContentView(layoutResourceId)
 
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
-
-        init(savedInstanceState)
-        initViewSlices()
-
-        setupViewSlices()
-        setupVSActionObservers()
-        setupVMStateObservers()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        lifecycleRegistry.markState(Lifecycle.State.STARTED)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
     }
 
     override fun onBackPressed() {
         if (!routerRoot.handleBack())
             super.onBackPressed()
     }
-
-    protected fun initToolbar(toolbar: Toolbar, title: String) {
-        setActionBar(toolbar)
-        actionBar?.title = title
-    }
-
-    protected fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
-    }
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }

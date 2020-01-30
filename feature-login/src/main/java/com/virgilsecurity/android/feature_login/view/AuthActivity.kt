@@ -33,7 +33,6 @@
 
 package com.virgilsecurity.android.feature_login.view
 
-import LoginDiConst.VM_LOGIN
 import android.os.Bundle
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
@@ -43,8 +42,8 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseACWithScope
 import com.virgilsecurity.android.base.view.ScreenRouter
+import com.virgilsecurity.android.base.view.activity.BActivityController
 import com.virgilsecurity.android.common.util.DoubleBack
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.ScreenChat
@@ -53,7 +52,6 @@ import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.currentScope
-import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -68,24 +66,17 @@ import org.koin.core.qualifier.named
 
 class AuthActivity(
         override val layoutResourceId: Int = R.layout.activity_login
-) : BaseACWithScope() {
+) : BActivityController() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-//    private val loginVM: LoginVM by currentScope.inject(named(VM_LOGIN))
     private val loginVM: LoginVM by currentScope.inject()
 
     override fun init(savedInstanceState: Bundle?) {
         loginVM.users()
     }
-
-    override fun initViewSlices() {}
-
-    override fun setupViewSlices() {}
-
-    override fun setupVSActionObservers() {}
 
     override fun setupVMStateObservers() = observe(loginVM.getState(), ::onStateChanged)
 
@@ -123,7 +114,7 @@ class AuthActivity(
     fun login(user: User) =
             screenRouter.getScreenIntent(this,
                                          ScreenChat.DrawerNavigation,
-                                         User.EXTRA_USER,
+                                         User.KEY,
                                          user)
                     .run {
                         startActivity(this)
@@ -137,22 +128,25 @@ class AuthActivity(
                        RegistrationController.KEY_REGISTRATION_CONTROLLER)
     }
 
-    private fun initRouter(controller: Controller, tag: String) =
-            routerRoot.setRoot(RouterTransaction
-                                       .with(controller.apply {
-                                           retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                                       })
-                                       .pushChangeHandler(SimpleSwapChangeHandler())
-                                       .popChangeHandler(SimpleSwapChangeHandler())
-                                       .tag(tag))
+    private fun initRouter(controller: Controller, tag: String) = routerRoot.setRoot(
+        RouterTransaction
+                .with(controller.apply {
+                    retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                })
+                .pushChangeHandler(SimpleSwapChangeHandler())
+                .popChangeHandler(SimpleSwapChangeHandler())
+                .tag(tag)
+    )
 
     private fun replaceTopController(controller: Controller, tag: String) =
-            routerRoot.replaceTopController(RouterTransaction
-                                                    .with(controller.apply {
-                                                        retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
-                                                    })
-                                                    .pushChangeHandler(SimpleSwapChangeHandler())
-                                                    .tag(tag))
+            routerRoot.replaceTopController(
+                RouterTransaction
+                        .with(controller.apply {
+                            retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+                        })
+                        .pushChangeHandler(SimpleSwapChangeHandler())
+                        .tag(tag)
+            )
 
     private fun pushController(controller: Controller, tag: String) =
             routerRoot.pushController(RouterTransaction

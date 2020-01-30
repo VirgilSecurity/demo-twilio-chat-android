@@ -24,9 +24,9 @@ ext.deps = [
         ],
 
         'koin'              : [
-                'android': "org.koin:koin-android:$versions.koin",
-                'scope'  : "org.koin:koin-android-scope:$versions.koin",
-                'viewModel'  : "org.koin:koin-android-viewmodel:$versions.koin",
+                'android'  : "org.koin:koin-android:$versions.koin",
+                'scope'    : "org.koin:koin-android-scope:$versions.koin",
+                'viewModel': "org.koin:koin-android-viewmodel:$versions.koin",
         ],
 
         'rx'                : [
@@ -48,9 +48,9 @@ ext.deps = [
                 'glideCompiler': "com.github.bumptech.glide:compiler:$versions.glide",
         ],
 
-        'twilio'            : [
-                'chatAndroid'  : "com.twilio:chat-android:$versions.twilioSdk",
-                'accessManager': "com.twilio:accessmanager-android:$versions.twilioAccessManager",
+        'smack'             : [
+                'smackExt': "org.igniterealtime.smack:smack-android-extensions:$versions.smack",
+                'smackTcp': "org.igniterealtime.smack:smack-tcp:$versions.smack",
         ],
 
         'fuel'              : "com.github.kittinunf.fuel:fuel-android:$versions.fuel",
@@ -60,8 +60,8 @@ ext.deps = [
         'viewPagerIndicator': "com.github.vivchar:ViewPagerIndicator:$versions.viewPagerIndicator",
 
         'virgilSecurity'    : [
-                'sdkAndroid'   : "com.virgilsecurity.sdk:sdk-android:$versions.virgilSdk",
-                'ethree'       : "com.virgilsecurity:ethree:$versions.ethree",
+                'sdkAndroid': "com.virgilsecurity.sdk:sdk-android:$versions.virgilSdk",
+                'ethree'    : "com.virgilsecurity:ethree:$versions.ethree",
         ],
 
         'conductor'         : [

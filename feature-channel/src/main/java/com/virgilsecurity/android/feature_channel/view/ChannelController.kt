@@ -38,8 +38,7 @@ import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toMessageInfo
-import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channel.R

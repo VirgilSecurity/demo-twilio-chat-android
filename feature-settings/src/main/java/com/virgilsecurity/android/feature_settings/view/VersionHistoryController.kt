@@ -35,7 +35,7 @@ package com.virgilsecurity.android.feature_settings.view
 
 import android.view.View
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.BaseController
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice
 import org.koin.core.inject
