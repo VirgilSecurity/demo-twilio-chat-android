@@ -70,13 +70,9 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
     private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 
     protected lateinit var routerRoot: Router
-    private lateinit var session: Scope
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
-
-    protected val koinScopeQualifier = this::class.java.simpleName
-    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
     @ContainerView protected abstract fun provideContainer(): ViewGroup
 
@@ -111,12 +107,10 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
+        lifecycleRegistry.markState(Lifecycle.State.CREATED) // TODO deprecated, update
         setContentView(layoutResourceId)
 
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
-
-        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
 
         init(savedInstanceState)
         initViewSlices()
@@ -139,8 +133,6 @@ abstract class BaseACWithScope : Activity(), LifecycleOwner {
     override fun onDestroy() {
         super.onDestroy()
         lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
-
-        session.close()
     }
 
     override fun onBackPressed() {

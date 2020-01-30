@@ -34,6 +34,7 @@
 import LoginDiConst.KEY_SPAN_COUNT
 import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
+import LoginDiConst.MLD_LOGIN
 import LoginDiConst.SPAN_COUNT
 import LoginDiConst.STATE_SLICE_LOGIN
 import LoginDiConst.VM_LOGIN
@@ -41,6 +42,7 @@ import LoginDiConst.VM_REGISTRATION
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.api.AuthApi
+import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.common.data.remote.auth.AuthRemote
 import com.virgilsecurity.android.common.util.DoubleBack
 import com.virgilsecurity.android.common.viewslice.StateSlice
@@ -51,7 +53,6 @@ import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDoDefault
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDo
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDoDefault
 import com.virgilsecurity.android.feature_login.view.AuthActivity
-import com.virgilsecurity.android.feature_login.view.RegistrationController
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVMDefault
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
@@ -65,6 +66,7 @@ import com.virgilsecurity.android.feature_login.viewslice.registration.state.Sta
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistrationDefault
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -83,16 +85,12 @@ import org.koin.dsl.module
 /**
  * LoginModules
  */
-val authActivityModule: Module = module {
-    single(named(KEY_SPAN_COUNT)) { SPAN_COUNT }
-    single { DoubleBack() }
+val authActivityModule: Module = moduleWithScope(named<AuthActivity>()) {
+        scoped { DoubleBack() }
 
-    factory { LoadUsersDoDefault(get()) as LoadUsersDo }
-
-    module {
-        factory(named(VM_LOGIN)) { MediatorLiveData<LoginVM.State>() }
-        factory(named(VM_LOGIN)) { LoginVMDefault(get(), get()) as LoginVM }
-    }
+        scoped { LoadUsersDoDefault(get()) as LoadUsersDo }
+        scoped { MediatorLiveData<LoginVM.State>() }
+        viewModel { LoginVMDefault(get(), get()) as LoginVM }
 }
 
 val loginControllerModule: Module = module {
@@ -122,6 +120,7 @@ object LoginDiConst {
     const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
     const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
+    const val MLD_LOGIN = "MLD_LOGIN"
     const val VM_LOGIN = "VM_LOGIN"
     const val VM_REGISTRATION = "VM_REGISTRATION"
 

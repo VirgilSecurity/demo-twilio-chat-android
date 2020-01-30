@@ -53,6 +53,7 @@ ext {
     koin = Group {
         implementation deps.koin.android
         implementation deps.koin.scope
+        implementation deps.koin.viewModel
     }
 
     reactiveness = Group {

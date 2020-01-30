@@ -43,7 +43,6 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.extension.toKoinPath
 import com.virgilsecurity.android.base.view.BaseACWithScope
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.common.util.DoubleBack
@@ -53,6 +52,7 @@ import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
 import org.koin.core.qualifier.named
 
 /**
@@ -74,7 +74,8 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val loginVM: LoginVM by inject(named(VM_LOGIN))
+//    private val loginVM: LoginVM by currentScope.inject(named(VM_LOGIN))
+    private val loginVM: LoginVM by currentScope.inject()
 
     override fun init(savedInstanceState: Bundle?) {
         loginVM.users()

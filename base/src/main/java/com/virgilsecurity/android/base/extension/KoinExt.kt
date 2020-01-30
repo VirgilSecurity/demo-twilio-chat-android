@@ -31,19 +31,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_login
+package com.virgilsecurity.android.base.extension
+
+import org.koin.core.module.Module
+import org.koin.core.qualifier.Qualifier
+import org.koin.dsl.ScopeSet
+import org.koin.dsl.module
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * KoinExt
  */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.virgilsecurity.android.feature_login.test", appContext.packageName)
+fun moduleWithScope(createdAtStart: Boolean = false,
+                    override: Boolean = false,
+                    scopeName: Qualifier,
+                    scopeSet: ScopeSet.() -> Unit): Module {
+    return module {
+        scope(scopeName, scopeSet)
+    }
+}
+
+fun moduleWithScope(scopeName: Qualifier,
+                    scopeSet: ScopeSet.() -> Unit): Module {
+    return module {
+        scope(scopeName, scopeSet)
     }
 }
