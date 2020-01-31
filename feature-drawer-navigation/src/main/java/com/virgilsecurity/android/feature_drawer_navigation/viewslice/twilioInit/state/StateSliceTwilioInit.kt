@@ -45,7 +45,6 @@ import com.virgilsecurity.android.common.viewslice.StateSlice
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.controller_twilio_init.*
 import java.util.concurrent.TimeUnit
 
 /**

@@ -33,8 +33,6 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.edit.state
 
-import com.virgilsecurity.android.base.viewslice.ViewSlice
-
 /**
  * . _  _
  * .| || | _
@@ -49,7 +47,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * StateSlice
  */
-interface StateSlice : ViewSlice {
+interface StateSlice : ViewSliceLegacy {
 
     fun showLoading()
 

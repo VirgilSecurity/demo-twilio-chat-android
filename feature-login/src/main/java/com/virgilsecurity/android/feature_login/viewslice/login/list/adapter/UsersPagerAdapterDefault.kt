@@ -46,7 +46,6 @@ import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_login.R
-import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import java.util.*
 
 /**

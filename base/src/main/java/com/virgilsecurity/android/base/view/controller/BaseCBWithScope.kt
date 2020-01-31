@@ -72,16 +72,10 @@ abstract class BaseCBWithScope : BaseController(), LayoutContainer {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         containerView = initViewBinding(inflater, container, layoutResourceId)
 
-        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-
         session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
 
         init()
         initViewSlices(containerView)
-
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
         setupViewSlices(containerView)
         setupVSActionObservers()

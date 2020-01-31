@@ -45,7 +45,6 @@ import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_settings.R
-import kotlinx.android.synthetic.main.controller_settings_edit.*
 
 /**
  * . _  _

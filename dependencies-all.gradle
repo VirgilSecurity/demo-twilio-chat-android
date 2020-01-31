@@ -65,7 +65,8 @@ ext.deps = [
         ],
 
         'conductor'         : [
-                'core': "com.bluelinelabs:conductor:$versions.conductor",
+                'core'         : "com.bluelinelabs:conductor:$versions.conductor",
+                'archlifecycle': "com.bluelinelabs:conductor-archlifecycle:$versions.conductor",
         ],
 
         'circleImageView'   : "de.hdodenhof:circleimageview:$versions.circleImageView",

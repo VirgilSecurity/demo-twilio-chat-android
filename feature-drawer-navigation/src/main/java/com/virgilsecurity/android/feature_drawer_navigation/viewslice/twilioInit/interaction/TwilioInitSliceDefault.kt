@@ -38,7 +38,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_twilio_init.*
 
 /**
  * . _  _

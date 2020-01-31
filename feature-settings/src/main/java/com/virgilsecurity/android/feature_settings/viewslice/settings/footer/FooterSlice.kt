@@ -34,7 +34,6 @@
 package com.virgilsecurity.android.feature_settings.viewslice.settings.footer
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,7 +49,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * FooterSlice
  */
-interface FooterSlice : ViewSlice {
+interface FooterSlice : ViewSliceLegacy {
 
     sealed class Action {
         object AboutClicked : Action()

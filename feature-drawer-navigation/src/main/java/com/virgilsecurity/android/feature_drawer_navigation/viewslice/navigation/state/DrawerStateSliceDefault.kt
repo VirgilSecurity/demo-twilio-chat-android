@@ -36,7 +36,6 @@ package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigatio
 import androidx.drawerlayout.widget.DrawerLayout
 import android.view.Gravity
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 
 /**
  * . _  _

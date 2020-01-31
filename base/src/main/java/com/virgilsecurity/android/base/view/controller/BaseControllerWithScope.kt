@@ -152,8 +152,6 @@ abstract class BaseControllerWithScope : Controller(), LayoutContainer, Lifecycl
     override fun onDestroyView(view: View) {
         super.onDestroyView(view)
 
-        clearFindViewByIdCache()
-
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.markState(Lifecycle.State.CREATED)
 

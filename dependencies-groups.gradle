@@ -99,6 +99,7 @@ ext {
 
     conductor = Group {
         implementation deps.conductor.core
+        implementation deps.conductor.archlifecycle
     }
 
     circleImageView = Group {

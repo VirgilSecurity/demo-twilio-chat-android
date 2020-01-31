@@ -34,7 +34,6 @@
 package com.virgilsecurity.android.feature_settings.viewslice.settings.header
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,7 +49,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * HeaderSlice
  */
-interface HeaderSlice : ViewSlice {
+interface HeaderSlice : ViewSliceLegacy {
 
     sealed class Action {
         object ChangePicClicked : Action()

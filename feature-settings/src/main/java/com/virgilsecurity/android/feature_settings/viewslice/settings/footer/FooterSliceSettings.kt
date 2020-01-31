@@ -39,7 +39,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_settings.*
 
 /**
  * . _  _

@@ -43,6 +43,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
+import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.*
 import org.koin.core.KoinComponent
@@ -61,9 +63,7 @@ import org.koin.core.KoinComponent
 /**
  * BaseController
  */
-abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, KoinComponent {
-
-    protected val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+abstract class BaseController : LifecycleController(), LayoutContainer, KoinComponent {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -109,13 +109,8 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         containerView = inflater.inflate(layoutResourceId, container, false)
 
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-
         init()
         initViewSlices(containerView)
-
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
         setupViewSlices(containerView)
         setupVSActionObservers()
@@ -124,40 +119,6 @@ abstract class BaseController : Controller(), LayoutContainer, LifecycleOwner, K
 
         return containerView
     }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
-        lifecycleRegistry.markState(Lifecycle.State.STARTED)
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        lifecycleRegistry.markState(Lifecycle.State.RESUMED)
-    }
-
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-
-        lifecycleRegistry.markState(Lifecycle.State.STARTED)
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-
-        clearFindViewByIdCache()
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        lifecycleRegistry.markState(Lifecycle.State.DESTROYED)
-    }
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     protected fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

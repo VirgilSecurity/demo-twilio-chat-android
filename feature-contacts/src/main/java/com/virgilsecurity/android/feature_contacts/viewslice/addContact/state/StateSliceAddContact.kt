@@ -33,8 +33,6 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.addContact.state
 
-import com.virgilsecurity.android.base.viewslice.ViewSlice
-
 /**
  * . _  _
  * .| || | _
@@ -49,7 +47,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * StateSliceAddContact
  */
-interface StateSliceAddContact : ViewSlice {
+interface StateSliceAddContact : ViewSliceLegacy {
 
     fun showConsistent()
 

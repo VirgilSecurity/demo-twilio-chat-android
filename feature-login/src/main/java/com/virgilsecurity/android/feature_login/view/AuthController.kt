@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.view
 
-import LoginDiConst.STATE_SLICE_LOGIN
+import LoginDiConst.VM_AUTH
 import android.view.View
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
@@ -42,10 +42,8 @@ import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
-import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import kotlinx.android.synthetic.main.controller_login.*
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -61,13 +59,13 @@ import org.koin.core.qualifier.named
 /**
  * LoginController
  */
-class LoginController() : BaseController() {
+class AuthController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_login
 
     private val viewPagerSlice: ViewPagerSlice by inject()
-    private val stateSlice: StateSlice by inject(named(STATE_SLICE_LOGIN))
-    private val viewModel: LoginVM by inject()
+    private val stateSlice: StateSlice by inject()
+    private val viewModel: LoginVM by getKoin().getScope(VM_AUTH).inject()
 
     private lateinit var login: (User) -> Unit
     private lateinit var registration: () -> Unit

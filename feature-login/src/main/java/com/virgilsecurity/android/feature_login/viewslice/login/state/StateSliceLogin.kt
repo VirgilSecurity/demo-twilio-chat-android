@@ -38,7 +38,6 @@ import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.viewslice.StateSlice
-import kotlinx.android.synthetic.main.controller_login.*
 
 /**
  * . _  _

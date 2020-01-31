@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.view
 
+import LoginDiConst.VM_AUTH
 import android.os.Bundle
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
@@ -50,8 +51,8 @@ import com.virgilsecurity.android.common.view.ScreenChat
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import kotlinx.android.synthetic.main.activity_login.*
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
-import org.koin.android.scope.currentScope
 
 /**
  * . _  _
@@ -72,21 +73,22 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val loginVM: LoginVM by currentScope.inject()
+    private val loginVM: LoginVM by getKoin().getScope(VM_AUTH).inject()
 
     override fun init(savedInstanceState: Bundle?) {
         loginVM.users()
+        findViewById<>()
     }
 
     override fun setupVMStateObservers() = observe(loginVM.getState(), ::onStateChanged)
 
     private fun onStateChanged(state: LoginVM.State) = when (state) {
         is LoginVM.State.UsersLoaded -> {
-            LoginController(::login, ::registration).run {
+            AuthController(::login, ::registration).run {
                 if (routerRoot.hasNoRootController())
-                    initRouter(this, LoginController.KEY_LOGIN_CONTROLLER)
+                    initRouter(this, AuthController.KEY_LOGIN_CONTROLLER)
                 else
-                    replaceTopController(this, LoginController.KEY_LOGIN_CONTROLLER)
+                    replaceTopController(this, AuthController.KEY_LOGIN_CONTROLLER)
             }
 
         }
@@ -102,11 +104,11 @@ class AuthActivity(
         LoginVM.State.ShowContent -> Unit
         LoginVM.State.LoginError -> Unit
         LoginVM.State.ShowError -> {
-            LoginController(::login, ::registration).run {
+            AuthController(::login, ::registration).run {
                 if (routerRoot.hasNoRootController())
-                    initRouter(this, LoginController.KEY_LOGIN_CONTROLLER)
+                    initRouter(this, AuthController.KEY_LOGIN_CONTROLLER)
                 else
-                    replaceTopController(this, LoginController.KEY_LOGIN_CONTROLLER)
+                    replaceTopController(this, AuthController.KEY_LOGIN_CONTROLLER)
             }
         }
     }

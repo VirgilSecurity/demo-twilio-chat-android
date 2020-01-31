@@ -31,13 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import LoginDiConst.KEY_SPAN_COUNT
-import LoginDiConst.LIVE_DATA_LOGIN
 import LoginDiConst.LIVE_DATA_REGISTRATION
-import LoginDiConst.MLD_LOGIN
-import LoginDiConst.SPAN_COUNT
-import LoginDiConst.STATE_SLICE_LOGIN
-import LoginDiConst.VM_LOGIN
+import LoginDiConst.VM_AUTH
 import LoginDiConst.VM_REGISTRATION
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -52,12 +47,11 @@ import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDoDefault
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDo
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDoDefault
-import com.virgilsecurity.android.feature_login.view.AuthActivity
+import com.virgilsecurity.android.feature_login.view.AuthController
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
 import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVMDefault
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault
-import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSliceDefault
 import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UserPagerAdapter
 import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapterDefault
@@ -85,19 +79,21 @@ import org.koin.dsl.module
 /**
  * LoginModules
  */
-val authActivityModule: Module = moduleWithScope(named<AuthActivity>()) {
-        scoped { DoubleBack() }
+val authActivityModule: Module = module {
+    single { DoubleBack() }
 
+    scope(named(VM_AUTH)) {
         scoped { LoadUsersDoDefault(get()) as LoadUsersDo }
         scoped { MediatorLiveData<LoginVM.State>() }
         viewModel { LoginVMDefault(get(), get()) as LoginVM }
+    }
 }
 
-val loginControllerModule: Module = module {
-    single(named(LIVE_DATA_LOGIN)) { MutableLiveData<ViewPagerSlice.Action>() }
-    factory { UsersPagerAdapterDefault(get(), get(named(LIVE_DATA_LOGIN))) as UserPagerAdapter }
-    factory { ViewPagerSliceDefault(get(), get(named(LIVE_DATA_LOGIN))) as ViewPagerSlice }
-    factory(named(STATE_SLICE_LOGIN)) { StateSliceLogin() as StateSlice }
+val loginControllerModule: Module = moduleWithScope(named<AuthController>()) {
+    scoped { MutableLiveData<ViewPagerSlice.Action>() }
+    factory { UsersPagerAdapterDefault(get(), get()) as UserPagerAdapter }
+    factory { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
+    factory { StateSliceLogin() as StateSlice }
 }
 
 val registrationControllerModule: Module = module {
@@ -116,13 +112,7 @@ val registrationControllerModule: Module = module {
 }
 
 object LoginDiConst {
-    const val KEY_SPAN_COUNT = "KEY_SPAN_COUNT"
-    const val LIVE_DATA_LOGIN = "LIVE_DATA_LOGIN"
+    const val VM_AUTH = "VM_LOGIN"
     const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
-    const val STATE_SLICE_LOGIN = "STATE_SLICE_LOGIN"
-    const val MLD_LOGIN = "MLD_LOGIN"
-    const val VM_LOGIN = "VM_LOGIN"
     const val VM_REGISTRATION = "VM_REGISTRATION"
-
-    const val SPAN_COUNT = 2
 }

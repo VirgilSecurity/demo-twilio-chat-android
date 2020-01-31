@@ -56,11 +56,6 @@ android {
     }
 }
 
-// Common flags
-androidExtensions {
-    experimental = true
-}
-
 kapt {
     mapDiagnosticLocations = true
 }

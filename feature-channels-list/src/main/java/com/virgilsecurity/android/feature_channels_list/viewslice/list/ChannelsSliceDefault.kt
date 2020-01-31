@@ -37,11 +37,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelInfo
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import kotlinx.android.synthetic.main.controller_channels_list.*
 
 /**
  * . _  _

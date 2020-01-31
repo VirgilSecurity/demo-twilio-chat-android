@@ -33,8 +33,6 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.registration.state
 
-import com.virgilsecurity.android.base.viewslice.ViewSlice
-
 /**
  * . _  _
  * .| || | _
@@ -49,7 +47,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * StateSliceRegistration
  */
-interface StateSliceRegistration : ViewSlice {
+interface StateSliceRegistration : ViewSliceLegacy {
 
     fun showConsistent()
 

@@ -67,18 +67,13 @@ abstract class BaseControllerBinding : BaseController(), LayoutContainer {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         containerView = initViewBinding(inflater, container, layoutResourceId)
 
-        lifecycleRegistry.markState(Lifecycle.State.INITIALIZED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-
         init()
         initViewSlices(containerView)
-
-        lifecycleRegistry.markState(Lifecycle.State.CREATED)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
         setupViewSlices(containerView)
         setupVSActionObservers()
         setupVMStateObservers()
+
         initData()
 
         return containerView

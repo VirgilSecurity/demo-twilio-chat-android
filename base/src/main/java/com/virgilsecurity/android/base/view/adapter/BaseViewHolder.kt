@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 abstract class BaseViewHolder<T>(itemView: View)
-    : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) where T : Comparable<T> {
+    : RecyclerView.ViewHolder(itemView) where T : Comparable<T> {
 
     private var listener: ((viewType: T, view: View) -> Unit)? = null
 

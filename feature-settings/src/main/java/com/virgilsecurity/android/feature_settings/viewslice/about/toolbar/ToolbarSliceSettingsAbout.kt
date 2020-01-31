@@ -40,7 +40,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.view.Toolbar
 import com.virgilsecurity.android.feature_settings.R
-import kotlinx.android.synthetic.main.controller_about.*
 
 /**
  * . _  _

@@ -62,14 +62,17 @@ import kotlinx.android.parcel.Parcelize
 class User(
         @PrimaryKey @ColumnInfo(name = KEY_IDENTITY)
         val identity: String,
+
         @ColumnInfo(name = KEY_RAW_SIGNED_MODEL)
         val rawSignedModelString: String,
-        @ColumnInfo(name = KEY_USER_PIC_PATH) val picturePath: String? = null
+
+        @ColumnInfo(name = KEY_USER_PIC_PATH)
+        val picturePath: String? = null
 ) : Comparable<User>, Parcelable {
 
     override fun compareTo(other: User): Int = this.identity.compareTo(other.identity)
 
-    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel())
+    fun card(): Card = Card.parse(VirgilCardCrypto(), rawSignedModel()) // TODO get crypto from outside to avoid crypto class duplicates
 
     fun rawSignedModel(): RawSignedModel = RawSignedModel.fromString(rawSignedModelString)
 

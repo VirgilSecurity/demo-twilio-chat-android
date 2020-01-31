@@ -33,30 +33,23 @@
 
 package com.virgilsecurity.android.base.viewslice
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.content.res.Resources
-import android.view.View
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
+import android.view.Window
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 
-abstract class BaseViewSlice : ViewSlice, LayoutContainer {
+abstract class BaseViewSlice : LifecycleObserver {
 
-    protected lateinit var context: Context
+    protected lateinit var window: Window
     protected lateinit var resources: Resources
 
-    override lateinit var containerView: View
+    protected abstract fun setupViews()
 
-    override fun init(lifecycle: Lifecycle, view: View) {
+    fun init(lifecycle: Lifecycle, window: Window) {
         lifecycle.addObserver(this)
-        context = view.context
-        resources = view.resources
-        containerView = view
-    }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    override fun cleanViewIdsCache() {
-        clearFindViewByIdCache()
+        this.window = window
+        this.resources = window.context.resources
     }
 }

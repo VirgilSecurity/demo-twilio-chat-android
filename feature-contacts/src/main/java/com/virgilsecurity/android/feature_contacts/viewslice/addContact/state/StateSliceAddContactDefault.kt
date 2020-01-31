@@ -44,7 +44,6 @@ import com.virgilsecurity.android.feature_contacts.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.controller_add_contact.*
 import java.util.concurrent.TimeUnit
 
 /**

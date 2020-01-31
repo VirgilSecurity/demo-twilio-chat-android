@@ -36,7 +36,6 @@ package com.virgilsecurity.android.feature_contacts.viewslice.contacts.state
 import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
-import kotlinx.android.synthetic.main.controller_contacts.*
 
 /**
  * . _  _

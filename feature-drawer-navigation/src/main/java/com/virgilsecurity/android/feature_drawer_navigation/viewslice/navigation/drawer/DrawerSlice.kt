@@ -34,7 +34,6 @@
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,7 +49,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * DrawerSlice
  */
-interface DrawerSlice : ViewSlice {
+interface DrawerSlice : ViewSliceLegacy {
 
     sealed class Action {
         object ContactsClicked : Action()

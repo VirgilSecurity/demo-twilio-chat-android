@@ -34,7 +34,6 @@
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,7 +49,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * TwilioInitSlice
  */
-interface TwilioInitSlice : ViewSlice {
+interface TwilioInitSlice : ViewSliceLegacy {
 
     sealed class Action {
         object RetryClicked : Action()

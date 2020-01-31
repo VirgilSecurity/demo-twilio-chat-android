@@ -33,14 +33,17 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.login.list
 
+import android.view.Window
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.viewpager.widget.ViewPager
+import com.github.vivchar.viewpagerindicator.ViewPagerIndicator
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UserPagerAdapter
-import kotlinx.android.synthetic.main.controller_login.*
 
 /**
  * . _  _
@@ -58,8 +61,18 @@ import kotlinx.android.synthetic.main.controller_login.*
  */
 class ViewPagerSliceDefault(
         private val adapter: UserPagerAdapter,
-        private val actionLiveData: MutableLiveData<ViewPagerSlice.Action>
-) : BaseViewSlice(), ViewPagerSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
+
+    private lateinit var vpUsers: ViewPager
+    private lateinit var vpIndicatorUsers: ViewPagerIndicator
+
+    override fun setupViews() {
+        with(window) {
+            vpUsers = findViewById(R.id.vpUsers)
+            vpIndicatorUsers = findViewById(R.id.vpIndicatorUsers)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -70,13 +83,18 @@ class ViewPagerSliceDefault(
         vpUsers.adapter = adapter
     }
 
-    override fun getAction(): LiveData<ViewPagerSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
 
-    override fun showUsers(users: List<User>) {
+    fun showUsers(users: List<User>) {
         adapter.setUsers(users)
     }
 
-    override fun updateIndicator() {
+    fun updateIndicator() {
         vpIndicatorUsers.setupWithViewPager(vpUsers)
+    }
+
+    sealed class Action {
+        data class UserClicked(val user: User) : Action()
+        object Idle : Action()
     }
 }

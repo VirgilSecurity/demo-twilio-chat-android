@@ -35,7 +35,6 @@ package com.virgilsecurity.android.feature_settings.viewslice.settings.menu
 
 import androidx.lifecycle.LiveData
 import android.graphics.Point
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -51,7 +50,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * MenuSlice
  */
-interface MenuSlice : ViewSlice {
+interface MenuSlice : ViewSliceLegacy {
 
     sealed class Action {
         object EditClicked : Action()

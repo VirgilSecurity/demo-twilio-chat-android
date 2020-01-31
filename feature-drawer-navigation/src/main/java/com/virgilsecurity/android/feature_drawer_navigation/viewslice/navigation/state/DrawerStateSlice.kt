@@ -33,8 +33,6 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state
 
-import com.virgilsecurity.android.base.viewslice.ViewSlice
-
 /**
  * . _  _
  * .| || | _
@@ -49,7 +47,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * DrawerStateSlice
  */
-interface DrawerStateSlice : ViewSlice {
+interface DrawerStateSlice : ViewSliceLegacy {
 
     fun lockDrawer()
 

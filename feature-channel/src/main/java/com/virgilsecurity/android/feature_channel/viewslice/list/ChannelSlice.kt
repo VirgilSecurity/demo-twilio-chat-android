@@ -35,7 +35,6 @@ package com.virgilsecurity.android.feature_channel.viewslice.list
 
 import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.data.model.MessageInfo
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -51,7 +50,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * ChannelSlice
  */
-interface ChannelSlice : ViewSlice {
+interface ChannelSlice : ViewSliceLegacy {
 
     sealed class Action {
         data class MessageClicked(val message: MessageInfo) : Action()

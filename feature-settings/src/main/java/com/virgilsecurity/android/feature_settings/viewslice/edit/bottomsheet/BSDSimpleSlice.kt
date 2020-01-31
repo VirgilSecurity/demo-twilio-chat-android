@@ -34,7 +34,6 @@
 package com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.viewslice.ViewSlice
 
 /**
  * . _  _
@@ -50,7 +49,7 @@ import com.virgilsecurity.android.base.viewslice.ViewSlice
 /**
  * BSDSimpleSlice - Bottom Sheet Dialog (BSD) Simple Slice with title and submit/cancel buttons.
  */
-interface BSDSimpleSlice : ViewSlice {
+interface BSDSimpleSlice : ViewSliceLegacy {
 
     sealed class Action {
         object YesClicked : Action()
