@@ -33,13 +33,12 @@
 
 package com.virgilsecurity.android.feature_channel.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import android.content.Context
-import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.MessagesApi
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.util.GeneralConstants
 import com.virgilsecurity.android.feature_channel.domain.*
 import com.virgilsecurity.sdk.cards.Card
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
@@ -59,7 +58,7 @@ import com.virgilsecurity.sdk.crypto.VirgilPublicKey
  * ChannelVMDefault
  */
 class ChannelVMDefault(
-        private val state: MediatorLiveData<ChannelVM.State>,
+        private val state: MediatorLiveData<State>,
         private val getMessagesDo: GetMessagesDo,
         private val sendMessageDo: SendMessageDo,
         private val observeChannelChangesDo: ObserveChannelChangesDo,
@@ -70,7 +69,7 @@ class ChannelVMDefault(
         private val copyMessageDo: CopyMessageDo
 ) : ChannelVM() {
 
-    private lateinit var channel: Channel
+    private lateinit var channel: ChannelMeta
     private var cards = mutableListOf<Card>()
 
     init {
@@ -102,7 +101,7 @@ class ChannelVMDefault(
     override fun copyMessage(body: String?, context: Context) =
             copyMessageDo.execute(body, context)
 
-    private fun observeChannelChanges(channel: Channel) =
+    private fun observeChannelChanges(channel: ChannelMeta) =
             observeChannelChangesDo.execute(channel)
 
     override fun onCleared() {
@@ -158,14 +157,14 @@ class ChannelVMDefault(
             is GetChannelDo.Result.OnSuccess -> {
                 channel = result.channel
 
-                val identity = if (channel.attributes[GeneralConstants.KEY_SENDER] ==
-                        userProperties.currentUser!!.identity) {
-                    channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String
-                } else {
-                    channel.attributes[GeneralConstants.KEY_SENDER] as String
-                }
+//                val identity = if (channel.attributes[GeneralConstants.KEY_SENDER] ==
+//                        userProperties.currentUser!!.identity) {
+//                    channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String
+//                } else {
+//                    channel.attributes[GeneralConstants.KEY_SENDER] as String
+//                }
 
-                getCardDo.execute(identity)
+//                getCardDo.execute(identity)
             }
             is GetChannelDo.Result.OnError -> State.ShowError
         }
@@ -174,7 +173,7 @@ class ChannelVMDefault(
     private fun onShowMessagePreviewResult(result: ShowMessagePreviewDo.Result?) {
         when (result) {
             is ShowMessagePreviewDo.Result.OnSuccess -> {
-                state.value = ChannelVM.State.MessagePreviewAdded(result.message)
+                state.value = State.MessagePreviewAdded(result.message)
             }
             ShowMessagePreviewDo.Result.MessageIsTooLong -> state.value = State.MessageIsTooLong
             is ShowMessagePreviewDo.Result.OnError -> State.ShowError
@@ -184,7 +183,7 @@ class ChannelVMDefault(
 
     private fun onCopyMessageResult(result: CopyMessageDo.Result?) {
         when (result) {
-            is CopyMessageDo.Result.OnSuccess -> state.value = ChannelVM.State.MessageCopied
+            is CopyMessageDo.Result.OnSuccess -> state.value = State.MessageCopied
             is CopyMessageDo.Result.OnError -> State.ShowError
         }
     }

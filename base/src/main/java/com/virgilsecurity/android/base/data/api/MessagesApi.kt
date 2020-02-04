@@ -33,12 +33,10 @@
 
 package com.virgilsecurity.android.base.data.api
 
-import com.twilio.chat.Channel
-import com.twilio.chat.Member
-import com.twilio.chat.Message
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import io.reactivex.Flowable
 import io.reactivex.Single
+import org.jivesoftware.smack.chat2.ChatManager
 
 /**
  * . _  _
@@ -56,27 +54,7 @@ import io.reactivex.Single
  */
 interface MessagesApi {
 
-    fun messagesCount(channel: Channel): Single<Long>
+    fun observeChatMessages(chatManager: ChatManager): Flowable<MessageMeta>
 
-    fun messagesAfter(channel: Channel, startIndex: Long, count: Int): Single<List<MessageInfo>>
-
-    fun lastMessages(channel: Channel, count: Int): Single<List<MessageInfo>>
-
-    fun observeChannelChanges(channel: Channel): Flowable<ChannelChanges>
-
-    fun sendMessage(channel: Channel, body: String): Single<MessageInfo>
-
-    sealed class ChannelChanges {
-        data class MemberDeleted(val member: Member?) : ChannelChanges()
-        data class TypingEnded(val channel: Channel?, val member: Member?) : ChannelChanges()
-        data class MessageAdded(val message: Message?) : ChannelChanges()
-        data class MessageDeleted(val message: Message?) : ChannelChanges()
-        data class MemberAdded(val member: Member?) : ChannelChanges()
-        data class TypingStarted(val channel: Channel?, val member: Member?) : ChannelChanges()
-        data class SynchronizationChanged(val channel: Channel?) : ChannelChanges()
-        data class MessageUpdated(val message: Message?, val reason: Message.UpdateReason?) : ChannelChanges()
-        data class MemberUpdated(val member: Member?, val reason: Member.UpdateReason?) : ChannelChanges()
-
-        data class Exception(val error: Throwable) : ChannelChanges()
-    }
+    fun sendMessage(channel: ChatManager, body: String): Single<MessageMeta>
 }

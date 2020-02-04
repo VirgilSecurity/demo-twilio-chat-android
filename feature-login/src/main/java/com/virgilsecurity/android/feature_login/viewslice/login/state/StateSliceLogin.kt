@@ -35,9 +35,13 @@ package com.virgilsecurity.android.feature_login.viewslice.login.state
 
 import android.animation.ValueAnimator
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.viewslice.StateSlice
+import com.virgilsecurity.android.feature_login.R
 
 /**
  * . _  _
@@ -53,11 +57,23 @@ import com.virgilsecurity.android.common.viewslice.StateSlice
 /**
  * StateSliceLogin
  */
-class StateSliceLogin : BaseViewSlice(), StateSlice {
+class StateSliceLogin : BaseViewSlice() {
 
     private var loadingFader: ValueAnimator? = null
 
-    override fun showLoading() {
+    private lateinit var clContent: ConstraintLayout
+    private lateinit var tvError: TextView
+    private lateinit var ivLoading: VectorMasterView
+
+    override fun setupViews() {
+        with(window) {
+            clContent = findViewById(R.id.clContent)
+            tvError = findViewById(R.id.tvError)
+            ivLoading = findViewById(R.id.ivLoading)
+        }
+    }
+
+    fun showLoading() {
         clContent.visibility = View.GONE
         tvError.visibility = View.GONE
 
@@ -65,7 +81,7 @@ class StateSliceLogin : BaseViewSlice(), StateSlice {
         loadingFader = UiUtils.fadeVectorReverse(ivLoading)
     }
 
-    override fun showContent() {
+    fun showContent() {
         ivLoading.visibility = View.GONE
         loadingFader?.end()
         tvError.visibility = View.GONE
@@ -73,7 +89,7 @@ class StateSliceLogin : BaseViewSlice(), StateSlice {
         clContent.visibility = View.VISIBLE
     }
 
-    override fun showError() {
+    fun showError() {
         ivLoading.visibility = View.GONE
         loadingFader?.end()
         clContent.visibility = View.GONE

@@ -35,7 +35,7 @@ package com.virgilsecurity.android.feature_settings.domain
 
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
+import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.repository.UsersRepository
 import io.reactivex.Completable
@@ -58,7 +58,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class DeleteAccountDoDefault(
         private val userProperties: UserProperties,
-        private val twilioHelper: TwilioHelper,
+        private val smackHelper: SmackHelper,
         private val virgilHelper: VirgilHelper,
         private val usersRepository: UsersRepository
 ) : BaseDo<DeleteAccountDo.Result>(), DeleteAccountDo {
@@ -76,9 +76,7 @@ class DeleteAccountDoDefault(
             Completable.concat(this)
                     .subscribeOn(Schedulers.io())
                     .doOnComplete {
-                        Completable.fromCallable {
-                            twilioHelper.stopChatClient()
-                        }.subscribe()
+                        smackHelper.stopClient().subscribe()
                     }.observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::success, ::error)
                     .track()

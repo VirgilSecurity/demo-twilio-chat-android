@@ -31,9 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar
+package com.virgilsecurity.android.base.view.controller
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.Lifecycle
+import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.virgilsecurity.android.base.view.controller.BaseController
+import kotlinx.android.extensions.LayoutContainer
 
 /**
  * . _  _
@@ -41,20 +47,24 @@ import androidx.lifecycle.LiveData
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ToolbarSlice
+ * BaseController
  */
-interface ToolbarSlice : ViewSliceLegacy {
+abstract class BControllerBinding : BaseController() {
 
-    sealed class Action {
-        object BackClicked : Action()
-        object Idle : Action()
+    /**
+     * Used to initialize view binding
+     */
+    protected abstract fun initViewBinding(inflater: LayoutInflater,
+                                           container: ViewGroup?,
+                                           @LayoutRes layoutResourceId: Int): View
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        return initViewBinding(inflater, container, layoutResourceId)
     }
-
-    fun getAction(): LiveData<Action>
 }

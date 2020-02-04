@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_channel.domain
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.Do
 
 /**
@@ -54,7 +54,7 @@ import com.virgilsecurity.android.base.domain.Do
 interface GetMessagesDo : Do<GetMessagesDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val messages: List<MessageInfo>) : Result()
+        data class OnSuccess(val messages: List<MessageMeta>) : Result()
         object OnEmpty : Result()
         data class OnError(val error: Throwable) : Result()
     }

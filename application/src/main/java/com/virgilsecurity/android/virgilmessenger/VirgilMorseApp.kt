@@ -41,11 +41,9 @@ import com.virgilsecurity.android.feature_channel.di.channelModule
 import com.virgilsecurity.android.feature_channels_list.di.channelsListModule
 import com.virgilsecurity.android.feature_contacts.di.addContactModule
 import com.virgilsecurity.android.feature_contacts.di.contactsModule
-import com.virgilsecurity.android.feature_drawer_navigation.di.drawerNavigationModule
 import com.virgilsecurity.android.feature_drawer_navigation.di.twilioInitModule
 import com.virgilsecurity.android.feature_settings.di.settingsModule
 import com.virgilsecurity.android.virgilmessenger.di.appModule
-import loginControllerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -79,10 +77,10 @@ class VirgilMorseApp : Application() {
                 channelsModule, // used in 'contacts' and 'channels list' for now
 
                 // Auth modules
-                authActivityModule, loginControllerModule, registrationControllerModule,
+                authActivityModule, registrationControllerModule,
 
                 // Drawer navigation modules
-                drawerNavigationModule, twilioInitModule,
+                twilioInitModule,
 
                 // Contacts modules
                 contactsModule, addContactModule,

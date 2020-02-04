@@ -42,6 +42,7 @@ import androidx.lifecycle.LifecycleObserver
 abstract class BaseViewSlice : LifecycleObserver {
 
     protected lateinit var window: Window
+    protected lateinit var context: Context
     protected lateinit var resources: Resources
 
     protected abstract fun setupViews()
@@ -50,6 +51,9 @@ abstract class BaseViewSlice : LifecycleObserver {
         lifecycle.addObserver(this)
 
         this.window = window
+        this.context = window.context
         this.resources = window.context.resources
+
+        setupViews()
     }
 }

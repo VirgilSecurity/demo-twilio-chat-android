@@ -31,7 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.viewslice
+package com.virgilsecurity.android.feature_login.viewmodel.login
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import com.virgilsecurity.android.base.data.model.User
 
 /**
  * . _  _
@@ -39,21 +43,28 @@ package com.virgilsecurity.android.common.viewslice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    6/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSlice
+ * AuthVM
  */
-interface StateSliceEmptyable : ViewSliceLegacy {
+abstract class AuthVM : ViewModel() {
 
-    fun showLoading()
+    sealed class State {
+        data class UsersLoaded(val users: List<User>) : State()
+        object LoginError : State()
+        object ShowNoUsers : State()
+        object ShowLoading : State()
+        object ShowContent : State()
+        object ShowError : State()
+    }
 
-    fun showContent()
+    abstract fun getState() : LiveData<State>
 
-    fun showError()
+    abstract fun users()
 
-    fun showEmpty()
+    abstract fun login(identity: String)
 }

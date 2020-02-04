@@ -33,20 +33,14 @@
 
 package com.virgilsecurity.android.base.view.controller
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import android.content.Context
 import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
 import org.koin.core.KoinComponent
 
 /**
@@ -63,7 +57,7 @@ import org.koin.core.KoinComponent
 /**
  * BaseController
  */
-abstract class BaseController : LifecycleController(), LayoutContainer, KoinComponent {
+abstract class BaseController : LifecycleController(), KoinComponent {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -71,19 +65,19 @@ abstract class BaseController : LifecycleController(), LayoutContainer, KoinComp
     /**
      * Used to initialize general options
      */
-    protected abstract fun init()
+    protected abstract fun init(containerView: View)
 
     /**
      * Used to initialize view slices *Before*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
-    protected abstract fun initViewSlices(view: View)
+    protected abstract fun initViewSlices(window: Window)
 
     /**
      * Used to setup view slices *After*
      * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
      */
-    protected abstract fun setupViewSlices(view: View)
+    protected abstract fun setupViewSlices(containerView: View)
 
     /**
      * Used to setup view slices action observers *After*
@@ -104,20 +98,21 @@ abstract class BaseController : LifecycleController(), LayoutContainer, KoinComp
      */
     protected abstract fun initData()
 
-    override lateinit var containerView: View
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        containerView = inflater.inflate(layoutResourceId, container, false)
+        return inflater.inflate(layoutResourceId, container, false)
+    }
 
-        init()
-        initViewSlices(containerView)
+    override fun onAttach(containerView: View) {
+        super.onAttach(containerView)
 
+        init(containerView)
+        initViewSlices(activity!!.window)
+
+        // At this point we should have activity initialized already
         setupViewSlices(containerView)
         setupVSActionObservers()
         setupVMStateObservers()
         initData()
-
-        return containerView
     }
 
     protected fun hideKeyboard() {

@@ -31,7 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.viewslice
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state
+
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.GravityCompat
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_drawer_navigation.R
 
 /**
  * . _  _
@@ -39,19 +44,38 @@ package com.virgilsecurity.android.common.viewslice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSlice
+ * DrawerStateSliceDefault
  */
-interface StateSlice : ViewSliceLegacy {
+class StateSliceDrawer : BaseViewSlice() {
 
-    fun showLoading()
+    private lateinit var dlDrawer: DrawerLayout
 
-    fun showContent()
+    override fun setupViews() {
+        with(window) {
+            this@StateSliceDrawer.dlDrawer = findViewById(R.id.dlDrawer)
 
-    fun showError()
+        }
+    }
+
+    fun lockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    fun unLockDrawer() {
+        dlDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    fun openDrawer() {
+        dlDrawer.openDrawer(GravityCompat.START)
+    }
+
+    fun closeDrawer() {
+        dlDrawer.closeDrawer(GravityCompat.START)
+    }
 }

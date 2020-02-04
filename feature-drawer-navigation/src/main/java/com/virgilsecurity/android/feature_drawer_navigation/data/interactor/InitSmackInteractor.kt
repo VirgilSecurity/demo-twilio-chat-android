@@ -31,10 +31,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar
+package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 
-import androidx.lifecycle.LiveData
-import android.graphics.Point
+import com.virgilsecurity.android.base.data.model.User
+import io.reactivex.Completable
 
 /**
  * . _  _
@@ -42,21 +42,15 @@ import android.graphics.Point
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/17/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ToolbarSlice
+ * InitTwilioInteractor
  */
-interface ToolbarSlice : ViewSliceLegacy {
+interface InitSmackInteractor {
 
-    sealed class Action {
-        object BackClicked : Action()
-        data class MenuClicked(val showPoint: Point) : Action()
-        object Idle : Action()
-    }
-
-    fun getAction(): LiveData<Action>
+    fun initClient(user: User) : Completable
 }

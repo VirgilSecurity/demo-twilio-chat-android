@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_channel.domain
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -71,7 +71,7 @@ class GetMessagesDoDefault(
                     .subscribe(::success, ::error, ::ifEmpty)
                     .track()
 
-    private fun success(messages: List<MessageInfo>) {
+    private fun success(messages: List<MessageMeta>) {
         liveData.value = GetMessagesDo.Result.OnSuccess(messages)
     }
 

@@ -35,8 +35,7 @@ package com.virgilsecurity.android.feature_contacts.viewmodel.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 
 /**
  * . _  _
@@ -55,7 +54,7 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 abstract class ContactsVM : ViewModel() {
 
     sealed class State {
-        data class ContactsLoaded(val contacts: List<ChannelInfo>) : State()
+        data class ContactsLoaded(val contacts: List<ChannelMeta>) : State()
         object ShowEmpty : State()
         object ShowLoading : State()
         object ShowContent : State()

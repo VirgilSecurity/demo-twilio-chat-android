@@ -34,48 +34,20 @@
 package com.virgilsecurity.android.feature_settings.di
 
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_ABOUT_TOOLBAR
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_BSD
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_FOOTER
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_HEADER
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_EDIT_TOOLBAR
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_FOOTER
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_HEADER
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_MENU
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_SETTINGS_TOOLBAR
-import com.virgilsecurity.android.feature_settings.di.Const.LIVE_DATA_VERSION_HISTORY_TOOLBAR
-import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS
-import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS_EDIT
+import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDo
 import com.virgilsecurity.android.feature_settings.domain.DeleteAccountDoDefault
 import com.virgilsecurity.android.feature_settings.domain.LogoutDo
 import com.virgilsecurity.android.feature_settings.domain.LogoutDoDefault
+import com.virgilsecurity.android.feature_settings.view.SettingsController
+import com.virgilsecurity.android.feature_settings.view.SettingsEditController
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVMDefault
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVMDefault
-import com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSliceSettingsAbout
-import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
-import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSliceSettingsEdit
-import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSliceSettingsEdit
-import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSliceSettingsEdit
-import com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSliceSettingsEdit
-import com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSliceSettingsEdit
-import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSliceSettings
-import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSliceSettingsVersions
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 /**
  * . _  _
@@ -92,102 +64,14 @@ import org.koin.dsl.module
  * SettingsModules
  */
 
-val settingsModule: Module = module {
-
-    factory { StateSliceSettings() as StateSlice }
-    factory {
-        StateSliceSettingsEdit() as
-                com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSlice
-    }
-
-    // Settings
-    module {
-        factory { MediatorLiveData<SettingsVM.State>() }
-        factory(named(VM_SETTINGS)) { SettingsVMDefault(get(), get()) as SettingsVM }
-    }
-
-    factory(named(LIVE_DATA_SETTINGS_FOOTER)) { MutableLiveData<FooterSlice.Action>() }
-    factory { FooterSliceSettings(get(named(LIVE_DATA_SETTINGS_FOOTER))) as FooterSlice }
-
-    factory(named(LIVE_DATA_SETTINGS_TOOLBAR)) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceSettings(get(named(LIVE_DATA_SETTINGS_TOOLBAR))) as ToolbarSlice }
-
-    factory(named(LIVE_DATA_SETTINGS_MENU)) { MutableLiveData<MenuSlice.Action>() }
-    factory { MenuSliceSettings(get(named(LIVE_DATA_SETTINGS_MENU))) as MenuSlice }
-
-    factory(named(LIVE_DATA_SETTINGS_HEADER)) { MutableLiveData<HeaderSlice.Action>() }
-    factory { HeaderSliceSettings(get(named(LIVE_DATA_SETTINGS_HEADER)), get()) as HeaderSlice }
-
-    factory { LogoutDoDefault(get(), get()) as LogoutDo }
-
-    // Settings edit
-    module {
-        factory { MediatorLiveData<SettingsEditVM.State>() }
-        factory(named(VM_SETTINGS_EDIT)) { SettingsEditVMDefault(get(), get()) as SettingsEditVM }
-    }
-
-    factory(named(LIVE_DATA_SETTINGS_EDIT_TOOLBAR)) {
-        MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice.Action>()
-    }
-    factory {
-        ToolbarSliceSettingsEdit(get(named(LIVE_DATA_SETTINGS_EDIT_TOOLBAR))) as
-                com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice
-    }
-
-    factory(named(LIVE_DATA_SETTINGS_EDIT_HEADER)) {
-        MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice.Action>()
-    }
-    factory {
-        HeaderSliceSettingsEdit(get(named(LIVE_DATA_SETTINGS_EDIT_HEADER)), get()) as
-                com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice
-    }
-
-    factory(named(LIVE_DATA_SETTINGS_EDIT_FOOTER)) {
-        MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice.Action>()
-    }
-    factory {
-        FooterSliceSettingsEdit(get(named(LIVE_DATA_SETTINGS_EDIT_FOOTER))) as
-                com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice
-    }
-
-    factory(named(LIVE_DATA_SETTINGS_EDIT_BSD)) { MutableLiveData<BSDSimpleSlice.Action>() }
-    factory { BSDSimpleSliceSettingsEdit(get(named(LIVE_DATA_SETTINGS_EDIT_BSD))) as BSDSimpleSlice }
-
-    factory { DeleteAccountDoDefault(get(), get(), get(), get()) as DeleteAccountDo }
-
-    // About screen
-    factory(named(LIVE_DATA_ABOUT_TOOLBAR)) {
-        MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice.Action>()
-    }
-    factory {
-        ToolbarSliceSettingsAbout(get(named(LIVE_DATA_ABOUT_TOOLBAR))) as
-                com.virgilsecurity.android.feature_settings.viewslice.about.toolbar.ToolbarSlice
-
-    }
-
-    // Version history screen
-    factory(named(LIVE_DATA_VERSION_HISTORY_TOOLBAR)) {
-        MutableLiveData<com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice.Action>()
-    }
-    factory {
-        ToolbarSliceSettingsVersions(get(named(LIVE_DATA_VERSION_HISTORY_TOOLBAR))) as
-                com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSlice
-    }
+val settingsModule: Module = moduleWithScope(named<SettingsController>()) {
+    scoped { LogoutDoDefault(get(), get()) as LogoutDo }
+    scoped { MediatorLiveData<SettingsVM.State>() }
+    viewModel { SettingsVMDefault(get(), get()) as SettingsVM }
 }
 
-object Const {
-    const val LIVE_DATA_SETTINGS_TOOLBAR = "LIVE_DATA_SETTINGS_TOOLBAR"
-    const val LIVE_DATA_SETTINGS_FOOTER = "LIVE_DATA_SETTINGS_FOOTER"
-    const val LIVE_DATA_SETTINGS_MENU = "LIVE_DATA_SETTINGS_MENU"
-    const val LIVE_DATA_SETTINGS_HEADER = "LIVE_DATA_SETTINGS_HEADER"
-    const val VM_SETTINGS = "VM_SETTINGS"
-
-    const val LIVE_DATA_SETTINGS_EDIT_TOOLBAR = "LIVE_DATA_SETTINGS_EDIT_TOOLBAR"
-    const val LIVE_DATA_SETTINGS_EDIT_HEADER = "LIVE_DATA_SETTINGS_EDIT_HEADER"
-    const val LIVE_DATA_SETTINGS_EDIT_FOOTER = "LIVE_DATA_SETTINGS_EDIT_FOOTER"
-    const val LIVE_DATA_SETTINGS_EDIT_BSD = "LIVE_DATA_SETTINGS_EDIT_BSD"
-    const val VM_SETTINGS_EDIT = "VM_SETTINGS_EDIT"
-
-    const val LIVE_DATA_ABOUT_TOOLBAR = "LIVE_DATA_ABOUT_TOOLBAR"
-    const val LIVE_DATA_VERSION_HISTORY_TOOLBAR = "LIVE_DATA_VERSION_HISTORY_TOOLBAR"
+val settingsEditModule: Module = moduleWithScope(named<SettingsEditController>()) {
+    scoped { DeleteAccountDoDefault(get(), get(), get(), get()) as DeleteAccountDo }
+    scoped { MediatorLiveData<SettingsEditVM.State>() }
+    viewModel { SettingsEditVMDefault(get(), get()) as SettingsEditVM }
 }

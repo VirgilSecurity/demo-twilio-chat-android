@@ -35,7 +35,7 @@ package com.virgilsecurity.android.feature_contacts.viewmodel.addContact
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 
 /**
  * . _  _
@@ -54,7 +54,7 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 abstract class AddContactVM : ViewModel() {
 
     sealed class State {
-        data class ContactAdded(val channel: ChannelInfo) : State()
+        data class ContactAdded(val channel: ChannelMeta) : State()
         object ShowLoading : State()
         object ShowError : State()
         object NoSuchUser : State()

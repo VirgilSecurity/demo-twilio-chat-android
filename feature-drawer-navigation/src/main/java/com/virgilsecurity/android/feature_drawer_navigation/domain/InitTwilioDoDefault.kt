@@ -36,7 +36,7 @@ package com.virgilsecurity.android.feature_drawer_navigation.domain
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractor
+import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -55,11 +55,11 @@ import io.reactivex.schedulers.Schedulers
  * InitTwilioDoDefault
  */
 class InitTwilioDoDefault(
-        private val initTwilioInteractor: InitTwilioInteractor
+        private val initSmackInteractor: InitSmackInteractor
 ) : BaseDo<InitTwilioDo.Result>(), InitTwilioDo {
 
     override fun execute(user: User) {
-        initTwilioInteractor.initClient(user)
+        initSmackInteractor.initClient(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(::success, ::error)

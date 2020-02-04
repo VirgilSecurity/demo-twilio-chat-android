@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.list
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 
 /**
  * . _  _
@@ -53,13 +53,13 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 interface ContactsSlice : ViewSliceLegacy {
 
     sealed class Action {
-        data class ContactClicked(val contact: ChannelInfo) : Action()
+        data class ContactClicked(val contact: ChannelMeta) : Action()
         object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>
 
-    fun showContacts(contacts: List<ChannelInfo>)
+    fun showContacts(contacts: List<ChannelMeta>)
 
-    fun addContact(contact: ChannelInfo)
+    fun addContact(contact: ChannelMeta)
 }

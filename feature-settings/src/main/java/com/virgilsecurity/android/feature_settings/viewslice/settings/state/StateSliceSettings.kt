@@ -35,8 +35,12 @@ package com.virgilsecurity.android.feature_settings.viewslice.settings.state
 
 import android.animation.ValueAnimator
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
+import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.feature_settings.R
 
 /**
  * . _  _
@@ -52,13 +56,22 @@ import com.virgilsecurity.android.common.util.UiUtils
 /**
  * StateSliceSettings
  */
-class StateSliceSettings : BaseViewSlice(), StateSlice {
+class StateSliceSettings : BaseViewSlice() {
 
     private lateinit var loadingFader: ValueAnimator
+    private lateinit var flLoading: FrameLayout
+    private lateinit var ivLoading: VectorMasterView
 
-    override fun showLoading() = showState(LOADING)
+    override fun setupViews() {
+        with(window) {
+            this@StateSliceSettings.flLoading = findViewById(R.id.flLoading)
+            this@StateSliceSettings.ivLoading = findViewById(R.id.ivLoading)
+        }
+    }
 
-    override fun showError() = showState(ERROR)
+    fun showLoading() = showState(LOADING)
+
+    fun showError() = showState(ERROR)
 
     private fun showState(state: Int) {
         when (state) {

@@ -34,29 +34,17 @@
 package com.virgilsecurity.android.feature_drawer_navigation.di
 
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.common.viewslice.StateSlice
-import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractor
-import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitTwilioInteractorDefault
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.LIVE_DATA_DRAWER
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.LIVE_DATA_TWILIO_INIT
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.MEDIATOR_LIVE_DATA_INIT_TWILIO
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.VM_INIT_TWILIO
+import com.virgilsecurity.android.base.extension.moduleWithScope
+import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractor
+import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractorDefault
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDoDefault
+import com.virgilsecurity.android.feature_drawer_navigation.view.SmackInitController
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVMDefault
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSliceDefault
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSliceDefault
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSliceDefault
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceTwilioInit
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 /**
  * . _  _
@@ -73,34 +61,9 @@ import org.koin.dsl.module
  * DrawerNavigationModules
  */
 
-val drawerNavigationModule: Module = module {
-    factory(named(LIVE_DATA_DRAWER)) { MutableLiveData<DrawerSlice.Action>() }
-    factory { DrawerSliceDefault(get(named(LIVE_DATA_DRAWER)), get()) as DrawerSlice }
-    factory { DrawerStateSliceDefault() as DrawerStateSlice }
-}
-
-val twilioInitModule: Module = module {
-    single { InitTwilioInteractorDefault(get(), get(), get()) as InitTwilioInteractor }
-
-    factory { InitTwilioDoDefault(get()) as InitTwilioDo }
-
-    factory(named(LIVE_DATA_TWILIO_INIT)) { MutableLiveData<TwilioInitSlice.Action>() }
-    factory { TwilioInitSliceDefault(get(named(LIVE_DATA_TWILIO_INIT))) as TwilioInitSlice }
-
-    factory(named(STATE_SLICE_TWILIO_INIT)) { StateSliceTwilioInit() as StateSlice }
-
-    module {
-        factory(named(MEDIATOR_LIVE_DATA_INIT_TWILIO)) { MediatorLiveData<InitTwilioVM.State>() }
-        factory(named(VM_INIT_TWILIO)) {
-            InitTwilioVMDefault(get(named(MEDIATOR_LIVE_DATA_INIT_TWILIO)), get()) as InitTwilioVM
-        }
-    }
-}
-
-object Const {
-    const val STATE_SLICE_TWILIO_INIT = "STATE_SLICE_TWILIO_INIT"
-    const val LIVE_DATA_DRAWER = "LIVE_DATA_DRAWER"
-    const val LIVE_DATA_TWILIO_INIT = "LIVE_DATA_TWILIO_INIT"
-    const val MEDIATOR_LIVE_DATA_INIT_TWILIO = "MEDIATOR_LIVE_DATA_INIT_TWILIO"
-    const val VM_INIT_TWILIO = "VM_INIT_TWILIO"
+val twilioInitModule: Module = moduleWithScope(named<SmackInitController>()) {
+    scoped { InitSmackInteractorDefault(get(), get(), get()) as InitSmackInteractor }
+    scoped { InitTwilioDoDefault(get()) as InitTwilioDo }
+    scoped { MediatorLiveData<InitTwilioVM.State>() }
+    viewModel { InitTwilioVMDefault(get(), get()) as InitTwilioVM }
 }

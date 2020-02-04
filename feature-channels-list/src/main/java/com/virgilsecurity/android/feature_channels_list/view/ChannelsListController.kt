@@ -35,10 +35,9 @@ package com.virgilsecurity.android.feature_channels_list.view
 
 import android.view.View
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseControllerWithScope
+import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channels_list.R
@@ -66,7 +65,7 @@ import org.koin.core.qualifier.named
 /**
  * ChannelsListController
  */
-class ChannelsListController() : BaseControllerWithScope() {
+class ChannelsListController() : BControllerScope() {
 
     override val layoutResourceId: Int = R.layout.controller_channels_list
 
@@ -77,10 +76,10 @@ class ChannelsListController() : BaseControllerWithScope() {
     private val mapper: MapperToChannelInfo by inject()
 
     private lateinit var openDrawer: () -> Unit
-    private lateinit var openChannel: (ChannelInfo) -> Unit
+    private lateinit var openChannel: (ChannelMeta) -> Unit
 
     constructor(openDrawer: () -> Unit,
-                openChannel: (interlocutor: ChannelInfo) -> Unit) : this() {
+                openChannel: (interlocutor: ChannelMeta) -> Unit) : this() {
         this.openDrawer = openDrawer
         this.openChannel = openChannel
     }

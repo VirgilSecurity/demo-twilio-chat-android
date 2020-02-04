@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
@@ -70,8 +70,8 @@ class ShowMessagePreviewDoDefault(
                  MessagesRepositoryDefault.MAX_TWILIO_MESSAGE_BODY_SIZE)
                 Single.error { TooLongMessageException() }
             else
-                Single.just<MessageInfo>(
-                    MessageInfo(
+                Single.just<MessageMeta>(
+                    MessageMeta(
                         PREVIEW_SID,
                         PREVIEW_CHANNEL_SID,
                         virgilHelper.encrypt(body, publicKeys),
@@ -84,7 +84,7 @@ class ShowMessagePreviewDoDefault(
                     .subscribe(::success, ::error)
                     .track()
 
-    private fun success(message: MessageInfo) {
+    private fun success(message: MessageMeta) {
         liveData.value = ShowMessagePreviewDo.Result.OnSuccess(message)
     }
 

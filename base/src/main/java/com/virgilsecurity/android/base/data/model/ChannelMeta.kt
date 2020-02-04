@@ -31,10 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.extension
+package com.virgilsecurity.android.base.data.model
 
-import com.twilio.chat.Message
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import android.os.Parcelable
+import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.base.util.GeneralConstants
+import kotlinx.android.parcel.Parcelize
+import org.json.JSONObject
 
 /**
  * . _  _
@@ -42,19 +48,56 @@ import com.virgilsecurity.android.base.data.model.MessageInfo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * TwilioExt
+ * ChannelInfo
  */
+@Entity
+@Parcelize
+class ChannelMeta(
+        @PrimaryKey
+        val sid: String,
 
-fun Message.toMessageInfo(): MessageInfo =
-        MessageInfo(this.channelSid,
-                    this.channelSid,
-                    this.messageBody,
-                    this.attributes.toString(),
-                    this.author,
-                    this.hasMedia())
+        @ColumnInfo(name = GeneralConstants.KEY_SENDER)
+        val sender: String,
+
+        @ColumnInfo(name = GeneralConstants.KEY_INTERLOCUTOR)
+        val interlocutor: String
+): Comparable<ChannelMeta>, Parcelable {
+
+    /**
+     * When user creates channel - you will be as interlocutor for him, while when this channel
+     * on your device you should be as sender, so this function encapsulates get of localized
+     * interlocutor for current case.
+     */
+    fun localizedInterlocutor(userProperties: UserProperties) =
+        with(userProperties.currentUser!!.identity == sender) {
+            if (this) interlocutor else sender
+        }
+
+    override fun compareTo(other: ChannelMeta): Int = this.sid.compareTo(other.sid)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ChannelMeta
+
+        if (sid != other.sid) return false
+        if (sender != other.sender) return false
+        if (interlocutor != other.interlocutor) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sid.hashCode()
+        result = 31 * result + sender.hashCode()
+        result = 31 * result + interlocutor.hashCode()
+        return result
+    }
+}

@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_contacts.domain.list
 
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,7 +70,7 @@ class GetContactsDoDefault(
                     .subscribe(::success, ::error, ::ifEmpty)
                     .track()
 
-    private fun success(users: List<ChannelInfo>) {
+    private fun success(users: List<ChannelMeta>) {
         liveData.value = GetContactsDo.Result.OnSuccess(users)
     }
 

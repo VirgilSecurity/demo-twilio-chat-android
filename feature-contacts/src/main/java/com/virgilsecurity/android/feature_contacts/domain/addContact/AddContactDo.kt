@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_contacts.domain.addContact
 
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.Do
 
 /**
@@ -53,7 +53,7 @@ import com.virgilsecurity.android.base.domain.Do
 interface AddContactDo : Do<AddContactDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val channel: ChannelInfo) : Result()
+        data class OnSuccess(val channel: ChannelMeta) : Result()
         object NoSuchUser : Result()
         object UserAlreadyAdded : Result()
         data class OnError(val error: Throwable) : Result()

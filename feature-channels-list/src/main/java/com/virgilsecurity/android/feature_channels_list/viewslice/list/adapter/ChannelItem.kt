@@ -37,14 +37,13 @@ import androidx.lifecycle.MutableLiveData
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_channels_list.R
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
-import kotlinx.android.synthetic.main.item_channel.*
 
 /**
  * . _  _
@@ -64,9 +63,9 @@ class ChannelItem(
         private val actionLiveData: MutableLiveData<ChannelsSlice.Action>,
         private val userProperties: UserProperties,
         override val layoutResourceId: Int = R.layout.item_channel
-) : DelegateAdapterItemDefault<ChannelInfo>() {
+) : DelegateAdapterItemDefault<ChannelMeta>() {
 
-    override fun onBind(item: ChannelInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelInfo>) =
+    override fun onBind(item: ChannelMeta, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelMeta>) =
             with(viewHolder) {
                 tvUsernameContact.text = item.localizedInterlocutor(userProperties)
                 tvInitialsContact.text = UserUtils.firstInitials(item.localizedInterlocutor(
@@ -88,8 +87,8 @@ class ChannelItem(
                 tvInitialsContact.visibility = View.VISIBLE
             }
 
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<ChannelInfo>) {}
+    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<ChannelMeta>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
-            items[position] is ChannelInfo
+            items[position] is ChannelMeta
 }

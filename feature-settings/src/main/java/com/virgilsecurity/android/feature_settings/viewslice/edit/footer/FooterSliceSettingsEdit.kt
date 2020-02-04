@@ -33,12 +33,14 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.edit.footer
 
+import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import android.view.View
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_settings.R
 
 /**
  * . _  _
@@ -55,26 +57,37 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  * FooterSliceSettings
  */
 class FooterSliceSettingsEdit(
-        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
-) : BaseViewSlice(), FooterSlice, View.OnClickListener {
+        private val mutableLiveData: MutableLiveData<Action>
+) : BaseViewSlice(), View.OnClickListener {
 
+    private lateinit var tvDeleteAccount: TextView
+    
+    override fun setupViews() {
+        with(window) {
+            this@FooterSliceSettingsEdit.tvDeleteAccount = findViewById(R.id.tvDeleteAccount)
+            
+            tvDeleteAccount.setOnClickListener(this@FooterSliceSettingsEdit)
+        }
+    }
+    
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         setupViews()
     }
 
-    private fun setupViews() {
-        tvDeleteAccount.setOnClickListener(this)
-    }
-
     override fun onClick(view: View) {
         when (view) {
             tvDeleteAccount -> {
-                mutableLiveData.value = FooterSlice.Action.DeleteAccountClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
+                mutableLiveData.value = Action.DeleteAccountClicked
+                mutableLiveData.value = Action.Idle
             }
         }
     }
 
-    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
+    fun getAction(): LiveData<Action> = mutableLiveData
+
+    sealed class Action {
+        object DeleteAccountClicked : Action()
+        object Idle : Action()
+    }
 }

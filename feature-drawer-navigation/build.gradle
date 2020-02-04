@@ -57,4 +57,5 @@ dependencies {
     virgil()
     glide()
     vectormaster()
+    smack()
 }

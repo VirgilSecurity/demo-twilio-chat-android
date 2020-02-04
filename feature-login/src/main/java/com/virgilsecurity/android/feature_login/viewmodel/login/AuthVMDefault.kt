@@ -31,7 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_settings.viewslice.settings.state
+package com.virgilsecurity.android.feature_login.viewmodel.login
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 
 /**
  * . _  _
@@ -39,17 +43,48 @@ package com.virgilsecurity.android.feature_settings.viewslice.settings.state
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/25/18
+ * ....|  _/    6/25/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSlice
+ * AuthVMDefault
  */
-interface StateSlice : ViewSliceLegacy {
+class AuthVMDefault(
+        private val state: MediatorLiveData<State>,
+        private val loadUsersDo: LoadUsersDo
+) : AuthVM() {
 
-    fun showLoading()
+    init {
+        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
+    }
 
-    fun showError()
+    override fun onCleared() {
+        loadUsersDo.cleanUp()
+    }
+
+    override fun getState(): LiveData<State> = state
+
+    override fun users() {
+        state.value = State.ShowLoading
+        loadUsersDo.execute()
+    }
+
+    override fun login(identity: String) {
+        state.value = State.ShowLoading
+    }
+
+    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
+        when (result) {
+            is LoadUsersDo.Result.OnSuccess -> {
+                if (result.users.isNotEmpty()) {
+                    state.value = State.UsersLoaded(result.users)
+                } else {
+                    state.value = State.ShowNoUsers
+                }
+            }
+            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+        }
+    }
 }

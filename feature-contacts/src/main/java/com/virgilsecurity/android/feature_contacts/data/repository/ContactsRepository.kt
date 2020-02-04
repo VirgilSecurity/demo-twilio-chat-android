@@ -33,8 +33,7 @@
 
 package com.virgilsecurity.android.feature_contacts.data.repository
 
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -55,9 +54,9 @@ import io.reactivex.Single
  */
 interface ContactsRepository {
 
-    fun contacts(): Observable<List<ChannelInfo>>
+    fun contacts(): Observable<List<ChannelMeta>>
 
-    fun addContact(interlocutor: String): Single<ChannelInfo>
+    fun addContact(interlocutor: String): Single<ChannelMeta>
 
     fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges>
 }

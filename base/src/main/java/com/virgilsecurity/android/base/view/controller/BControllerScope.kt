@@ -31,10 +31,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_login.viewslice.login.list.adapter
+package com.virgilsecurity.android.base.view.controller
 
-import androidx.viewpager.widget.PagerAdapter
-import com.virgilsecurity.android.base.data.model.User
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import com.bluelinelabs.conductor.Controller
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.*
+import org.koin.core.KoinComponent
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 
 /**
  * . _  _
@@ -42,19 +55,29 @@ import com.virgilsecurity.android.base.data.model.User
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/5/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * UserPagerAdapter
+ * BaseController
  */
-abstract class UserPagerAdapter : androidx.viewpager.widget.PagerAdapter() {
+abstract class BControllerScope : BaseController() {
 
-    abstract fun setUsers(users: List<User>)
+    private lateinit var session: Scope
+    protected val koinScopeQualifier = this::class.java.simpleName
+    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
-    abstract fun addUser(user: User)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
 
-    abstract fun clearUsers()
+        return super.onCreateView(inflater, container)
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+
+        session.close()
+    }
 }

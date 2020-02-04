@@ -34,6 +34,8 @@
 package com.virgilsecurity.android.feature_login.view
 
 import android.view.View
+import android.view.Window
+import android.widget.Button
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.feature_login.R
 import kotlinx.android.synthetic.main.controller_no_users.*
@@ -59,21 +61,20 @@ class NoUsersController() : BaseController() {
 
     private lateinit var registration: () -> Unit
 
+    private lateinit var btnCreateNewAccount: Button
+
     constructor(registration: () -> Unit) : this() {
         this.registration = registration
     }
 
-    override fun init() {
-        initViewCallbacks()
-    }
-
-    private fun initViewCallbacks() {
+    override fun init(containerView: View) {
+        btnCreateNewAccount = containerView.findViewById(R.id.btnCreateNewAccount)
         btnCreateNewAccount.setOnClickListener {
             registration()
         }
     }
 
-    override fun initViewSlices(view: View) {}
+    override fun initViewSlices(window: Window) {}
 
     override fun setupViewSlices(view: View) {}
 

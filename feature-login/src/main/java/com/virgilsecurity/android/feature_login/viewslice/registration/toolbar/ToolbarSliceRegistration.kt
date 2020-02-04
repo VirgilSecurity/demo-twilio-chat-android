@@ -56,36 +56,47 @@ import com.virgilsecurity.android.feature_login.R
  * ToolbarSliceRegistration
  */
 class ToolbarSliceRegistration(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    private lateinit var toolbarField: Toolbar
+    private lateinit var toolbar: Toolbar
+
+    override fun setupViews() {
+        with(window) {
+            toolbar = findViewById(R.id.toolbarRegistration)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        this.toolbarField = toolbarRegistration as Toolbar
         setupToolbar()
     }
 
     private fun setupToolbar() {
-        toolbarField.setTitle(resources.getString(R.string.registration))
+        toolbar.setTitle(resources.getString(R.string.registration))
 
-        toolbarField.showBackButton()
-        toolbarField.showInfoButton()
+        toolbar.showBackButton()
+        toolbar.showInfoButton()
 
-        toolbarField.setOnToolbarItemClickListener {
+        toolbar.setOnToolbarItemClickListener {
             when (it.id) {
                 R.id.ivBack -> {
-                    actionLiveData.value = ToolbarSlice.Action.BackClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.BackClicked
+                    actionLiveData.value = Action.Idle
                 }
                 R.id.ivInfo -> {
-                    actionLiveData.value = ToolbarSlice.Action.InfoClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.InfoClicked
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
     }
 
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object BackClicked : Action()
+        object InfoClicked : Action()
+        object Idle : Action()
+    }
 }

@@ -33,8 +33,15 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
+import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_channel.R
 
 /**
  * . _  _
@@ -48,19 +55,47 @@ import com.virgilsecurity.android.base.data.model.MessageInfo
  */
 
 /**
- * ChannelSlice
+ * ChannelSliceDefault
  */
-interface ChannelSlice : ViewSliceLegacy {
+class ChannelSlice(
+        private val action: MutableLiveData<Action>,
+        private val adapter: DelegateAdapter<MessageMeta>,
+        private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
+) : BaseViewSlice() {
 
-    sealed class Action {
-        data class MessageClicked(val message: MessageInfo) : Action()
-        data class MessageLongClicked(val message: MessageInfo) : Action()
-        object Idle : Action()
+    private lateinit var rvMessages: RecyclerView
+
+    override fun setupViews() {
+        with(window) {
+            rvMessages = findViewById(R.id.rvMessages)
+        }
     }
 
-    fun getAction(): LiveData<Action>
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupRecyclerView()
+    }
 
-    fun showMessages(messages: List<MessageInfo>)
+    private fun setupRecyclerView() {
+        rvMessages.adapter = adapter
+        rvMessages.layoutManager = layoutManager
+    }
 
-    fun addMessage(message: MessageInfo)
+    fun getAction(): LiveData<Action> = action
+
+    fun showMessages(messages: List<MessageMeta>) {
+        adapter.addItems(messages)
+        layoutManager.scrollToPosition(adapter.itemCount - 1)
+    }
+
+    fun addMessage(message: MessageMeta)  {
+        adapter.addItemToEnd(message)
+        rvMessages.scrollToPosition(adapter.itemCount - 1)
+    }
+
+    sealed class Action {
+        data class MessageClicked(val message: MessageMeta) : Action()
+        data class MessageLongClicked(val message: MessageMeta) : Action()
+        object Idle : Action()
+    }
 }

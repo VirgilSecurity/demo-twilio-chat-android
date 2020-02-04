@@ -34,20 +34,23 @@
 package com.virgilsecurity.android.feature_settings.view
 
 import android.view.View
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
+import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS_EDIT
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
-import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSlice
-import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSlice
-import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSlice
-import com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSlice
-import com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSlice
+import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.footer.FooterSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.header.HeaderSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.state.StateSliceSettingsEdit
+import com.virgilsecurity.android.feature_settings.viewslice.edit.toolbar.ToolbarSliceSettingsEdit
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -67,29 +70,40 @@ class SettingsEditController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings_edit
 
-    private val toolbarSlice: ToolbarSlice by inject()
-    private val stateSlice: StateSlice by inject()
-    private val headerSlice: HeaderSlice by inject()
-    private val footerSlice: FooterSlice by inject()
-    private val bottomSheetSlice: BSDSimpleSlice by inject()
-    private val viewModel: SettingsEditVM by inject(named(VM_SETTINGS_EDIT))
+    private val viewModel: SettingsEditVM by currentScope.viewModel(this)
+    private val imageStorage: ImageStorage by inject()
 
     private lateinit var logout: () -> Unit
     private lateinit var user: User
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceSettingsEdit.Action>
+    private lateinit var toolbarSlice: ToolbarSliceSettingsEdit
+    private lateinit var stateSlice: StateSliceSettingsEdit
+    private lateinit var mldHeaderSlice: MutableLiveData<HeaderSliceSettingsEdit.Action>
+    private lateinit var headerSlice: HeaderSliceSettingsEdit
+    private lateinit var mldFooterSlice: MutableLiveData<FooterSliceSettingsEdit.Action>
+    private lateinit var footerSlice: FooterSliceSettingsEdit
+    private lateinit var mldBottomSheetSlice: MutableLiveData<BSDSimpleSliceSettingsEdit.Action>
+    private lateinit var bottomSheetSlice: BSDSimpleSliceSettingsEdit
 
     constructor(user: User, logout: () -> Unit) : this() {
         this.user = user
         this.logout = logout
     }
 
-    override fun init() {}
+    override fun init(containerView: View) {}
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
-        headerSlice.init(lifecycle, view)
-        footerSlice.init(lifecycle, view)
-        bottomSheetSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.toolbarSlice = ToolbarSliceSettingsEdit(mldToolbarSlice)
+        this.stateSlice = StateSliceSettingsEdit()
+        this.headerSlice = HeaderSliceSettingsEdit(mldHeaderSlice, imageStorage)
+        this.footerSlice = FooterSliceSettingsEdit(mldFooterSlice)
+        this.bottomSheetSlice = BSDSimpleSliceSettingsEdit(mldBottomSheetSlice)
+
+        toolbarSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
+        headerSlice.init(lifecycle, window)
+        footerSlice.init(lifecycle, window)
+        bottomSheetSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {
@@ -117,32 +131,32 @@ class SettingsEditController() : BaseController() {
         SettingsEditVM.State.Idle -> Unit
     }
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onToolbarActionChanged(action: ToolbarSliceSettingsEdit.Action) = when (action) {
+        ToolbarSliceSettingsEdit.Action.BackClicked -> {
             hideKeyboard()
             backPress()
         }
-        ToolbarSlice.Action.Idle -> Unit
+        ToolbarSliceSettingsEdit.Action.Idle -> Unit
     }
 
-    private fun onHeaderActionChanged(action: HeaderSlice.Action) = when (action) {
-        HeaderSlice.Action.ChangePicClicked -> UiUtils.toastUnderDevelopment(this)
-        HeaderSlice.Action.Idle -> Unit
+    private fun onHeaderActionChanged(action: HeaderSliceSettingsEdit.Action) = when (action) {
+        HeaderSliceSettingsEdit.Action.ChangePicClicked -> UiUtils.toastUnderDevelopment(this)
+        HeaderSliceSettingsEdit.Action.Idle -> Unit
     }
 
-    private fun onFooterActionChanged(action: FooterSlice.Action) = when (action) {
-        FooterSlice.Action.DeleteAccountClicked -> {
+    private fun onFooterActionChanged(action: FooterSliceSettingsEdit.Action) = when (action) {
+        FooterSliceSettingsEdit.Action.DeleteAccountClicked -> {
             bottomSheetSlice.setTitle(activity!!.getString(R.string.delete_account_question))
             bottomSheetSlice.setBody(activity!!.getString(R.string.delete_account_beware))
             bottomSheetSlice.show()
         }
-        FooterSlice.Action.Idle -> Unit
+        FooterSliceSettingsEdit.Action.Idle -> Unit
     }
 
-    private fun onBottomSheetActionChanged(action: BSDSimpleSlice.Action) = when (action) {
-        BSDSimpleSlice.Action.YesClicked -> viewModel.deleteAccount()
-        BSDSimpleSlice.Action.NoClicked -> bottomSheetSlice.dismiss()
-        BSDSimpleSlice.Action.Idle -> Unit
+    private fun onBottomSheetActionChanged(action: BSDSimpleSliceSettingsEdit.Action) = when (action) {
+        BSDSimpleSliceSettingsEdit.Action.YesClicked -> viewModel.deleteAccount()
+        BSDSimpleSliceSettingsEdit.Action.NoClicked -> bottomSheetSlice.dismiss()
+        BSDSimpleSliceSettingsEdit.Action.Idle -> Unit
     }
 
     private fun backPress() {

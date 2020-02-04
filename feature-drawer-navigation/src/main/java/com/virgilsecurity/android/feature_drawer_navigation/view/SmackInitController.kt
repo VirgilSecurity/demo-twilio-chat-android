@@ -34,17 +34,17 @@
 package com.virgilsecurity.android.feature_drawer_navigation.view
 
 import android.view.View
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseControllerWithScope
-import com.virgilsecurity.android.common.viewslice.StateSlice
+import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.feature_drawer_navigation.R
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.STATE_SLICE_TWILIO_INIT
-import com.virgilsecurity.android.feature_drawer_navigation.di.Const.VM_INIT_TWILIO
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.TwilioInitSlice
-import org.koin.core.inject
-import org.koin.core.qualifier.named
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.SliceSmackInit
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceSmackInit
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * . _  _
@@ -60,40 +60,45 @@ import org.koin.core.qualifier.named
 /**
  * TwilioInitController
  */
-class TwilioInitController() : BaseControllerWithScope() {
+class SmackInitController() : BControllerScope() {
 
-    override val layoutResourceId: Int = R.layout.controller_twilio_init
+    override val layoutResourceId: Int = R.layout.controller_smack_init
 
-    private val twilioInitSlice: TwilioInitSlice by inject()
-    private val stateSlice: StateSlice by inject(named(STATE_SLICE_TWILIO_INIT))
-    private val viewModel: InitTwilioVM by inject(named(VM_INIT_TWILIO)) // TODO move all viewModels to corresponding impl in koin
+    private val viewModel: InitTwilioVM by currentScope.viewModel(this) // TODO move all viewModels to corresponding impl in koin
 
     private lateinit var user: User
     private lateinit var initSuccess: () -> Unit
+    private lateinit var stateSlice: StateSliceSmackInit
+    private lateinit var mldSliceSmackInit: MutableLiveData<SliceSmackInit.Action>
+    private lateinit var sliceSmackInit: SliceSmackInit
 
     constructor(user: User, initSuccess: () -> Unit) : this() {
         this.user = user
         this.initSuccess = initSuccess
     }
 
-    override fun init() {
+    override fun init(containerView: View) {
         viewModel.initChatClient(user)
+        this.mldSliceSmackInit = MutableLiveData()
     }
 
-    override fun initViewSlices(view: View) {
-        twilioInitSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.stateSlice = StateSliceSmackInit() // TODO check if this order is correct, so VM doesn't call slices before they're ready
+        this.sliceSmackInit = SliceSmackInit(mldSliceSmackInit)
+
+        sliceSmackInit.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {}
 
-    private fun onActionChanged(action: TwilioInitSlice.Action) = when (action) {
-        TwilioInitSlice.Action.RetryClicked -> viewModel.initChatClient(user)
-        TwilioInitSlice.Action.Idle -> Unit
+    private fun onActionChanged(action: SliceSmackInit.Action) = when (action) {
+        SliceSmackInit.Action.RetryClicked -> viewModel.initChatClient(user)
+        SliceSmackInit.Action.Idle -> Unit
     }
 
     override fun setupVSActionObservers() {
-        observe(twilioInitSlice.getAction(), ::onActionChanged)
+        observe(sliceSmackInit.getAction(), ::onActionChanged)
     }
 
     override fun setupVMStateObservers() {

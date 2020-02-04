@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_contacts.domain.addContact
 
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.exception.AddingUserThatExistsException
 import com.virgilsecurity.android.common.data.exception.EmptyCardsException
@@ -66,7 +66,7 @@ class AddContactsDoDefault(
                     .subscribe(::success, ::error)
                     .track()
 
-    private fun success(channel: ChannelInfo) {
+    private fun success(channel: ChannelMeta) {
         liveData.value = AddContactDo.Result.OnSuccess(channel)
     }
 

@@ -34,21 +34,33 @@
 package com.virgilsecurity.android.feature_channel.view
 
 import android.view.View
+import android.view.Window
+import android.widget.EditText
+import android.widget.ImageView
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.virgilsecurity.android.base.data.api.MessagesApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.view.adapter.BaseViewHolder
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
+import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
+import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
 import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channel.R
-import com.virgilsecurity.android.feature_channel.di.Const.STATE_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.TOOLBAR_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.VM_CHANNEL
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
-import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSlice
-import kotlinx.android.synthetic.main.controller_channel.*
+import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemInDevelopment
+import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemMe
+import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemYou
+import com.virgilsecurity.android.feature_channel.viewslice.state.StateSliceChannel
+import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSliceChannel
+import org.koin.android.scope.currentScope
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 
@@ -70,37 +82,66 @@ class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel
 
-    private val toolbarSlice: ToolbarSlice by inject(named(TOOLBAR_CHANNEL))
-    private val channelSlice: ChannelSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CHANNEL))
-    private val viewModel: ChannelVM by inject(named(VM_CHANNEL))
+    private val diffCallback: DiffCallback<MessageMeta> by inject(named(
+        KEY_DIFF_CALLBACK_MESSAGE_META))
     private val userProperties: UserProperties by inject()
+    private val virgilHelper: VirgilHelper by inject()
+    private val viewModel: ChannelVM by currentScope.inject()
 
     private lateinit var interlocutor: String
-    private lateinit var channel: ChannelInfo
+    private lateinit var channel: ChannelMeta
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceChannel.Action>
+    private lateinit var toolbarSlice: ToolbarSliceChannel
+    private lateinit var mldChannelSlice: MutableLiveData<ChannelSlice.Action>
+    private lateinit var adapter: DelegateAdapter<MessageMeta>
+    private lateinit var channelSlice: ChannelSlice
+    private lateinit var stateSlice: StateSliceChannel
 
-    constructor(channel: ChannelInfo) : this() {
+    private lateinit var etMessage: EditText
+    private lateinit var ivSend: ImageView
+
+    constructor(channel: ChannelMeta) : this() {
         this.interlocutor = channel.interlocutor
         this.channel = channel
     }
 
-    override fun init() {
-        initViewCallbacks()
-    }
+    override fun init(containerView: View) {
+        with(containerView) {
+            this@ChannelController.etMessage = findViewById(R.id.etMessage)
+            this@ChannelController.ivSend = findViewById(R.id.ivSend)
 
-    private fun initViewCallbacks() {
-        ivSend.setOnClickListener {
-            if (etMessage.text.isNotBlank()) {
-                viewModel.showMessagePreview(etMessage.text.toString()) // To improve user experience
-                viewModel.sendMessage(etMessage.text.toString())
+            ivSend.setOnClickListener {
+                if (etMessage.text.isNotBlank()) {
+                    viewModel.showMessagePreview(etMessage.text.toString()) // To improve user experience
+                    viewModel.sendMessage(etMessage.text.toString())
+                }
             }
         }
+
+        this.mldToolbarSlice = MutableLiveData()
+        this.toolbarSlice = ToolbarSliceChannel(mldToolbarSlice)
+        this.mldChannelSlice = MutableLiveData()
+        val messageMe = MessageItemMe(mldChannelSlice, userProperties, virgilHelper)
+                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
+        val messageYou = MessageItemYou(mldChannelSlice, userProperties, virgilHelper)
+                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
+        val messageInDevelopment = MessageItemInDevelopment()
+                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
+        this.adapter = DelegateAdapter.Builder<MessageMeta>()
+                .add(messageMe)
+                .add(messageYou)
+                .add(messageInDevelopment)
+                .diffCallback(diffCallback)
+                .build()
+        val layoutManager = LinearLayoutManager(activity)
+        this.channelSlice = ChannelSlice(mldChannelSlice, adapter, layoutManager)
+        this.stateSlice = StateSliceChannel()
     }
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-        channelSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        toolbarSlice.init(lifecycle, window)
+        channelSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {
@@ -128,12 +169,12 @@ class ChannelController() : BaseController() {
         viewModel.messages(channel.sid)
     }
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onToolbarActionChanged(action: ToolbarSliceChannel.Action) = when (action) {
+        ToolbarSliceChannel.Action.BackClicked -> {
             hideKeyboard()
             backPressed()
         }
-        ToolbarSlice.Action.Idle -> Unit
+        ToolbarSliceChannel.Action.Idle -> Unit
     }
 
     private fun onStateChanged(state: ChannelVM.State): Unit = when (state) {

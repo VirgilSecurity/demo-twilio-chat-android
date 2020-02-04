@@ -51,7 +51,7 @@ import android.util.AttributeSet
 /**
  * ChatRecyclerView
  */
-class ChatRecyclerView : androidx.recyclerview.widget.RecyclerView {
+class ChatRecyclerView : RecyclerView {
 
     private var oldHeight: Int = 0
 

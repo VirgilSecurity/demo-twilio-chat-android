@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.Do
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 
@@ -54,7 +54,7 @@ import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 interface ShowMessagePreviewDo : Do<ShowMessagePreviewDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val message: MessageInfo) : Result()
+        data class OnSuccess(val message: MessageMeta) : Result()
         object MessageIsTooLong : Result()
         data class OnError(val error: Throwable) : Result()
     }

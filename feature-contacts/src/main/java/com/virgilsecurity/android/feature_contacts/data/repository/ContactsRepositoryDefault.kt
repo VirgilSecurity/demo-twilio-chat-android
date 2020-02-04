@@ -34,11 +34,8 @@
 package com.virgilsecurity.android.feature_contacts.data.repository
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.extension.comparableListEqual
 import com.virgilsecurity.android.base.util.GeneralConstants
 import com.virgilsecurity.android.common.data.exception.AddingUserThatExistsException
 import com.virgilsecurity.android.common.data.exception.EmptyCardsException
@@ -74,9 +71,9 @@ class ContactsRepositoryDefault(
         private val mapper: MapperToChannelInfo
 ) : ContactsRepository {
 
-    private val debounceCache = mutableListOf<ChannelInfo>()
+    private val debounceCache = mutableListOf<ChannelMeta>()
 
-    override fun addContact(interlocutor: String): Single<ChannelInfo> =
+    override fun addContact(interlocutor: String): Single<ChannelMeta> =
             contactsDao.user(userProperties.currentUser!!.identity, interlocutor)
                     .flatMap {
                         if (it.isNotEmpty())
@@ -100,7 +97,7 @@ class ContactsRepositoryDefault(
                         }
                     }
 
-    override fun contacts(): Observable<List<ChannelInfo>> =
+    override fun contacts(): Observable<List<ChannelMeta>> =
             Observable.concatArray(contactsDao.getUserChannels().toObservable(),
                                    contactsApi.userChannels()
                                            .flatMap(::joinFetchedChannels)
@@ -123,7 +120,7 @@ class ContactsRepositoryDefault(
                     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun joinFetchedChannels(userChannels: List<ChannelInfo>): Observable<List<ChannelInfo>> {
+    private fun joinFetchedChannels(userChannels: List<ChannelMeta>): Observable<List<ChannelMeta>> {
         val fetchChannelStreams = mutableListOf<Observable<Channel>>()
 
         for (channel in userChannels)
@@ -131,7 +128,7 @@ class ContactsRepositoryDefault(
 
         return Observable.zip(fetchChannelStreams) { channels -> channels.toList() }
                 .flatMap { fetchedChannels ->
-                    val joinChannelStreams = mutableListOf<Observable<ChannelInfo>>()
+                    val joinChannelStreams = mutableListOf<Observable<ChannelMeta>>()
 
                     for (fetchedChannel in fetchedChannels as List<Channel>)
                         if (fetchedChannel.status.value == Channel.ChannelStatus.INVITED.value)
@@ -167,7 +164,7 @@ class ContactsRepositoryDefault(
                                                 Single.zip(pair.first,
                                                            pair.second,
                                                            BiFunction
-                                                           { _: ChannelInfo,
+                                                           { _: ChannelMeta,
                                                              _: ChannelsApi.ChannelsChanges ->
                                                                change
                                                            })
@@ -180,7 +177,7 @@ class ContactsRepositoryDefault(
                     }
 
     private fun joinAndAddToDbChannel(change: ChannelsApi.ChannelsChanges.ChannelInvited,
-                                      channel: ChannelInfo) =
+                                      channel: ChannelMeta) =
             (contactsApi.joinChannel(change.channel!!).subscribeOn(Schedulers.io())
                     to
                     contactsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })

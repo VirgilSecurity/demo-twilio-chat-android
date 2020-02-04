@@ -34,20 +34,23 @@
 package com.virgilsecurity.android.feature_settings.view
 
 import android.view.View
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
+import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_settings.R
-import com.virgilsecurity.android.feature_settings.di.Const.VM_SETTINGS
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
-import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSlice
-import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSlice
+import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.header.HeaderSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSliceSettings
+import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSliceSettings
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -67,18 +70,23 @@ class SettingsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings
 
-    private val toolbarSlice: ToolbarSlice by inject()
-    private val menuSlice: MenuSlice by inject()
-    private val headerSlice: HeaderSlice by inject()
-    private val footerSlice: FooterSlice by inject()
-    private val stateSlice: StateSlice by inject()
-    private val viewModel: SettingsVM by inject(named(VM_SETTINGS))
+    private val viewModel: SettingsVM by currentScope.viewModel(this)
+    private val imageStorage: ImageStorage by inject()
 
     private lateinit var edit: () -> Unit
     private lateinit var logout: () -> Unit
     private lateinit var about: () -> Unit
     private lateinit var versionHistory: () -> Unit
     private lateinit var user: User
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceSettings.Action>
+    private lateinit var toolbarSlice: ToolbarSliceSettings
+    private lateinit var mldMenuSlice: MutableLiveData<MenuSliceSettings.Action>
+    private lateinit var menuSlice: MenuSliceSettings
+    private lateinit var mldHeaderSlice: MutableLiveData<HeaderSliceSettings.Action>
+    private lateinit var headerSlice: HeaderSliceSettings
+    private lateinit var mldFooterSlice: MutableLiveData<FooterSliceSettings.Action>
+    private lateinit var footerSlice: FooterSliceSettings
+    private lateinit var stateSlice: StateSliceSettings
 
     constructor(user: User,
                 edit: () -> Unit,
@@ -92,14 +100,25 @@ class SettingsController() : BaseController() {
         this.versionHistory = versionHistory
     }
 
-    override fun init() {}
+    override fun init(containerView: View) {
+        this.mldToolbarSlice = MutableLiveData()
+        this.mldMenuSlice = MutableLiveData()
+        this.mldHeaderSlice = MutableLiveData()
+        this.mldFooterSlice = MutableLiveData()
+    }
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-        menuSlice.init(lifecycle, view)
-        headerSlice.init(lifecycle, view)
-        footerSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.toolbarSlice = ToolbarSliceSettings(mldToolbarSlice)
+        this.menuSlice = MenuSliceSettings(mldMenuSlice)
+        this.headerSlice = HeaderSliceSettings(mldHeaderSlice, imageStorage)
+        this.footerSlice = FooterSliceSettings(mldFooterSlice)
+        this.stateSlice = StateSliceSettings()
+
+        toolbarSlice.init(lifecycle, window)
+        menuSlice.init(lifecycle, window)
+        headerSlice.init(lifecycle, window)
+        footerSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {
@@ -130,37 +149,37 @@ class SettingsController() : BaseController() {
         SettingsVM.State.Idle -> Unit
     }
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onToolbarActionChanged(action: ToolbarSliceSettings.Action) = when (action) {
+        ToolbarSliceSettings.Action.BackClicked -> {
             hideKeyboard()
             backPress()
         }
-        is ToolbarSlice.Action.MenuClicked -> menuSlice.show(action.showPoint)
-        ToolbarSlice.Action.Idle -> Unit
+        is ToolbarSliceSettings.Action.MenuClicked -> menuSlice.show(action.showPoint)
+        ToolbarSliceSettings.Action.Idle -> Unit
     }
 
-    private fun onMenuActionChanged(action: MenuSlice.Action) = when (action) {
-        MenuSlice.Action.EditClicked -> {
+    private fun onMenuActionChanged(action: MenuSliceSettings.Action) = when (action) {
+        MenuSliceSettings.Action.EditClicked -> {
             menuSlice.dismiss()
             edit()
         }
-        MenuSlice.Action.LogoutClicked -> {
+        MenuSliceSettings.Action.LogoutClicked -> {
             menuSlice.dismiss()
             viewModel.logout()
         }
-        MenuSlice.Action.Idle -> Unit
+        MenuSliceSettings.Action.Idle -> Unit
     }
 
-    private fun onHeaderActionChanged(action: HeaderSlice.Action) = when (action) {
-        HeaderSlice.Action.ChangePicClicked -> UiUtils.toastUnderDevelopment(this)
-        HeaderSlice.Action.Idle -> Unit
+    private fun onHeaderActionChanged(action: HeaderSliceSettings.Action) = when (action) {
+        HeaderSliceSettings.Action.ChangePicClicked -> UiUtils.toastUnderDevelopment(this)
+        HeaderSliceSettings.Action.Idle -> Unit
     }
 
-    private fun onFooterActionChanged(action: FooterSlice.Action) = when (action) {
-        FooterSlice.Action.AboutClicked -> about()
-        FooterSlice.Action.AskQuestionClicked -> UiUtils.toastUnderDevelopment(this)
-        FooterSlice.Action.VersionClicked -> versionHistory()
-        FooterSlice.Action.Idle -> Unit
+    private fun onFooterActionChanged(action: FooterSliceSettings.Action) = when (action) {
+        FooterSliceSettings.Action.AboutClicked -> about()
+        FooterSliceSettings.Action.AskQuestionClicked -> UiUtils.toastUnderDevelopment(this)
+        FooterSliceSettings.Action.VersionClicked -> versionHistory()
+        FooterSliceSettings.Action.Idle -> Unit
     }
 
     private fun backPress() {

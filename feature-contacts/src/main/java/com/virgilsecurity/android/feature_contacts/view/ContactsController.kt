@@ -36,10 +36,9 @@ package com.virgilsecurity.android.feature_contacts.view
 import android.annotation.SuppressLint
 import android.view.View
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseControllerWithScope
+import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_contacts.R
@@ -66,7 +65,7 @@ import org.koin.core.qualifier.named
 /**
  * ContactsController
  */
-class ContactsController() : BaseControllerWithScope() {
+class ContactsController() : BControllerScope() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 
@@ -78,11 +77,11 @@ class ContactsController() : BaseControllerWithScope() {
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
-    private lateinit var openChannel: (ChannelInfo) -> Unit
+    private lateinit var openChannel: (ChannelMeta) -> Unit
 
     constructor(openDrawer: () -> Unit,
                 addContact: () -> Unit,
-                openChannel: (interlocutor: ChannelInfo) -> Unit) : this() {
+                openChannel: (interlocutor: ChannelMeta) -> Unit) : this() {
         this.openDrawer = openDrawer
         this.addContact = addContact
         this.openChannel = openChannel

@@ -31,16 +31,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_login.viewslice.registration.state
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
-import android.text.InputFilter
+import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.widget.Button
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.feature_login.R
+import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.feature_drawer_navigation.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -52,20 +57,34 @@ import java.util.concurrent.TimeUnit
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/10/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * StateSliceRegistrationDefault
+ * StateSliceTwilioInit
  */
-class StateSliceRegistrationDefault(
-        private val symbolsInputFilter: InputFilter
-) : BaseViewSlice(), StateSliceRegistration {
+class StateSliceSmackInit : BaseViewSlice() {
 
-    private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
+    private val debounceSubject: PublishSubject<Int> = PublishSubject.create()
+    private var loadingFader: ValueAnimator? = null
     private lateinit var debounceDisposable: Disposable
+    private lateinit var btnRetry: Button
+    private lateinit var clContentRoot: ConstraintLayout
+    private lateinit var ivLoading: VectorMasterView
+    private lateinit var tvInitializing: TextView
+    private lateinit var tvTryAgain: TextView
+
+    override fun setupViews() {
+        with(window) {
+            this@StateSliceSmackInit.btnRetry = findViewById(R.id.btnRetry)
+            this@StateSliceSmackInit.clContentRoot = findViewById(R.id.clContentRoot)
+            this@StateSliceSmackInit.ivLoading = findViewById(R.id.ivLoading)
+            this@StateSliceSmackInit.tvInitializing = findViewById(R.id.tvInitializing)
+            this@StateSliceSmackInit.tvTryAgain = findViewById(R.id.tvTryAgain)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -73,11 +92,8 @@ class StateSliceRegistrationDefault(
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (it) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
-                    if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
+                    show(it)
                 }
-
-        etUsername.filters = arrayOf(symbolsInputFilter)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -85,30 +101,38 @@ class StateSliceRegistrationDefault(
         debounceDisposable.dispose()
     }
 
-    override fun showConsistent() {
-        activateButton(true)
-        loading(false)
+    fun showLoading() = debounceSubject.onNext(LOADING)
+
+    fun showContent() = debounceSubject.onNext(CONTENT)
+
+    fun showError() {
+        debounceSubject.onNext(ERROR)
+        showFadingError()
     }
 
-    override fun showUsernameEmpty() {
-        activateButton(false)
-        loading(false)
+    private fun show(state: Int) {
+        when (state) {
+            CONTENT, ERROR -> { // For now our content is showing that something happened
+                btnRetry.isClickable = true
+                btnRetry.isEnabled = true
+                clContentRoot.visibility = View.VISIBLE
+                ivLoading.visibility = View.INVISIBLE
+                if (loadingFader != null)
+                    loadingFader!!.end()
+                tvInitializing.visibility = View.INVISIBLE
+            }
+            LOADING -> {
+                btnRetry.isClickable = false
+                btnRetry.isEnabled = false
+                clContentRoot.visibility = View.INVISIBLE
+                ivLoading.visibility = View.VISIBLE
+                loadingFader = UiUtils.fadeVectorReverse(ivLoading)
+                tvInitializing.visibility = View.VISIBLE
+            }
+        }
     }
 
-    override fun showUsernameTooShort() {
-        activateButton(false)
-        loading(false)
-    }
-
-    override fun showUsernameTooLong() {
-        activateButton(false)
-        loading(false)
-    }
-
-    override fun showLoading() = loading(true)
-
-    override fun showError() {
-        loading(false)
+    private fun showFadingError() {
         if (tvTryAgain.visibility == View.INVISIBLE) {
             tvTryAgain.visibility = View.VISIBLE
             val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
@@ -127,23 +151,11 @@ class StateSliceRegistrationDefault(
         }
     }
 
-    private fun loading(loading: Boolean) {
-        debounceSubject.onNext(loading)
-    }
-
-    private fun activateButton(active: Boolean) {
-        if (active) {
-            btnNext.isEnabled = true
-            btnNext.isClickable = true
-            btnNext.background = context.getDrawable(R.drawable.rect_rounded_accent_2)
-        } else {
-            btnNext.isEnabled = false
-            btnNext.isClickable = false
-            btnNext.background = context.getDrawable(R.drawable.rect_rounded_gray_2)
-        }
-    }
-
     companion object {
+        const val CONTENT = 0
+        const val LOADING = 1
+        const val ERROR = 2
+
         const val ERROR_FADE_OUT_DURATION = 500L
         const val ERROR_START_OFFSET = 1500L
         const val DEBOUNCE_INTERVAL = 200L

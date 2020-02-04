@@ -33,7 +33,6 @@
 
 package com.virgilsecurity.android.feature_contacts.domain.list
 
-import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.domain.Do
 
 /**

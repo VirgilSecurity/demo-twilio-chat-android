@@ -31,35 +31,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import LoginDiConst.LIVE_DATA_REGISTRATION
 import LoginDiConst.VM_AUTH
-import LoginDiConst.VM_REGISTRATION
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.common.data.remote.auth.AuthRemote
 import com.virgilsecurity.android.common.util.DoubleBack
-import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractor
 import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractorDefault
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDoDefault
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDo
 import com.virgilsecurity.android.feature_login.domain.registration.SignUpDoDefault
-import com.virgilsecurity.android.feature_login.view.AuthController
-import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
-import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVMDefault
+import com.virgilsecurity.android.feature_login.view.RegistrationController
+import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
+import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVMDefault
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault
-import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSliceDefault
-import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UserPagerAdapter
-import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapterDefault
-import com.virgilsecurity.android.feature_login.viewslice.login.state.StateSliceLogin
-import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistration
-import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistrationDefault
-import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
-import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -84,35 +72,19 @@ val authActivityModule: Module = module {
 
     scope(named(VM_AUTH)) {
         scoped { LoadUsersDoDefault(get()) as LoadUsersDo }
-        scoped { MediatorLiveData<LoginVM.State>() }
-        viewModel { LoginVMDefault(get(), get()) as LoginVM }
+        scoped { MediatorLiveData<AuthVM.State>() }
+        viewModel { AuthVMDefault(get(), get()) as AuthVM }
     }
 }
 
-val loginControllerModule: Module = moduleWithScope(named<AuthController>()) {
-    scoped { MutableLiveData<ViewPagerSlice.Action>() }
-    factory { UsersPagerAdapterDefault(get(), get()) as UserPagerAdapter }
-    factory { ViewPagerSliceDefault(get(), get()) as ViewPagerSlice }
-    factory { StateSliceLogin() as StateSlice }
-}
-
-val registrationControllerModule: Module = module {
-    single { AuthRemote(get()) as AuthApi }
-    single { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
-
-    factory { SignUpDoDefault(get(), get()) as SignUpDo }
-    factory { StateSliceRegistrationDefault(get()) as StateSliceRegistration }
-    factory(named(LIVE_DATA_REGISTRATION)) { MutableLiveData<ToolbarSlice.Action>() }
-    factory { ToolbarSliceRegistration(get(named(LIVE_DATA_REGISTRATION))) as ToolbarSlice }
-
-    module {
-        factory { MediatorLiveData<RegistrationVM.State>() }
-        factory(named(VM_REGISTRATION)) { RegistrationVMDefault(get(), get()) as RegistrationVM }
-    }
+val registrationControllerModule: Module = moduleWithScope(named<RegistrationController>()) {
+    scoped { AuthRemote(get()) as AuthApi }
+    scoped { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
+    scoped { SignUpDoDefault(get(), get()) as SignUpDo }
+    scoped { MediatorLiveData<RegistrationVM.State>() }
+    viewModel { RegistrationVMDefault(get(), get()) as RegistrationVM }
 }
 
 object LoginDiConst {
     const val VM_AUTH = "VM_LOGIN"
-    const val LIVE_DATA_REGISTRATION = "LIVE_DATA_REGISTRATION"
-    const val VM_REGISTRATION = "VM_REGISTRATION"
 }

@@ -33,7 +33,6 @@
 
 package com.virgilsecurity.android.feature_channels_list.domain.list
 
-import com.virgilsecurity.android.base.data.api.ChannelsApi
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.repository.ChannelsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers

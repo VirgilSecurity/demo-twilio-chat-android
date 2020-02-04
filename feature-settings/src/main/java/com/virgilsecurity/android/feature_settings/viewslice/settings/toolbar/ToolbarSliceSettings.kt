@@ -58,14 +58,19 @@ import com.virgilsecurity.android.feature_settings.R
  * ToolbarSliceSettings
  */
 class ToolbarSliceSettings(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
     private lateinit var toolbar: Toolbar
 
+    override fun setupViews() {
+        with(window) {
+            this@ToolbarSliceSettings.toolbar = findViewById(R.id.toolbarSettings)
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        this.toolbar = toolbarSettings as Toolbar
         setupToolbar()
     }
 
@@ -78,19 +83,25 @@ class ToolbarSliceSettings(
         toolbar.setOnToolbarItemClickListener {
             when (it.id) {
                 R.id.ivBack -> {
-                    actionLiveData.value = ToolbarSlice.Action.BackClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.BackClicked
+                    actionLiveData.value = Action.Idle
                 }
                 R.id.ivMenu -> {
-                    actionLiveData.value = ToolbarSlice.Action.MenuClicked(
+                    actionLiveData.value = Action.MenuClicked(
                         Point(it.x.toInt() + UiUtils.pixelsToDp(it.width, context),
                               it.y.toInt())
                     )
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
     }
 
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object BackClicked : Action()
+        data class MenuClicked(val showPoint: Point) : Action()
+        object Idle : Action()
+    }
 }

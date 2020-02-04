@@ -53,8 +53,8 @@ abstract class DelegateAdapterItemDefault<T>
         return KViewHolder(parent, ::onCreated)
     }
 
-    class KViewHolder<T>(override val containerView: View, onCreated: (View) -> Unit)
-        : BaseViewHolder<T>(containerView), LayoutContainer where T : Comparable<T> {
+    class KViewHolder<T>(val containerView: View, onCreated: (View) -> Unit)
+        : BaseViewHolder<T>(containerView) where T : Comparable<T> {
 
         val context: Context = containerView.context
         val resources: Resources = containerView.resources

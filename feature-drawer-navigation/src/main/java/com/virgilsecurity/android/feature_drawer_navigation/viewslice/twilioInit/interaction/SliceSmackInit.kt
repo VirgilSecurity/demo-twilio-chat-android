@@ -31,13 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction
 
-import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
-import com.virgilsecurity.android.common.util.AuthUtils
-import io.reactivex.Completable
+import android.widget.Button
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_drawer_navigation.R
 
 /**
  * . _  _
@@ -51,19 +53,36 @@ import io.reactivex.Completable
  */
 
 /**
- * InitTwilioInteractorDefault
+ * TwilioInitSliceDefault
  */
-class InitTwilioInteractorDefault(
-        private val twilioHelper: TwilioHelper,
-        private val authUtils: AuthUtils,
-        private val userProperties: UserProperties
-) : InitTwilioInteractor {
+class SliceSmackInit(
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    override fun initClient(user: User): Completable {
-        userProperties.currentUser = user
+    private lateinit var btnRetry: Button
 
-        return twilioHelper.startChatClient(user.identity) {
-            authUtils.generateAuthHeader(user.identity, user.card())
+    override fun setupViews() {
+        with(window) {
+            this@SliceSmackInit.btnRetry = findViewById(R.id.btnRetry)
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        initViewCallbacks()
+    }
+
+    private fun initViewCallbacks() {
+        btnRetry.setOnClickListener {
+            actionLiveData.value = Action.RetryClicked
+            actionLiveData.value = Action.Idle
+        }
+    }
+
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object RetryClicked : Action()
+        object Idle : Action()
     }
 }

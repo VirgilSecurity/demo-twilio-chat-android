@@ -34,11 +34,11 @@
 package com.virgilsecurity.android.feature_settings.view
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.virgilsecurity.android.feature_settings.R
 import kotlinx.android.synthetic.main.bottom_sheet_dialog_simple.*
 
@@ -56,8 +56,9 @@ import kotlinx.android.synthetic.main.bottom_sheet_dialog_simple.*
 /**
  * BottomSheetSimple
  */
-class BottomSheetSimple(context: Context,
-                        @LayoutRes private val layoutResId: Int = R.layout.bottom_sheet_dialog_simple
+class BottomSheetSimple(
+        context: Context,
+        @LayoutRes private val layoutResId: Int = R.layout.bottom_sheet_dialog_simple
 ) : BottomSheetDialog(context) {
 
     private lateinit var onClick: (View) -> Unit

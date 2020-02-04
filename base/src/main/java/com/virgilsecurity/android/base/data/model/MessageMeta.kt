@@ -31,13 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction
+package com.virgilsecurity.android.base.data.model
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.OnLifecycleEvent
-import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * . _  _
@@ -45,29 +45,65 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/26/18
+ * ....|  _/    5/31/185/31/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * TwilioInitSliceDefault
+ * Message that contains main info about. Summarizes Virgil and Twilio properties of User.
  */
-class TwilioInitSliceDefault(
-        private val actionLiveData: MutableLiveData<TwilioInitSlice.Action>
-) : BaseViewSlice(), TwilioInitSlice {
+@Entity
+@Parcelize
+class MessageMeta(
+        @PrimaryKey @ColumnInfo(name = KEY_SID)
+        val sid: String,
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        initViewCallbacks()
+        @ColumnInfo(name = KEY_BODY)
+        val body: String?,
+
+        @ColumnInfo(name = KEY_SENDER)
+        val sender: String,
+
+        @ColumnInfo(name = KEY_THREAD_ID)
+        val threadId: String,
+
+        @ColumnInfo(name = KEY_IN_DEVELOPMENT)
+        val inDevelopment: Boolean
+) : Comparable<MessageMeta>, Parcelable {
+
+    override fun compareTo(other: MessageMeta): Int = this.sid.compareTo(other.sid)
+
+    fun isNotInDevelopment() = !inDevelopment
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MessageMeta
+
+        if (sid != other.sid) return false
+        if (body != other.body) return false
+        if (sender != other.sender) return false
+        if (inDevelopment != other.inDevelopment) return false
+
+        return true
     }
 
-    private fun initViewCallbacks() {
-        btnRetry.setOnClickListener {
-            actionLiveData.value = TwilioInitSlice.Action.RetryClicked
-            actionLiveData.value = TwilioInitSlice.Action.Idle
-        }
+    override fun hashCode(): Int {
+        var result = sid.hashCode()
+        result = 31 * result + (body?.hashCode() ?: 0)
+        result = 31 * result + sender.hashCode()
+        result = 31 * result + inDevelopment.hashCode()
+        return result
     }
 
-    override fun getAction(): LiveData<TwilioInitSlice.Action> = actionLiveData
+
+    companion object {
+        const val KEY_SID = "sid"
+        const val KEY_BODY = "body"
+        const val KEY_SENDER = "sender"
+        const val KEY_THREAD_ID = "thread_id"
+        const val KEY_IN_DEVELOPMENT = "in_development"
+    }
 }

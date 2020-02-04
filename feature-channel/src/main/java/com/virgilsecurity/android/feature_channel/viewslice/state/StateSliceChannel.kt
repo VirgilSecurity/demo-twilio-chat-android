@@ -34,8 +34,13 @@
 package com.virgilsecurity.android.feature_channel.viewslice.state
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
+import com.virgilsecurity.android.feature_channel.R
 
 /**
  * . _  _
@@ -51,15 +56,31 @@ import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 /**
  * StateSliceChannel
  */
-class StateSliceChannel : BaseViewSlice(), StateSliceEmptyable {
+class StateSliceChannel : BaseViewSlice() {
 
-    override fun showLoading() = show(LOADING)
+    private lateinit var pbLoading: ProgressBar
+    private lateinit var clNoMessages: ConstraintLayout
+    private lateinit var rvMessages: RecyclerView
+    private lateinit var tvError: TextView
+    private lateinit var ivSend: ImageView
 
-    override fun showContent() = show(CONTENT)
+    override fun setupViews() {
+        with(window) {
+            pbLoading = findViewById(R.id.pbLoading)
+            clNoMessages = findViewById(R.id.clNoMessages)
+            rvMessages = findViewById(R.id.rvMessages)
+            tvError = findViewById(R.id.tvError)
+            ivSend = findViewById(R.id.ivSend)
+        }
+    }
 
-    override fun showError() = show(ERROR)
+    fun showLoading() = show(LOADING)
 
-    override fun showEmpty() = show(EMPTY)
+    fun showContent() = show(CONTENT)
+
+    fun showError() = show(ERROR)
+
+    fun showEmpty() = show(EMPTY)
 
     private fun show(state: Int) {
         when (state) {

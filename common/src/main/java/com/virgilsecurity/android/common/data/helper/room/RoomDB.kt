@@ -35,10 +35,9 @@ package com.virgilsecurity.android.common.data.helper.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.virgilsecurity.android.base.data.model.ChannelInfo
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.common.data.local.channels.ChannelsQao
 import com.virgilsecurity.android.common.data.local.messages.MessagesQao
 import com.virgilsecurity.android.common.data.local.users.UsersQao
 
@@ -56,12 +55,10 @@ import com.virgilsecurity.android.common.data.local.users.UsersQao
 /**
  * RoomDB
  */
-@Database(entities = [User::class, ChannelInfo::class, MessageInfo::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, ChannelMeta::class, MessageMeta::class], version = 1, exportSchema = false)
 abstract class RoomDB : RoomDatabase() {
 
     abstract fun usersQao(): UsersQao
-
-    abstract fun channelsQao(): ChannelsQao
 
     abstract fun messagesQao(): MessagesQao
 }

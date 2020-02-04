@@ -37,7 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 
@@ -57,7 +57,7 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  */
 class ContactsSliceDefault(
         private val actionLiveData: MutableLiveData<ContactsSlice.Action>,
-        private val adapter: DelegateAdapter<ChannelInfo>,
+        private val adapter: DelegateAdapter<ChannelMeta>,
         private val itemDecoratorBottomDivider: androidx.recyclerview.widget.RecyclerView.ItemDecoration,
         private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
 ) : BaseViewSlice(), ContactsSlice {
@@ -75,7 +75,7 @@ class ContactsSliceDefault(
 
     override fun getAction(): LiveData<ContactsSlice.Action> = actionLiveData
 
-    override fun showContacts(contacts: List<ChannelInfo>) = adapter.addItems(contacts)
+    override fun showContacts(contacts: List<ChannelMeta>) = adapter.addItems(contacts)
 
-    override fun addContact(contact: ChannelInfo) = adapter.addItem(contact)
+    override fun addContact(contact: ChannelMeta) = adapter.addItem(contact)
 }

@@ -35,11 +35,11 @@ package com.virgilsecurity.android.feature_channels_list.di
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_channels_list.di.Const.ADAPTER_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.di.Const.ITEM_ADAPTER_CHANNEL
@@ -51,7 +51,6 @@ import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsD
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDoDefault
 import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChannelsListChangeDo
 import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChannelsListChangeDoDefault
-import com.virgilsecurity.android.feature_channels_list.view.ChannelsListController
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVMDefault
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
@@ -87,16 +86,16 @@ val channelsListModule: Module = module {
     factory(named(LD_LIST_CHANNELS)) { MutableLiveData<ChannelsSlice.Action>() }
     factory(named(ITEM_ADAPTER_CHANNEL)) {
         ChannelItem(get(named(LD_LIST_CHANNELS)),
-                    get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
+                    get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelMeta>, ChannelMeta>
     }
 
     factory { GetChannelsDoDefault(get()) as GetChannelsDo }
     factory { ObserveChannelsListChangeDoDefault(get()) as ObserveChannelsListChangeDo }
 
     factory(named(ADAPTER_CHANNELS_LIST)) {
-        DelegateAdapter.Builder<ChannelInfo>()
+        DelegateAdapter.Builder<ChannelMeta>()
                 .add(get(named(ITEM_ADAPTER_CHANNEL)))
-                .diffCallback(get(named(KEY_DIFF_CALLBACK_CHANNEL_INFO)))
+                .diffCallback(get(named(KEY_DIFF_CALLBACK_CHANNEL_META)))
                 .build()
     }
     factory {

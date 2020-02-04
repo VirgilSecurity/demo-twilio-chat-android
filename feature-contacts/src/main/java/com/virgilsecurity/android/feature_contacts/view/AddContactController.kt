@@ -37,9 +37,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseCBWithScope
+import com.virgilsecurity.android.base.view.controller.BControllerBindingScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
@@ -48,7 +48,6 @@ import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddConta
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
-import kotlinx.android.synthetic.main.controller_add_contact.*
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 
@@ -66,7 +65,7 @@ import org.koin.core.qualifier.named
 /**
  * AddContactController
  */
-class AddContactController() : BaseCBWithScope() {
+class AddContactController() : BControllerBindingScope() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
 
@@ -74,9 +73,9 @@ class AddContactController() : BaseCBWithScope() {
     private val stateSlice: StateSliceAddContact by inject()
     private val toolbarSlice: ToolbarSlice by inject()
 
-    private lateinit var openChannel: (ChannelInfo) -> Unit
+    private lateinit var openChannel: (ChannelMeta) -> Unit
 
-    constructor(openChannel: (channel: ChannelInfo) -> Unit) : this() {
+    constructor(openChannel: (channel: ChannelMeta) -> Unit) : this() {
         this.openChannel = openChannel
     }
 

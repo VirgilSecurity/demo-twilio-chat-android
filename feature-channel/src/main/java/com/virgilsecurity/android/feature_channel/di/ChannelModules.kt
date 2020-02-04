@@ -34,41 +34,18 @@
 package com.virgilsecurity.android.feature_channel.di
 
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.MessageInfo
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_INFO
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
+import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.feature_channel.data.interactor.CardsInteractor
 import com.virgilsecurity.android.feature_channel.data.interactor.CardsInteractorDefault
 import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepository
 import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepositoryDefault
-import com.virgilsecurity.android.feature_channel.di.Const.ADAPTER_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT
-import com.virgilsecurity.android.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_ME
-import com.virgilsecurity.android.feature_channel.di.Const.ITEM_ADAPTER_MESSAGE_YOU
-import com.virgilsecurity.android.feature_channel.di.Const.LD_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.LD_TOOLBAR_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.STATE_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.TOOLBAR_CHANNEL
-import com.virgilsecurity.android.feature_channel.di.Const.VM_CHANNEL
 import com.virgilsecurity.android.feature_channel.domain.*
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVMDefault
-import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
-import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSliceDefault
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemInDevelopment
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemMe
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemYou
-import com.virgilsecurity.android.feature_channel.viewslice.state.StateSliceChannel
-import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSlice
-import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSliceChannel
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 /**
  * . _  _
@@ -84,71 +61,27 @@ import org.koin.dsl.module
 /**
  * ChannelModules
  */
-val channelModule: Module = module {
-    single { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
-    single(named(STATE_CHANNEL)) { StateSliceChannel() as StateSliceEmptyable }
+val channelModule: Module = moduleWithScope(named<ChannelController>()) {
+    scoped { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
+    scoped { GetMessagesDoDefault(get()) as GetMessagesDo }
+    scoped { ObserveChannelChangesDoDefault(get()) as ObserveChannelChangesDo }
+    scoped { SendMessageDoDefault(get(), get()) as SendMessageDo }
+    scoped { CardsInteractorDefault(get()) as CardsInteractor }
+    scoped { GetCardDoDefault(get()) as GetCardDo }
+    scoped { GetChannelDoDefault(get()) as GetChannelDo }
+    scoped { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
+    scoped { CopyMessageDoDefault(get()) as CopyMessageDo }
 
-    factory(named(LD_TOOLBAR_CHANNEL)) { MutableLiveData<ToolbarSlice.Action>() }
-    factory(named(TOOLBAR_CHANNEL)) { ToolbarSliceChannel(get(named(LD_TOOLBAR_CHANNEL))) as ToolbarSlice }
-
-    factory(named(LD_CHANNEL)) { MutableLiveData<ChannelSlice.Action>() }
-    factory(named(ITEM_ADAPTER_MESSAGE_ME)) {
-        MessageItemMe(get(named(LD_CHANNEL)),
-                      get(),
-                      get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
+    scoped { MediatorLiveData<ChannelVM.State>() }
+    viewModel {
+        ChannelVMDefault(get(),
+                         get(),
+                         get(),
+                         get(),
+                         get(),
+                         get(),
+                         get(),
+                         get(),
+                         get()) as ChannelVM
     }
-    factory(named(ITEM_ADAPTER_MESSAGE_YOU)) {
-        MessageItemYou(get(named(LD_CHANNEL)),
-                       get(),
-                       get()) as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
-    }
-    factory(named(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT)) {
-        MessageItemInDevelopment() as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<MessageInfo>, MessageInfo>
-    }
-
-    factory(named(ADAPTER_CHANNEL)) {
-        DelegateAdapter.Builder<MessageInfo>()
-                .add(get(named(ITEM_ADAPTER_MESSAGE_ME)))
-                .add(get(named(ITEM_ADAPTER_MESSAGE_YOU)))
-                .add(get(named(ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT)))
-                .diffCallback(get(named(KEY_DIFF_CALLBACK_MESSAGE_INFO)))
-                .build()
-    }
-    factory { ChannelSliceDefault(get(named(LD_CHANNEL)), get(named(ADAPTER_CHANNEL)), get()) as ChannelSlice }
-
-    factory { GetMessagesDoDefault(get()) as GetMessagesDo }
-    factory { ObserveChannelChangesDoDefault(get()) as ObserveChannelChangesDo }
-    factory { SendMessageDoDefault(get(), get()) as SendMessageDo }
-    factory { CardsInteractorDefault(get()) as CardsInteractor }
-    factory { GetCardDoDefault(get()) as GetCardDo }
-    factory { GetChannelDoDefault(get()) as GetChannelDo }
-    factory { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
-    factory { CopyMessageDoDefault(get()) as CopyMessageDo }
-
-    module {
-        factory { MediatorLiveData<ChannelVM.State>() }
-        factory(named(VM_CHANNEL)) {
-            ChannelVMDefault(get(),
-                             get(),
-                             get(),
-                             get(),
-                             get(),
-                             get(),
-                             get(),
-                             get(),
-                             get()) as ChannelVM
-        }
-    }
-}
-
-object Const {
-    const val STATE_CHANNEL = "STATE_CHANNEL"
-    const val LD_TOOLBAR_CHANNEL = "LD_TOOLBAR_CHANNEL"
-    const val TOOLBAR_CHANNEL = "TOOLBAR_CHANNEL"
-    const val LD_CHANNEL = "LD_CHANNEL"
-    const val ITEM_ADAPTER_MESSAGE_ME = "ITEM_ADAPTER_MESSAGE_ME"
-    const val ITEM_ADAPTER_MESSAGE_YOU = "ITEM_ADAPTER_MESSAGE_YOU"
-    const val ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT = "ITEM_ADAPTER_MESSAGE_IN_DEVELOPMENT"
-    const val ADAPTER_CHANNEL = "ADAPTER_CHANNEL"
-    const val VM_CHANNEL = "VM_CHANNEL"
 }

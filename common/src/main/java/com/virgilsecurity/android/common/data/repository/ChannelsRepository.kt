@@ -34,8 +34,7 @@
 package com.virgilsecurity.android.common.data.repository
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -56,7 +55,7 @@ import io.reactivex.Single
  */
 interface ChannelsRepository {
 
-    fun channels(): Observable<List<ChannelInfo>>
+    fun channels(): Observable<List<ChannelMeta>>
 
     fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges>
 

@@ -31,15 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.data.model
+package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import android.os.Parcelable
-import com.virgilsecurity.android.base.util.GeneralConstants
-import kotlinx.android.parcel.Parcelize
-import org.json.JSONObject
+import com.virgilsecurity.android.base.data.model.User
+import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
+import com.virgilsecurity.android.common.util.AuthUtils
+import io.reactivex.Completable
 
 /**
  * . _  _
@@ -47,58 +45,25 @@ import org.json.JSONObject
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    5/31/185/31/18
+ * ....|  _/    7/26/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * User Virgil Twilio. Summarizes Virgil and Twilio properties of User.
+ * InitTwilioInteractorDefault
  */
-@Entity
-@Parcelize
-class MessageInfo(
-        @PrimaryKey @ColumnInfo(name = KEY_SID)
-        val sid: String,
-        @ColumnInfo(name = KEY_CHANNEL_ID)
-        val channelSid: String,
-        @ColumnInfo(name = KEY_BODY)
-        val body: String?,
-        @ColumnInfo(name = KEY_ATTRIBUTES)
-        val attributesString: String,
-        @ColumnInfo(name = GeneralConstants.KEY_SENDER)
-        val sender: String,
-        @ColumnInfo(name = KEY_HAS_MEDIA)
-        val hasMedia: Boolean
-) : Comparable<MessageInfo>, Parcelable {
+class InitSmackInteractorDefault(
+        private val smackHelper: SmackHelper,
+        private val authUtils: AuthUtils,
+        private val userProperties: UserProperties
+) : InitSmackInteractor {
 
-    override fun compareTo(other: MessageInfo): Int = this.sid.compareTo(other.sid)
+    override fun initClient(user: User): Completable {
+        userProperties.currentUser = user
 
-    fun attributes() = JSONObject(attributesString)
-
-    fun hasNoMedia() = !hasMedia
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MessageInfo
-
-        if (sid != other.sid) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return sid.hashCode()
-    }
-
-    companion object {
-        const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
-        const val KEY_SID = "sid"
-        const val KEY_BODY = "body"
-        const val KEY_ATTRIBUTES = "attributes"
-        const val KEY_CHANNEL_ID = "channel_id"
-        const val KEY_HAS_MEDIA = "has_media"
+        return smackHelper.startClient(user.identity) {
+            authUtils.generateAuthHeader(user.identity, user.card())
+        }
     }
 }

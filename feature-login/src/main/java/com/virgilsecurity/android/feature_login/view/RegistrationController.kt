@@ -33,14 +33,18 @@
 
 package com.virgilsecurity.android.feature_login.view
 
-import LoginDiConst.VM_REGISTRATION
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BaseCBWithScope
+import com.virgilsecurity.android.base.view.controller.BControllerBindingScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
 import com.virgilsecurity.android.feature_login.R
@@ -48,10 +52,9 @@ import com.virgilsecurity.android.feature_login.databinding.ControllerRegisterBi
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistration
-import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSlice
-import kotlinx.android.synthetic.main.controller_register.*
-import org.koin.core.inject
-import org.koin.core.qualifier.named
+import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * . _  _
@@ -67,51 +70,68 @@ import org.koin.core.qualifier.named
 /**
  * RegistrationController
  */
-class RegistrationController() : BaseCBWithScope() {
+class RegistrationController() : BControllerBindingScope() {
 
     override val layoutResourceId: Int = R.layout.controller_register
 
-    private val viewModel: RegistrationVM by inject(named(VM_REGISTRATION))
-    private val stateSlice: StateSliceRegistration by inject()
-    private val toolbarSlice: ToolbarSlice by inject()
+    private val vmRegistration: RegistrationVM by currentScope.viewModel(this)
 
     private lateinit var login: (User) -> Unit
+    private lateinit var stateSlice: StateSliceRegistration
+    private lateinit var toolbarSlice: ToolbarSliceRegistration
+    private lateinit var mutableLiveData: MutableLiveData<ToolbarSliceRegistration.Action>
+
+    private lateinit var etUsername: EditText
+    private lateinit var tvPolicy2: TextView
+    private lateinit var tvPolicy4: TextView
+    private lateinit var btnNext: Button
 
     constructor(login: (User) -> Unit) : this() {
         this.login = login
     }
 
-    override fun initViewBinding(inflater: LayoutInflater, container: ViewGroup?, layoutResourceId: Int): View {
+    override fun initViewBinding(inflater: LayoutInflater,
+                                 container: ViewGroup?,
+                                 layoutResourceId: Int): View {
         val binding: ControllerRegisterBinding = DataBindingUtil.inflate(inflater,
                                                                          layoutResourceId,
                                                                          container,
                                                                          false)
-        binding.registrationViewModel = viewModel as RegistrationVMDefault
+        binding.registrationViewModel = vmRegistration as RegistrationVMDefault
         return binding.root
     }
 
 
-    override fun init() {
-        initViews()
+    override fun init(containerView: View) {
+        mutableLiveData = MutableLiveData()
+        initViews(containerView)
         initViewCallbacks()
     }
 
-    private fun initViews() {
-        openKeyboard(etUsername)
-        tvPolicy2.movementMethod = LinkMovementMethodNoSelection.instance
-        tvPolicy4.movementMethod = LinkMovementMethodNoSelection.instance
+    private fun initViews(containerView: View) {
+        with(containerView) {
+            etUsername = findViewById(R.id.etUsername)
+            tvPolicy2 = findViewById(R.id.tvPolicy2)
+            tvPolicy4 = findViewById(R.id.tvPolicy4)
+            btnNext = findViewById(R.id.btnNext)
+
+            openKeyboard(etUsername)
+
+            tvPolicy2.movementMethod = LinkMovementMethodNoSelection.instance
+            tvPolicy4.movementMethod = LinkMovementMethodNoSelection.instance
+        }
     }
 
     private fun initViewCallbacks() {
         btnNext.setOnClickListener {
             hideKeyboard()
-            viewModel.registration(etUsername.text.toString().toLowerCase())
+            vmRegistration.registration(etUsername.text.toString().toLowerCase())
         }
     }
 
-    override fun initViewSlices(view: View) {
-        stateSlice.init(lifecycle, view)
-        toolbarSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        stateSlice.init(lifecycle, window)
+        toolbarSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {
@@ -122,17 +142,17 @@ class RegistrationController() : BaseCBWithScope() {
         observe(toolbarSlice.getAction(), ::onActionChanged)
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onActionChanged(action: ToolbarSliceRegistration.Action) = when (action) {
+        ToolbarSliceRegistration.Action.BackClicked -> {
             hideKeyboard()
             backPressed()
         }
-        ToolbarSlice.Action.InfoClicked -> UiUtils.toastUnderDevelopment(this)
-        ToolbarSlice.Action.Idle -> Unit
+        ToolbarSliceRegistration.Action.InfoClicked -> UiUtils.toastUnderDevelopment(this)
+        ToolbarSliceRegistration.Action.Idle -> Unit
     }
 
     override fun setupVMStateObservers() {
-        observe(viewModel.getState(), ::onStateChanged)
+        observe(vmRegistration.getState(), ::onStateChanged)
     }
 
     override fun initData() {}

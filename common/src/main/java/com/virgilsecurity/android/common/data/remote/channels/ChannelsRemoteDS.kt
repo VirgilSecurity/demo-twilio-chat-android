@@ -34,8 +34,7 @@
 package com.virgilsecurity.android.common.data.remote.channels
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.util.GeneralConstants
 import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
 import io.reactivex.Flowable
@@ -64,7 +63,7 @@ class ChannelsRemoteDS(
 
     override fun userChannelById(id: String): Single<Channel> = twilioHelper.channelBySid(id)
 
-    override fun userChannels(): Observable<List<ChannelInfo>> =
+    override fun userChannels(): Observable<List<ChannelMeta>> =
             Observable.concatArray(twilioHelper.userChannels().toObservable(),
                                    twilioHelper.publicChannels().toObservable())
                     .map { channelDescriptors ->
@@ -75,7 +74,7 @@ class ChannelsRemoteDS(
                     }
                     .map(mapper::mapDescriptors)
 
-    override fun createChannel(sender: String, interlocutor: String): Single<ChannelInfo> =
+    override fun createChannel(sender: String, interlocutor: String): Single<ChannelMeta> =
             twilioHelper.createChannel(interlocutor,
                                        channelIdGenerator.generatedChannelId(sender, interlocutor))
                     .map(mapper::mapChannel)
@@ -83,6 +82,6 @@ class ChannelsRemoteDS(
     override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
             twilioHelper.observeChannelsListChanges()
 
-    override fun joinChannel(channel: Channel): Single<ChannelInfo> =
+    override fun joinChannel(channel: Channel): Single<ChannelMeta> =
             twilioHelper.joinChannel(channel).map(mapper::mapChannel)
 }

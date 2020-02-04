@@ -35,7 +35,7 @@ package com.virgilsecurity.android.common.data.remote.messages
 
 import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.MessagesApi
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -48,18 +48,18 @@ class MessagesRemoteDS(
     override fun messagesCount(channel: Channel): Single<Long> =
             twilioHelper.messagesCount(channel)
 
-    override fun messagesAfter(channel: Channel, startIndex: Long, count: Int): Single<List<MessageInfo>> =
+    override fun messagesAfter(channel: Channel, startIndex: Long, count: Int): Single<List<MessageMeta>> =
             twilioHelper.messagesAfter(channel, startIndex, count)
                     .map(mapper::mapMessages)
 
-    override fun lastMessages(channel: Channel, count: Int): Single<List<MessageInfo>> =
+    override fun lastMessages(channel: Channel, count: Int): Single<List<MessageMeta>> =
             twilioHelper.lastMessages(channel, count)
                     .map(mapper::mapMessages)
 
     override fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
             twilioHelper.observeChannelChanges(channel)
 
-    override fun sendMessage(channel: Channel, body: String): Single<MessageInfo> =
+    override fun sendMessage(channel: Channel, body: String): Single<MessageMeta> =
             twilioHelper.sendMessage(channel, body)
                     .map(mapper::mapMessage)
 }

@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
 
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.feature_channel.R
 
@@ -53,12 +53,12 @@ import com.virgilsecurity.android.feature_channel.R
  */
 class MessageItemInDevelopment(
         override val layoutResourceId: Int = R.layout.item_message_in_development
-) : DelegateAdapterItemDefault<MessageInfo>() {
+) : DelegateAdapterItemDefault<MessageMeta>() {
 
-    override fun onBind(item: MessageInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
+    override fun onBind(item: MessageMeta, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageMeta>) {}
 
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
+    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageMeta>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageInfo).hasMedia
+            (items[position] as MessageMeta).inDevelopment
 }

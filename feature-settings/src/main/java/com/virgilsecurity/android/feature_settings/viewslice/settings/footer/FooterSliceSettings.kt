@@ -38,7 +38,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 import android.view.View
+import android.widget.TextView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_settings.R
 
 /**
  * . _  _
@@ -55,36 +57,53 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  * FooterSliceSettings
  */
 class FooterSliceSettings(
-        private val mutableLiveData: MutableLiveData<FooterSlice.Action>
-) : BaseViewSlice(), FooterSlice, View.OnClickListener {
+        private val mutableLiveData: MutableLiveData<Action>
+) : BaseViewSlice(), View.OnClickListener {
+
+    private lateinit var tvAbout: TextView
+    private lateinit var tvAskQuestion: TextView
+    private lateinit var tvVersionHistory: TextView
+
+    override fun setupViews() {
+        with(window) {
+            this@FooterSliceSettings.tvAbout = findViewById(R.id.tvAbout)
+            this@FooterSliceSettings.tvAskQuestion = findViewById(R.id.tvAskQuestion)
+            this@FooterSliceSettings.tvVersionHistory = findViewById(R.id.tvVersionHistory)
+
+            tvAbout.setOnClickListener(this@FooterSliceSettings)
+            tvAskQuestion.setOnClickListener(this@FooterSliceSettings)
+            tvVersionHistory.setOnClickListener(this@FooterSliceSettings)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         setupViews()
     }
 
-    private fun setupViews() {
-        tvAbout.setOnClickListener(this)
-        tvAskQuestion.setOnClickListener(this)
-        tvVersionHistory.setOnClickListener(this)
-    }
-
     override fun onClick(view: View) {
         when (view) {
             tvAbout -> {
-                mutableLiveData.value = FooterSlice.Action.AboutClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
+                mutableLiveData.value = Action.AboutClicked
+                mutableLiveData.value = Action.Idle
             }
             tvAskQuestion -> {
-                mutableLiveData.value = FooterSlice.Action.AskQuestionClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
+                mutableLiveData.value = Action.AskQuestionClicked
+                mutableLiveData.value = Action.Idle
             }
             tvVersionHistory -> {
-                mutableLiveData.value = FooterSlice.Action.VersionClicked
-                mutableLiveData.value = FooterSlice.Action.Idle
+                mutableLiveData.value = Action.VersionClicked
+                mutableLiveData.value = Action.Idle
             }
         }
     }
 
-    override fun getAction(): LiveData<FooterSlice.Action> = mutableLiveData
+    fun getAction(): LiveData<Action> = mutableLiveData
+
+    sealed class Action {
+        object AboutClicked : Action()
+        object AskQuestionClicked : Action()
+        object VersionClicked : Action()
+        object Idle : Action()
+    }
 }

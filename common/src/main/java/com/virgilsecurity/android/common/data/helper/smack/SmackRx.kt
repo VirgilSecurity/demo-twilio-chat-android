@@ -33,8 +33,52 @@
 
 package com.virgilsecurity.android.common.data.helper.smack
 
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.jivesoftware.smack.ConnectionConfiguration
+import org.jivesoftware.smack.tcp.XMPPTCPConnection
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
+import java.net.InetAddress
+
 /**
  * SmackRx
  */
 class SmackRx {
+
+    fun startClient(identity: String,
+                    password: String,
+                    xmppHost: String,
+                    resource: String,
+                    xmppPort: Int): Single<XMPPTCPConnection> =
+            Single.create {
+                try {
+                    val inetAddress = InetAddress.getByName(xmppHost);
+                    val config = XMPPTCPConnectionConfiguration.builder()
+                            .setUsernameAndPassword(identity, password)
+                            .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
+                            .setResource(resource)
+                            .setXmppDomain(xmppHost)
+                            .setHostAddress(inetAddress)
+                            .setPort(xmppPort)
+                            .build()
+
+                    val connection = XMPPTCPConnection(config)
+                    val abstractConnection = connection.connect()
+                    abstractConnection.login()
+
+                    it.onSuccess(connection)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
+
+    fun stopClient(connection: XMPPTCPConnection): Completable =
+            Completable.create {
+                try {
+                    connection.disconnect()
+                    it.onComplete()
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
 }

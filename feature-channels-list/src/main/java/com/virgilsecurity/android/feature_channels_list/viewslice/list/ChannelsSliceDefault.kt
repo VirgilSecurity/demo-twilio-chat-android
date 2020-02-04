@@ -37,7 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 
@@ -57,7 +57,7 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  */
 class ChannelsSliceDefault(
         private val actionLiveData: MutableLiveData<ChannelsSlice.Action>,
-        private val adapter: DelegateAdapter<ChannelInfo>,
+        private val adapter: DelegateAdapter<ChannelMeta>,
         private val itemDecoratorBottomDivider: androidx.recyclerview.widget.RecyclerView.ItemDecoration,
         private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
 ) : BaseViewSlice(), ChannelsSlice {
@@ -75,7 +75,7 @@ class ChannelsSliceDefault(
 
     override fun getAction(): LiveData<ChannelsSlice.Action> = actionLiveData
 
-    override fun showChannels(channels: List<ChannelInfo>) = adapter.addItems(channels)
+    override fun showChannels(channels: List<ChannelMeta>) = adapter.addItems(channels)
 
-    override fun addChannel(channel: ChannelInfo) = adapter.addItem(channel)
+    override fun addChannel(channel: ChannelMeta) = adapter.addItem(channel)
 }

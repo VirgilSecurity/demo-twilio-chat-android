@@ -33,9 +33,39 @@
 
 package com.virgilsecurity.android.common.data.helper.smack
 
+import com.virgilsecurity.common.exception.IncompleteInitializationException
+import io.reactivex.Completable
+import org.jivesoftware.smack.tcp.XMPPTCPConnection
+import java.lang.IllegalStateException
+
 /**
  * SmackHelper
  */
 class SmackHelper(private val smackRx: SmackRx) {
 
+    private lateinit var connection: XMPPTCPConnection
+
+    fun startClient(identity: String, getPassword: () -> String): Completable {
+        if (!::connection.isInitialized) {
+            return smackRx.startClient(identity, getPassword(), XMPP_HOST, RESOURCE_ANDROID, XMPP_PORT)
+                    .map { this@SmackHelper.connection = it }
+                    .ignoreElement()
+        } else {
+            return Completable.error(IllegalStateException("Already initialized."))
+        }
+    }
+
+    fun stopClient(): Completable {
+        if (!::connection.isInitialized) {
+            return Completable.error(IllegalStateException("Not initialized yet."))
+        } else {
+            return smackRx.stopClient(connection)
+        }
+    }
+
+    companion object {
+        private const val XMPP_HOST = "xmpp-stg.virgilsecurity.com"
+        private const val XMPP_PORT = 5222
+        private const val RESOURCE_ANDROID = "Android"
+    }
 }

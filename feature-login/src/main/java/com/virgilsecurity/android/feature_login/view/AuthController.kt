@@ -35,14 +35,20 @@ package com.virgilsecurity.android.feature_login.view
 
 import LoginDiConst.VM_AUTH
 import android.view.View
+import android.view.Window
+import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
+import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.viewslice.StateSlice
 import com.virgilsecurity.android.feature_login.R
-import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
-import kotlinx.android.synthetic.main.controller_login.*
+import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
+import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
+import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapter
+import com.virgilsecurity.android.feature_login.viewslice.login.state.StateSliceLogin
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
 
 /**
@@ -63,50 +69,55 @@ class AuthController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_login
 
-    private val viewPagerSlice: ViewPagerSlice by inject()
-    private val stateSlice: StateSlice by inject()
-    private val viewModel: LoginVM by getKoin().getScope(VM_AUTH).inject()
+    private val imageStorage: ImageStorage by inject()
+    private val stateSlice: StateSliceLogin by inject()
+    private val vmAuth: AuthVM by getKoin().getScope(VM_AUTH).viewModel(this)
+
+    private lateinit var mutableLiveData: MutableLiveData<ViewPagerSlice.Action>
 
     private lateinit var login: (User) -> Unit
     private lateinit var registration: () -> Unit
+    private lateinit var usersPagerAdapter: UsersPagerAdapter
+    private lateinit var viewPagerSlice: ViewPagerSlice
 
     constructor(login: (User) -> Unit, registration: () -> Unit) : this() {
         this.login = login
         this.registration = registration
     }
 
-    override fun init() {
-        initViewCallbacks()
+    override fun init(containerView: View) {
+        containerView.findViewById<TextView>(R.id.tvCreateAccount)
+                .setOnClickListener { registration() }
+
+        mutableLiveData = MutableLiveData()
+        usersPagerAdapter = UsersPagerAdapter(imageStorage, mutableLiveData)
+        viewPagerSlice = ViewPagerSlice(usersPagerAdapter, mutableLiveData)
     }
 
-    private fun initViewCallbacks() {
-        tvCreateAccount.setOnClickListener { registration() }
+    override fun initViewSlices(window: Window) {
+        viewPagerSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
-    override fun initViewSlices(view: View) {
-        viewPagerSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
-    }
-
-    override fun setupViewSlices(view: View) {}
+    override fun setupViewSlices(containerView: View) {}
 
     override fun setupVSActionObservers() =
             observe(viewPagerSlice.getAction(), ::onActionChanged)
 
-    override fun setupVMStateObservers() = observe(viewModel.getState(), ::onStateChanged)
+    override fun setupVMStateObservers() = observe(vmAuth.getState(), ::onStateChanged)
 
     override fun initData() {}
 
-    private fun onStateChanged(state: LoginVM.State) = when (state) {
-        is LoginVM.State.UsersLoaded -> {
+    private fun onStateChanged(state: AuthVM.State) = when (state) {
+        is AuthVM.State.UsersLoaded -> {
             viewPagerSlice.showUsers(state.users)
             if (state.users.size > 4)
                 viewPagerSlice.updateIndicator()
             stateSlice.showContent()
         }
-        LoginVM.State.ShowLoading -> stateSlice.showLoading()
-        LoginVM.State.ShowError -> stateSlice.showError()
-        LoginVM.State.LoginError -> {
+        AuthVM.State.ShowLoading -> stateSlice.showLoading()
+        AuthVM.State.ShowError -> stateSlice.showError()
+        AuthVM.State.LoginError -> {
             UiUtils.toast(this, "Login error. Try again")
             stateSlice.showContent()
         }

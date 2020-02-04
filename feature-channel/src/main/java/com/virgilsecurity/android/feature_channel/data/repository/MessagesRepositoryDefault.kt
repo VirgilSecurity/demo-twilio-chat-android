@@ -36,7 +36,7 @@ package com.virgilsecurity.android.feature_channel.data.repository
 import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.dao.MessagesDao
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.extension.comparableListEqual
 import com.virgilsecurity.android.common.data.remote.messages.MapperToMessageInfo
 import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
@@ -68,9 +68,9 @@ class MessagesRepositoryDefault(
         private val mapper: MapperToMessageInfo
 ) : MessagesRepository {
 
-    private val debounceCache = mutableListOf<MessageInfo>()
+    private val debounceCache = mutableListOf<MessageMeta>()
 
-    override fun messages(channel: Channel): Observable<List<MessageInfo>> =
+    override fun messages(channel: Channel): Observable<List<MessageMeta>> =
             Observable.concatArray(messagesDao.messages(channel.sid).toObservable(),
                                    fetchMessages(channel).flatMap {
                                        messagesDao.addMessages(it)

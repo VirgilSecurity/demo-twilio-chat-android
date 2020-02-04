@@ -31,11 +31,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_login.viewmodel.login
+package com.virgilsecurity.android.feature_login.viewslice.login.list
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.viewpager.widget.ViewPager
+import com.github.vivchar.viewpagerindicator.ViewPagerIndicator
+import com.virgilsecurity.android.base.data.model.User
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_login.R
+import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapter
 
 /**
  * . _  _
@@ -43,48 +50,50 @@ import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    6/25/18
+ * ....|  _/    7/5/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * LoginVMDefault
+ * ViewPagerSlice
  */
-class LoginVMDefault(
-        private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
-) : LoginVM() {
+class ViewPagerSlice(
+        private val adapter: UsersPagerAdapter,
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    init {
-        state.addSource(loadUsersDo.getLiveData(), ::onLoadUsersResult)
-    }
+    private lateinit var vpUsers: ViewPager
+    private lateinit var vpIndicatorUsers: ViewPagerIndicator
 
-    override fun onCleared() {
-        loadUsersDo.cleanUp()
-    }
-
-    override fun getState(): LiveData<State> = state
-
-    override fun users() {
-        state.value = State.ShowLoading
-        loadUsersDo.execute()
-    }
-
-    override fun login(identity: String) {
-        state.value = State.ShowLoading
-    }
-
-    private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
-        when (result) {
-            is LoadUsersDo.Result.OnSuccess -> {
-                if (result.users.isNotEmpty()) {
-                    state.value = State.UsersLoaded(result.users)
-                } else {
-                    state.value = State.ShowNoUsers
-                }
-            }
-            is LoadUsersDo.Result.OnError -> state.value = State.ShowError
+    override fun setupViews() {
+        with(window) {
+            vpUsers = findViewById(R.id.vpUsers)
+            vpIndicatorUsers = findViewById(R.id.vpIndicatorUsers)
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupViewPager()
+    }
+
+    private fun setupViewPager() {
+        vpUsers.adapter = adapter
+    }
+
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    fun showUsers(users: List<User>) {
+        adapter.setUsers(users)
+    }
+
+    fun updateIndicator() {
+        vpIndicatorUsers.setupWithViewPager(vpUsers)
+    }
+
+    sealed class Action {
+        data class UserClicked(val user: User) : Action()
+        object Idle : Action()
     }
 }

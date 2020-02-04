@@ -33,19 +33,21 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer
 
+import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import android.net.Uri
-import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.navigation.NavigationView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_drawer_navigation.R
+import de.hdodenhof.circleimageview.CircleImageView
 
 /**
  * . _  _
@@ -61,10 +63,28 @@ import com.virgilsecurity.android.feature_drawer_navigation.R
 /**
  * DrawerSliceDefault
  */
-class DrawerSliceDefault(
-        private val actionLiveData: MutableLiveData<DrawerSlice.Action>,
+class SliceDrawer(
+        private val actionLiveData: MutableLiveData<Action>,
         private val imageStorage: ImageStorage
-) : BaseViewSlice(), DrawerSlice {
+) : BaseViewSlice() {
+
+    private lateinit var nvNavigation: NavigationView
+    private lateinit var ivUserPicDrawer: CircleImageView
+    private lateinit var tvInitialsDrawer: TextView
+    private lateinit var tvUsernameDrawer: TextView
+
+    override fun setupViews() {
+        with(window) {
+            this@SliceDrawer.nvNavigation = findViewById(R.id.nvNavigation)
+            this@SliceDrawer.ivUserPicDrawer =
+                    nvNavigation.getHeaderView(0).findViewById(R.id.ivUserPicDrawer)
+            this@SliceDrawer.tvInitialsDrawer =
+                    nvNavigation.getHeaderView(0).findViewById(R.id.tvInitialsDrawer)
+            this@SliceDrawer.tvUsernameDrawer =
+                    nvNavigation.getHeaderView(0).findViewById(R.id.tvUsernameDrawer)
+
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -78,54 +98,61 @@ class DrawerSliceDefault(
             if (!it.isChecked) {
                 when (it.itemId) {
                     R.id.itemContacts -> {
-                        actionLiveData.value = DrawerSlice.Action.ContactsClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
+                        actionLiveData.value = Action.ContactsClicked
+                        actionLiveData.value = Action.Idle
                     }
                     R.id.itemChats -> {
-                        actionLiveData.value = DrawerSlice.Action.ChannelsListClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
+                        actionLiveData.value = Action.ChannelsListClicked
+                        actionLiveData.value = Action.Idle
                     }
                     R.id.itemSettings -> {
-                        actionLiveData.value = DrawerSlice.Action.SettingsClicked
-                        actionLiveData.value = DrawerSlice.Action.Idle
+                        actionLiveData.value = Action.SettingsClicked
+                        actionLiveData.value = Action.Idle
                     }
                 }
 
                 it.isChecked = true
             } else {
-                actionLiveData.value = DrawerSlice.Action.SameItemClicked
-                actionLiveData.value = DrawerSlice.Action.Idle
+                actionLiveData.value = Action.SameItemClicked
+                actionLiveData.value = Action.Idle
             }
 
             return@setNavigationItemSelectedListener true
         }
     }
 
-    override fun getAction(): LiveData<DrawerSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
 
-    override fun setHeader(identity: String, picturePath: String?) {
+    fun setHeader(identity: String, picturePath: String?) {
         if (picturePath != null) {
             Glide.with(context)
-                    .load(imageStorage.get(Uri.parse(picturePath)))
+                    .load(imageStorage.load(picturePath))
                     .apply(RequestOptions.circleCropTransform())
-                    .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
+                    .into(ivUserPicDrawer)
         } else {
-            nvNavigation.getHeaderView(0).tvInitialsDrawer.text = UserUtils.firstInitials(identity)
-            nvNavigation.getHeaderView(0).tvInitialsDrawer.visibility = View.VISIBLE
+            tvInitialsDrawer.text = UserUtils.firstInitials(identity)
+            tvInitialsDrawer.visibility = View.VISIBLE
             Glide.with(context)
                     .load(UiUtils.letterBasedDrawable(context, R.array.loginBackgrounds,
-                                                      nvNavigation.getHeaderView(0)
-                                                              .tvInitialsDrawer.text[0]
+                                                      tvInitialsDrawer.text[0]
                                                               .toLowerCase()
                                                               .toString()))
                     .apply(RequestOptions.circleCropTransform())
-                    .into(nvNavigation.getHeaderView(0).ivUserPicDrawer)
+                    .into(ivUserPicDrawer)
         }
 
-        nvNavigation.getHeaderView(0).tvUsernameDrawer.text = identity
+        tvUsernameDrawer.text = identity
     }
 
-    override fun setItemSelected(position: Int) {
+    fun setItemSelected(position: Int) {
         nvNavigation.menu.getItem(position).isChecked = true
+    }
+
+    sealed class Action {
+        object ContactsClicked : Action()
+        object ChannelsListClicked : Action()
+        object SettingsClicked : Action()
+        object SameItemClicked : Action()
+        object Idle : Action()
     }
 }

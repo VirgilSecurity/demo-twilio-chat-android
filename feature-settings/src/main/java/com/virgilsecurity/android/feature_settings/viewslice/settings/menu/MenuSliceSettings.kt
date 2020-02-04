@@ -57,10 +57,12 @@ import com.virgilsecurity.android.feature_settings.R
  * MenuSliceSettings
  */
 class MenuSliceSettings(
-        private val actionLiveData: MutableLiveData<MenuSlice.Action>
-) : BaseViewSlice(), MenuSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
     private lateinit var menu: MenuPopup
+
+    override fun setupViews() {}
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -72,23 +74,29 @@ class MenuSliceSettings(
         menu.setOnClickListener {
             when (it.id) {
                 R.id.tvMenuItemEdit -> {
-                    actionLiveData.value = MenuSlice.Action.EditClicked
-                    actionLiveData.value = MenuSlice.Action.Idle
+                    actionLiveData.value = Action.EditClicked
+                    actionLiveData.value = Action.Idle
                 }
                 R.id.tvMenuItemLogout -> {
-                    actionLiveData.value = MenuSlice.Action.LogoutClicked
-                    actionLiveData.value = MenuSlice.Action.Idle
+                    actionLiveData.value = Action.LogoutClicked
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
         menu.setupPopup(context)
     }
 
-    override fun show(showPoint: Point) {
+    fun show(showPoint: Point) {
         menu.showPopup(showPoint)
     }
 
-    override fun dismiss() = menu.dismiss()
+    fun dismiss() = menu.dismiss()
 
-    override fun getAction(): LiveData<MenuSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object EditClicked : Action()
+        object LogoutClicked : Action()
+        object Idle : Action()
+    }
 }

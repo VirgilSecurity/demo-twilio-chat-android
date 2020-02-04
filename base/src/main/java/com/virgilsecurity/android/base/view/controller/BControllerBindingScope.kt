@@ -31,13 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.data.local.channels
+package com.virgilsecurity.android.base.view.controller
 
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
-import com.virgilsecurity.android.base.data.model.ChannelInfo
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import io.reactivex.Completable
-import io.reactivex.Single
+import androidx.lifecycle.Lifecycle
+import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import kotlinx.android.extensions.LayoutContainer
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 
 /**
  * . _  _
@@ -45,28 +48,38 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/27/18
+ * ....|  _/    7/16/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsLocalDS
+ * Base Controller with View Binding and with Koin Scope
  */
-class ChannelsLocalDS(
-        private val channelsQao: ChannelsQao,
-        private val userProperties: UserProperties
-) : ChannelsDao {
+abstract class BControllerBindingScope : BaseController() {
 
-    override fun getUserChannels(): Single<List<ChannelInfo>> =
-            channelsQao.userChannels(userProperties.currentUser!!.identity)
+    private lateinit var session: Scope
+    protected val koinScopeQualifier = this::class.java.simpleName
+    protected val koinScopeId = "${koinScopeQualifier}_scope"
 
-    override fun addChannels(channels: List<ChannelInfo>): Completable =
-            Completable.fromCallable { channelsQao.insertChannelsInfo(channels) }
+    /**
+     * Used to initialize view binding
+     */
+    protected abstract fun initViewBinding(inflater: LayoutInflater,
+                                           container: ViewGroup?,
+                                           @LayoutRes layoutResourceId: Int): View
 
-    override fun addChannel(channel: ChannelInfo): Completable =
-            Completable.fromCallable { channelsQao.insertChannelInfo(channel) }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        val containerView = initViewBinding(inflater, container, layoutResourceId)
 
-    override fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelInfo>> =
-        channelsQao.user(yourIdentity, responderIdentity)
+        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
+
+        return containerView
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+
+        session.close()
+    }
 }

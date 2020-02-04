@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channels_list.domain.list
 
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.Do
 
 /**
@@ -53,7 +53,7 @@ import com.virgilsecurity.android.base.domain.Do
 interface GetChannelsDo : Do<GetChannelsDo.Result> {
 
     sealed class Result {
-        data class OnSuccess(val contacts: List<ChannelInfo>) : Result()
+        data class OnSuccess(val contacts: List<ChannelMeta>) : Result()
         object OnEmpty : Result()
         data class OnError(val error: Throwable) : Result()
     }

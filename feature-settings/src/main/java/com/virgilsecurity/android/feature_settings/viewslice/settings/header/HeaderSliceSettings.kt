@@ -33,12 +33,13 @@
 
 package com.virgilsecurity.android.feature_settings.viewslice.settings.header
 
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import android.net.Uri
-import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
@@ -46,6 +47,7 @@ import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_settings.R
+import de.hdodenhof.circleimageview.CircleImageView
 
 /**
  * . _  _
@@ -62,31 +64,48 @@ import com.virgilsecurity.android.feature_settings.R
  * HeaderSliceSettings
  */
 class HeaderSliceSettings(
-        private val mutableLiveData: MutableLiveData<HeaderSlice.Action>,
+        private val mutableLiveData: MutableLiveData<Action>,
         private val imageStorage: ImageStorage
-) : BaseViewSlice(), HeaderSlice {
+) : BaseViewSlice() {
+
+    private lateinit var ivChangeUserPic: ImageView
+    private lateinit var tvUsernameSettings: TextView
+    private lateinit var tvUsernameSettingsInfo: TextView
+    private lateinit var ivUserPicSettings: CircleImageView
+    private lateinit var tvInitials: TextView
+
+    override fun setupViews() {
+        with(window) {
+            this@HeaderSliceSettings.ivChangeUserPic = findViewById(R.id.ivChangeUserPic)
+            this@HeaderSliceSettings.tvUsernameSettings = findViewById(R.id.tvUsernameSettings)
+            this@HeaderSliceSettings.tvUsernameSettingsInfo = findViewById(R.id.tvUsernameSettings)
+            this@HeaderSliceSettings.ivUserPicSettings = findViewById(R.id.ivUserPicSettings)
+            this@HeaderSliceSettings.tvInitials = findViewById(R.id.tvInitials)
+
+            ivChangeUserPic.setOnClickListener {
+                mutableLiveData.value = Action.ChangePicClicked
+                mutableLiveData.value = Action.Idle
+            }
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         setupViews()
     }
 
-    private fun setupViews() {
-        ivChangeUserPic.setOnClickListener {
-            mutableLiveData.value = HeaderSlice.Action.ChangePicClicked
-            mutableLiveData.value = HeaderSlice.Action.Idle
-        }
-    }
-
-    override fun setName(name: String) {
+    fun setName(name: String) {
         tvUsernameSettings.text = name
         tvUsernameSettingsInfo.text = name
     }
 
-    override fun setUserPic(identity: String, picturePath: String?) {
+    /**
+     * If picture path is null - then user's name initials will be shown, taken from the identity.
+     */
+    fun setUserPic(identity: String, picturePath: String?) {
         if (picturePath != null) {
             Glide.with(context)
-                    .load(imageStorage.get(Uri.parse(picturePath)))
+                    .load(imageStorage.load(picturePath))
                     .apply(RequestOptions.circleCropTransform())
                     .into(ivUserPicSettings)
         } else {
@@ -102,5 +121,10 @@ class HeaderSliceSettings(
         }
     }
 
-    override fun getAction(): LiveData<HeaderSlice.Action> = mutableLiveData
+    fun getAction(): LiveData<Action> = mutableLiveData
+
+    sealed class Action {
+        object ChangePicClicked : Action()
+        object Idle : Action()
+    }
 }

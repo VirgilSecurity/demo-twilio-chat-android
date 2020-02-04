@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.common.data.local.messages
 
 import com.virgilsecurity.android.base.data.dao.MessagesDao
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.common.util.UiUtils
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -57,13 +57,13 @@ class MessagesLocalDS(
         private val messagesQao: MessagesQao
 ) : MessagesDao {
 
-    override fun messages(channelSid: String): Single<List<MessageInfo>> =
+    override fun messages(channelSid: String): Single<List<MessageMeta>> =
             messagesQao.messages(channelSid)
 
-    override fun addMessages(messages: List<MessageInfo>): Completable =
+    override fun addMessages(messages: List<MessageMeta>): Completable =
             Completable.fromCallable { messagesQao.insertMessages(messages) }
 
-    override fun addMessage(message: MessageInfo): Completable =
+    override fun addMessage(message: MessageMeta): Completable =
             Completable.fromCallable { messagesQao.insertMessage(message) }
                     .doOnComplete {
                         UiUtils.log("das", "das")

@@ -34,10 +34,7 @@
 package com.virgilsecurity.android.common.data.repository
 
 import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.ChannelsApi
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
-import com.virgilsecurity.android.base.data.model.ChannelInfo
-import com.virgilsecurity.android.base.extension.comparableListEqual
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.util.GeneralConstants
 import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import io.reactivex.Flowable
@@ -66,9 +63,9 @@ class ChannelsRepositoryDefault(
         private val mapper: MapperToChannelInfo
 ) : ChannelsRepository {
 
-    private val debounceCache = mutableListOf<ChannelInfo>()
+    private val debounceCache = mutableListOf<ChannelMeta>()
 
-    override fun channels(): Observable<List<ChannelInfo>> =
+    override fun channels(): Observable<List<ChannelMeta>> =
             Observable.concatArray(channelsDao.getUserChannels().toObservable(),
                                    channelsApi.userChannels()
                                            .flatMap(::joinFetchedChannels)
@@ -97,7 +94,7 @@ class ChannelsRepositoryDefault(
                     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun joinFetchedChannels(userChannels: List<ChannelInfo>): Observable<List<ChannelInfo>> {
+    private fun joinFetchedChannels(userChannels: List<ChannelMeta>): Observable<List<ChannelMeta>> {
         val fetchChannelStreams = mutableListOf<Observable<Channel>>()
 
         for (channel in userChannels)
@@ -105,7 +102,7 @@ class ChannelsRepositoryDefault(
 
         return Observable.zip(fetchChannelStreams) { channels -> channels.toList() }
                 .flatMap { fetchedChannels ->
-                    val joinChannelStreams = mutableListOf<Observable<ChannelInfo>>()
+                    val joinChannelStreams = mutableListOf<Observable<ChannelMeta>>()
 
                     for (fetchedChannel in fetchedChannels as List<Channel>)
                         if (fetchedChannel.status.value == Channel.ChannelStatus.INVITED.value)
@@ -141,7 +138,7 @@ class ChannelsRepositoryDefault(
                                                 Single.zip(pair.first,
                                                            pair.second,
                                                            BiFunction
-                                                           { _: ChannelInfo,
+                                                           { _: ChannelMeta,
                                                              _: ChannelsApi.ChannelsChanges ->
                                                                change
                                                            })
@@ -154,7 +151,7 @@ class ChannelsRepositoryDefault(
                     }
 
     private fun joinAndAddToDbChannel(change: ChannelsApi.ChannelsChanges.ChannelInvited,
-                                      channel: ChannelInfo) =
+                                      channel: ChannelMeta) =
             (channelsApi.joinChannel(change.channel!!).subscribeOn(Schedulers.io())
                     to
                     channelsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })

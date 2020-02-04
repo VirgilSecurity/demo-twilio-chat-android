@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.common.data.remote.messages
 
 import com.twilio.chat.Message
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 
 /**
  * . _  _
@@ -52,9 +52,9 @@ import com.virgilsecurity.android.base.data.model.MessageInfo
  */
 class MapperToMessageInfo {
 
-    fun mapMessages(descriptors: List<Message>): List<MessageInfo> =
+    fun mapMessages(descriptors: List<Message>): List<MessageMeta> =
             descriptors.map {
-                MessageInfo(it.sid,
+                MessageMeta(it.sid,
                             it.channelSid,
                             it.messageBody,
                             it.attributes.toString(),
@@ -62,8 +62,8 @@ class MapperToMessageInfo {
                             it.hasMedia())
             }
 
-    fun mapMessage(message: Message): MessageInfo =
-            MessageInfo(message.sid,
+    fun mapMessage(message: Message): MessageMeta =
+            MessageMeta(message.sid,
                         message.channelSid,
                         message.messageBody,
                         message.attributes.toString(),

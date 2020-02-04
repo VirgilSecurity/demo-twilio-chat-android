@@ -33,95 +33,18 @@
 
 package com.virgilsecurity.android.common.util
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import java.io.File
-import java.io.FileOutputStream
 
-class ImageStorage(private val context: Context) {
+/**
+ * ImageStorage
+ */
+interface ImageStorage {
 
-    fun save(bitmap: Bitmap, filename: String): String? {
+    fun save(bitmap: Bitmap, filename: String)
 
-        var stored: String? = null
+    fun load(filename: String): Bitmap?
 
-        val sdcard = context.filesDir
+    fun exists(filename: String): Boolean
 
-        val folder = File(sdcard.absoluteFile, "/directoryName/")
-        folder.mkdir()
-        val file = File(folder.absoluteFile, "$filename.jpg")
-
-        if (file.exists())
-            return stored
-
-        val out = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        out.flush()
-        out.close()
-
-        return file.absolutePath
-    }
-
-    private fun getFile(imageName: String): File? {
-        val mediaImage: File?
-        val root = context.filesDir.toString()
-        val myDir = File(root)
-        if (!myDir.exists())
-            return null
-
-        mediaImage = File(myDir.path + "/directoryName/" + imageName)
-
-        return mediaImage
-    }
-
-    fun exists(imageName: String): Boolean {
-        var b: Bitmap? = null
-        val file = getFile("/$imageName.jpg")
-        val path = file?.absolutePath
-
-        if (path != null)
-            b = BitmapFactory.decodeFile(path)
-
-        return !(b == null || b.equals(""))
-    }
-
-    fun get(uri: Uri): Bitmap? {
-
-        var input = context.contentResolver.openInputStream(uri)
-
-        val onlyBoundsOptions = BitmapFactory.Options()
-        onlyBoundsOptions.inJustDecodeBounds = true
-//        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions)
-        input.close()
-
-        if (onlyBoundsOptions.outWidth == -1 || onlyBoundsOptions.outHeight == -1)
-            return null
-
-        val originalSize = if (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth)
-            onlyBoundsOptions.outHeight
-        else
-            onlyBoundsOptions.outWidth
-
-        val ratio = if (originalSize > THUMBNAIL_SIZE) originalSize / THUMBNAIL_SIZE else 1.0
-
-        val bitmapOptions = BitmapFactory.Options()
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio)
-//        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888
-        input = context.contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions)
-        input.close()
-
-        return bitmap
-    }
-
-    private fun getPowerOfTwoForSampleRatio(ratio: Double): Int {
-        val k = Integer.highestOneBit(Math.floor(ratio).toInt())
-        return if (k == 0) 1 else k
-    }
-
-    companion object {
-        const val THUMBNAIL_SIZE: Double = 80.0
-    }
+    fun delete()
 }

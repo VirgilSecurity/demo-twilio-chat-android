@@ -33,19 +33,17 @@
 
 package com.virgilsecurity.android.common.di
 
-import androidx.room.Room
 import android.content.Context
+import android.text.InputFilter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.text.InputFilter
-import com.virgilsecurity.android.base.data.api.ChannelsApi
+import androidx.room.Room
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.api.VirgilApi
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.dao.UsersDao
-import com.virgilsecurity.android.base.data.model.ChannelInfo
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.common.R
@@ -53,8 +51,6 @@ import com.virgilsecurity.android.common.data.helper.fuel.FuelHelper
 import com.virgilsecurity.android.common.data.helper.room.RoomDB
 import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
 import com.virgilsecurity.android.common.data.helper.smack.SmackRx
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioRx
 import com.virgilsecurity.android.common.data.helper.virgil.RenewTokenCallbackImpl
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilRx
@@ -74,18 +70,21 @@ import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefau
 import com.virgilsecurity.android.common.data.repository.UsersRepository
 import com.virgilsecurity.android.common.data.repository.UsersRepositoryDefault
 import com.virgilsecurity.android.common.di.CommonDiConst.DIVIDER_DRAWABLE
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_INFO
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_ROOM_DB_NAME
 import com.virgilsecurity.android.common.di.CommonDiConst.ROOM_DB_NAME
 import com.virgilsecurity.android.common.util.AuthUtils
 import com.virgilsecurity.android.common.util.DefaultSymbolsInputFilter
 import com.virgilsecurity.android.common.util.ImageStorage
+import com.virgilsecurity.android.common.util.ImageStorageLocal
 import com.virgilsecurity.android.common.view.adapter.ItemDecoratorBottomDivider
 import com.virgilsecurity.sdk.cards.CardManager
 import com.virgilsecurity.sdk.cards.validation.CardVerifier
 import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier
-import com.virgilsecurity.sdk.crypto.*
+import com.virgilsecurity.sdk.crypto.VirgilCardCrypto
+import com.virgilsecurity.sdk.crypto.VirgilCrypto
+import com.virgilsecurity.sdk.crypto.VirgilPrivateKeyExporter
 import com.virgilsecurity.sdk.jwt.accessProviders.CachingJwtProvider
 import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider
 import com.virgilsecurity.sdk.storage.JsonFileKeyStorage
@@ -118,7 +117,7 @@ val commonModules: Module = module {
                 .build()
     }
     single { UsersLocalDS(get()) as UsersDao }
-    single { ImageStorage(get()) }
+    single { ImageStorageLocal(get()) as ImageStorage }
     factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
@@ -164,7 +163,7 @@ val channelsModule: Module = module {
     single { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
     single { (get() as RoomDB).channelsQao() }
     single { ChannelsLocalDS(get(), get()) as ChannelsDao }
-    single(named(KEY_DIFF_CALLBACK_CHANNEL_INFO)) { DiffCallback<ChannelInfo>() }
+    single(named(KEY_DIFF_CALLBACK_CHANNEL_META)) { DiffCallback<ChannelMeta>() }
     single(named(DIVIDER_DRAWABLE)) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
     single { ItemDecoratorBottomDivider(get(named(DIVIDER_DRAWABLE))) as RecyclerView.ItemDecoration }
     single { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
@@ -175,14 +174,14 @@ val messagesModule: Module = module {
     single { MessagesRemoteDS(get(), get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
-    single(named(KEY_DIFF_CALLBACK_MESSAGE_INFO)) { DiffCallback<MessageInfo>() }
+    single(named(KEY_DIFF_CALLBACK_MESSAGE_META)) { DiffCallback<MessageMeta>() }
 }
 
 object CommonDiConst {
     const val KEY_ROOM_DB_NAME = "ROOM_DB_NAME"
     const val DIVIDER_DRAWABLE = "DIVIDER_DRAWABLE"
-    const val KEY_DIFF_CALLBACK_CHANNEL_INFO = "KEY_DIFF_CALLBACK_CHANNEL_INFO"
-    const val KEY_DIFF_CALLBACK_MESSAGE_INFO = "KEY_DIFF_CALLBACK_MESSAGE_INFO"
+    const val KEY_DIFF_CALLBACK_CHANNEL_META = "KEY_DIFF_CALLBACK_CHANNEL_META"
+    const val KEY_DIFF_CALLBACK_MESSAGE_META = "KEY_DIFF_CALLBACK_MESSAGE_META"
 
     const val STORAGE_PATH = "storagePath"
     const val ROOM_DB_NAME = "virgil_messenger_database"

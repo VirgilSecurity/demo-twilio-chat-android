@@ -35,7 +35,7 @@ package com.virgilsecurity.android.common.data.remote.channels
 
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelDescriptor
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.util.GeneralConstants
 
 /**
@@ -54,9 +54,9 @@ import com.virgilsecurity.android.base.util.GeneralConstants
  */
 class MapperToChannelInfo {
 
-    fun mapDescriptors(descriptors: List<ChannelDescriptor>): List<ChannelInfo> =
+    fun mapDescriptors(descriptors: List<ChannelDescriptor>): List<ChannelMeta> =
             descriptors.map { channelDescriptor ->
-                ChannelInfo(channelDescriptor.sid,
+                ChannelMeta(channelDescriptor.sid,
                             channelDescriptor.attributes.toString(),
                             channelDescriptor.friendlyName,
                             channelDescriptor.uniqueName,
@@ -65,14 +65,14 @@ class MapperToChannelInfo {
                             channelDescriptor.status.value)
             }
 
-    fun mapChannel(channel: Channel): ChannelInfo =
+    fun mapChannel(channel: Channel): ChannelMeta =
             System.currentTimeMillis().let {
                 while (channel.attributes.toString() == "{}" ||
                        (System.currentTimeMillis() - it) < ATTRIBUTES_LOAD_TIMEOUT) {
                     continue
                 }
 
-                ChannelInfo(channel.sid,
+                ChannelMeta(channel.sid,
                             channel.attributes.toString(),
                             channel.friendlyName,
                             channel.uniqueName,

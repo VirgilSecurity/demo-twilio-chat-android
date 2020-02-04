@@ -33,6 +33,23 @@
 
 package com.virgilsecurity.android.feature_login.viewslice.registration.state
 
+import android.text.InputFilter
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_login.R
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
+
 /**
  * . _  _
  * .| || | _
@@ -45,19 +62,108 @@ package com.virgilsecurity.android.feature_login.viewslice.registration.state
  */
 
 /**
- * StateSliceRegistration
+ * StateSliceRegistrationDefault
  */
-interface StateSliceRegistration : ViewSliceLegacy {
+class StateSliceRegistration(
+        private val symbolsInputFilter: InputFilter
+) : BaseViewSlice() {
 
-    fun showConsistent()
+    private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
+    private lateinit var debounceDisposable: Disposable
 
-    fun showUsernameEmpty()
+    private lateinit var btnNext: Button
+    private lateinit var etUsername: EditText
+    private lateinit var pbLoading: ProgressBar
+    private lateinit var tvTryAgain: TextView
 
-    fun showUsernameTooShort()
+    override fun setupViews() {
+        with(window) {
+            btnNext = findViewById(R.id.btnNext)
+            etUsername = findViewById(R.id.etUsername)
+            pbLoading = findViewById(R.id.pbLoading)
+            tvTryAgain = findViewById(R.id.tvTryAgain)
+        }
+    }
 
-    fun showUsernameTooLong()
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        debounceDisposable = debounceSubject.debounce(DEBOUNCE_INTERVAL, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it) btnNext.visibility = View.INVISIBLE else btnNext.visibility = View.VISIBLE
+                    if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
+                }
 
-    fun showLoading()
+        etUsername.filters = arrayOf(symbolsInputFilter)
+    }
 
-    fun showError()
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        debounceDisposable.dispose()
+    }
+
+    fun showConsistent() {
+        activateButton(true)
+        loading(false)
+    }
+
+    fun showUsernameEmpty() {
+        activateButton(false)
+        loading(false)
+    }
+
+    fun showUsernameTooShort() {
+        activateButton(false)
+        loading(false)
+    }
+
+    fun showUsernameTooLong() {
+        activateButton(false)
+        loading(false)
+    }
+
+    fun showLoading() = loading(true)
+
+    fun showError() {
+        loading(false)
+        if (tvTryAgain.visibility == View.INVISIBLE) {
+            tvTryAgain.visibility = View.VISIBLE
+            val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
+            alphaAnimation.duration = ERROR_FADE_OUT_DURATION
+            alphaAnimation.startOffset = ERROR_START_OFFSET
+            alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    tvTryAgain.visibility = View.INVISIBLE
+                }
+
+                override fun onAnimationStart(animation: Animation?) {}
+            })
+            tvTryAgain.startAnimation(alphaAnimation)
+        }
+    }
+
+    private fun loading(loading: Boolean) {
+        debounceSubject.onNext(loading)
+    }
+
+    private fun activateButton(active: Boolean) {
+        if (active) {
+            btnNext.isEnabled = true
+            btnNext.isClickable = true
+            btnNext.background = context.getDrawable(R.drawable.rect_rounded_accent_2)
+        } else {
+            btnNext.isEnabled = false
+            btnNext.isClickable = false
+            btnNext.background = context.getDrawable(R.drawable.rect_rounded_gray_2)
+        }
+    }
+
+    companion object {
+        const val ERROR_FADE_OUT_DURATION = 500L
+        const val ERROR_START_OFFSET = 1500L
+        const val DEBOUNCE_INTERVAL = 200L
+    }
 }

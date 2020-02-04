@@ -56,10 +56,12 @@ import com.virgilsecurity.android.feature_settings.view.BottomSheetSimple
  * BSDSimpleSliceSettingsEdit
  */
 class BSDSimpleSliceSettingsEdit(
-        private val mutableLiveData: MutableLiveData<BSDSimpleSlice.Action>
-) : BaseViewSlice(), BSDSimpleSlice {
+        private val mutableLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
     private lateinit var bottomSheetSimple: BottomSheetSimple
+
+    override fun setupViews() {}
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
@@ -71,25 +73,31 @@ class BSDSimpleSliceSettingsEdit(
         bottomSheetSimple.setClickListener {
             when (it.id) {
                 R.id.btnBottomSheetSubmit -> {
-                    mutableLiveData.value = BSDSimpleSlice.Action.YesClicked
-                    mutableLiveData.value = BSDSimpleSlice.Action.Idle
+                    mutableLiveData.value = Action.YesClicked
+                    mutableLiveData.value = Action.Idle
                 }
                 R.id.btnBottomSheetCancel -> {
-                    mutableLiveData.value = BSDSimpleSlice.Action.NoClicked
-                    mutableLiveData.value = BSDSimpleSlice.Action.Idle
+                    mutableLiveData.value = Action.NoClicked
+                    mutableLiveData.value = Action.Idle
                 }
             }
         }
         bottomSheetSimple.setup()
     }
 
-    override fun getAction(): LiveData<BSDSimpleSlice.Action> = mutableLiveData
+    fun getAction(): LiveData<Action> = mutableLiveData
 
-    override fun setTitle(title: String) = bottomSheetSimple.setBottomTitle(title)
+    fun setTitle(title: String) = bottomSheetSimple.setBottomTitle(title)
 
-    override fun setBody(body: String) = bottomSheetSimple.setBottomBody(body)
+    fun setBody(body: String) = bottomSheetSimple.setBottomBody(body)
 
-    override fun show() = bottomSheetSimple.show()
+    fun show() = bottomSheetSimple.show()
 
-    override fun dismiss() = bottomSheetSimple.dismiss()
+    fun dismiss() = bottomSheetSimple.dismiss()
+
+    sealed class Action {
+        object YesClicked : Action()
+        object NoClicked : Action()
+        object Idle : Action()
+    }
 }

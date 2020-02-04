@@ -41,6 +41,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import com.bluelinelabs.conductor.Conductor
@@ -56,7 +57,7 @@ abstract class BActivityControllerSlices : BActivityController() {
      * Used to initialize view slices *Before*
      * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
      */
-    protected abstract fun initViewSlices()
+    protected abstract fun initViewSlices(window: Window)
 
     /**
      * Used to setup view slices *After*
@@ -73,7 +74,7 @@ abstract class BActivityControllerSlices : BActivityController() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViewSlices()
+        initViewSlices(window)
 
         setupViewSlices()
         setupVSActionObservers()

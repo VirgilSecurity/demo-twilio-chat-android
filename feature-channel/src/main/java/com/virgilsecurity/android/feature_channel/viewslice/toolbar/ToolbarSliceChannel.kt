@@ -56,33 +56,43 @@ import com.virgilsecurity.android.feature_channel.R
  * ToolbarSliceChannel
  */
 class ToolbarSliceChannel(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    private lateinit var toolbarField: Toolbar
+    private lateinit var toolbar: Toolbar
+
+    override fun setupViews() {
+        with(window) {
+            toolbar = findViewById(R.id.toolbarChannel)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        this.toolbarField = toolbarChannel as Toolbar
         setupToolbar()
     }
 
     private fun setupToolbar() {
-        toolbarField.showBackButton()
+        toolbar.showBackButton()
 
-        toolbarField.setOnToolbarItemClickListener {
+        toolbar.setOnToolbarItemClickListener {
             when (it.id) {
                 R.id.ivBack -> {
-                    actionLiveData.value = ToolbarSlice.Action.BackClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.BackClicked
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
     }
 
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
 
-    override fun setTitle(text: String) {
-        toolbarField.setTitle(text)
+    fun setTitle(text: String) {
+        toolbar.setTitle(text)
+    }
+
+    sealed class Action {
+        object BackClicked : Action()
+        object Idle : Action()
     }
 }

@@ -49,10 +49,12 @@ import com.virgilsecurity.android.common.util.DoubleBack
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.ScreenChat
 import com.virgilsecurity.android.feature_login.R
-import com.virgilsecurity.android.feature_login.viewmodel.login.LoginVM
+import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * . _  _
@@ -73,17 +75,16 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val loginVM: LoginVM by getKoin().getScope(VM_AUTH).inject()
+    private val vmAuth: AuthVM by getKoin().getScope(VM_AUTH).viewModel(this)
 
     override fun init(savedInstanceState: Bundle?) {
-        loginVM.users()
-        findViewById<>()
+        vmAuth.users()
     }
 
-    override fun setupVMStateObservers() = observe(loginVM.getState(), ::onStateChanged)
+    override fun setupVMStateObservers() = observe(vmAuth.getState(), ::onStateChanged)
 
-    private fun onStateChanged(state: LoginVM.State) = when (state) {
-        is LoginVM.State.UsersLoaded -> {
+    private fun onStateChanged(state: AuthVM.State) = when (state) {
+        is AuthVM.State.UsersLoaded -> {
             AuthController(::login, ::registration).run {
                 if (routerRoot.hasNoRootController())
                     initRouter(this, AuthController.KEY_LOGIN_CONTROLLER)
@@ -92,7 +93,7 @@ class AuthActivity(
             }
 
         }
-        LoginVM.State.ShowNoUsers -> {
+        AuthVM.State.ShowNoUsers -> {
             NoUsersController(::registration).run {
                 if (routerRoot.hasNoRootController())
                     initRouter(this, NoUsersController.KEY_NO_USERS_CONTROLLER)
@@ -100,10 +101,10 @@ class AuthActivity(
                     replaceTopController(this, NoUsersController.KEY_NO_USERS_CONTROLLER)
             }
         }
-        LoginVM.State.ShowLoading -> Unit
-        LoginVM.State.ShowContent -> Unit
-        LoginVM.State.LoginError -> Unit
-        LoginVM.State.ShowError -> {
+        AuthVM.State.ShowLoading -> Unit
+        AuthVM.State.ShowContent -> Unit
+        AuthVM.State.LoginError -> Unit
+        AuthVM.State.ShowError -> {
             AuthController(::login, ::registration).run {
                 if (routerRoot.hasNoRootController())
                     initRouter(this, AuthController.KEY_LOGIN_CONTROLLER)

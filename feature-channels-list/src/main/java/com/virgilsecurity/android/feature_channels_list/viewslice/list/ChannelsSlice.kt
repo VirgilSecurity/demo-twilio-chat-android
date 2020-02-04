@@ -34,7 +34,7 @@
 package com.virgilsecurity.android.feature_channels_list.viewslice.list
 
 import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 
 /**
  * . _  _
@@ -53,13 +53,13 @@ import com.virgilsecurity.android.base.data.model.ChannelInfo
 interface ChannelsSlice : ViewSliceLegacy {
 
     sealed class Action {
-        data class ChannelClicked(val channel: ChannelInfo) : Action()
+        data class ChannelClicked(val channel: ChannelMeta) : Action()
         object Idle : Action()
     }
 
     fun getAction(): LiveData<Action>
 
-    fun showChannels(channels: List<ChannelInfo>)
+    fun showChannels(channels: List<ChannelMeta>)
 
-    fun addChannel(channel: ChannelInfo)
+    fun addChannel(channel: ChannelMeta)
 }

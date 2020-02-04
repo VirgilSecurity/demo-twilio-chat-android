@@ -37,7 +37,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import com.virgilsecurity.android.base.data.api.MessagesApi
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 
 /**
  * . _  _
@@ -56,7 +56,7 @@ import com.virgilsecurity.android.base.data.model.MessageInfo
 abstract class ChannelVM : ViewModel() {
 
     sealed class State {
-        data class MessageLoaded(val messages: List<MessageInfo>) : State()
+        data class MessageLoaded(val messages: List<MessageMeta>) : State()
         object MessageSent : State()
         object MessageIsTooLong : State()
         object ShowEmpty : State()
@@ -64,7 +64,7 @@ abstract class ChannelVM : ViewModel() {
         object ShowContent : State()
         object ShowError : State()
         data class ChannelChanged(val change: MessagesApi.ChannelChanges) : State()
-        data class MessagePreviewAdded(val message: MessageInfo) : State()
+        data class MessagePreviewAdded(val message: MessageMeta) : State()
         object MessageCopied : State()
     }
 

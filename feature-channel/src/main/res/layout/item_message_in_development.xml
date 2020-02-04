@@ -48,5 +48,6 @@
         android:textColor="@color/illToad"
         android:textSize="@dimen/increased_text"
         android:text="@string/attachments_are_in_development"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

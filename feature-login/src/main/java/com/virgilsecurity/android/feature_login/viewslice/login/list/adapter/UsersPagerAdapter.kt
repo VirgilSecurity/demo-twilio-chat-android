@@ -40,12 +40,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.PagerAdapter
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.inflate
 import com.virgilsecurity.android.common.util.ImageStorage
+import com.virgilsecurity.android.common.util.ImageStorageLocal
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.UserUtils
 import com.virgilsecurity.android.feature_login.R
+import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import java.util.*
 
 /**
@@ -62,10 +65,10 @@ import java.util.*
 /**
  * UsersPagerAdapterDefault
  */
-class UsersPagerAdapterDefault(
+class UsersPagerAdapter(
         private val imageStorage: ImageStorage,
         private val actionLiveData: MutableLiveData<ViewPagerSlice.Action>
-) : UserPagerAdapter() {
+) : PagerAdapter() {
 
     private var pages: MutableList<MutableList<User>>? = null
 
@@ -85,7 +88,7 @@ class UsersPagerAdapterDefault(
         return parent
     }
 
-    override fun setUsers(users: List<User>) {
+    fun setUsers(users: List<User>) {
         if (users.isNotEmpty()) {
             pages = ArrayList()
             val iterator = users.iterator()
@@ -105,7 +108,7 @@ class UsersPagerAdapterDefault(
         }
     }
 
-    override fun addUser(user: User) {
+    fun addUser(user: User) {
         if (pages!![pages!!.size - 1].size == 4) {
             val newPage = MutableList(1) { user }
             pages!!.add(newPage)
@@ -116,7 +119,7 @@ class UsersPagerAdapterDefault(
         notifyDataSetChanged()
     }
 
-    override fun clearUsers() {
+    fun clearUsers() {
         pages!!.clear()
         notifyDataSetChanged()
     }
@@ -132,8 +135,7 @@ class UsersPagerAdapterDefault(
 
         if (user.picturePath != null && imageStorage.exists(user.picturePath!!)) {
             tvInitials.visibility = View.GONE
-            ivUserPic.setImageBitmap(imageStorage.get(
-                Uri.Builder().path(user.picturePath!!).build()))
+            ivUserPic.setImageBitmap(imageStorage.load(user.picturePath!!))
         } else {
             tvInitials.visibility = View.VISIBLE
             tvInitials.text = UserUtils.firstInitials(user.identity)

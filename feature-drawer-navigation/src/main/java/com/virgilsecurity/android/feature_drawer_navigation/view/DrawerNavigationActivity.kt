@@ -35,26 +35,28 @@ package com.virgilsecurity.android.feature_drawer_navigation.view
 
 import android.os.Bundle
 import android.view.ViewGroup
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.extension.getContentView
 import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.activity.BActivityController
 import com.virgilsecurity.android.base.view.ScreenRouter
+import com.virgilsecurity.android.base.view.activity.BActivityControllerSlices
+import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.view.ScreenChat
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channels_list.view.ChannelsListController
 import com.virgilsecurity.android.feature_contacts.view.AddContactController
 import com.virgilsecurity.android.feature_contacts.view.ContactsController
 import com.virgilsecurity.android.feature_drawer_navigation.R
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.DrawerSlice
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.DrawerStateSlice
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.drawer.SliceDrawer
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.navigation.state.StateSliceDrawer
 import com.virgilsecurity.android.feature_settings.view.AboutController
 import com.virgilsecurity.android.feature_settings.view.SettingsController
 import com.virgilsecurity.android.feature_settings.view.SettingsEditController
@@ -78,15 +80,17 @@ import org.koin.android.ext.android.inject
  */
 class DrawerNavigationActivity(
         override val layoutResourceId: Int = R.layout.activity_drawer_navigation
-) : BActivityController() {
+) : BActivityControllerSlices() {
 
     override fun provideContainer(): ViewGroup = controllerContainer
 
-    private val drawerSlice: DrawerSlice by inject()
-    private val stateSlice: DrawerStateSlice by inject()
     private val screenRouter: ScreenRouter by inject()
+    private val imageStorage: ImageStorage by inject()
 
     private lateinit var user: User
+    private lateinit var mldSliceDrawer: MutableLiveData<SliceDrawer.Action>
+    private lateinit var sliceDrawer: SliceDrawer
+    private lateinit var stateSlice: StateSliceDrawer
 
     override fun init(savedInstanceState: Bundle?) {
         user = intent.getParcelableExtra(User.KEY)
@@ -94,32 +98,36 @@ class DrawerNavigationActivity(
         initRouter()
     }
 
-    override fun initViewSlices() {
-        drawerSlice.init(lifecycle, getContentView())
-        stateSlice.init(lifecycle, getContentView())
+    override fun initViewSlices(window: Window) {
+        this.mldSliceDrawer = MutableLiveData() // TODO move all slices init to this method
+        this.sliceDrawer = SliceDrawer(mldSliceDrawer, imageStorage)
+        this.stateSlice = StateSliceDrawer()
+
+        sliceDrawer.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices() {
-        drawerSlice.setHeader(user.identity, user.picturePath)
+        sliceDrawer.setHeader(user.identity, user.picturePath)
     }
 
     override fun setupVSActionObservers() {
-        observe(drawerSlice.getAction()) { onActionChanged(it) }
+        observe(sliceDrawer.getAction()) { onActionChanged(it) }
     }
 
     override fun setupVMStateObservers() {}
 
-    private fun onActionChanged(action: DrawerSlice.Action,
+    private fun onActionChanged(action: SliceDrawer.Action,
                                 pushChangeHandler: ControllerChangeHandler? = null,
                                 popChangeHandler: ControllerChangeHandler? = null) = when (action) {
-        DrawerSlice.Action.ContactsClicked -> {
+        SliceDrawer.Action.ContactsClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
             replaceTopController(contactsController(), ContactsController.KEY_CONTACTS_CONTROLLER,
                                  pushChangeHandler,
                                  popChangeHandler)
         }
-        DrawerSlice.Action.ChannelsListClicked -> {
+        SliceDrawer.Action.ChannelsListClicked -> {
             stateSlice.unLockDrawer()
             stateSlice.closeDrawer()
             replaceTopController(channelsController(),
@@ -127,7 +135,7 @@ class DrawerNavigationActivity(
                                  pushChangeHandler,
                                  popChangeHandler)
         }
-        DrawerSlice.Action.SettingsClicked -> {
+        SliceDrawer.Action.SettingsClicked -> {
             stateSlice.lockDrawer()
             stateSlice.closeDrawer()
             pushController(settingsController(),
@@ -135,8 +143,8 @@ class DrawerNavigationActivity(
                            pushChangeHandler,
                            popChangeHandler)
         }
-        DrawerSlice.Action.SameItemClicked -> stateSlice.closeDrawer()
-        DrawerSlice.Action.Idle -> Unit
+        SliceDrawer.Action.SameItemClicked -> stateSlice.closeDrawer()
+        SliceDrawer.Action.Idle -> Unit
     }
 
     private fun contactsController() =
@@ -218,7 +226,7 @@ class DrawerNavigationActivity(
                                               .popChangeHandler(popChangeHandler)
                                               .tag(tag))
 
-    private fun openChannelNotFromChannels(channel: ChannelInfo) {
+    private fun openChannelNotFromChannels(channel: ChannelMeta) {
         stateSlice.lockDrawer()
         routerRoot.setBackstack(
             listOf(RouterTransaction
@@ -232,7 +240,7 @@ class DrawerNavigationActivity(
         openChannel(channel)
     }
 
-    private fun openChannel(channel: ChannelInfo) {
+    private fun openChannel(channel: ChannelMeta) {
         stateSlice.lockDrawer()
         pushController(ChannelController(channel),
                        ChannelController.KEY_CHANNEL_CONTROLLER)
@@ -241,9 +249,9 @@ class DrawerNavigationActivity(
     private fun initRouter() {
         if (routerRoot.hasNoRootController())
             routerRoot.setRoot(RouterTransaction
-                                       .with(TwilioInitController(user)
+                                       .with(SmackInitController(user)
                                              {
-                                                 onActionChanged(DrawerSlice.Action.ChannelsListClicked,
+                                                 onActionChanged(SliceDrawer.Action.ChannelsListClicked,
                                                                  HorizontalChangeHandler())
                                              })
                                        .pushChangeHandler(HorizontalChangeHandler())
@@ -265,10 +273,10 @@ class DrawerNavigationActivity(
                                            changeHandler: ControllerChangeHandler) {
 
                 if (to is ContactsController) {
-                    drawerSlice.setItemSelected(0)
+                    sliceDrawer.setItemSelected(0)
                     stateSlice.unLockDrawer()
                 } else if (to is ChannelsListController) {
-                    drawerSlice.setItemSelected(1)
+                    sliceDrawer.setItemSelected(1)
                     stateSlice.unLockDrawer()
                 }
             }

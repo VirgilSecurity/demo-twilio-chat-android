@@ -36,8 +36,8 @@ package com.virgilsecurity.android.base.view.adapter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
-abstract class BaseViewHolder<T>(itemView: View)
-    : RecyclerView.ViewHolder(itemView) where T : Comparable<T> {
+abstract class BaseViewHolder<T>(containerView: View)
+    : RecyclerView.ViewHolder(containerView) where T : Comparable<T> {
 
     private var listener: ((viewType: T, view: View) -> Unit)? = null
 

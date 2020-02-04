@@ -33,14 +33,14 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
 
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.MessageInfo
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
-import kotlinx.android.synthetic.main.item_message_you.*
 
 /**
  * . _  _
@@ -60,27 +60,27 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
                      private val userProperties: UserProperties,
                      private val virgilHelper: VirgilHelper,
                      override val layoutResourceId: Int = R.layout.item_message_you
-) : DelegateAdapterItemDefault<MessageInfo>() {
+) : DelegateAdapterItemDefault<MessageMeta>() {
 
-    override fun onBind(item: MessageInfo, viewHolder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) =
-            with(viewHolder) {
-                tvMessage.text = virgilHelper.decrypt(item.body!!)
+    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
+            with(viewHolder.containerView) {
+                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
 
-                containerView.setOnClickListener {
+                setOnClickListener {
                     actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
                     actionLiveData.value = ChannelSlice.Action.Idle
                 }
 
-                containerView.setOnLongClickListener {
+                setOnLongClickListener {
                     actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
                     actionLiveData.value = ChannelSlice.Action.Idle
                     true
                 }
             }
 
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<MessageInfo>) {}
+    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageInfo).sender != userProperties.currentUser!!.identity &&
-            (items[position] as MessageInfo).hasNoMedia()
+            (items[position] as MessageMeta).sender != userProperties.currentUser!!.identity &&
+            (items[position] as MessageMeta).isNotInDevelopment()
 }

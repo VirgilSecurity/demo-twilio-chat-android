@@ -35,11 +35,11 @@ package com.virgilsecurity.android.feature_contacts.di
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.ChannelInfo
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_INFO
+import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META
 import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepository
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepositoryDefault
@@ -103,13 +103,13 @@ val contactsModule: Module = module {
     factory(named(LD_LIST_CONTACTS)) { MutableLiveData<ContactsSlice.Action>() }
     factory(named(ITEM_ADAPTER_CONTACT)) {
         ContactItem(get(named(LD_LIST_CONTACTS)), get())
-                as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelInfo>, ChannelInfo>
+                as DelegateAdapterItem<DelegateAdapterItemDefault.KViewHolder<ChannelMeta>, ChannelMeta>
     }
 
     factory(named(ADAPTER_CONTACTS)) {
-        DelegateAdapter.Builder<ChannelInfo>()
+        DelegateAdapter.Builder<ChannelMeta>()
                 .add(get(named(ITEM_ADAPTER_CONTACT)))
-                .diffCallback(get(named(KEY_DIFF_CALLBACK_CHANNEL_INFO)))
+                .diffCallback(get(named(KEY_DIFF_CALLBACK_CHANNEL_META)))
                 .build()
     }
     factory {
