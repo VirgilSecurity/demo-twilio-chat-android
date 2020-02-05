@@ -40,6 +40,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.TextView
 import com.virgilsecurity.android.common.R
 import com.virgilsecurity.android.common.util.UiUtils
 import kotlinx.android.extensions.LayoutContainer
@@ -60,12 +61,11 @@ import kotlinx.android.synthetic.main.layout_popup_menu.*
 /**
  * MenuPopup
  */
-class MenuPopup : PopupWindow(), LayoutContainer {
-
-    override lateinit var containerView: View
+class MenuPopup : PopupWindow() {
 
     private lateinit var layout: View
     private lateinit var onClick: (View) -> Unit
+    private lateinit var containerView: View
 
     fun setupPopup(context: Context) {
         val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -83,6 +83,9 @@ class MenuPopup : PopupWindow(), LayoutContainer {
         isFocusable = IS_FOCUSABLE
         setBackgroundDrawable(context.getDrawable(R.drawable.rect_white_rounded_2))
         animationStyle = R.style.popup_window_animation
+
+        val tvMenuItemEdit = containerView.findViewById<TextView>(R.id.tvMenuItemEdit)
+        val tvMenuItemLogout = containerView.findViewById<TextView>(R.id.tvMenuItemLogout)
 
         tvMenuItemEdit.setOnClickListener(onClick)
         tvMenuItemLogout.setOnClickListener(onClick)

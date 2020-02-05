@@ -248,15 +248,17 @@ class DrawerNavigationActivity(
 
     private fun initRouter() {
         if (routerRoot.hasNoRootController())
-            routerRoot.setRoot(RouterTransaction
-                                       .with(SmackInitController(user)
-                                             {
-                                                 onActionChanged(SliceDrawer.Action.ChannelsListClicked,
-                                                                 HorizontalChangeHandler())
-                                             })
-                                       .pushChangeHandler(HorizontalChangeHandler())
-                                       .popChangeHandler(HorizontalChangeHandler())
-                                       .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER))
+            routerRoot.setRoot(
+                RouterTransaction
+                        .with(SmackInitController(user)
+                              {
+                                  onActionChanged(SliceDrawer.Action.ChannelsListClicked,
+                                                  HorizontalChangeHandler())
+                              })
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler())
+                        .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)
+            )
 
         routerRoot.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
             override fun onChangeStarted(to: Controller?,

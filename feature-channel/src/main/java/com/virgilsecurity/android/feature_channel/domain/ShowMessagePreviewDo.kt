@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.Do
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
@@ -59,5 +60,5 @@ interface ShowMessagePreviewDo : Do<ShowMessagePreviewDo.Result> {
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(body: String, publicKeys: List<VirgilPublicKey>)
+    fun execute(body: String)
 }

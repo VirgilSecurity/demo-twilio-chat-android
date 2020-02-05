@@ -33,22 +33,41 @@
 
 package com.virgilsecurity.android.common.data.helper.smack
 
-import com.virgilsecurity.common.exception.IncompleteInitializationException
+import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Completable
+import io.reactivex.Flowable
+import org.jivesoftware.smack.chat2.ChatManager
+import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
-import java.lang.IllegalStateException
 
 /**
  * SmackHelper
  */
-class SmackHelper(private val smackRx: SmackRx) {
+class SmackHelper(
+        private val smackRx: SmackRx,
+        private val userProperties: UserProperties,
+        private val channelIdGenerator: ChannelIdGenerator
+) {
 
     private lateinit var connection: XMPPTCPConnection
+    private lateinit var chatManager: ChatManager
+    private lateinit var roster: Roster
 
     fun startClient(identity: String, getPassword: () -> String): Completable {
         if (!::connection.isInitialized) {
-            return smackRx.startClient(identity, getPassword(), XMPP_HOST, RESOURCE_ANDROID, XMPP_PORT)
+            return smackRx.startClient(identity,
+                                       getPassword(),
+                                       XMPP_HOST,
+                                       RESOURCE_ANDROID,
+                                       XMPP_PORT)
                     .map { this@SmackHelper.connection = it }
+                    .flatMap { smackRx.initRoster(connection) }
+                    .map { this@SmackHelper.roster = it }
+                    .flatMap { smackRx.initChatManager(connection) }
+                    .map { this@SmackHelper.chatManager = it }
                     .ignoreElement()
         } else {
             return Completable.error(IllegalStateException("Already initialized."))
@@ -62,6 +81,18 @@ class SmackHelper(private val smackRx: SmackRx) {
             return smackRx.stopClient(connection)
         }
     }
+
+    fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
+            smackRx.observeChatMessages(chatManager,
+                                        userProperties.currentUser!!.identity,
+                                        channelIdGenerator)
+
+    fun sendMessage(body: String, interlocutor: String) =
+            smackRx.sendMessage(chatManager,
+                                body,
+                                interlocutor,
+                                userProperties.currentUser!!.identity,
+                                channelIdGenerator)
 
     companion object {
         private const val XMPP_HOST = "xmpp-stg.virgilsecurity.com"

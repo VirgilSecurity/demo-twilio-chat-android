@@ -33,8 +33,15 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.list
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_contacts.R
 
 /**
  * . _  _
@@ -48,18 +55,42 @@ import com.virgilsecurity.android.base.data.model.ChannelMeta
  */
 
 /**
- * ContactsSlice
+ * ContactsSliceDefault
  */
-interface ContactsSlice : ViewSliceLegacy {
+class ContactsSlice(
+        private val actionLiveData: MutableLiveData<Action>,
+        private val adapter: DelegateAdapter<ChannelMeta>,
+        private val itemDecoratorBottomDivider: androidx.recyclerview.widget.RecyclerView.ItemDecoration,
+        private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
+) : BaseViewSlice() {
+
+    private lateinit var rvContacts: RecyclerView
+
+    override fun setupViews() {
+        with(window) {
+            this@ContactsSlice.rvContacts = findViewById(R.id.rvContacts)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        rvContacts.adapter = adapter
+        rvContacts.layoutManager = layoutManager
+        rvContacts.addItemDecoration(itemDecoratorBottomDivider)
+    }
+
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    fun showContacts(contacts: List<ChannelMeta>) = adapter.addItems(contacts)
+
+    fun addContact(contact: ChannelMeta) = adapter.addItem(contact)
 
     sealed class Action {
         data class ContactClicked(val contact: ChannelMeta) : Action()
         object Idle : Action()
     }
-
-    fun getAction(): LiveData<Action>
-
-    fun showContacts(contacts: List<ChannelMeta>)
-
-    fun addContact(contact: ChannelMeta)
 }

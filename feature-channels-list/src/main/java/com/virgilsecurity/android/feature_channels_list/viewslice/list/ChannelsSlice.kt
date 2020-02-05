@@ -33,8 +33,15 @@
 
 package com.virgilsecurity.android.feature_channels_list.viewslice.list
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_channels_list.R
 
 /**
  * . _  _
@@ -48,18 +55,42 @@ import com.virgilsecurity.android.base.data.model.ChannelMeta
  */
 
 /**
- * ChannelsSlice
+ * ChannelsSliceDefault
  */
-interface ChannelsSlice : ViewSliceLegacy {
+class ChannelsSlice(
+        private val actionLiveData: MutableLiveData<Action>,
+        private val adapter: DelegateAdapter<ChannelMeta>,
+        private val itemDecoratorBottomDivider: RecyclerView.ItemDecoration,
+        private val layoutManager: RecyclerView.LayoutManager
+) : BaseViewSlice() {
+
+    private lateinit var rvChannels: RecyclerView
+
+    override fun setupViews() {
+        with(window) {
+            this@ChannelsSlice.rvChannels = findViewById(R.id.rvChannels)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        rvChannels.adapter = adapter
+        rvChannels.layoutManager = layoutManager
+        rvChannels.addItemDecoration(itemDecoratorBottomDivider)
+    }
+
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    fun showChannels(channels: List<ChannelMeta>) = adapter.addItems(channels)
+
+    fun addChannel(channel: ChannelMeta) = adapter.addItem(channel)
 
     sealed class Action {
         data class ChannelClicked(val channel: ChannelMeta) : Action()
         object Idle : Action()
     }
-
-    fun getAction(): LiveData<Action>
-
-    fun showChannels(channels: List<ChannelMeta>)
-
-    fun addChannel(channel: ChannelMeta)
 }

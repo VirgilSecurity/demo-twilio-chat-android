@@ -36,7 +36,6 @@ package com.virgilsecurity.android.feature_channels_list.viewmodel.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDo
-import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChannelsListChangeDo
 
 /**
  * . _  _
@@ -54,13 +53,11 @@ import com.virgilsecurity.android.feature_channels_list.domain.list.ObserveChann
  */
 class ChannelsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val getChannelsDo: GetChannelsDo,
-        private val observeChannelsListChangeDo: ObserveChannelsListChangeDo
+        private val getChannelsDo: GetChannelsDo
 ) : ChannelsVM() {
 
     init {
         state.addSource(getChannelsDo.getLiveData(), ::onLoadContactsResult)
-        state.addSource(observeChannelsListChangeDo.getLiveData(), ::onContactsChanged)
     }
 
     override fun getState(): LiveData<State> = state
@@ -70,11 +67,8 @@ class ChannelsVMDefault(
         getChannelsDo.execute()
     }
 
-    override fun observeChannelsChanges() = observeChannelsListChangeDo.execute()
-
     override fun onCleared() {
         getChannelsDo.cleanUp()
-        observeChannelsListChangeDo.cleanUp()
     }
 
     private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
@@ -89,9 +83,5 @@ class ChannelsVMDefault(
             is GetChannelsDo.Result.OnError -> state.value = State.ShowError
             GetChannelsDo.Result.OnEmpty -> state.value = State.ShowEmpty
         }
-    }
-
-    private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
-        state.value = State.ChannelsListChanged(result!!)
     }
 }

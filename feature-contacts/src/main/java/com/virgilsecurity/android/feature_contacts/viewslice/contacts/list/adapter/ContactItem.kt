@@ -33,8 +33,10 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.adapter
 
-import androidx.lifecycle.MutableLiveData
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.data.model.ChannelMeta
@@ -66,7 +68,11 @@ class ContactItem(
 ) : DelegateAdapterItemDefault<ChannelMeta>() {
 
     override fun onBind(item: ChannelMeta, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelMeta>) =
-            with(viewHolder) {
+            with(viewHolder.containerView) {
+                val tvUsernameContact = findViewById<TextView>(R.id.tvUsernameContact)
+                val tvInitialsContact = findViewById<TextView>(R.id.tvInitialsContact)
+                val ivUserPicContact = findViewById<ImageView>(R.id.ivUserPicContact)
+
                 tvUsernameContact.text = item.localizedInterlocutor(userProperties)
                 tvInitialsContact.text =
                         UserUtils.firstInitials(item.localizedInterlocutor(userProperties))
@@ -79,7 +85,7 @@ class ContactItem(
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivUserPicContact)
 
-                containerView.setOnClickListener {
+                setOnClickListener {
                     actionLiveData.value = ContactsSlice.Action.ContactClicked(item)
                     actionLiveData.value = ContactsSlice.Action.Idle
                 }

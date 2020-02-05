@@ -183,7 +183,6 @@ class ChannelController() : BaseController() {
         ChannelVM.State.ShowContent -> stateSlice.showContent()
         ChannelVM.State.ShowLoading -> stateSlice.showLoading()
         ChannelVM.State.ShowError -> stateSlice.showError()
-        is ChannelVM.State.ChannelChanged -> onChannelChanged(state.change)
         is ChannelVM.State.MessageSent -> Unit
         is ChannelVM.State.MessagePreviewAdded -> {
             etMessage.text.clear()
@@ -194,23 +193,6 @@ class ChannelController() : BaseController() {
         ChannelVM.State.MessageIsTooLong -> UiUtils.toast(this, "Message is too long")
     }
 
-    private fun onChannelChanged(change: MessagesApi.ChannelChanges) = when (change) {
-        is MessagesApi.ChannelChanges.MemberDeleted -> Unit
-        is MessagesApi.ChannelChanges.TypingEnded -> Unit
-        is MessagesApi.ChannelChanges.MessageAdded -> {
-            if (change.message!!.toMessageInfo().sender != userProperties.currentUser!!.identity)
-                channelSlice.addMessage(change.message!!.toMessageInfo())
-
-            stateSlice.showContent()
-        }
-        is MessagesApi.ChannelChanges.MessageDeleted -> Unit
-        is MessagesApi.ChannelChanges.MemberAdded -> Unit
-        is MessagesApi.ChannelChanges.TypingStarted -> Unit
-        is MessagesApi.ChannelChanges.SynchronizationChanged -> Unit
-        is MessagesApi.ChannelChanges.MessageUpdated -> Unit
-        is MessagesApi.ChannelChanges.MemberUpdated -> Unit
-        is MessagesApi.ChannelChanges.Exception -> Unit
-    }
 
     private fun backPressed() {
         router.popCurrentController()

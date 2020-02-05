@@ -35,8 +35,7 @@ package com.virgilsecurity.android.feature_settings.domain
 
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
-import io.reactivex.Completable
+import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -56,20 +55,17 @@ import io.reactivex.schedulers.Schedulers
  */
 class LogoutDoDefault(
         private val userProperties: UserProperties,
-        private val twilioHelper: TwilioHelper
+        private val smackHelper: SmackHelper
 ) : BaseDo<LogoutDo.Result>(), LogoutDo {
 
-    override fun execute() =
-            Completable.fromCallable {
-                userProperties.clearCurrentUser()
-            }.doOnComplete {
-                Completable.fromCallable {
-                    twilioHelper.stopChatClient()
-                }.subscribe()
-            }.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
-                    .track()
+    override fun execute() {
+        userProperties.clearCurrentUser()
+        smackHelper.stopClient()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+    }
 
     private fun success() {
         liveData.value = LogoutDo.Result.OnSuccess

@@ -33,21 +33,28 @@
 
 package com.virgilsecurity.android.feature_contacts.view
 
-import android.annotation.SuppressLint
 import android.view.View
-import com.twilio.chat.Channel
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.view.adapter.BaseViewHolder
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
+import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BControllerScope
-import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
+import com.virgilsecurity.android.common.di.CommonDiConst
 import com.virgilsecurity.android.feature_contacts.R
-import com.virgilsecurity.android.feature_contacts.di.Const.STATE_CONTACTS
-import com.virgilsecurity.android.feature_contacts.di.Const.VM_CONTACTS
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
-import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSlice
-import io.reactivex.Single
+import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.adapter.ContactItem
+import com.virgilsecurity.android.feature_contacts.viewslice.contacts.state.StateSliceContacts
+import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSliceContacts
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 
@@ -69,15 +76,21 @@ class ContactsController() : BControllerScope() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 
-    private val toolbarSlice: ToolbarSlice by inject()
-    private val contactsSlice: ContactsSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CONTACTS))
-    private val viewModel: ContactsVM by inject(named(VM_CONTACTS))
-    private val mapper: MapperToChannelInfo by inject()
+    private val viewModel: ContactsVM by currentScope.viewModel(this)
+    private val diffCallback: DiffCallback<ChannelMeta>
+            by inject(named(CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META))
+    private val userProperties: UserProperties by inject()
+    private val itemDecoration: RecyclerView.ItemDecoration by inject()
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var addContact: () -> Unit
     private lateinit var openChannel: (ChannelMeta) -> Unit
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceContacts.Action>
+    private lateinit var toolbarSlice: ToolbarSliceContacts
+    private lateinit var mldContactsSlice: MutableLiveData<ContactsSlice.Action>
+    private lateinit var contactsSlice: ContactsSlice
+    private lateinit var stateSlice: StateSliceContacts
+    private lateinit var adapter: DelegateAdapter<ChannelMeta>
 
     constructor(openDrawer: () -> Unit,
                 addContact: () -> Unit,
@@ -87,12 +100,26 @@ class ContactsController() : BControllerScope() {
         this.openChannel = openChannel
     }
 
-    override fun init() {}
+    override fun init(containerView: View) {
+        this.mldToolbarSlice = MutableLiveData()
+        this.mldContactsSlice = MutableLiveData()
+        val contactItem = ContactItem(mldContactsSlice, userProperties)
+            as DelegateAdapterItem<BaseViewHolder<ChannelMeta>, ChannelMeta>
+        this.adapter = DelegateAdapter.Builder<ChannelMeta>()
+                .add(contactItem)
+                .diffCallback(diffCallback)
+                .build()
+    }
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-        contactsSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.toolbarSlice = ToolbarSliceContacts(mldToolbarSlice)
+        val layoutManager = LinearLayoutManager(activity)
+        this.contactsSlice = ContactsSlice(mldContactsSlice, adapter, itemDecoration, layoutManager)
+        this.stateSlice = StateSliceContacts()
+
+        toolbarSlice.init(lifecycle, window)
+        contactsSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {}
@@ -113,13 +140,12 @@ class ContactsController() : BControllerScope() {
 
     override fun initData() {
         viewModel.contacts()
-        viewModel.observeContactsChanges()
     }
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.HamburgerClicked -> openDrawer()
-        ToolbarSlice.Action.AddClicked -> addContact()
-        ToolbarSlice.Action.Idle -> Unit
+    private fun onToolbarActionChanged(action: ToolbarSliceContacts.Action) = when (action) {
+        ToolbarSliceContacts.Action.HamburgerClicked -> openDrawer()
+        ToolbarSliceContacts.Action.AddClicked -> addContact()
+        ToolbarSliceContacts.Action.Idle -> Unit
     }
 
     private fun onStateChanged(state: ContactsVM.State): Unit = when (state) {
@@ -128,39 +154,6 @@ class ContactsController() : BControllerScope() {
         ContactsVM.State.ShowContent -> stateSlice.showContent()
         ContactsVM.State.ShowLoading -> stateSlice.showLoading()
         ContactsVM.State.ShowError -> stateSlice.showError()
-        is ContactsVM.State.ContactChanged -> onContactsChanged(state.change)
-    }
-
-    private fun onContactsChanged(change: ChannelsApi.ChannelsChanges) = when(change) {
-        is ChannelsApi.ChannelsChanges.ChannelDeleted -> Unit
-        is ChannelsApi.ChannelsChanges.InvitedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ClientSynchronization -> Unit
-        ChannelsApi.ChannelsChanges.NotificationSubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.UserSubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelUpdated -> Unit
-        is ChannelsApi.ChannelsChanges.RemovedFromChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.NotificationFailed -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelJoined -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelAdded -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
-        is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelInvited -> showChannel(change.channel!!)
-        is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
-        is ChannelsApi.ChannelsChanges.Error -> Unit
-        is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
-        is ChannelsApi.ChannelsChanges.Exception -> Unit
-    }
-
-    @SuppressLint("CheckResult")
-    private fun showChannel(channel: Channel) {
-        Single.just(channel)
-                .map(mapper::mapChannel)
-                .subscribe { channelInfo ->
-                    contactsSlice.addContact(channelInfo)
-                    stateSlice.showContent()
-                }
     }
 
     companion object {

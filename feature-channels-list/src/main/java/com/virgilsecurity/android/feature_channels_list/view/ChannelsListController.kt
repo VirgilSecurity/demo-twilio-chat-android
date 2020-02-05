@@ -34,19 +34,27 @@
 package com.virgilsecurity.android.feature_channels_list.view
 
 import android.view.View
-import com.twilio.chat.Channel
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.observe
+import com.virgilsecurity.android.base.view.adapter.BaseViewHolder
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
+import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BControllerScope
-import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
+import com.virgilsecurity.android.common.di.CommonDiConst
 import com.virgilsecurity.android.feature_channels_list.R
-import com.virgilsecurity.android.feature_channels_list.di.Const.STATE_CHANNELS
-import com.virgilsecurity.android.feature_channels_list.di.Const.VM_CHANNELS_LIST
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
-import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSlice
-import io.reactivex.Single
+import com.virgilsecurity.android.feature_channels_list.viewslice.list.adapter.ChannelItem
+import com.virgilsecurity.android.feature_channels_list.viewslice.state.StateSliceChannels
+import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSliceChannelsList
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 
@@ -69,14 +77,20 @@ class ChannelsListController() : BControllerScope() {
 
     override val layoutResourceId: Int = R.layout.controller_channels_list
 
-    private val toolbarSlice: ToolbarSlice by inject()
-    private val channelsSlice: ChannelsSlice by inject()
-    private val stateSlice: StateSliceEmptyable by inject(named(STATE_CHANNELS))
-    private val viewModel: ChannelsVM by inject(named(VM_CHANNELS_LIST))
-    private val mapper: MapperToChannelInfo by inject()
+    private val userProperties: UserProperties by inject()
+    private val diffCallback: DiffCallback<ChannelMeta>
+            by inject(named(CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META))
+    private val itemDecorator: RecyclerView.ItemDecoration by inject()
+    private val viewModel: ChannelsVM by currentScope.viewModel(this)
 
     private lateinit var openDrawer: () -> Unit
     private lateinit var openChannel: (ChannelMeta) -> Unit
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceChannelsList.Action>
+    private lateinit var toolbarSlice: ToolbarSliceChannelsList
+    private lateinit var mldChannelsSlice: MutableLiveData<ChannelsSlice.Action>
+    private lateinit var channelsSlice: ChannelsSlice
+    private lateinit var stateSlice: StateSliceChannels
+    private lateinit var adapter: DelegateAdapter<ChannelMeta>
 
     constructor(openDrawer: () -> Unit,
                 openChannel: (interlocutor: ChannelMeta) -> Unit) : this() {
@@ -84,12 +98,26 @@ class ChannelsListController() : BControllerScope() {
         this.openChannel = openChannel
     }
 
-    override fun init() {}
+    override fun init(containerView: View) {
+        this.mldToolbarSlice = MutableLiveData()
+        this.mldChannelsSlice = MutableLiveData()
+        val channelItem = ChannelItem(mldChannelsSlice, userProperties)
+                as DelegateAdapterItem<BaseViewHolder<ChannelMeta>, ChannelMeta>
+        this.adapter = DelegateAdapter.Builder<ChannelMeta>()
+                .add(channelItem)
+                .diffCallback(diffCallback)
+                .build()
+    }
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
-        channelsSlice.init(lifecycle, view)
-        stateSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.toolbarSlice = ToolbarSliceChannelsList(mldToolbarSlice)
+        val layoutManager = LinearLayoutManager(activity)
+        this.channelsSlice = ChannelsSlice(mldChannelsSlice, adapter, itemDecorator, layoutManager)
+        this.stateSlice = StateSliceChannels()
+
+        toolbarSlice.init(lifecycle, window)
+        channelsSlice.init(lifecycle, window)
+        stateSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {}
@@ -110,12 +138,11 @@ class ChannelsListController() : BControllerScope() {
 
     override fun initData() {
         viewModel.channels()
-        viewModel.observeChannelsChanges()
     }
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.HamburgerClicked -> openDrawer()
-        ToolbarSlice.Action.Idle -> Unit
+    private fun onToolbarActionChanged(action: ToolbarSliceChannelsList.Action) = when (action) {
+        ToolbarSliceChannelsList.Action.HamburgerClicked -> openDrawer()
+        ToolbarSliceChannelsList.Action.Idle -> Unit
     }
 
     private fun onStateChanged(state: ChannelsVM.State): Unit = when (state) {
@@ -124,38 +151,6 @@ class ChannelsListController() : BControllerScope() {
         ChannelsVM.State.ShowContent -> stateSlice.showContent()
         ChannelsVM.State.ShowLoading -> stateSlice.showLoading()
         ChannelsVM.State.ShowError -> stateSlice.showError()
-        is ChannelsVM.State.ChannelsListChanged -> onChannelChanged(state.change)
-    }
-
-    private fun onChannelChanged(change: ChannelsApi.ChannelsChanges) = when (change) {
-        is ChannelsApi.ChannelsChanges.ChannelDeleted -> Unit
-        is ChannelsApi.ChannelsChanges.InvitedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ClientSynchronization -> Unit
-        ChannelsApi.ChannelsChanges.NotificationSubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.UserSubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelUpdated -> Unit
-        is ChannelsApi.ChannelsChanges.RemovedFromChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.NotificationFailed -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelJoined -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelAdded -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelSynchronizationChange -> Unit
-        is ChannelsApi.ChannelsChanges.UserUnsubscribed -> Unit
-        is ChannelsApi.ChannelsChanges.AddedToChannelNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ChannelInvited -> showChannel(change.channel!!)
-        is ChannelsApi.ChannelsChanges.NewMessageNotification -> Unit
-        is ChannelsApi.ChannelsChanges.ConnectionStateChange -> Unit
-        is ChannelsApi.ChannelsChanges.Error -> Unit
-        is ChannelsApi.ChannelsChanges.UserUpdated -> Unit
-        is ChannelsApi.ChannelsChanges.Exception -> Unit
-    }
-
-    private fun showChannel(channel: Channel) {
-        Single.just(channel)
-                .map(mapper::mapChannel)
-                .subscribe { channelInfo ->
-                    channelsSlice.addChannel(channelInfo)
-                    stateSlice.showContent()
-                }
     }
 
     companion object {

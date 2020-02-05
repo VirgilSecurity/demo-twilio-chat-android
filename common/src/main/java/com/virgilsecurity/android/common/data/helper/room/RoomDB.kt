@@ -38,6 +38,7 @@ import androidx.room.RoomDatabase
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.model.User
+import com.virgilsecurity.android.common.data.local.channels.ChannelsQao
 import com.virgilsecurity.android.common.data.local.messages.MessagesQao
 import com.virgilsecurity.android.common.data.local.users.UsersQao
 
@@ -59,6 +60,8 @@ import com.virgilsecurity.android.common.data.local.users.UsersQao
 abstract class RoomDB : RoomDatabase() {
 
     abstract fun usersQao(): UsersQao
+
+    abstract fun channelsQao(): ChannelsQao
 
     abstract fun messagesQao(): MessagesQao
 }

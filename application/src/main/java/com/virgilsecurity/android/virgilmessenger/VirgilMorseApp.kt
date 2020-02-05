@@ -42,6 +42,7 @@ import com.virgilsecurity.android.feature_channels_list.di.channelsListModule
 import com.virgilsecurity.android.feature_contacts.di.addContactModule
 import com.virgilsecurity.android.feature_contacts.di.contactsModule
 import com.virgilsecurity.android.feature_drawer_navigation.di.twilioInitModule
+import com.virgilsecurity.android.feature_settings.di.settingsEditModule
 import com.virgilsecurity.android.feature_settings.di.settingsModule
 import com.virgilsecurity.android.virgilmessenger.di.appModule
 import org.koin.android.ext.koin.androidContext
@@ -92,7 +93,7 @@ class VirgilMorseApp : Application() {
                 channelModule,
 
                 // Settings modules
-                settingsModule
+                settingsModule, settingsEditModule
             )
         }
 

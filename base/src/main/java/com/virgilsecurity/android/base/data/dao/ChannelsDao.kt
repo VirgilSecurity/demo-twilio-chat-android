@@ -31,15 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channels_list.viewslice.list
+package com.virgilsecurity.android.base.data.dao
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.OnLifecycleEvent
 import com.virgilsecurity.android.base.data.model.ChannelMeta
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
-import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -47,35 +45,21 @@ import com.virgilsecurity.android.base.viewslice.BaseViewSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/8/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsSliceDefault
+ * TwilioApi
  */
-class ChannelsSliceDefault(
-        private val actionLiveData: MutableLiveData<ChannelsSlice.Action>,
-        private val adapter: DelegateAdapter<ChannelMeta>,
-        private val itemDecoratorBottomDivider: androidx.recyclerview.widget.RecyclerView.ItemDecoration,
-        private val layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
-) : BaseViewSlice(), ChannelsSlice {
+interface ChannelsDao {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        setupRecyclerView()
-    }
+    fun getUserChannels(): Flowable<List<ChannelMeta>>
 
-    private fun setupRecyclerView() {
-        rvChannels.adapter = adapter
-        rvChannels.layoutManager = layoutManager
-        rvChannels.addItemDecoration(itemDecoratorBottomDivider)
-    }
+    fun addChannels(channels: List<ChannelMeta>): Completable
 
-    override fun getAction(): LiveData<ChannelsSlice.Action> = actionLiveData
+    fun addChannel(channel: ChannelMeta): Completable
 
-    override fun showChannels(channels: List<ChannelMeta>) = adapter.addItems(channels)
-
-    override fun addChannel(channel: ChannelMeta) = adapter.addItem(channel)
+//    fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelMeta>>
 }

@@ -31,15 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.data.remote.channels
+package com.virgilsecurity.android.common.data.local.channels
 
-import com.twilio.chat.Channel
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.virgilsecurity.android.base.data.model.ChannelMeta
-import com.virgilsecurity.android.base.util.GeneralConstants
-import com.virgilsecurity.android.common.data.helper.twilio.TwilioHelper
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
 
 /**
  * . _  _
@@ -47,41 +46,26 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/3/18
+ * ....|  _/    7/27/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsRemoteDS
+ * Channels Query Access Object - used to execute queries for DB
  */
-class ChannelsRemoteDS(
-        private val twilioHelper: TwilioHelper,
-        private val channelIdGenerator: ChannelIdGenerator,
-        private val mapper: MapperToChannelInfo
-) : ChannelsApi {
+@Dao
+interface ChannelsQao {
 
-    override fun userChannelById(id: String): Single<Channel> = twilioHelper.channelBySid(id)
+    @Query("SELECT * FROM ChannelMeta WHERE initiator LIKE (:identity) OR responder LIKE (:identity)")
+    fun userChannels(identity: String): Flowable<List<ChannelMeta>>
 
-    override fun userChannels(): Observable<List<ChannelMeta>> =
-            Observable.concatArray(twilioHelper.userChannels().toObservable(),
-                                   twilioHelper.publicChannels().toObservable())
-                    .map { channelDescriptors ->
-                        channelDescriptors.filter { channelDescriptor ->
-                            channelDescriptor.attributes.toString() != GeneralConstants.EMPTY_ATTRIBUTES &&
-                            channelDescriptor.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE // TODO change when added group chats
-                        }
-                    }
-                    .map(mapper::mapDescriptors)
+//    @Query("SELECT * FROM ChannelMeta WHERE " +
+//           "(initiator LIKE (:yourIdentity) AND responder LIKE (:responderIdentity)) OR " +
+//           "(initiator LIKE (:responderIdentity) AND responder LIKE (:yourIdentity))")
+//    fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelMeta>>
 
-    override fun createChannel(sender: String, interlocutor: String): Single<ChannelMeta> =
-            twilioHelper.createChannel(interlocutor,
-                                       channelIdGenerator.generatedChannelId(sender, interlocutor))
-                    .map(mapper::mapChannel)
+    @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelsMeta(channelsInfo: List<ChannelMeta>)
 
-    override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-            twilioHelper.observeChannelsListChanges()
-
-    override fun joinChannel(channel: Channel): Single<ChannelMeta> =
-            twilioHelper.joinChannel(channel).map(mapper::mapChannel)
+    @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelMeta(channelInfo: ChannelMeta)
 }

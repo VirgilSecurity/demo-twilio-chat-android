@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.base.data.api
 
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -54,7 +55,7 @@ import org.jivesoftware.smack.chat2.ChatManager
  */
 interface MessagesApi {
 
-    fun observeChatMessages(chatManager: ChatManager): Flowable<MessageMeta>
+    fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>>
 
-    fun sendMessage(channel: ChatManager, body: String): Single<MessageMeta>
+    fun sendMessage(body: String, interlocutor: String): Single<MessageMeta>
 }

@@ -64,7 +64,7 @@ ext {
     architectureComponents = Group {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
-        kapt deps.ac.lifecycleCompiler // was annotationProcessor
+        kapt deps.ac.lifecycleCompiler
     }
 
     room = Group {

@@ -38,7 +38,6 @@ import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.extension.comparableListEqual
-import com.virgilsecurity.android.common.data.remote.messages.MapperToMessageInfo
 import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
 import io.reactivex.Completable
 import io.reactivex.Flowable

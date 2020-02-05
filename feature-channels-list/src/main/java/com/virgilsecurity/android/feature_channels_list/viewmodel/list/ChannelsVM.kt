@@ -59,12 +59,9 @@ abstract class ChannelsVM : ViewModel() {
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
-        data class ChannelsListChanged(val change: ChannelsApi.ChannelsChanges) : State()
     }
 
     abstract fun getState() : LiveData<State>
 
     abstract fun channels()
-
-    abstract fun observeChannelsChanges()
 }

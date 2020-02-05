@@ -33,11 +33,20 @@
 
 package com.virgilsecurity.android.common.data.helper.smack
 
+import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 import org.jivesoftware.smack.ConnectionConfiguration
+import org.jivesoftware.smack.chat2.ChatManager
+import org.jivesoftware.smack.packet.Message
+import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
+import org.jxmpp.jid.impl.JidCreate
 import java.net.InetAddress
 
 /**
@@ -52,7 +61,7 @@ class SmackRx {
                     xmppPort: Int): Single<XMPPTCPConnection> =
             Single.create {
                 try {
-                    val inetAddress = InetAddress.getByName(xmppHost);
+                    val inetAddress = InetAddress.getByName(xmppHost)
                     val config = XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(identity, password)
                             .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
@@ -63,14 +72,105 @@ class SmackRx {
                             .build()
 
                     val connection = XMPPTCPConnection(config)
-                    val abstractConnection = connection.connect()
-                    abstractConnection.login()
 
                     it.onSuccess(connection)
                 } catch (throwable: Throwable) {
                     it.onError(throwable)
                 }
             }
+
+    fun login(connection: XMPPTCPConnection): Completable =
+            Completable.create {
+                try {
+                    val abstractConnection = connection.connect()
+                    abstractConnection.login()
+                    it.onComplete()
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
+
+    fun initChatManager(connection: XMPPTCPConnection): Single<ChatManager> =
+            Single.create {
+                try {
+                    val chatManager = ChatManager.getInstanceFor(connection)
+
+                    it.onSuccess(chatManager)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
+
+    fun initRoster(connection: XMPPTCPConnection): Single<Roster> =
+            Single.create {
+                try {
+                    val roster = Roster.getInstanceFor(connection)
+
+                    it.onSuccess(roster)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
+
+    fun observeChatMessages(
+            chatManager: ChatManager,
+            currentIdentity: String,
+            channelIdGenerator: ChannelIdGenerator
+    ): Flowable<Pair<ChannelMeta, MessageMeta>> =
+            Flowable.create(
+                {
+                    chatManager.addIncomingListener { from, message, chat ->
+                        try {
+                            val channelId =
+                                    channelIdGenerator.generatedChannelId(from.toString(),
+                                                                          currentIdentity)
+                            val channelMeta = ChannelMeta(channelId,
+                                                          from.toString(),
+                                                          currentIdentity)
+
+                            if (message.stanzaId == null)
+                                throw IllegalStateException("stanzaId is null")
+
+                            val messageMeta = MessageMeta(message.stanzaId,
+                                                          message.body,
+                                                          from.toString(),
+                                                          channelId,
+                                                          false)
+                            it.onNext(Pair(channelMeta, messageMeta))
+                            // FIXME where to place onComplete?
+                        } catch (throwable: Throwable) {
+                            it.onError(throwable)
+                        }
+                    }
+                },
+                BackpressureStrategy.ERROR)
+
+    fun sendMessage(
+            chatManager: ChatManager,
+            body: String,
+            interlocutor: String,
+            currentIdentity: String,
+            channelIdGenerator: ChannelIdGenerator
+    ): Single<MessageMeta> = Single.create {
+        try {
+            val channelId = channelIdGenerator.generatedChannelId(interlocutor,
+                                                                  currentIdentity)
+            val jid = JidCreate.entityBareFrom(interlocutor)
+            val chat = chatManager.chatWith(jid)
+            val stanza = Message()
+            stanza.setStanzaId()
+            stanza.body = body
+            stanza.type = Message.Type.chat
+            stanza.thread = channelId
+            chat.send(stanza)
+
+            val messMeta = MessageMeta(stanza.stanzaId, body, currentIdentity, channelId, false)
+
+            it.onSuccess(messMeta)
+        } catch (throwable: Throwable) {
+            it.onError(throwable)
+        }
+    }
 
     fun stopClient(connection: XMPPTCPConnection): Completable =
             Completable.create {

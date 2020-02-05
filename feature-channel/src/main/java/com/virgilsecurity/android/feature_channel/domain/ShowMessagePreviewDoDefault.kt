@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
@@ -60,12 +61,10 @@ import java.nio.charset.Charset
  * SendMessageDoDefault
  */
 class ShowMessagePreviewDoDefault(
-        private val virgilHelper: VirgilHelper,
         private val userProperties: UserProperties
 ) : BaseDo<ShowMessagePreviewDo.Result>(), ShowMessagePreviewDo {
 
-    override fun execute(body: String,
-                         publicKeys: List<VirgilPublicKey>) =
+    override fun execute(body: String) =
             (if (body.toByteArray(Charset.forName("UTF-8")).size >
                  MessagesRepositoryDefault.MAX_TWILIO_MESSAGE_BODY_SIZE)
                 Single.error { TooLongMessageException() }
@@ -73,10 +72,9 @@ class ShowMessagePreviewDoDefault(
                 Single.just<MessageMeta>(
                     MessageMeta(
                         PREVIEW_SID,
-                        PREVIEW_CHANNEL_SID,
-                        virgilHelper.encrypt(body, publicKeys),
-                        PREVIEW_ATTRIBUTES,
+                        body,
                         userProperties.currentUser!!.identity,
+                        PREVIEW_CHANNEL_SID,
                         false // TODO change when have attachments
                     )
                 )).subscribeOn(Schedulers.io())
@@ -98,6 +96,5 @@ class ShowMessagePreviewDoDefault(
     companion object {
         const val PREVIEW_SID = "TEMP_SID"
         const val PREVIEW_CHANNEL_SID = "TEMP_CHANNEL_SID"
-        const val PREVIEW_ATTRIBUTES = "TEMP_ATTRIBUTES"
     }
 }

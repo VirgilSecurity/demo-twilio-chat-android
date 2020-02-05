@@ -59,12 +59,9 @@ abstract class ContactsVM : ViewModel() {
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
-        data class ContactChanged(val change: ChannelsApi.ChannelsChanges) : State()
     }
 
     abstract fun getState() : LiveData<State>
 
     abstract fun contacts()
-
-    abstract fun observeContactsChanges()
 }

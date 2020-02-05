@@ -35,7 +35,6 @@ package com.virgilsecurity.android.common.di
 
 import android.content.Context
 import android.text.InputFilter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.virgilsecurity.android.base.data.api.MessagesApi
@@ -54,19 +53,13 @@ import com.virgilsecurity.android.common.data.helper.smack.SmackRx
 import com.virgilsecurity.android.common.data.helper.virgil.RenewTokenCallbackImpl
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilRx
-import com.virgilsecurity.android.common.data.local.channels.ChannelsLocalDS
 import com.virgilsecurity.android.common.data.local.messages.MessagesLocalDS
 import com.virgilsecurity.android.common.data.local.users.UserPropertiesDefault
 import com.virgilsecurity.android.common.data.local.users.UsersLocalDS
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGeneratorDefault
-import com.virgilsecurity.android.common.data.remote.channels.ChannelsRemoteDS
-import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
-import com.virgilsecurity.android.common.data.remote.messages.MapperToMessageInfo
 import com.virgilsecurity.android.common.data.remote.messages.MessagesRemoteDS
 import com.virgilsecurity.android.common.data.remote.virgil.VirgilRemoteDS
-import com.virgilsecurity.android.common.data.repository.ChannelsRepository
-import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefault
 import com.virgilsecurity.android.common.data.repository.UsersRepository
 import com.virgilsecurity.android.common.data.repository.UsersRepositoryDefault
 import com.virgilsecurity.android.common.di.CommonDiConst.DIVIDER_DRAWABLE
@@ -118,7 +111,6 @@ val commonModules: Module = module {
     }
     single { UsersLocalDS(get()) as UsersDao }
     single { ImageStorageLocal(get()) as ImageStorage }
-    factory { LinearLayoutManager(get()) as RecyclerView.LayoutManager }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
 }
@@ -150,7 +142,7 @@ val virgilModule : Module = module {
 
 val smackModule : Module = module {
     single { SmackRx() }
-    single { SmackHelper(get()) }
+    single { SmackHelper(get(), get(), get()) }
 }
 
 val paramsModule : Module = module {
@@ -159,19 +151,13 @@ val paramsModule : Module = module {
 
 // This module in common because for now we using it for contacts screen also
 val channelsModule: Module = module {
-    single { MapperToChannelInfo() }
-    single { ChannelsRemoteDS(get(), get(), get()) as ChannelsApi }
-    single { (get() as RoomDB).channelsQao() }
-    single { ChannelsLocalDS(get(), get()) as ChannelsDao }
     single(named(KEY_DIFF_CALLBACK_CHANNEL_META)) { DiffCallback<ChannelMeta>() }
     single(named(DIVIDER_DRAWABLE)) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
     single { ItemDecoratorBottomDivider(get(named(DIVIDER_DRAWABLE))) as RecyclerView.ItemDecoration }
-    single { ChannelsRepositoryDefault(get(), get(), get()) as ChannelsRepository }
 }
 
 val messagesModule: Module = module {
-    single { MapperToMessageInfo() }
-    single { MessagesRemoteDS(get(), get()) as MessagesApi }
+    single { MessagesRemoteDS(get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
     single(named(KEY_DIFF_CALLBACK_MESSAGE_META)) { DiffCallback<MessageMeta>() }

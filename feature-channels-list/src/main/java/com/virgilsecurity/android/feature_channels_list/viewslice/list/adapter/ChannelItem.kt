@@ -35,6 +35,8 @@ package com.virgilsecurity.android.feature_channels_list.viewslice.list.adapter
 
 import androidx.lifecycle.MutableLiveData
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.data.model.ChannelMeta
@@ -65,8 +67,12 @@ class ChannelItem(
         override val layoutResourceId: Int = R.layout.item_channel
 ) : DelegateAdapterItemDefault<ChannelMeta>() {
 
-    override fun onBind(item: ChannelMeta, viewHolder: DelegateAdapterItemDefault.KViewHolder<ChannelMeta>) =
-            with(viewHolder) {
+    override fun onBind(item: ChannelMeta, viewHolder: KViewHolder<ChannelMeta>) =
+            with(viewHolder.containerView) {
+                val tvUsernameContact = findViewById<TextView>(R.id.tvUsernameContact)
+                val tvInitialsContact = findViewById<TextView>(R.id.tvInitialsContact)
+                val ivUserPicContact = findViewById<ImageView>(R.id.ivUserPicContact)
+
                 tvUsernameContact.text = item.localizedInterlocutor(userProperties)
                 tvInitialsContact.text = UserUtils.firstInitials(item.localizedInterlocutor(
                     userProperties))
@@ -79,7 +85,7 @@ class ChannelItem(
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivUserPicContact)
 
-                containerView.setOnClickListener {
+                setOnClickListener {
                     actionLiveData.value = ChannelsSlice.Action.ChannelClicked(item)
                     actionLiveData.value = ChannelsSlice.Action.Idle
                 }
@@ -87,7 +93,7 @@ class ChannelItem(
                 tvInitialsContact.visibility = View.VISIBLE
             }
 
-    override fun onRecycled(holder: DelegateAdapterItemDefault.KViewHolder<ChannelMeta>) {}
+    override fun onRecycled(holder: KViewHolder<ChannelMeta>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
             items[position] is ChannelMeta

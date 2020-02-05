@@ -33,6 +33,23 @@
 
 package com.virgilsecurity.android.feature_contacts.viewslice.addContact.state
 
+import android.text.InputFilter
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.feature_contacts.R
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
+
 /**
  * . _  _
  * .| || | _
@@ -45,21 +62,122 @@ package com.virgilsecurity.android.feature_contacts.viewslice.addContact.state
  */
 
 /**
- * StateSliceAddContact
+ * StateSliceAddContactDefault
  */
-interface StateSliceAddContact : ViewSliceLegacy {
+class StateSliceAddContact(
+        private val symbolsInputFilter: InputFilter
+) : BaseViewSlice() {
 
-    fun showConsistent()
+    private val debounceSubject: PublishSubject<Boolean> = PublishSubject.create()
+    private lateinit var debounceDisposable: Disposable
 
-    fun showUsernameEmpty()
+    private lateinit var btnAdd: Button
+    private lateinit var pbLoading: ProgressBar
+    private lateinit var etUsername: EditText
+    private lateinit var tvYourUsername: TextView
+    private lateinit var tvTryAgain: TextView
 
-    fun showUsernameTooShort()
+    override fun setupViews() {
+        with(window) {
+            this@StateSliceAddContact.btnAdd = findViewById(R.id.btnAdd)
+            this@StateSliceAddContact.pbLoading = findViewById(R.id.pbLoading)
+            this@StateSliceAddContact.etUsername = findViewById(R.id.etUsername)
+            this@StateSliceAddContact.tvYourUsername = findViewById(R.id.tvYourUsername)
+            this@StateSliceAddContact.tvTryAgain = findViewById(R.id.tvTryAgain)
+        }
+    }
 
-    fun showUsernameTooLong()
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        debounceDisposable = debounceSubject.debounce(DEBOUNCE_INTERVAL, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it) btnAdd.visibility = View.INVISIBLE else btnAdd.visibility = View.VISIBLE
+                    if (it) pbLoading.visibility = View.VISIBLE else pbLoading.visibility = View.INVISIBLE
+                }
 
-    fun showYourOwnUsername()
+        etUsername.filters = arrayOf(symbolsInputFilter)
+    }
 
-    fun showLoading()
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        debounceDisposable.dispose()
+    }
 
-    fun showTryAgain()
+    fun showConsistent() {
+        activateButton(true)
+        loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+    }
+
+    fun showUsernameEmpty() {
+        activateButton(false)
+        loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+    }
+
+    fun showUsernameTooShort() {
+        activateButton(false)
+        loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+    }
+
+    fun showUsernameTooLong() {
+        activateButton(false)
+        loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+    }
+
+    fun showYourOwnUsername() {
+        activateButton(false)
+        loading(false)
+        tvYourUsername.visibility = View.VISIBLE
+    }
+
+    fun showLoading() = loading(true)
+
+    fun showTryAgain() {
+        loading(false)
+        tvYourUsername.visibility = View.INVISIBLE
+
+        if (tvTryAgain.visibility == View.INVISIBLE) {
+            tvTryAgain.visibility = View.VISIBLE
+            val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
+            alphaAnimation.duration = ERROR_FADE_OUT_DURATION
+            alphaAnimation.startOffset = ERROR_START_OFFSET
+            alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    tvTryAgain.visibility = View.INVISIBLE
+                }
+
+                override fun onAnimationStart(animation: Animation?) {}
+            })
+            tvTryAgain.startAnimation(alphaAnimation)
+        }
+    }
+
+    private fun loading(loading: Boolean) {
+        debounceSubject.onNext(loading)
+    }
+
+    private fun activateButton(active: Boolean) {
+        if (active) {
+            btnAdd.isEnabled = true
+            btnAdd.isClickable = true
+            btnAdd.background = context.getDrawable(R.drawable.rect_rounded_accent_2)
+        } else {
+            btnAdd.isEnabled = false
+            btnAdd.isClickable = false
+            btnAdd.background = context.getDrawable(R.drawable.rect_rounded_gray_2)
+        }
+    }
+
+    companion object {
+        const val ERROR_FADE_OUT_DURATION = 500L
+        const val ERROR_START_OFFSET = 1500L
+        const val DEBOUNCE_INTERVAL = 200L
+    }
 }

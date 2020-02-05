@@ -36,6 +36,7 @@ package com.virgilsecurity.android.common.data.remote.channels
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.sdk.crypto.HashAlgorithm
 import com.virgilsecurity.sdk.utils.ConvertionUtils
+import java.util.*
 
 /**
  * . _  _
@@ -65,6 +66,6 @@ class ChannelIdGeneratorDefault(
                         .computeHash((interlocutor + sender).toByteArray(),
                                       HashAlgorithm.SHA256)
             }.let { concatenatedHashedUsersData ->
-                ConvertionUtils.toHex(concatenatedHashedUsersData).toLowerCase()
+                ConvertionUtils.toHex(concatenatedHashedUsersData).toLowerCase(Locale.getDefault())
             }
 }

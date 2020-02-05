@@ -33,23 +33,28 @@
 
 package com.virgilsecurity.android.feature_contacts.view
 
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBindingScope
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
-import com.virgilsecurity.android.feature_contacts.di.Const.VM_ADD_CONTACT
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
-import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSlice
+import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSliceAddContact
+import org.koin.android.scope.currentScope
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -69,11 +74,16 @@ class AddContactController() : BControllerBindingScope() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
 
-    private val viewModel: AddContactVM by inject(named(VM_ADD_CONTACT))
-    private val stateSlice: StateSliceAddContact by inject()
-    private val toolbarSlice: ToolbarSlice by inject()
+    private val viewModel: AddContactVM by currentScope.viewModel(this)
+    private val inputFiler: InputFilter by inject()
 
     private lateinit var openChannel: (ChannelMeta) -> Unit
+    private lateinit var stateSlice: StateSliceAddContact
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceAddContact.Action>
+    private lateinit var toolbarSlice: ToolbarSliceAddContact
+
+    private lateinit var btnAdd: Button
+    private lateinit var etUsername: EditText
 
     constructor(openChannel: (channel: ChannelMeta) -> Unit) : this() {
         this.openChannel = openChannel
@@ -89,21 +99,28 @@ class AddContactController() : BControllerBindingScope() {
     }
 
 
-    override fun init() {
-        openKeyboard(etUsername)
-        initViewCallbacks()
-    }
+    override fun init(containerView: View) {
+        with(containerView) {
+            this@AddContactController.btnAdd = findViewById(R.id.btnAdd)
+            this@AddContactController.etUsername = findViewById(R.id.etUsername)
 
-    private fun initViewCallbacks() {
-        btnAdd.setOnClickListener {
-            hideKeyboard()
-            viewModel.addContact(etUsername.text.toString().toLowerCase())
+            btnAdd.setOnClickListener {
+                hideKeyboard()
+                viewModel.addContact(etUsername.text.toString().toLowerCase())
+            }
         }
+
+        this.mldToolbarSlice = MutableLiveData()
+
+        openKeyboard(etUsername)
     }
 
-    override fun initViewSlices(view: View) {
-        stateSlice.init(lifecycle, view)
-        toolbarSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.stateSlice = StateSliceAddContact(inputFiler)
+        this.toolbarSlice = ToolbarSliceAddContact(mldToolbarSlice)
+
+        stateSlice.init(lifecycle, window)
+        toolbarSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {
@@ -125,12 +142,12 @@ class AddContactController() : BControllerBindingScope() {
         hideKeyboard()
     }
 
-    private fun onActionChanged(action: ToolbarSlice.Action) = when(action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onActionChanged(action: ToolbarSliceAddContact.Action) = when(action) {
+        ToolbarSliceAddContact.Action.BackClicked -> {
             hideKeyboard()
             backPress()
         }
-        ToolbarSlice.Action.Idle -> Unit
+        ToolbarSliceAddContact.Action.Idle -> Unit
     }
 
     private fun onStateChanged(state: AddContactVM.State) = when (state) {

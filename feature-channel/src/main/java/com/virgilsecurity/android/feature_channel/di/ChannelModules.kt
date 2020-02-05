@@ -64,19 +64,14 @@ import org.koin.core.qualifier.named
 val channelModule: Module = moduleWithScope(named<ChannelController>()) {
     scoped { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
     scoped { GetMessagesDoDefault(get()) as GetMessagesDo }
-    scoped { ObserveChannelChangesDoDefault(get()) as ObserveChannelChangesDo }
     scoped { SendMessageDoDefault(get(), get()) as SendMessageDo }
     scoped { CardsInteractorDefault(get()) as CardsInteractor }
     scoped { GetCardDoDefault(get()) as GetCardDo }
-    scoped { GetChannelDoDefault(get()) as GetChannelDo }
-    scoped { ShowMessagePreviewDoDefault(get(), get()) as ShowMessagePreviewDo }
+    scoped { ShowMessagePreviewDoDefault(get()) as ShowMessagePreviewDo }
     scoped { CopyMessageDoDefault(get()) as CopyMessageDo }
-
     scoped { MediatorLiveData<ChannelVM.State>() }
     viewModel {
         ChannelVMDefault(get(),
-                         get(),
-                         get(),
                          get(),
                          get(),
                          get(),

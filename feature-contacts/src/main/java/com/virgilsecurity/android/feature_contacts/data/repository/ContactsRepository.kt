@@ -54,9 +54,7 @@ import io.reactivex.Single
  */
 interface ContactsRepository {
 
-    fun contacts(): Observable<List<ChannelMeta>>
+    fun contacts(): Flowable<List<ChannelMeta>>
 
     fun addContact(interlocutor: String): Single<ChannelMeta>
-
-    fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges>
 }

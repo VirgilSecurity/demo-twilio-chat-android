@@ -36,7 +36,6 @@ package com.virgilsecurity.android.feature_contacts.viewmodel.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDo
-import com.virgilsecurity.android.feature_contacts.domain.list.ObserveContactsChangesDo
 
 /**
  * . _  _
@@ -54,13 +53,11 @@ import com.virgilsecurity.android.feature_contacts.domain.list.ObserveContactsCh
  */
 class ContactsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val contactsDo: GetContactsDo,
-        private val observeContactsChangesDo: ObserveContactsChangesDo
+        private val contactsDo: GetContactsDo
 ) : ContactsVM() {
 
     init {
         state.addSource(contactsDo.getLiveData(), ::onLoadContactsResult)
-        state.addSource(observeContactsChangesDo.getLiveData(), ::onContactsChanged)
     }
 
     override fun getState(): LiveData<State> = state
@@ -70,11 +67,8 @@ class ContactsVMDefault(
         contactsDo.execute()
     }
 
-    override fun observeContactsChanges() = observeContactsChangesDo.execute()
-
     override fun onCleared() {
         contactsDo.cleanUp()
-        observeContactsChangesDo.cleanUp()
     }
 
     private fun onLoadContactsResult(result: GetContactsDo.Result?) {
@@ -89,9 +83,5 @@ class ContactsVMDefault(
             is GetContactsDo.Result.OnError -> state.value = State.ShowError
             GetContactsDo.Result.OnEmpty -> state.value = State.ShowEmpty
         }
-    }
-
-    private fun onContactsChanged(result: ChannelsApi.ChannelsChanges?) {
-        state.value = State.ContactChanged(result!!)
     }
 }

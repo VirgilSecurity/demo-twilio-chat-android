@@ -40,6 +40,7 @@ import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.extension.addOnPropertyChanged
 import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactDo
 import io.reactivex.disposables.Disposable
+import java.util.*
 
 /**
  * . _  _
@@ -93,16 +94,16 @@ class AddContactVMDefault(
     }
 
     private fun onUsernameChanged(username: String?) {
-        username?.toLowerCase()?.run {
+        username?.toLowerCase(Locale.getDefault())?.run {
             when {
                 this.isEmpty() ->
-                    state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_EMPTY)
-                this.length < AddContactVM.MIN_LENGTH ->
-                    state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_SHORT)
-                this.length > AddContactVM.MAX_LENGTH ->
-                    state.value = State.UsernameInvalid(AddContactVM.KEY_USERNAME_LONG)
+                    state.value = State.UsernameInvalid(KEY_USERNAME_EMPTY)
+                this.length < MIN_LENGTH ->
+                    state.value = State.UsernameInvalid(KEY_USERNAME_SHORT)
+                this.length > MAX_LENGTH ->
+                    state.value = State.UsernameInvalid(KEY_USERNAME_LONG)
                 this == userProperties.currentUser!!.identity ->
-                    state.value = State.UsernameInvalid(AddContactVM.KEY_YOUR_OWN_USERNAME)
+                    state.value = State.UsernameInvalid(KEY_YOUR_OWN_USERNAME)
                 else -> state.value = State.UsernameConsistent
             }
         }

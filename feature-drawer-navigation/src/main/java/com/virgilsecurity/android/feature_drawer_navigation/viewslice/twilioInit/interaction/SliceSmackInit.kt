@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction // TODO rename package to smackInit
 
 import android.widget.Button
 import androidx.lifecycle.Lifecycle

@@ -34,10 +34,12 @@
 package com.virgilsecurity.android.feature_settings.view
 
 import android.view.View
+import android.view.Window
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.feature_settings.R
-import org.koin.core.inject
+import com.virgilsecurity.android.feature_settings.viewslice.versions.toolbar.ToolbarSliceSettingsVersions
 
 /**
  * . _  _
@@ -57,12 +59,15 @@ class VersionHistoryController : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_version_history
 
-    private val toolbarSlice: ToolbarSlice by inject()
+    private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceSettingsVersions.Action>
+    private lateinit var toolbarSlice: ToolbarSliceSettingsVersions
 
-    override fun init() {}
+    override fun init(containerView: View) {}
 
-    override fun initViewSlices(view: View) {
-        toolbarSlice.init(lifecycle, view)
+    override fun initViewSlices(window: Window) {
+        this.toolbarSlice = ToolbarSliceSettingsVersions(mldToolbarSlice)
+
+        toolbarSlice.init(lifecycle, window)
     }
 
     override fun setupViewSlices(view: View) {}
@@ -75,12 +80,12 @@ class VersionHistoryController : BaseController() {
 
     override fun initData() {}
 
-    private fun onToolbarActionChanged(action: ToolbarSlice.Action) = when (action) {
-        ToolbarSlice.Action.BackClicked -> {
+    private fun onToolbarActionChanged(action: ToolbarSliceSettingsVersions.Action) = when (action) {
+        ToolbarSliceSettingsVersions.Action.BackClicked -> {
             hideKeyboard()
             backPress()
         }
-        ToolbarSlice.Action.Idle -> Unit
+        ToolbarSliceSettingsVersions.Action.Idle -> Unit
     }
 
     private fun backPress() {

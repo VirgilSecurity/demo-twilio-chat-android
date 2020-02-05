@@ -33,21 +33,13 @@
 
 package com.virgilsecurity.android.feature_contacts.data.repository
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.util.GeneralConstants
-import com.virgilsecurity.android.common.data.exception.AddingUserThatExistsException
-import com.virgilsecurity.android.common.data.exception.EmptyCardsException
-import com.virgilsecurity.android.common.data.exception.ManyCardsException
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
-import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
-import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefault
+import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -64,121 +56,52 @@ import io.reactivex.schedulers.Schedulers
  * ContactsRepositoryDefault
  */
 class ContactsRepositoryDefault(
-        private val contactsApi: ChannelsApi, // In the future here will be contacts, not channels
-        private val contactsDao: ChannelsDao,
-        private val virgilHelper: VirgilHelper,
+        private val contactsDao: ChannelsDao, // TODO In the future here will be contacts, not channels
         private val userProperties: UserProperties,
-        private val mapper: MapperToChannelInfo
+        private val channelIdGenerator: ChannelIdGenerator
 ) : ContactsRepository {
 
-    private val debounceCache = mutableListOf<ChannelMeta>()
-
     override fun addContact(interlocutor: String): Single<ChannelMeta> =
-            contactsDao.user(userProperties.currentUser!!.identity, interlocutor)
-                    .flatMap {
-                        if (it.isNotEmpty())
-                            throw AddingUserThatExistsException()
-                        else
-                            virgilHelper.searchCards(interlocutor)
-                    }
-                    .flatMap { cards ->
-                        when {
-                            cards.isEmpty() -> throw EmptyCardsException()
-                            cards.size > 1 -> throw ManyCardsException()
-                            else -> {
-                                contactsApi.createChannel(userProperties.currentUser!!.identity,
-                                                          interlocutor)
-                                        .flatMap {
-                                            contactsDao.addChannel(it)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .toSingle { it }
-                                        }
-                            }
-                        }
-                    }
+            Single.create {
+                try {
+                    val currentUserIdentity = userProperties.currentUser!!.identity
+                    val channelId = channelIdGenerator.generatedChannelId(currentUserIdentity,
+                                                                          interlocutor)
+                    val channelMeta = ChannelMeta(channelId, currentUserIdentity, interlocutor)
 
-    override fun contacts(): Observable<List<ChannelMeta>> =
-            Observable.concatArray(contactsDao.getUserChannels().toObservable(),
-                                   contactsApi.userChannels()
-                                           .flatMap(::joinFetchedChannels)
-                                           .flatMap {
-                                               contactsDao.addChannels(it)
-                                                       .subscribeOn(Schedulers.io())
-                                                       .toSingle { it }.toObservable()
-                                           })
-                    .map {
-                        it.sortedBy { channel -> channel.sid }
-                    }
-                    .filter {
-                        !(it comparableListEqual debounceCache) && it.isNotEmpty()
-                    }
-                    .doOnNext {
-                        debounceCache.addAll(it)
-                    }
-                    .doOnComplete {
-                        debounceCache.clear()
-                    }
+                    contactsDao.addChannel(channelMeta)
 
-    @Suppress("UNCHECKED_CAST")
-    private fun joinFetchedChannels(userChannels: List<ChannelMeta>): Observable<List<ChannelMeta>> {
-        val fetchChannelStreams = mutableListOf<Observable<Channel>>()
-
-        for (channel in userChannels)
-            fetchChannelStreams.add(contactsApi.userChannelById(channel.sid).toObservable())
-
-        return Observable.zip(fetchChannelStreams) { channels -> channels.toList() }
-                .flatMap { fetchedChannels ->
-                    val joinChannelStreams = mutableListOf<Observable<ChannelMeta>>()
-
-                    for (fetchedChannel in fetchedChannels as List<Channel>)
-                        if (fetchedChannel.status.value == Channel.ChannelStatus.INVITED.value)
-                            joinChannelStreams.add(contactsApi.joinChannel(fetchedChannel).toObservable())
-
-                    Observable.zip(joinChannelStreams) { userChannels }
+                    it.onSuccess(channelMeta)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
                 }
-    }
+            }
 
-    override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-            contactsApi.observeChannelsChanges()
-                    .filter { channelChange ->
-                        if (channelChange is ChannelsApi.ChannelsChanges.ChannelInvited) { // Thanks for twilio attributes fun
-                            System.currentTimeMillis().let {
-                                while (channelChange.channel!!.attributes.toString() == GeneralConstants.EMPTY_ATTRIBUTES ||
-                                       (System.currentTimeMillis() - it) < ChannelsRepositoryDefault.ATTRIBUTES_LOAD_TIMEOUT) {
-                                    continue
-                                }
 
-                                channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
-                            }
-                        } else {
-                            true
-                        }
-                    } // TODO While we don't have group chats - after change this
-                    .flatMap { change ->
-                        when (change) {
-                            is ChannelsApi.ChannelsChanges.ChannelInvited -> {
-                                Single.just(change.channel!!)
-                                        .map(mapper::mapChannel)
-                                        .flatMap { channel ->
-                                            joinAndAddToDbChannel(change, channel).let { pair ->
-                                                Single.zip(pair.first,
-                                                           pair.second,
-                                                           BiFunction
-                                                           { _: ChannelMeta,
-                                                             _: ChannelsApi.ChannelsChanges ->
-                                                               change
-                                                           })
-                                            }
-                                        }
-                                        .toFlowable()
-                            }
-                            else -> Flowable.just(change)
-                        }
-                    }
+//    override fun addContact(interlocutor: String): Single<ChannelMeta> =
+//            contactsDao.user(userProperties.currentUser!!.identity, interlocutor)
+//                    .flatMap {
+//                        if (it.isNotEmpty())
+//                            throw AddingUserThatExistsException()
+//                        else
+//                            virgilHelper.searchCards(interlocutor)
+//                    }
+//                    .flatMap { cards ->
+//                        when {
+//                            cards.isEmpty() -> throw EmptyCardsException()
+//                            cards.size > 1 -> throw ManyCardsException()
+//                            else -> {
+//                                contactsApi.createChannel(userProperties.currentUser!!.identity,
+//                                                          interlocutor)
+//                                        .flatMap {
+//                                            contactsDao.addChannel(it)
+//                                                    .subscribeOn(Schedulers.io())
+//                                                    .toSingle { it }
+//                                        }
+//                            }
+//                        }
+//                    }
 
-    private fun joinAndAddToDbChannel(change: ChannelsApi.ChannelsChanges.ChannelInvited,
-                                      channel: ChannelMeta) =
-            (contactsApi.joinChannel(change.channel!!).subscribeOn(Schedulers.io())
-                    to
-                    contactsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })
+    override fun contacts(): Flowable<List<ChannelMeta>> = contactsDao.getUserChannels()
+
 }

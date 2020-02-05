@@ -37,6 +37,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import com.virgilsecurity.android.base.data.api.MessagesApi
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 
 /**
@@ -63,14 +64,13 @@ abstract class ChannelVM : ViewModel() {
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
-        data class ChannelChanged(val change: MessagesApi.ChannelChanges) : State()
         data class MessagePreviewAdded(val message: MessageMeta) : State()
         object MessageCopied : State()
     }
 
     abstract fun getState() : LiveData<State>
 
-    abstract fun messages(channelId: String)
+    abstract fun messages(channelMeta: ChannelMeta)
 
     abstract fun sendMessage(body: String)
 

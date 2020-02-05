@@ -56,32 +56,41 @@ import com.virgilsecurity.android.feature_channels_list.R
  * ToolbarSliceChannelsList
  */
 class ToolbarSliceChannelsList(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    private lateinit var toolbarField: Toolbar
+    private lateinit var toolbar: Toolbar
+
+    override fun setupViews() {
+        with(window) {
+            this@ToolbarSliceChannelsList.toolbar = findViewById(R.id.toolbarChannelsList)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        this.toolbarField = toolbarChannelsList as Toolbar
         setupToolbar()
     }
 
     private fun setupToolbar() {
-        toolbarField.setTitle(resources.getString(R.string.messenger))
+        toolbar.setTitle(resources.getString(R.string.messenger))
 
-        toolbarField.showHamburgerButton()
-//        toolbarField.showSearchButton()
+        toolbar.showHamburgerButton()
 
-        toolbarField.setOnToolbarItemClickListener {
+        toolbar.setOnToolbarItemClickListener {
             when (it.id) {
                 R.id.ivHamburger -> {
-                    actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.HamburgerClicked
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
     }
 
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object HamburgerClicked : Action()
+        object Idle : Action()
+    }
 }

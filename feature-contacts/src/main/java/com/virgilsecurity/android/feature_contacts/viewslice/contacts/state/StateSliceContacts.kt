@@ -34,8 +34,12 @@
 package com.virgilsecurity.android.feature_contacts.viewslice.contacts.state
 
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
+import com.virgilsecurity.android.feature_contacts.R
 
 /**
  * . _  _
@@ -51,15 +55,29 @@ import com.virgilsecurity.android.common.viewslice.StateSliceEmptyable
 /**
  * StateSliceContacts
  */
-class StateSliceContacts : BaseViewSlice(), StateSliceEmptyable {
+class StateSliceContacts : BaseViewSlice() {
 
-    override fun showLoading() = show(LOADING)
+    private lateinit var pbLoading: ProgressBar
+    private lateinit var clNoContacts: ConstraintLayout
+    private lateinit var rvContacts: RecyclerView
+    private lateinit var tvError: TextView
 
-    override fun showContent() = show(CONTENT)
+    override fun setupViews() {
+        with(window) {
+            this@StateSliceContacts.pbLoading = findViewById(R.id.pbLoading)
+            this@StateSliceContacts.clNoContacts = findViewById(R.id.clNoContacts)
+            this@StateSliceContacts.rvContacts = findViewById(R.id.rvContacts)
+            this@StateSliceContacts.tvError = findViewById(R.id.tvError)
+        }
+    }
 
-    override fun showError() = show(ERROR)
+    fun showLoading() = show(LOADING)
 
-    override fun showEmpty() = show(EMPTY)
+    fun showContent() = show(CONTENT)
+
+    fun showError() = show(ERROR)
+
+    fun showEmpty() = show(EMPTY)
 
     private fun show(state: Int) {
         when (state) {

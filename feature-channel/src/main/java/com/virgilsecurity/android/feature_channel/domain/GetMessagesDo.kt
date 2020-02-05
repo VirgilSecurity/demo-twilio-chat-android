@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.Do
 
@@ -59,5 +59,5 @@ interface GetMessagesDo : Do<GetMessagesDo.Result> {
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(channel: Channel)
+    fun execute(channel: ChannelMeta)
 }

@@ -61,9 +61,7 @@ class ChannelVMDefault(
         private val state: MediatorLiveData<State>,
         private val getMessagesDo: GetMessagesDo,
         private val sendMessageDo: SendMessageDo,
-        private val observeChannelChangesDo: ObserveChannelChangesDo,
         private val getCardDo: GetCardDo,
-        private val getChannelDo: GetChannelDo,
         private val userProperties: UserProperties,
         private val showMessagePreviewDo: ShowMessagePreviewDo,
         private val copyMessageDo: CopyMessageDo
@@ -75,18 +73,16 @@ class ChannelVMDefault(
     init {
         state.addSource(getMessagesDo.getLiveData(), ::onLoadMessagesResult)
         state.addSource(sendMessageDo.getLiveData(), ::onMessageSentResult)
-        state.addSource(observeChannelChangesDo.getLiveData(), ::onChannelChanged)
         state.addSource(getCardDo.getLiveData(), ::onLoadCardResult)
-        state.addSource(getChannelDo.getLiveData(), ::onLoadChannelResult)
         state.addSource(showMessagePreviewDo.getLiveData(), ::onShowMessagePreviewResult)
         state.addSource(copyMessageDo.getLiveData(), ::onCopyMessageResult)
     }
 
     override fun getState(): LiveData<State> = state
 
-    override fun messages(channelId: String) {
+    override fun messages(channelMeta: ChannelMeta) {
         state.value = State.ShowLoading
-        getChannelDo.execute(channelId)
+        getCardDo.execute(channelMeta.localizedInterlocutor(userProperties))
     }
 
     override fun sendMessage(body: String) =
@@ -95,21 +91,15 @@ class ChannelVMDefault(
                                   cards.map { it.publicKey as VirgilPublicKey })
 
     override fun showMessagePreview(body: String) =
-            showMessagePreviewDo.execute(body,
-                                         cards.map { it.publicKey as VirgilPublicKey })
+            showMessagePreviewDo.execute(body)
 
     override fun copyMessage(body: String?, context: Context) =
             copyMessageDo.execute(body, context)
 
-    private fun observeChannelChanges(channel: ChannelMeta) =
-            observeChannelChangesDo.execute(channel)
-
     override fun onCleared() {
         getMessagesDo.cleanUp()
         sendMessageDo.cleanUp()
-        observeChannelChangesDo.cleanUp()
         getCardDo.cleanUp()
-        getChannelDo.cleanUp()
         showMessagePreviewDo.cleanUp()
         copyMessageDo.cleanUp()
     }
@@ -135,10 +125,6 @@ class ChannelVMDefault(
         }
     }
 
-    private fun onChannelChanged(result: MessagesApi.ChannelChanges?) {
-        state.value = State.ChannelChanged(result!!)
-    }
-
     private fun onLoadCardResult(result: GetCardDo.Result?) {
         when (result) {
             is GetCardDo.Result.OnSuccess -> {
@@ -146,27 +132,8 @@ class ChannelVMDefault(
                 cards.add(result.card)
 
                 getMessagesDo.execute(channel)
-                observeChannelChanges(channel)
             }
             is GetCardDo.Result.OnError -> State.ShowError
-        }
-    }
-
-    private fun onLoadChannelResult(result: GetChannelDo.Result?) {
-        when (result) {
-            is GetChannelDo.Result.OnSuccess -> {
-                channel = result.channel
-
-//                val identity = if (channel.attributes[GeneralConstants.KEY_SENDER] ==
-//                        userProperties.currentUser!!.identity) {
-//                    channel.attributes[GeneralConstants.KEY_INTERLOCUTOR] as String
-//                } else {
-//                    channel.attributes[GeneralConstants.KEY_SENDER] as String
-//                }
-
-//                getCardDo.execute(identity)
-            }
-            is GetChannelDo.Result.OnError -> State.ShowError
         }
     }
 

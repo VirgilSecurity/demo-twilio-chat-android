@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepository
@@ -60,7 +60,7 @@ class GetMessagesDoDefault(
 
     private var atLeastOneItemPresent = false
 
-    override fun execute(channel: Channel) =
+    override fun execute(channel: ChannelMeta) =
             messagesRepository.messages(channel)
                     .doOnNext {
                         if (it.isNotEmpty())

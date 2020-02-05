@@ -56,37 +56,47 @@ import com.virgilsecurity.android.feature_contacts.R
  * ToolbarSliceContacts
  */
 class ToolbarSliceContacts(
-        private val actionLiveData: MutableLiveData<ToolbarSlice.Action>
-) : BaseViewSlice(), ToolbarSlice {
+        private val actionLiveData: MutableLiveData<Action>
+) : BaseViewSlice() {
 
-    private lateinit var toolbarField: Toolbar
+    private lateinit var toolbar: Toolbar
+
+    override fun setupViews() {
+        with(window) {
+            this@ToolbarSliceContacts.toolbar = findViewById(R.id.toolbarContacts)
+        }
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        this.toolbarField = toolbarContacts as Toolbar
         setupToolbar()
     }
 
     private fun setupToolbar() {
-        toolbarField.setTitle(resources.getString(R.string.messenger))
+        toolbar.setTitle(resources.getString(R.string.messenger))
 
-        toolbarField.showHamburgerButton()
-//        toolbarField.showSearchButton()
-        toolbarField.showAddPersonButton()
+        toolbar.showHamburgerButton()
+        toolbar.showAddPersonButton()
 
-        toolbarField.setOnToolbarItemClickListener {
+        toolbar.setOnToolbarItemClickListener {
             when (it.id) {
                 R.id.ivHamburger -> {
-                    actionLiveData.value = ToolbarSlice.Action.HamburgerClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.HamburgerClicked
+                    actionLiveData.value = Action.Idle
                 }
                 R.id.ivAddPerson -> {
-                    actionLiveData.value = ToolbarSlice.Action.AddClicked
-                    actionLiveData.value = ToolbarSlice.Action.Idle
+                    actionLiveData.value = Action.AddClicked
+                    actionLiveData.value = Action.Idle
                 }
             }
         }
     }
 
-    override fun getAction(): LiveData<ToolbarSlice.Action> = actionLiveData
+    fun getAction(): LiveData<Action> = actionLiveData
+
+    sealed class Action {
+        object HamburgerClicked : Action()
+        object AddClicked : Action()
+        object Idle : Action()
+    }
 }

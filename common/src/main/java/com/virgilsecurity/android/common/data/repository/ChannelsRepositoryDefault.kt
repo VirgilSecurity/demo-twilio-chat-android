@@ -33,15 +33,9 @@
 
 package com.virgilsecurity.android.common.data.repository
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
-import com.virgilsecurity.android.base.util.GeneralConstants
-import com.virgilsecurity.android.common.data.remote.channels.MapperToChannelInfo
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -58,107 +52,8 @@ import io.reactivex.schedulers.Schedulers
  * ChannelsRepositoryDefault
  */
 class ChannelsRepositoryDefault(
-        private val channelsApi: ChannelsApi,
-        private val channelsDao: ChannelsDao,
-        private val mapper: MapperToChannelInfo
+        private val channelsDao: ChannelsDao
 ) : ChannelsRepository {
 
-    private val debounceCache = mutableListOf<ChannelMeta>()
-
-    override fun channels(): Observable<List<ChannelMeta>> =
-            Observable.concatArray(channelsDao.getUserChannels().toObservable(),
-                                   channelsApi.userChannels()
-                                           .flatMap(::joinFetchedChannels)
-                                           .flatMap {
-                                               channelsDao.addChannels(it)
-                                                       .subscribeOn(Schedulers.io())
-                                                       .toSingle { it }.toObservable()
-                                           })
-                    .map { channels ->
-                        channels.toMutableList().let {
-                            it.removeAll(debounceCache)
-                            it
-                        }
-                    }
-                    .map {
-                        it.sortedBy { channel -> channel.sid }
-                    }
-                    .filter {
-                        !(it comparableListEqual debounceCache) && it.isNotEmpty()
-                    }
-                    .doOnNext {
-                        debounceCache.addAll(it)
-                    }
-                    .doOnComplete {
-                        debounceCache.clear()
-                    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun joinFetchedChannels(userChannels: List<ChannelMeta>): Observable<List<ChannelMeta>> {
-        val fetchChannelStreams = mutableListOf<Observable<Channel>>()
-
-        for (channel in userChannels)
-            fetchChannelStreams.add(channelsApi.userChannelById(channel.sid).toObservable())
-
-        return Observable.zip(fetchChannelStreams) { channels -> channels.toList() }
-                .flatMap { fetchedChannels ->
-                    val joinChannelStreams = mutableListOf<Observable<ChannelMeta>>()
-
-                    for (fetchedChannel in fetchedChannels as List<Channel>)
-                        if (fetchedChannel.status.value == Channel.ChannelStatus.INVITED.value)
-                            joinChannelStreams.add(channelsApi.joinChannel(fetchedChannel).toObservable())
-
-                    Observable.zip(joinChannelStreams) { userChannels }
-                }
-    }
-
-    override fun observeChannelsChanges(): Flowable<ChannelsApi.ChannelsChanges> =
-            channelsApi.observeChannelsChanges()
-                    .filter { channelChange ->
-                        if (channelChange is ChannelsApi.ChannelsChanges.ChannelInvited) { // Thanks for twilio attributes fun
-                            System.currentTimeMillis().let {
-                                while (channelChange.channel!!.attributes.toString() == GeneralConstants.EMPTY_ATTRIBUTES ||
-                                       (System.currentTimeMillis() - it) < ATTRIBUTES_LOAD_TIMEOUT) {
-                                    continue
-                                }
-
-                                channelChange.channel!!.attributes[GeneralConstants.KEY_TYPE] == GeneralConstants.TYPE_SINGLE
-                            }
-                        } else {
-                            true
-                        }
-                    } // TODO While we don't have group chats - after change this
-                    .flatMap { change ->
-                        when (change) {
-                            is ChannelsApi.ChannelsChanges.ChannelInvited -> {
-                                Single.just(change.channel!!)
-                                        .map(mapper::mapChannel)
-                                        .flatMap { channel ->
-                                            joinAndAddToDbChannel(change, channel).let { pair ->
-                                                Single.zip(pair.first,
-                                                           pair.second,
-                                                           BiFunction
-                                                           { _: ChannelMeta,
-                                                             _: ChannelsApi.ChannelsChanges ->
-                                                               change
-                                                           })
-                                            }
-                                        }
-                                        .toFlowable()
-                            }
-                            else -> Flowable.just(change)
-                        }
-                    }
-
-    private fun joinAndAddToDbChannel(change: ChannelsApi.ChannelsChanges.ChannelInvited,
-                                      channel: ChannelMeta) =
-            (channelsApi.joinChannel(change.channel!!).subscribeOn(Schedulers.io())
-                    to
-                    channelsDao.addChannel(channel).subscribeOn(Schedulers.io()).toSingle { change })
-
-    override fun getUserChannelById(id: String): Single<Channel> = channelsApi.userChannelById(id)
-
-    companion object {
-        const val ATTRIBUTES_LOAD_TIMEOUT = 2500L
-    }
+    override fun channels(): Flowable<List<ChannelMeta>> = channelsDao.getUserChannels()
 }
