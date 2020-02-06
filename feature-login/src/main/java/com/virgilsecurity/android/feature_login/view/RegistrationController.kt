@@ -44,7 +44,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BControllerBindingScope
+import com.virgilsecurity.android.base.view.controller.BControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
 import com.virgilsecurity.android.feature_login.R
@@ -54,7 +54,6 @@ import com.virgilsecurity.android.feature_login.viewmodel.registration.Registrat
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistration
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
 import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
 /**
@@ -71,11 +70,11 @@ import java.util.*
 /**
  * RegistrationController
  */
-class RegistrationController() : BControllerBindingScope() {
+class RegistrationController() : BControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_register
 
-    private val vmRegistration: RegistrationVM by currentScope.viewModel(this)
+    private val vmRegistration: RegistrationVM by currentScope.inject()
 
     private lateinit var login: (User) -> Unit
     private lateinit var stateSlice: StateSliceRegistration

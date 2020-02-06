@@ -50,6 +50,7 @@ import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.Use
 import com.virgilsecurity.android.feature_login.viewslice.login.state.StateSliceLogin
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -71,7 +72,8 @@ class AuthController() : BaseController() {
 
     private val imageStorage: ImageStorage by inject()
     private val stateSlice: StateSliceLogin by inject()
-    private val vmAuth: AuthVM by getKoin().getScope(VM_AUTH).viewModel(this)
+    private val vmAuth: AuthVM by getKoin()
+            .getOrCreateScope("${this.javaClass.simpleName}_id", named(VM_AUTH)).inject()
 
     private lateinit var mutableLiveData: MutableLiveData<ViewPagerSlice.Action>
 

@@ -40,17 +40,19 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModelStoreOwner
 import com.virgilsecurity.android.base.util.ContainerView
 
 /**
  * Base Activity with LifecycleRegistry and ViewModel setup function.
  */
-abstract class BaseActivity : Activity(), LifecycleOwner {
+abstract class BaseActivity : AppCompatActivity(), LifecycleOwner {
 
-    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+//    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -68,11 +70,11 @@ abstract class BaseActivity : Activity(), LifecycleOwner {
      */
     protected abstract fun setupVMStateObservers()
 
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
+//    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+//        lifecycleRegistry.currentState = Lifecycle.State.CREATED
         setContentView(layoutResourceId)
 
         init(savedInstanceState)
@@ -82,17 +84,17 @@ abstract class BaseActivity : Activity(), LifecycleOwner {
 
     override fun onStart() {
         super.onStart()
-        lifecycleRegistry.currentState = Lifecycle.State.STARTED
+//        lifecycleRegistry.currentState = Lifecycle.State.STARTED
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+//        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+//        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
     protected fun initToolbar(toolbar: Toolbar, title: String) {

@@ -55,6 +55,7 @@ import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.currentScope
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 
 /**
  * . _  _
@@ -75,7 +76,7 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val vmAuth: AuthVM by getKoin().getScope(VM_AUTH).viewModel(this)
+    private val vmAuth: AuthVM by getKoin().getOrCreateScope("someid", named(VM_AUTH)).inject()
 
     override fun init(savedInstanceState: Bundle?) {
         vmAuth.users()

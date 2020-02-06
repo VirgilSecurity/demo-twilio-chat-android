@@ -44,7 +44,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BControllerBindingScope
+import com.virgilsecurity.android.base.view.controller.BControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
@@ -70,7 +70,7 @@ import org.koin.core.inject
 /**
  * AddContactController
  */
-class AddContactController() : BControllerBindingScope() {
+class AddContactController() : BControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
 

@@ -36,6 +36,7 @@ package com.virgilsecurity.android.feature_login.view
 import android.view.View
 import android.view.Window
 import android.widget.Button
+import android.widget.TextView
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.feature_login.R
 import kotlinx.android.synthetic.main.controller_no_users.*
@@ -61,7 +62,7 @@ class NoUsersController() : BaseController() {
 
     private lateinit var registration: () -> Unit
 
-    private lateinit var btnCreateNewAccount: Button
+    private lateinit var btnCreateNewAccount: TextView
 
     constructor(registration: () -> Unit) : this() {
         this.registration = registration

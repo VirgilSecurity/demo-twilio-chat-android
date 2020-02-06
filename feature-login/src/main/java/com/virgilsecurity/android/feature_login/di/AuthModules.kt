@@ -73,7 +73,7 @@ val authActivityModule: Module = module {
     scope(named(VM_AUTH)) {
         scoped { LoadUsersDoDefault(get()) as LoadUsersDo }
         scoped { MediatorLiveData<AuthVM.State>() }
-        viewModel { AuthVMDefault(get(), get()) as AuthVM }
+        scoped { AuthVMDefault(get(), get()) as AuthVM }
     }
 }
 
@@ -82,9 +82,9 @@ val registrationControllerModule: Module = moduleWithScope(named<RegistrationCon
     scoped { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
     scoped { SignUpDoDefault(get(), get()) as SignUpDo }
     scoped { MediatorLiveData<RegistrationVM.State>() }
-    viewModel { RegistrationVMDefault(get(), get()) as RegistrationVM }
+    scoped { RegistrationVMDefault(get(), get()) as RegistrationVM }
 }
 
 object LoginDiConst {
-    const val VM_AUTH = "VM_LOGIN"
+    const val VM_AUTH = "VM_AUTH"
 }
