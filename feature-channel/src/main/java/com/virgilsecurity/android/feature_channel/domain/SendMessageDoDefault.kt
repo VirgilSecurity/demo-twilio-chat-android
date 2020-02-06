@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
@@ -61,7 +61,7 @@ class SendMessageDoDefault(
         private val virgilHelper: VirgilHelper
 ) : BaseDo<SendMessageDo.Result>(), SendMessageDo {
 
-    override fun execute(channel: Channel,
+    override fun execute(channel: ChannelMeta,
                          body: String,
                          publicKeys: List<VirgilPublicKey>) =
             messagesRepository.sendMessage(channel,

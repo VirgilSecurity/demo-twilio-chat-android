@@ -157,7 +157,7 @@ val channelsModule: Module = module {
 }
 
 val messagesModule: Module = module {
-    single { MessagesRemoteDS(get()) as MessagesApi }
+    single { MessagesRemoteDS(get(), get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
     single(named(KEY_DIFF_CALLBACK_MESSAGE_META)) { DiffCallback<MessageMeta>() }

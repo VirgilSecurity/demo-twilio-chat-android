@@ -31,10 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.domain
+package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.domain.Do
 
 /**
  * . _  _
@@ -48,14 +49,18 @@ import com.virgilsecurity.android.base.domain.Do
  */
 
 /**
- * InitTwilioDo
+ * InitSmackVM
  */
-interface InitTwilioDo : Do<InitTwilioDo.Result> {
+abstract class InitSmackVM : ViewModel(){
 
-    sealed class Result {
-        object OnSuccess : Result()
-        data class OnError(val error: Throwable) : Result()
+    sealed class State {
+        object InitSuccess : State()
+        object ShowLoading : State()
+        object ShowContent : State()
+        object ShowError : State()
     }
 
-    fun execute(user: User)
+    abstract fun getState() : LiveData<State>
+
+    abstract fun initChatClient(user: User)
 }

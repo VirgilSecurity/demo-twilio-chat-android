@@ -55,6 +55,7 @@ import com.virgilsecurity.android.feature_login.viewslice.registration.state.Sta
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
 import org.koin.android.scope.currentScope
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.util.*
 
 /**
  * . _  _
@@ -125,7 +126,7 @@ class RegistrationController() : BControllerBindingScope() {
     private fun initViewCallbacks() {
         btnNext.setOnClickListener {
             hideKeyboard()
-            vmRegistration.registration(etUsername.text.toString().toLowerCase())
+            vmRegistration.registration(etUsername.text.toString().toLowerCase(Locale.getDefault()))
         }
     }
 

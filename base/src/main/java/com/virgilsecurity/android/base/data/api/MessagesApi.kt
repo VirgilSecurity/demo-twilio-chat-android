@@ -57,5 +57,5 @@ interface MessagesApi {
 
     fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>>
 
-    fun sendMessage(body: String, interlocutor: String): Single<MessageMeta>
+    fun sendMessage(channelMeta: ChannelMeta, body: String): Single<MessageMeta>
 }

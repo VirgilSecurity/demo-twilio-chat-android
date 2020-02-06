@@ -58,5 +58,5 @@ interface AuthApi {
 
     fun getVirgilToken(identity: String, authHeader: String): TokenResponse
 
-    fun getTwilioToken(identity: String, authHeader: String): TokenResponse
+    fun getEjabberdToken(identity: String, authHeader: String): TokenResponse
 }

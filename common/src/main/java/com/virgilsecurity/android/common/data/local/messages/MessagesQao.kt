@@ -38,6 +38,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.virgilsecurity.android.base.data.model.MessageMeta
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 /**
@@ -57,13 +58,13 @@ import io.reactivex.Single
 @Dao
 interface MessagesQao {
 
-    @Query("SELECT * FROM messagemeta WHERE thread_id LIKE (:threadId)")
-    fun messages(threadId: String): Single<List<MessageMeta>>
+    @Query("SELECT * FROM MessageMeta WHERE thread_id LIKE (:threadId)")
+    fun messages(threadId: String): Flowable<List<MessageMeta>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertMessages(messages: List<MessageMeta>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertMessage(message: MessageMeta)
 
-    @Query("SELECT COUNT(*) from messagemeta WHERE thread_id LIKE (:threadId)")
+    @Query("SELECT COUNT(*) from MessageMeta WHERE thread_id LIKE (:threadId)")
     fun messagesCount(threadId: String): Int
 }

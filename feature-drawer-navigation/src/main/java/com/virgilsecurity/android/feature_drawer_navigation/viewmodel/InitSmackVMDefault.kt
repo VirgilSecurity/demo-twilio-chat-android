@@ -34,8 +34,9 @@
 package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.data.model.User
+import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
 
 /**
  * . _  _
@@ -49,18 +50,33 @@ import com.virgilsecurity.android.base.data.model.User
  */
 
 /**
- * InitTwilioVM
+ * InitSmackVMDefault
  */
-abstract class InitTwilioVM : ViewModel(){
+class InitSmackVMDefault(
+        private val state: MediatorLiveData<State>,
+        private val initSmackDo: InitSmackDo
+) : InitSmackVM() {
 
-    sealed class State {
-        object InitSuccess : State()
-        object ShowLoading : State()
-        object ShowContent : State()
-        object ShowError : State()
+    init {
+        state.addSource(initSmackDo.getLiveData(), ::onInitTwilioResult)
     }
 
-    abstract fun getState() : LiveData<State>
+    override fun onCleared() = initSmackDo.cleanUp()
 
-    abstract fun initChatClient(user: User)
+    override fun getState(): LiveData<State> = state
+
+    override fun initChatClient(user: User) {
+        state.value = State.ShowLoading
+        initSmackDo.execute(user)
+    }
+
+    private fun onInitTwilioResult(result: InitSmackDo.Result?) {
+        when (result) {
+            is InitSmackDo.Result.OnSuccess -> {
+                    state.value = State.InitSuccess
+                    state.value = State.ShowContent
+            }
+            is InitSmackDo.Result.OnError -> state.value = State.ShowError
+        }
+    }
 }

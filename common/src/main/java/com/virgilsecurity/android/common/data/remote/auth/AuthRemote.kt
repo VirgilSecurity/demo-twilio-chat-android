@@ -65,6 +65,6 @@ class AuthRemote(
     override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
             fuelHelper.getVirgilToken(identity, authHeader)
 
-    override fun getTwilioToken(identity: String, authHeader: String): TokenResponse =
+    override fun getEjabberdToken(identity: String, authHeader: String): TokenResponse =
             fuelHelper.getTwilioToken(identity, authHeader)
 }

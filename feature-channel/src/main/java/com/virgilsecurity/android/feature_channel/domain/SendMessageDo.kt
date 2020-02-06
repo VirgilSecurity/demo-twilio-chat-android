@@ -33,7 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.twilio.chat.Channel
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.domain.Do
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 
@@ -59,5 +59,5 @@ interface SendMessageDo : Do<SendMessageDo.Result> {
         data class OnError(val error: Throwable) : Result()
     }
 
-    fun execute(channel: Channel, body: String, publicKeys: List<VirgilPublicKey>)
+    fun execute(channel: ChannelMeta, body: String, publicKeys: List<VirgilPublicKey>)
 }

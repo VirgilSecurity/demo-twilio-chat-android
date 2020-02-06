@@ -31,12 +31,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
+package com.virgilsecurity.android.feature_drawer_navigation.domain
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
+import com.virgilsecurity.android.base.domain.BaseDo
+import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractor
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -50,33 +52,30 @@ import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
  */
 
 /**
- * InitTwilioVMDefault
+ * InitTwilioDoDefault
  */
-class InitTwilioVMDefault(
-        private val state: MediatorLiveData<InitTwilioVM.State>,
-        private val initTwilioDo: InitTwilioDo
-) : InitTwilioVM() {
+class InitSmackDoDefault(
+        private val initSmackInteractor: InitSmackInteractor
+) : BaseDo<InitSmackDo.Result>(), InitSmackDo {
 
-    init {
-        state.addSource(initTwilioDo.getLiveData(), ::onInitTwilioResult)
+    override fun execute(user: User) {
+        initSmackInteractor.initClient(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
     }
 
-    override fun onCleared() = initTwilioDo.cleanUp()
-
-    override fun getState(): LiveData<State> = state
-
-    override fun initChatClient(user: User) {
-        state.value = InitTwilioVM.State.ShowLoading
-        initTwilioDo.execute(user)
+    private fun success() {
+        liveData.value = InitSmackDo.Result.OnSuccess
     }
 
-    private fun onInitTwilioResult(result: InitTwilioDo.Result?) {
-        when (result) {
-            is InitTwilioDo.Result.OnSuccess -> {
-                    state.value = State.InitSuccess
-                    state.value = State.ShowContent
-            }
-            is InitTwilioDo.Result.OnError -> state.value = State.ShowError
-        }
+    private fun error(throwable: Throwable) {
+        UiUtils.log(LOG_TAG, throwable.message ?: "No error message")
+        liveData.value = InitSmackDo.Result.OnError(throwable)
+    }
+
+    companion object {
+        private val LOG_TAG = InitSmackDoDefault::class.java.simpleName
     }
 }

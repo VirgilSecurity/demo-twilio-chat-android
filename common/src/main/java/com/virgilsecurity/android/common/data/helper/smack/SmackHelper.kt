@@ -56,10 +56,10 @@ class SmackHelper(
     private lateinit var chatManager: ChatManager
     private lateinit var roster: Roster
 
-    fun startClient(identity: String, getPassword: () -> String): Completable {
+    fun startClient(identity: String, password: String): Completable {
         if (!::connection.isInitialized) {
             return smackRx.startClient(identity,
-                                       getPassword(),
+                                       password,
                                        XMPP_HOST,
                                        RESOURCE_ANDROID,
                                        XMPP_PORT)
@@ -87,7 +87,7 @@ class SmackHelper(
                                         userProperties.currentUser!!.identity,
                                         channelIdGenerator)
 
-    fun sendMessage(body: String, interlocutor: String) =
+    fun sendMessage(interlocutor: String, body: String) =
             smackRx.sendMessage(chatManager,
                                 body,
                                 interlocutor,

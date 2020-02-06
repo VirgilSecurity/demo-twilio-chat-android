@@ -33,14 +33,11 @@
 
 package com.virgilsecurity.android.feature_channel.domain
 
-import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
 import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepositoryDefault
-import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -66,7 +63,7 @@ class ShowMessagePreviewDoDefault(
 
     override fun execute(body: String) =
             (if (body.toByteArray(Charset.forName("UTF-8")).size >
-                 MessagesRepositoryDefault.MAX_TWILIO_MESSAGE_BODY_SIZE)
+                 MessagesRepositoryDefault.MAX_MESSAGE_BODY_SIZE)
                 Single.error { TooLongMessageException() }
             else
                 Single.just<MessageMeta>(

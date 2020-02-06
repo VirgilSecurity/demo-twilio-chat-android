@@ -33,12 +33,10 @@
 
 package com.virgilsecurity.android.feature_channel.data.repository
 
-import com.twilio.chat.Channel
-import com.virgilsecurity.android.base.data.api.MessagesApi
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Observable
 
 /**
  * . _  _
@@ -56,9 +54,7 @@ import io.reactivex.Observable
  */
 interface MessagesRepository {
 
-    fun messages(channel: Channel): Observable<List<MessageMeta>>
+    fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>>
 
-    fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges>
-
-    fun sendMessage(channel: Channel, body: String): Completable
+    fun sendMessage(channelMeta: ChannelMeta, body: String): Completable
 }

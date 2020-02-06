@@ -166,7 +166,7 @@ class ChannelController() : BaseController() {
     }
 
     override fun initData() {
-        viewModel.messages(channel.sid)
+        viewModel.messages(channel)
     }
 
     private fun onToolbarActionChanged(action: ToolbarSliceChannel.Action) = when (action) {

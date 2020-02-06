@@ -34,11 +34,7 @@
 package com.virgilsecurity.android.feature_drawer_navigation.domain
 
 import com.virgilsecurity.android.base.data.model.User
-import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractor
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.virgilsecurity.android.base.domain.Do
 
 /**
  * . _  _
@@ -52,30 +48,14 @@ import io.reactivex.schedulers.Schedulers
  */
 
 /**
- * InitTwilioDoDefault
+ * InitTwilioDo
  */
-class InitTwilioDoDefault(
-        private val initSmackInteractor: InitSmackInteractor
-) : BaseDo<InitTwilioDo.Result>(), InitTwilioDo {
+interface InitSmackDo : Do<InitSmackDo.Result> {
 
-    override fun execute(user: User) {
-        initSmackInteractor.initClient(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::success, ::error)
-                .track()
+    sealed class Result {
+        object OnSuccess : Result()
+        data class OnError(val error: Throwable) : Result()
     }
 
-    private fun success() {
-        liveData.value = InitTwilioDo.Result.OnSuccess
-    }
-
-    private fun error(throwable: Throwable) {
-        UiUtils.log(LOG_TAG, throwable.message ?: "No error message")
-        liveData.value = InitTwilioDo.Result.OnError(throwable)
-    }
-
-    companion object {
-        private val LOG_TAG = InitTwilioDoDefault::class.java.simpleName
-    }
+    fun execute(user: User)
 }

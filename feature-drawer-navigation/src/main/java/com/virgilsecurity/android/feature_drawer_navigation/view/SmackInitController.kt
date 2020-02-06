@@ -40,7 +40,7 @@ import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.feature_drawer_navigation.R
-import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
+import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.SliceSmackInit
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceSmackInit
 import org.koin.android.scope.currentScope
@@ -64,7 +64,7 @@ class SmackInitController() : BControllerScope() {
 
     override val layoutResourceId: Int = R.layout.controller_smack_init
 
-    private val viewModel: InitTwilioVM by currentScope.viewModel(this) // TODO move all viewModels to corresponding impl in koin
+    private val viewModel: InitSmackVM by currentScope.viewModel(this) // TODO move all viewModels to corresponding impl in koin
 
     private lateinit var user: User
     private lateinit var initSuccess: () -> Unit
@@ -107,15 +107,15 @@ class SmackInitController() : BControllerScope() {
 
     override fun initData() {}
 
-    private fun onStateChanged(state: InitTwilioVM.State) = when (state) {
-        InitTwilioVM.State.InitSuccess -> initSuccess()
-        InitTwilioVM.State.ShowLoading -> stateSlice.showLoading()
-        InitTwilioVM.State.ShowContent -> stateSlice.showContent()
-        InitTwilioVM.State.ShowError -> stateSlice.showError()
+    private fun onStateChanged(state: InitSmackVM.State) = when (state) {
+        InitSmackVM.State.InitSuccess -> initSuccess()
+        InitSmackVM.State.ShowLoading -> stateSlice.showLoading()
+        InitSmackVM.State.ShowContent -> stateSlice.showContent()
+        InitSmackVM.State.ShowError -> stateSlice.showError()
     }
 
     override fun handleBack(): Boolean {
-        return if (viewModel.getState().value != InitTwilioVM.State.ShowLoading)
+        return if (viewModel.getState().value != InitSmackVM.State.ShowLoading)
             true
         else
             super.handleBack()

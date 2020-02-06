@@ -62,7 +62,7 @@ import org.koin.core.qualifier.named
  * ChannelModules
  */
 val channelModule: Module = moduleWithScope(named<ChannelController>()) {
-    scoped { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
+    scoped { MessagesRepositoryDefault(get(), get()) as MessagesRepository }
     scoped { GetMessagesDoDefault(get()) as GetMessagesDo }
     scoped { SendMessageDoDefault(get(), get()) as SendMessageDo }
     scoped { CardsInteractorDefault(get()) as CardsInteractor }

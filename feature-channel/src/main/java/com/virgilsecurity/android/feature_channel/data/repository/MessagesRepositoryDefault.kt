@@ -33,17 +33,13 @@
 
 package com.virgilsecurity.android.feature_channel.data.repository
 
-import com.twilio.chat.Channel
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.dao.MessagesDao
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
-import com.virgilsecurity.android.base.extension.comparableListEqual
 import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.nio.charset.Charset
 
@@ -62,77 +58,26 @@ import java.nio.charset.Charset
  * MessagesRepositoryDefault
  */
 class MessagesRepositoryDefault(
-        private val messagesApi: MessagesApi,
         private val messagesDao: MessagesDao,
-        private val mapper: MapperToMessageInfo
+        private val messagesApi: MessagesApi
 ) : MessagesRepository {
 
     private val debounceCache = mutableListOf<MessageMeta>()
 
-    override fun messages(channel: Channel): Observable<List<MessageMeta>> =
-            Observable.concatArray(messagesDao.messages(channel.sid).toObservable(),
-                                   fetchMessages(channel).flatMap {
-                                       messagesDao.addMessages(it)
-                                               .subscribeOn(Schedulers.io())
-                                               .toSingle { it }.toObservable()
-                                   })
-                    .filter {
-                        !(it comparableListEqual debounceCache) && it.isNotEmpty()
-                    }
-                    .doOnNext {
-                        debounceCache.addAll(it)
-                    }
-                    .doOnComplete {
-                        debounceCache.clear()
-                    }
+    override fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>> =
+            messagesDao.messages(channelMeta)
 
-    private fun fetchMessages(channel: Channel) =
-            Observable.zip(messagesApi.messagesCount(channel).toObservable(),
-                           messagesDao.messagesCount(channel.sid).toObservable(),
-                           BiFunction { remoteCount: Long, localCount: Int -> remoteCount to localCount })
-                    .filter {
-                        it.first > it.second.toLong()
-                    }
-                    .flatMap {
-                        if (it.first - it.second.toLong() > MAX_TWILIO_QUEUE_SIZE)
-                            throw Throwable("Too many un-fetched messages );") // Need to add pagination in the future
-
-                        messagesApi.messagesAfter(channel,
-                                                  it.second.toLong(),
-                                                  (it.first - it.second.toLong()).toInt())
-                                .toObservable()
-                    }
-
-    override fun observeChannelChanges(channel: Channel): Flowable<MessagesApi.ChannelChanges> =
-            messagesApi.observeChannelChanges(channel)
-                    .flatMap { change ->
-                        when (change) {
-                            is MessagesApi.ChannelChanges.MessageAdded -> {
-                                Single.just(change.message)
-                                        .map(mapper::mapMessage)
-                                        .flatMap { messageInfo ->
-                                            messagesDao.addMessage(messageInfo)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .toSingle { change }
-                                        }
-                                        .toFlowable()
-                            }
-                            else -> Flowable.just(change)
-                        }
-                    }
-
-    override fun sendMessage(channel: Channel, body: String): Completable =
-            if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_TWILIO_MESSAGE_BODY_SIZE)
+    override fun sendMessage(channelMeta: ChannelMeta, body: String): Completable =
+            if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
                 Completable.error { TooLongMessageException() }
             else
-                messagesApi.sendMessage(channel, body)
+                messagesApi.sendMessage(channelMeta, body)
                         .flatMapCompletable {
                             messagesDao.addMessage(it)
                                     .subscribeOn(Schedulers.io())
                         }
 
     companion object {
-        const val MAX_TWILIO_QUEUE_SIZE = 10000
-        const val MAX_TWILIO_MESSAGE_BODY_SIZE = 32000 // 32Kb
+        const val MAX_MESSAGE_BODY_SIZE = 32000 // 32Kb
     }
 }

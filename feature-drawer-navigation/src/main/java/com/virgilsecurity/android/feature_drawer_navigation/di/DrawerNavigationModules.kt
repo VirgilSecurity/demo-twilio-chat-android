@@ -37,11 +37,11 @@ import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractor
 import com.virgilsecurity.android.feature_drawer_navigation.data.interactor.InitSmackInteractorDefault
-import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDo
-import com.virgilsecurity.android.feature_drawer_navigation.domain.InitTwilioDoDefault
+import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
+import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDoDefault
 import com.virgilsecurity.android.feature_drawer_navigation.view.SmackInitController
-import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVM
-import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitTwilioVMDefault
+import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
+import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVMDefault
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -63,7 +63,7 @@ import org.koin.core.qualifier.named
 
 val twilioInitModule: Module = moduleWithScope(named<SmackInitController>()) {
     scoped { InitSmackInteractorDefault(get(), get(), get()) as InitSmackInteractor }
-    scoped { InitTwilioDoDefault(get()) as InitTwilioDo }
-    scoped { MediatorLiveData<InitTwilioVM.State>() }
-    viewModel { InitTwilioVMDefault(get(), get()) as InitTwilioVM }
+    scoped { InitSmackDoDefault(get()) as InitSmackDo }
+    scoped { MediatorLiveData<InitSmackVM.State>() }
+    viewModel { InitSmackVMDefault(get(), get()) as InitSmackVM }
 }

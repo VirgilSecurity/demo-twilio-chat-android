@@ -33,11 +33,13 @@
 
 package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 
+import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
 import com.virgilsecurity.android.common.util.AuthUtils
 import io.reactivex.Completable
+import io.reactivex.Single
 
 /**
  * . _  _
@@ -56,14 +58,19 @@ import io.reactivex.Completable
 class InitSmackInteractorDefault(
         private val smackHelper: SmackHelper,
         private val authUtils: AuthUtils,
-        private val userProperties: UserProperties
+        private val authApi: AuthApi
 ) : InitSmackInteractor {
 
-    override fun initClient(user: User): Completable {
-        userProperties.currentUser = user
-
-        return smackHelper.startClient(user.identity) {
-            authUtils.generateAuthHeader(user.identity, user.card())
-        }
-    }
+    override fun initClient(user: User): Completable =
+            Single.create<String> {
+                try {
+                    val authHeader = authUtils.generateAuthHeader(user.identity, user.card())
+                    val token = authApi.getEjabberdToken(user.identity, authHeader).token
+                    it.onSuccess(token)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }.flatMapCompletable { ejjaberdToken ->
+                smackHelper.startClient(user.identity, ejjaberdToken)
+            }
 }

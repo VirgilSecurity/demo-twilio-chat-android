@@ -36,17 +36,19 @@ package com.virgilsecurity.android.common.data.remote.messages
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
 import io.reactivex.Flowable
 import io.reactivex.Single
 
 class MessagesRemoteDS(
-        private val smackHelper: SmackHelper
+        private val smackHelper: SmackHelper,
+        private val userProperties: UserProperties
 ) : MessagesApi {
 
     override fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
             smackHelper.observeChatMessages()
 
-    override fun sendMessage(body: String, interlocutor: String): Single<MessageMeta> =
-            smackHelper.sendMessage(body, interlocutor)
+    override fun sendMessage(channelMeta: ChannelMeta, body: String): Single<MessageMeta> =
+            smackHelper.sendMessage(channelMeta.localizedInterlocutor(userProperties), body)
 }

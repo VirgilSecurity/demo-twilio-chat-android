@@ -33,8 +33,10 @@
 
 package com.virgilsecurity.android.base.data.dao
 
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 /**
@@ -53,11 +55,11 @@ import io.reactivex.Single
  */
 interface MessagesDao {
 
-    fun messages(channelSid: String): Single<List<MessageMeta>>
+    fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>>
 
     fun addMessages(messages: List<MessageMeta>): Completable
 
     fun addMessage(message: MessageMeta): Completable
 
-    fun messagesCount(channelSid: String): Single<Int>
+    fun messagesCount(channelMeta: ChannelMeta): Single<Int>
 }

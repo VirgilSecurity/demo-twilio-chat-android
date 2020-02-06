@@ -75,7 +75,7 @@ class AuthInteractorDefault(
                                     val newUser = User(identity,
                                                        response.rawSignedModel.exportAsBase64String())
                                     Single.fromCallable { usersRepository.addUser(newUser) }
-                                            .doAfterSuccess { _ -> userProperties.currentUser = newUser }
+                                            .doAfterSuccess { userProperties.currentUser = newUser }
                                             .map { _ -> response }
                                 }.doOnError { _ ->
                                     virgilHelper.deletePrivateKey(identity)
