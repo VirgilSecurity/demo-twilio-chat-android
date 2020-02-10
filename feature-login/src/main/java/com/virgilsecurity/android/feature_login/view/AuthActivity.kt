@@ -53,8 +53,6 @@ import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 
 /**

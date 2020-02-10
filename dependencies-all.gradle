@@ -25,8 +25,8 @@ ext.deps = [
 
         'koin'              : [
                 'android'  : "org.koin:koin-android:$versions.koin",
-                'scope'    : "org.koin:koin-android-scope:$versions.koin",
-                'viewModel': "org.koin:koin-android-viewmodel:$versions.koin",
+                'scope'    : "org.koin:koin-androidx-scope:$versions.koin",
+                'viewModel': "org.koin:koin-androidx-viewmodel:$versions.koin",
         ],
 
         'rx'                : [

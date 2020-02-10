@@ -35,7 +35,7 @@ package com.virgilsecurity.android.base.extension
 
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
-import org.koin.dsl.ScopeSet
+import org.koin.dsl.ScopeDSL
 import org.koin.dsl.module
 
 /**
@@ -44,14 +44,14 @@ import org.koin.dsl.module
 fun moduleWithScope(createdAtStart: Boolean = false,
                     override: Boolean = false,
                     scopeName: Qualifier,
-                    scopeSet: ScopeSet.() -> Unit): Module {
+                    scopeSet: ScopeDSL.() -> Unit): Module {
     return module {
         scope(scopeName, scopeSet)
     }
 }
 
 fun moduleWithScope(scopeName: Qualifier,
-                    scopeSet: ScopeSet.() -> Unit): Module {
+                    scopeSet: ScopeDSL.() -> Unit): Module {
     return module {
         scope(scopeName, scopeSet)
     }

@@ -46,14 +46,14 @@ import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVMDefault
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.state.StateSliceAddContact
 import com.virgilsecurity.android.feature_contacts.viewslice.addContact.toolbar.ToolbarSliceAddContact
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.inject
 
 /**

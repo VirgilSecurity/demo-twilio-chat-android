@@ -31,55 +31,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view.controller
+package com.virgilsecurity.android.common.util
 
+import android.content.ComponentCallbacks
 import androidx.lifecycle.Lifecycle
-import androidx.annotation.LayoutRes
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import kotlinx.android.extensions.LayoutContainer
-import org.koin.core.qualifier.named
+import androidx.lifecycle.LifecycleOwner
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.scope.ScopeObserver
+import org.koin.core.KoinComponent
+import org.koin.core.context.GlobalContext
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/16/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * Provide an scope for given LifecycleOwner component
+ *
+ * Taken from 2.0.0-beta-5 version
+ *
+ * @author Arnaud Giuliani
  */
+
+private fun LifecycleOwner.getKoin() = when (this) {
+    is ComponentCallbacks -> (this as ComponentCallbacks).getKoin()
+    is KoinComponent -> this.getKoin()
+    else -> GlobalContext.get()
+}
+
+private fun LifecycleOwner.getScopeName() = TypeQualifier(this::class)
+private fun LifecycleOwner.getScopeId() = this.toString()
+
+private fun LifecycleOwner.getOrCreateCurrentScope(): Scope {
+    val scopeId = getScopeId()
+    return getKoin().getScopeOrNull(scopeId) ?: createAndBindScope(scopeId, getScopeName())
+}
+
+private fun LifecycleOwner.createAndBindScope(scopeId: String, qualifier: Qualifier): Scope {
+    val scope = getKoin().createScope(scopeId, qualifier)
+    bindScope(scope)
+    return scope
+}
 
 /**
- * Base Controller with View Binding and with Koin Scope
+ * Bind given scope to current LifecycleOwner
+ * @param scope
+ * @param event
  */
-abstract class BControllerBindingScope : BaseController() {
-
-    private lateinit var session: Scope
-    protected val koinScopeQualifier = this::class.java.simpleName
-    protected val koinScopeId = "${koinScopeQualifier}_scope"
-
-    /**
-     * Used to initialize view binding
-     */
-    protected abstract fun initViewBinding(inflater: LayoutInflater,
-                                           container: ViewGroup?,
-                                           @LayoutRes layoutResourceId: Int): View
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val containerView = initViewBinding(inflater, container, layoutResourceId)
-
-        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
-
-        return containerView
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-
-        session.close()
-    }
+fun LifecycleOwner.bindScope(scope: Scope, event: Lifecycle.Event = Lifecycle.Event.ON_DESTROY) {
+    lifecycle.addObserver(ScopeObserver(event, this, scope))
 }
+
+/**
+ * Get current Koin scope, bound to current lifecycle
+ */
+val LifecycleOwner.currentScope: Scope
+    get() = getOrCreateCurrentScope()

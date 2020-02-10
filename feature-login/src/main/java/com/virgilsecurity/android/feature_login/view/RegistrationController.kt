@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.view
 
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.databinding.ControllerRegisterBinding
@@ -53,7 +55,11 @@ import com.virgilsecurity.android.feature_login.viewmodel.registration.Registrat
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault
 import com.virgilsecurity.android.feature_login.viewslice.registration.state.StateSliceRegistration
 import com.virgilsecurity.android.feature_login.viewslice.registration.toolbar.ToolbarSliceRegistration
-import org.koin.android.scope.currentScope
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.ext.android.getViewModelStore
+import org.koin.androidx.viewmodel.scope.getViewModel
+import org.koin.androidx.viewmodel.scope.viewModel
+import org.koin.core.inject
 import java.util.*
 
 /**
@@ -74,12 +80,13 @@ class RegistrationController() : BControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_register
 
-    private val vmRegistration: RegistrationVM by currentScope.inject()
+    private val vmRegistration: RegistrationVM by lazy(LazyThreadSafetyMode.NONE) {currentScope.getViewModel(ViewModelParameter(RegistrationVM::class, viewModelStore = viewModelStore))}
+    private val inputFilter: InputFilter by inject() // TODO check JID format
 
     private lateinit var login: (User) -> Unit
     private lateinit var stateSlice: StateSliceRegistration
-    private lateinit var toolbarSlice: ToolbarSliceRegistration
     private lateinit var mutableLiveData: MutableLiveData<ToolbarSliceRegistration.Action>
+    private lateinit var toolbarSlice: ToolbarSliceRegistration
 
     private lateinit var etUsername: EditText
     private lateinit var tvPolicy2: TextView
@@ -130,6 +137,9 @@ class RegistrationController() : BControllerBinding() {
     }
 
     override fun initViewSlices(window: Window) {
+        this.stateSlice = StateSliceRegistration(inputFilter)
+        this.toolbarSlice = ToolbarSliceRegistration(mutableLiveData)
+
         stateSlice.init(lifecycle, window)
         toolbarSlice.init(lifecycle, window)
     }

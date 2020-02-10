@@ -48,7 +48,6 @@ import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapter
 import com.virgilsecurity.android.feature_login.viewslice.login.state.StateSliceLogin
-import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 

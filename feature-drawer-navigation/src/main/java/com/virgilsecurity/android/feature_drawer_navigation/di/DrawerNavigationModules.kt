@@ -42,7 +42,7 @@ import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDoDe
 import com.virgilsecurity.android.feature_drawer_navigation.view.SmackInitController
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVMDefault
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 

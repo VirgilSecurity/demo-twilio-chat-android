@@ -42,6 +42,8 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import org.koin.core.KoinComponent
 
@@ -59,45 +61,23 @@ import org.koin.core.KoinComponent
 /**
  * BaseController
  */
-abstract class BaseController : LifecycleController(), KoinComponent {
+abstract class BaseController : LifecycleController(), KoinComponent, ViewModelStoreOwner {
+
+    private val viewModelStore: ViewModelStore = ViewModelStore()
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
 
-    /**
-     * Used to initialize general options
-     */
     protected abstract fun init(containerView: View)
 
-    /**
-     * Used to initialize view slices *Before*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
     protected abstract fun initViewSlices(window: Window)
 
-    /**
-     * Used to setup view slices *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
     protected abstract fun setupViewSlices(containerView: View)
 
-    /**
-     * Used to setup view slices action observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
     protected abstract fun setupVSActionObservers()
 
-    /**
-     * Used to setup view model state observers *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     */
     protected abstract fun setupVMStateObservers()
 
-    /**
-     * Used to request data *After*
-     * the [android.arch.lifecycle.Lifecycle.Event.ON_RESUME] event happened
-     * and all View Slices and ViewModels are set up.
-     */
     protected abstract fun initData()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
@@ -116,6 +96,14 @@ abstract class BaseController : LifecycleController(), KoinComponent {
         setupVMStateObservers()
         initData()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewModelStore.clear()
+    }
+
+    override fun getViewModelStore(): ViewModelStore = viewModelStore
 
     protected fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

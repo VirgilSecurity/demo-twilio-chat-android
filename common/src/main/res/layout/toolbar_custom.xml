@@ -69,13 +69,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivSearch"
-        app:layout_constraintStart_toEndOf="@id/ivBack"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toEndOf="@id/ivBack">
 
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvTitleMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/default_margin"
@@ -95,6 +95,7 @@
             android:textColor="@color/snow"
             android:textSize="14sp"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:text="The best" />
     </LinearLayout>
 
@@ -106,7 +107,6 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/llTitleRoot"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -171,10 +171,10 @@
         android:inputType="text"
         android:textColor="@color/snow"
         android:textColorHint="@color/grayLight"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/llIconsRoot"
         app:layout_constraintStart_toEndOf="@id/ivBack"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible" />
+        tools:visibility="gone" />
 </com.virgilsecurity.android.common.view.Toolbar>

@@ -60,7 +60,7 @@ ext.versions = [
         'circleImageView'       : '3.0.2',
 
         // DI
-        'koin'                  : '2.0.1',
+        'koin'                  : '2.1.0-beta-1',
 
         // Network
         'fuel'                  : '1.15.0',

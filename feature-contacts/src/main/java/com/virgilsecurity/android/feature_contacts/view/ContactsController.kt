@@ -47,14 +47,14 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.common.di.CommonDiConst
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.adapter.ContactItem
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.state.StateSliceContacts
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.toolbar.ToolbarSliceContacts
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 

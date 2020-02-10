@@ -43,7 +43,7 @@ import com.virgilsecurity.android.feature_channel.domain.*
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVMDefault
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 

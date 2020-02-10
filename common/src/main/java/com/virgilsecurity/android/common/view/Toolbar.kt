@@ -36,8 +36,12 @@ package com.virgilsecurity.android.common.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import kotlinx.android.synthetic.main.toolbar_custom.view.*
+import com.virgilsecurity.android.common.R
 
 
 /**
@@ -62,9 +66,35 @@ class Toolbar(
     private lateinit var onToolbarItemClickListener: (View) -> Unit
     private lateinit var views: MutableMap<View, Int>
 
+    private lateinit var ivBack: ImageView
+    private lateinit var ivHamburger: ImageView
+    private lateinit var tvTitle: TextView
+    private lateinit var tvSubTitle: TextView
+    private lateinit var ivMenu: ImageView
+    private lateinit var ivAddPerson: ImageView
+    private lateinit var ivSearch: ImageView
+    private lateinit var ivClose: ImageView
+    private lateinit var etSearch: EditText
+    private lateinit var ivInfo: ImageView
+
     override fun onFinishInflate() {
         super.onFinishInflate()
+
+        findViews()
         setupViewsMap()
+    }
+
+    private fun findViews() {
+        this.ivBack = findViewById(R.id.ivBack)
+        this.ivHamburger = findViewById(R.id.ivHamburger)
+        this.tvTitle = findViewById(R.id.tvTitleMain)
+        this.tvSubTitle = findViewById(R.id.tvSubTitle)
+        this.ivMenu = findViewById(R.id.ivMenu)
+        this.ivAddPerson = findViewById(R.id.ivAddPerson)
+        this.ivSearch = findViewById(R.id.ivSearch)
+        this.ivClose = findViewById(R.id.ivClose)
+        this.etSearch = findViewById(R.id.etSearch)
+        this.ivInfo = findViewById(R.id.ivInfo)
     }
 
     private fun setupViewsMap() {

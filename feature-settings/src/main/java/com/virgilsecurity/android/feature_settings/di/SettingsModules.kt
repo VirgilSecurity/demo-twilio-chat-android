@@ -45,7 +45,7 @@ import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVMDefault
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVMDefault
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 

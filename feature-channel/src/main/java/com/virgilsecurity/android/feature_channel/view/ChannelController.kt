@@ -52,6 +52,7 @@ import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
 import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
@@ -60,7 +61,6 @@ import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.Message
 import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemYou
 import com.virgilsecurity.android.feature_channel.viewslice.state.StateSliceChannel
 import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSliceChannel
-import org.koin.android.scope.currentScope
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 

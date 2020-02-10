@@ -38,6 +38,7 @@ import android.content.res.Resources
 import android.view.Window
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 
 abstract class BaseViewSlice : LifecycleObserver {
 
@@ -45,15 +46,14 @@ abstract class BaseViewSlice : LifecycleObserver {
     protected lateinit var context: Context
     protected lateinit var resources: Resources
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     protected abstract fun setupViews()
 
     fun init(lifecycle: Lifecycle, window: Window) {
-        lifecycle.addObserver(this)
-
         this.window = window
         this.context = window.context
         this.resources = window.context.resources
 
-        setupViews()
+        lifecycle.addObserver(this)
     }
 }

@@ -33,13 +33,10 @@
 
 package com.virgilsecurity.android.base.view.controller
 
-import androidx.lifecycle.Lifecycle
-import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.virgilsecurity.android.base.view.controller.BaseController
-import kotlinx.android.extensions.LayoutContainer
+import androidx.annotation.LayoutRes
 
 /**
  * . _  _

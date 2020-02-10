@@ -48,7 +48,7 @@ import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVMDefault
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVMDefault
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -73,7 +73,7 @@ val authActivityModule: Module = module {
     scope(named(VM_AUTH)) {
         scoped { LoadUsersDoDefault(get()) as LoadUsersDo }
         scoped { MediatorLiveData<AuthVM.State>() }
-        scoped { AuthVMDefault(get(), get()) as AuthVM }
+        viewModel { AuthVMDefault(get(), get()) as AuthVM }
     }
 }
 
@@ -82,7 +82,7 @@ val registrationControllerModule: Module = moduleWithScope(named<RegistrationCon
     scoped { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
     scoped { SignUpDoDefault(get(), get()) as SignUpDo }
     scoped { MediatorLiveData<RegistrationVM.State>() }
-    scoped { RegistrationVMDefault(get(), get()) as RegistrationVM }
+    viewModel { RegistrationVMDefault(get(), get()) as RegistrationVM }
 }
 
 object LoginDiConst {

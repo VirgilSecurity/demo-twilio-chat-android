@@ -47,14 +47,14 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BControllerScope
 import com.virgilsecurity.android.common.di.CommonDiConst
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_channels_list.R
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.adapter.ChannelItem
 import com.virgilsecurity.android.feature_channels_list.viewslice.state.StateSliceChannels
 import com.virgilsecurity.android.feature_channels_list.viewslice.toolbar.ToolbarSliceChannelsList
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 

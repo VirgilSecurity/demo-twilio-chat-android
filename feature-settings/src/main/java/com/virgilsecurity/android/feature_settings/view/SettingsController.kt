@@ -41,6 +41,7 @@ import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSliceSettings
@@ -48,8 +49,7 @@ import com.virgilsecurity.android.feature_settings.viewslice.settings.header.Hea
 import com.virgilsecurity.android.feature_settings.viewslice.settings.menu.MenuSliceSettings
 import com.virgilsecurity.android.feature_settings.viewslice.settings.state.StateSliceSettings
 import com.virgilsecurity.android.feature_settings.viewslice.settings.toolbar.ToolbarSliceSettings
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.inject
 
 /**

@@ -39,12 +39,12 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerScope
+import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.SliceSmackInit
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceSmackInit
-import org.koin.android.scope.currentScope
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 
 /**
  * . _  _
