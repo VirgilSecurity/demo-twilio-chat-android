@@ -61,7 +61,6 @@ import com.virgilsecurity.android.feature_settings.view.AboutController
 import com.virgilsecurity.android.feature_settings.view.SettingsController
 import com.virgilsecurity.android.feature_settings.view.SettingsEditController
 import com.virgilsecurity.android.feature_settings.view.VersionHistoryController
-import kotlinx.android.synthetic.main.activity_drawer_navigation.*
 import org.koin.android.ext.android.inject
 
 /**
@@ -78,11 +77,11 @@ import org.koin.android.ext.android.inject
 /**
  * DrawerNavigationActivity
  */
-class DrawerNavigationActivity(
+class DrawerNavigationActivity( // TODO search for all synthetic and remove it
         override val layoutResourceId: Int = R.layout.activity_drawer_navigation
 ) : BActivityControllerSlices() {
 
-    override fun provideContainer(): ViewGroup = controllerContainer
+    override fun provideContainer(): ViewGroup = findViewById(R.id.controllerContainer)
 
     private val screenRouter: ScreenRouter by inject()
     private val imageStorage: ImageStorage by inject()

@@ -33,16 +33,13 @@
 
 package com.virgilsecurity.android.base.view.activity
 
-import android.app.Activity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import android.content.Context
 import android.os.Bundle
-import androidx.annotation.LayoutRes
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.virgilsecurity.android.base.util.ContainerView
@@ -50,18 +47,45 @@ import com.virgilsecurity.android.base.util.ContainerView
 /**
  * Base Activity With Cotroller
  */
-abstract class BActivityController : BaseActivity() {
+abstract class BActivityController : AppCompatActivity() {
+
+    @get:LayoutRes
+    protected abstract val layoutResourceId: Int
+
+    @ContainerView protected abstract fun provideContainer(): ViewGroup
 
     protected lateinit var routerRoot: Router
 
+    /**
+     * Used to initialize general options.
+     */
+    protected abstract fun init(savedInstanceState: Bundle?)
+
+    protected abstract fun setupVMStateObservers()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(layoutResourceId)
 
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
+
+        init(savedInstanceState)
+
+        setupVMStateObservers()
     }
 
     override fun onBackPressed() {
         if (!routerRoot.handleBack())
             super.onBackPressed()
+    }
+
+    protected fun initToolbar(toolbar: Toolbar, title: String) {
+        setActionBar(toolbar)
+        actionBar?.title = title
+    }
+
+    protected fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 }

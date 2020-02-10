@@ -76,8 +76,8 @@ class AuthInteractorDefault(
                                                        response.rawSignedModel.exportAsBase64String())
                                     Single.fromCallable { usersRepository.addUser(newUser) }
                                             .doAfterSuccess { userProperties.currentUser = newUser }
-                                            .map { _ -> response }
-                                }.doOnError { _ ->
+                                            .map { response }
+                                }.doOnError {
                                     virgilHelper.deletePrivateKey(identity)
                                 }
                     }

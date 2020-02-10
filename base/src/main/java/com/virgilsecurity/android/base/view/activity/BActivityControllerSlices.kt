@@ -53,22 +53,10 @@ import com.virgilsecurity.android.base.util.ContainerView
  */
 abstract class BActivityControllerSlices : BActivityController() {
 
-    /**
-     * Used to initialize view slices *Before*
-     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
-     */
     protected abstract fun initViewSlices(window: Window)
 
-    /**
-     * Used to setup view slices *After*
-     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
-     */
     protected abstract fun setupViewSlices()
 
-    /**
-     * Used to setup view slices action observers *After*
-     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
-     */
     protected abstract fun setupVSActionObservers()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -52,7 +52,7 @@ import com.virgilsecurity.sdk.cards.model.RawSignedModel
  */
 
 data class SignUpRequest(
-        @SerializedName("rawCard")
+        @SerializedName("raw_card")
         val rawCard: RawSignedModel
 )
 

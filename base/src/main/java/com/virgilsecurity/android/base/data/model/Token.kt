@@ -44,4 +44,4 @@ package com.virgilsecurity.android.base.data.model
  * ....|_|-
  */
 
-class TokenDefault(val token: String)
+class Token(val token: String)

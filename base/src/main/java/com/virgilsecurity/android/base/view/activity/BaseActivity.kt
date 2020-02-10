@@ -33,7 +33,6 @@
 
 package com.virgilsecurity.android.base.view.activity
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
@@ -41,18 +40,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewModelStoreOwner
 import com.virgilsecurity.android.base.util.ContainerView
 
 /**
  * Base Activity with LifecycleRegistry and ViewModel setup function.
  */
-abstract class BaseActivity : AppCompatActivity(), LifecycleOwner {
-
-//    private val lifecycleRegistry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
+abstract class BaseActivity : AppCompatActivity() {
 
     @get:LayoutRes
     protected abstract val layoutResourceId: Int
@@ -64,37 +57,15 @@ abstract class BaseActivity : AppCompatActivity(), LifecycleOwner {
      */
     protected abstract fun init(savedInstanceState: Bundle?)
 
-    /**
-     * Used to setup view model state observers *After*
-     * the [androidx.lifecycle.Lifecycle.Event.ON_RESUME] event happened.
-     */
     protected abstract fun setupVMStateObservers()
-
-//    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        lifecycleRegistry.currentState = Lifecycle.State.CREATED
         setContentView(layoutResourceId)
 
         init(savedInstanceState)
 
         setupVMStateObservers()
-    }
-
-    override fun onStart() {
-        super.onStart()
-//        lifecycleRegistry.currentState = Lifecycle.State.STARTED
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
     protected fun initToolbar(toolbar: Toolbar, title: String) {
