@@ -70,6 +70,10 @@ abstract class BActivityController : AppCompatActivity() {
         routerRoot = Conductor.attachRouter(this, provideContainer(), savedInstanceState)
 
         init(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         setupVMStateObservers()
     }

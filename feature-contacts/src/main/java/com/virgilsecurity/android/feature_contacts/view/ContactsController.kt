@@ -45,7 +45,7 @@ import com.virgilsecurity.android.base.view.adapter.BaseViewHolder
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
-import com.virgilsecurity.android.base.view.controller.BControllerScope
+import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.di.CommonDiConst
 import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_contacts.R
@@ -72,7 +72,7 @@ import org.koin.core.qualifier.named
 /**
  * ContactsController
  */
-class ContactsController() : BControllerScope() {
+class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 

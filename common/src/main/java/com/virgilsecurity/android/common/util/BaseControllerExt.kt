@@ -31,53 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.base.view.controller
+package com.virgilsecurity.android.common.util
 
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.annotation.LayoutRes
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import com.bluelinelabs.conductor.Controller
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.*
-import org.koin.core.KoinComponent
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
+import androidx.lifecycle.ViewModel
+import com.virgilsecurity.android.base.view.controller.BaseController
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.scope.getViewModel
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/16/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * BaseActivityExt
  */
 
-/**
- * BaseController
- */
-abstract class BControllerScope : BaseController() {
-
-    private lateinit var session: Scope
-    protected val koinScopeQualifier = this::class.java.simpleName
-    protected val koinScopeId = "${koinScopeQualifier}_scope"
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        session = getKoin().createScope(koinScopeId, named(koinScopeQualifier))
-
-        return super.onCreateView(inflater, container)
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-
-        session.close()
+inline fun <reified T : ViewModel> BaseController.currentScopeViewModel(): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        currentScope.getViewModel(
+            ViewModelParameter(T::class, viewModelStore = viewModelStore))
     }
 }

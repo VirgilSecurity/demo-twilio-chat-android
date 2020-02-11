@@ -31,40 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.data.remote.auth
+package com.virgilsecurity.android.common.util
 
-import com.virgilsecurity.android.base.data.api.AuthApi
-import com.virgilsecurity.android.base.data.model.SignUpResponse
-import com.virgilsecurity.android.base.data.model.TokenResponse
-import com.virgilsecurity.android.common.data.helper.fuel.FuelHelper
-import com.virgilsecurity.sdk.cards.model.RawSignedModel
-import io.reactivex.Single
+import androidx.lifecycle.ViewModel
+import com.virgilsecurity.android.base.view.activity.BaseActivity
+import org.koin.androidx.viewmodel.ViewModelParameter
+import org.koin.androidx.viewmodel.scope.getViewModel
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    7/6/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * BaseActivityExt
  */
 
-/**
- * AuthRemote
- */
-class AuthRemote(
-        private val fuelHelper: FuelHelper
-) : AuthApi {
-
-    override fun signUp(rawCard: RawSignedModel): Single<SignUpResponse> = Single.fromCallable {
-        fuelHelper.signUp(rawCard)
+inline fun <reified T : ViewModel> BaseActivity.currentScopeViewModel(): Lazy<T> {
+    return lazy(LazyThreadSafetyMode.NONE) {
+        currentScope.getViewModel(
+            ViewModelParameter(T::class, viewModelStore = viewModelStore))
     }
-
-    override fun getVirgilToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getVirgilToken(identity, authHeader)
-
-    override fun getEjabberdToken(identity: String, authHeader: String): TokenResponse =
-            fuelHelper.getEjabberdToken(identity, authHeader)
 }

@@ -42,6 +42,7 @@ import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.viewmodel.edit.SettingsEditVM
 import com.virgilsecurity.android.feature_settings.viewslice.edit.bottomsheet.BSDSimpleSliceSettingsEdit
@@ -70,7 +71,7 @@ class SettingsEditController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings_edit
 
-    private val viewModel: SettingsEditVM by currentScope.viewModel(this)
+    private val viewModel: SettingsEditVM by currentScopeViewModel()
     private val imageStorage: ImageStorage by inject()
 
     private lateinit var logout: () -> Unit

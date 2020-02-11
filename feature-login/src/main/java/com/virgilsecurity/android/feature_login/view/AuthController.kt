@@ -34,6 +34,7 @@
 package com.virgilsecurity.android.feature_login.view
 
 import LoginDiConst.VM_AUTH
+import LoginDiConst.VM_AUTH_SCOPE_ID
 import android.view.View
 import android.view.Window
 import android.widget.TextView
@@ -72,7 +73,7 @@ class AuthController() : BaseController() {
     private val imageStorage: ImageStorage by inject()
     private val stateSlice: StateSliceLogin by inject()
     private val vmAuth: AuthVM by getKoin()
-            .getOrCreateScope("${this.javaClass.simpleName}_id", named(VM_AUTH)).inject()
+            .getOrCreateScope(VM_AUTH_SCOPE_ID, named(VM_AUTH)).inject()
 
     private lateinit var mutableLiveData: MutableLiveData<ViewPagerSlice.Action>
 

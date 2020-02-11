@@ -33,20 +33,8 @@
 
 package com.virgilsecurity.android.base.view.activity
 
-import android.app.Activity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import android.content.Context
 import android.os.Bundle
-import androidx.annotation.LayoutRes
-import android.view.ViewGroup
 import android.view.Window
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toolbar
-import com.bluelinelabs.conductor.Conductor
-import com.bluelinelabs.conductor.Router
-import com.virgilsecurity.android.base.util.ContainerView
 
 /**
  * Base Activity With Cotroller
@@ -63,6 +51,10 @@ abstract class BActivityControllerSlices : BActivityController() {
         super.onCreate(savedInstanceState)
 
         initViewSlices(window)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         setupViewSlices()
         setupVSActionObservers()

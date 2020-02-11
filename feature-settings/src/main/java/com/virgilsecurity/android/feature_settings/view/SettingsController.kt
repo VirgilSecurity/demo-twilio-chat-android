@@ -42,6 +42,7 @@ import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.ImageStorage
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_settings.R
 import com.virgilsecurity.android.feature_settings.viewmodel.settings.SettingsVM
 import com.virgilsecurity.android.feature_settings.viewslice.settings.footer.FooterSliceSettings
@@ -70,7 +71,7 @@ class SettingsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_settings
 
-    private val viewModel: SettingsVM by currentScope.viewModel(this)
+    private val viewModel: SettingsVM by currentScopeViewModel()
     private val imageStorage: ImageStorage by inject()
 
     private lateinit var edit: () -> Unit

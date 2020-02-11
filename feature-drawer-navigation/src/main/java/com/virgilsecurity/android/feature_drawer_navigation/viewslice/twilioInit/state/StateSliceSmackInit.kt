@@ -70,7 +70,8 @@ class StateSliceSmackInit : BaseViewSlice() {
     private val debounceSubject: PublishSubject<Int> = PublishSubject.create()
     private var loadingFader: ValueAnimator? = null
     private lateinit var debounceDisposable: Disposable
-    private lateinit var btnRetry: Button
+
+    private lateinit var btnRetry: TextView
     private lateinit var clContentRoot: ConstraintLayout
     private lateinit var ivLoading: VectorMasterView
     private lateinit var tvInitializing: TextView

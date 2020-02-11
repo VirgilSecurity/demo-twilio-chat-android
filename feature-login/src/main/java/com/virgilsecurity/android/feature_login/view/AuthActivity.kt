@@ -34,6 +34,7 @@
 package com.virgilsecurity.android.feature_login.view
 
 import LoginDiConst.VM_AUTH
+import LoginDiConst.VM_AUTH_SCOPE_ID
 import android.os.Bundle
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
@@ -74,7 +75,8 @@ class AuthActivity(
 
     private val doubleBack: DoubleBack by inject()
     private val screenRouter: ScreenRouter by inject()
-    private val vmAuth: AuthVM by getKoin().getOrCreateScope("someid", named(VM_AUTH)).inject()
+    private val vmAuth: AuthVM by getKoin()
+            .getOrCreateScope(VM_AUTH_SCOPE_ID, named(VM_AUTH)).inject()
 
     override fun init(savedInstanceState: Bundle?) {
         vmAuth.users()

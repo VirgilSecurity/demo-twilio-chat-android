@@ -38,13 +38,12 @@ import android.view.Window
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
-import com.virgilsecurity.android.base.view.controller.BControllerScope
-import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.base.view.controller.BaseController
+import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.SliceSmackInit
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceSmackInit
-import org.koin.androidx.viewmodel.scope.viewModel
 
 /**
  * . _  _
@@ -60,11 +59,11 @@ import org.koin.androidx.viewmodel.scope.viewModel
 /**
  * TwilioInitController
  */
-class SmackInitController() : BControllerScope() {
+class SmackInitController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_smack_init
 
-    private val viewModel: InitSmackVM by currentScope.viewModel(this) // TODO move all viewModels to corresponding impl in koin
+    private val viewModel: InitSmackVM by currentScopeViewModel()
 
     private lateinit var user: User
     private lateinit var initSuccess: () -> Unit

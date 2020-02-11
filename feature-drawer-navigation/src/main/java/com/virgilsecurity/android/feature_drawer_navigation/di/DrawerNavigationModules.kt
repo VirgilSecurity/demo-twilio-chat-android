@@ -61,9 +61,10 @@ import org.koin.core.qualifier.named
  * DrawerNavigationModules
  */
 
-val twilioInitModule: Module = moduleWithScope(named<SmackInitController>()) {
+val smackInitModule: Module = moduleWithScope(named<SmackInitController>()) {
     scoped { InitSmackInteractorDefault(get(), get(), get()) as InitSmackInteractor }
     scoped { InitSmackDoDefault(get()) as InitSmackDo }
     scoped { MediatorLiveData<InitSmackVM.State>() }
     viewModel { InitSmackVMDefault(get(), get()) as InitSmackVM }
+//    viewModel { InitSmackVMDefault() as InitSmackVM }
 }

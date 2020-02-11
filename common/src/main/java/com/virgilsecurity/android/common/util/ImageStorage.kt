@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.util
+package com.virgilsecurity.android.common.util // TODO update copyrights everywhere
 
 import android.graphics.Bitmap
 

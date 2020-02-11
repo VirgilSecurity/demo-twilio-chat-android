@@ -78,7 +78,6 @@ val authActivityModule: Module = module {
 }
 
 val registrationControllerModule: Module = moduleWithScope(named<RegistrationController>()) {
-    scoped { AuthRemote(get()) as AuthApi }
     scoped { AuthInteractorDefault(get(), get(), get(), get()) as AuthInteractor }
     scoped { SignUpDoDefault(get(), get()) as SignUpDo }
     scoped { MediatorLiveData<RegistrationVM.State>() }
@@ -87,4 +86,5 @@ val registrationControllerModule: Module = moduleWithScope(named<RegistrationCon
 
 object LoginDiConst {
     const val VM_AUTH = "VM_AUTH"
+    const val VM_AUTH_SCOPE_ID = "VM_AUTH_SCOPE_ID"
 }

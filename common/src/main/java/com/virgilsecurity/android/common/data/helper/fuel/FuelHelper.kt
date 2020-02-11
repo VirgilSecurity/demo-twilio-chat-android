@@ -99,7 +99,7 @@ class FuelHelper(private val baseUrl: String? = "https://messenger-stg.virgilsec
             .get()
             .toObject(TokenResponse::class.java)
 
-    fun getTwilioToken(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
+    fun getEjabberdToken(identity: String, authHeader: String) = Fuel.post(twilioTokenPath)
             .header("Authorization" to "Bearer $authHeader")
             .header(keyContentType to keyAppJson)
             .body(gson.toJson(TokenRequest(identity)))

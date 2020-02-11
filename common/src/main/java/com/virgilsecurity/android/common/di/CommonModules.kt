@@ -37,6 +37,7 @@ import android.content.Context
 import android.text.InputFilter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.api.VirgilApi
 import com.virgilsecurity.android.base.data.dao.MessagesDao
@@ -56,6 +57,7 @@ import com.virgilsecurity.android.common.data.helper.virgil.VirgilRx
 import com.virgilsecurity.android.common.data.local.messages.MessagesLocalDS
 import com.virgilsecurity.android.common.data.local.users.UserPropertiesDefault
 import com.virgilsecurity.android.common.data.local.users.UsersLocalDS
+import com.virgilsecurity.android.common.data.remote.auth.AuthRemote
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGeneratorDefault
 import com.virgilsecurity.android.common.data.remote.messages.MessagesRemoteDS
@@ -113,6 +115,7 @@ val commonModules: Module = module {
     single { ImageStorageLocal(get()) as ImageStorage }
     factory { DefaultSymbolsInputFilter() as InputFilter }
     single { UsersRepositoryDefault(get(), get()) as UsersRepository }
+    factory { AuthRemote(get()) as AuthApi }
 }
 
 val utilsModule : Module = module {

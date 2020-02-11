@@ -68,7 +68,7 @@ class SmackHelper(
                     .map { this@SmackHelper.roster = it }
                     .flatMap { smackRx.initChatManager(connection) }
                     .map { this@SmackHelper.chatManager = it }
-                    .ignoreElement()
+                    .flatMapCompletable { smackRx.login(connection) }
         } else {
             return Completable.error(IllegalStateException("Already initialized."))
         }

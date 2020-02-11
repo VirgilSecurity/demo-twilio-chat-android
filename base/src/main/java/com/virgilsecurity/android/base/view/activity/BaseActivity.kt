@@ -64,6 +64,10 @@ abstract class BaseActivity : AppCompatActivity() {
         setContentView(layoutResourceId)
 
         init(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         setupVMStateObservers()
     }

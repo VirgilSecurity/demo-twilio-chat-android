@@ -34,6 +34,7 @@
 package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction // TODO rename package to smackInit
 
 import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -59,7 +60,7 @@ class SliceSmackInit(
         private val actionLiveData: MutableLiveData<Action>
 ) : BaseViewSlice() {
 
-    private lateinit var btnRetry: Button
+    private lateinit var btnRetry: TextView
 
     override fun setupViews() {
         with(window) {

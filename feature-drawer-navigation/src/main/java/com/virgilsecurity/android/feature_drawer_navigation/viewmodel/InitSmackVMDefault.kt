@@ -35,6 +35,7 @@ package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
 
