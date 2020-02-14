@@ -113,7 +113,7 @@ class ChannelController() : BaseController() {
             ivSend.setOnClickListener {
                 if (etMessage.text.isNotBlank()) {
                     viewModel.showMessagePreview(etMessage.text.toString()) // To improve user experience
-                    viewModel.sendMessage(etMessage.text.toString())
+                    viewModel.sendMessage(etMessage.text.toString(), channel)
                 }
             }
         }

@@ -72,7 +72,7 @@ abstract class ChannelVM : ViewModel() {
 
     abstract fun messages(channelMeta: ChannelMeta)
 
-    abstract fun sendMessage(body: String)
+    abstract fun sendMessage(body: String, channelMeta: ChannelMeta)
 
     abstract fun showMessagePreview(body: String)
 

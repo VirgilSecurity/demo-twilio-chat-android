@@ -82,11 +82,12 @@ class ChannelVMDefault(
 
     override fun messages(channelMeta: ChannelMeta) {
         state.value = State.ShowLoading
+        this.channel = channelMeta
         getCardDo.execute(channelMeta.localizedInterlocutor(userProperties))
     }
 
-    override fun sendMessage(body: String) =
-            sendMessageDo.execute(channel,
+    override fun sendMessage(body: String, channelMeta: ChannelMeta) =
+            sendMessageDo.execute(channelMeta,
                                   body,
                                   cards.map { it.publicKey as VirgilPublicKey })
 
