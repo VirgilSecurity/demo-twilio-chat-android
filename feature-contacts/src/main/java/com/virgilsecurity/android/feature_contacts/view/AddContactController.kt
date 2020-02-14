@@ -47,6 +47,7 @@ import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBinding
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
@@ -74,7 +75,7 @@ class AddContactController() : BControllerBinding() {
 
     override val layoutResourceId: Int = R.layout.controller_add_contact
 
-    private val viewModel: AddContactVM by currentScope.viewModel(this)
+    private val viewModel: AddContactVM by currentScopeViewModel()
     private val inputFiler: InputFilter by inject()
 
     private lateinit var openChannel: (ChannelMeta) -> Unit

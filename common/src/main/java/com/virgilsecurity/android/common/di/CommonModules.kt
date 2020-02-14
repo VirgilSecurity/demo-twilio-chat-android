@@ -40,6 +40,7 @@ import androidx.room.Room
 import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.api.VirgilApi
+import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.dao.UsersDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
@@ -54,6 +55,7 @@ import com.virgilsecurity.android.common.data.helper.smack.SmackRx
 import com.virgilsecurity.android.common.data.helper.virgil.RenewTokenCallbackImpl
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilRx
+import com.virgilsecurity.android.common.data.local.channels.ChannelsLocalDS
 import com.virgilsecurity.android.common.data.local.messages.MessagesLocalDS
 import com.virgilsecurity.android.common.data.local.users.UserPropertiesDefault
 import com.virgilsecurity.android.common.data.local.users.UsersLocalDS
@@ -62,6 +64,8 @@ import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGeneratorDefault
 import com.virgilsecurity.android.common.data.remote.messages.MessagesRemoteDS
 import com.virgilsecurity.android.common.data.remote.virgil.VirgilRemoteDS
+import com.virgilsecurity.android.common.data.repository.ChannelsRepository
+import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefault
 import com.virgilsecurity.android.common.data.repository.UsersRepository
 import com.virgilsecurity.android.common.data.repository.UsersRepositoryDefault
 import com.virgilsecurity.android.common.di.CommonDiConst.DIVIDER_DRAWABLE
@@ -154,6 +158,10 @@ val paramsModule : Module = module {
 
 // This module in common because for now we using it for contacts screen also
 val channelsModule: Module = module {
+    single { (get() as RoomDB).channelsQao() }
+    single { ChannelsLocalDS(get(), get()) as ChannelsDao }
+    single { ChannelsRepositoryDefault(get()) as ChannelsRepository }
+
     single(named(KEY_DIFF_CALLBACK_CHANNEL_META)) { DiffCallback<ChannelMeta>() }
     single(named(DIVIDER_DRAWABLE)) { (get() as Context).getDrawable(R.drawable.divider_bottom_gray) }
     single { ItemDecoratorBottomDivider(get(named(DIVIDER_DRAWABLE))) as RecyclerView.ItemDecoration }

@@ -50,6 +50,7 @@ import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVMDefa
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 /**
  * . _  _
@@ -66,11 +67,14 @@ import org.koin.core.qualifier.named
  * ContactsModules
  */
 
-val contactsModule: Module = moduleWithScope(named<ContactsController>()) {
-    scoped { ContactsRepositoryDefault(get(), get(), get()) as ContactsRepository }
-    scoped { GetContactsDoDefault(get()) as GetContactsDo }
-    scoped { MediatorLiveData<ContactsVM.State>() }
-    viewModel { ContactsVMDefault(get(), get()) as ContactsVM }
+val contactsModule: Module = module {
+    single { ContactsRepositoryDefault(get(), get(), get()) as ContactsRepository }
+
+    scope(named<ContactsController>()) {
+        scoped { GetContactsDoDefault(get()) as GetContactsDo }
+        scoped { MediatorLiveData<ContactsVM.State>() }
+        viewModel { ContactsVMDefault(get(), get()) as ContactsVM }
+    }
 }
 
 val addContactModule: Module = moduleWithScope(named<AddContactController>()) {

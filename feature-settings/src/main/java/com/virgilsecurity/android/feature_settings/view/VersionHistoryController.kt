@@ -62,7 +62,9 @@ class VersionHistoryController : BaseController() {
     private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceSettingsVersions.Action>
     private lateinit var toolbarSlice: ToolbarSliceSettingsVersions
 
-    override fun init(containerView: View) {}
+    override fun init(containerView: View) {
+        this.mldToolbarSlice = MutableLiveData()
+    }
 
     override fun initViewSlices(window: Window) {
         this.toolbarSlice = ToolbarSliceSettingsVersions(mldToolbarSlice)

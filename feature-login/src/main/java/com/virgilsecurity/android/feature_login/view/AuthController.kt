@@ -49,6 +49,8 @@ import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import com.virgilsecurity.android.feature_login.viewslice.login.list.adapter.UsersPagerAdapter
 import com.virgilsecurity.android.feature_login.viewslice.login.state.StateSliceLogin
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.inject
 import org.koin.core.qualifier.named
 
@@ -71,9 +73,7 @@ class AuthController() : BaseController() {
     override val layoutResourceId: Int = R.layout.controller_login
 
     private val imageStorage: ImageStorage by inject()
-    private val stateSlice: StateSliceLogin by inject()
-    private val vmAuth: AuthVM by getKoin()
-            .getOrCreateScope(VM_AUTH_SCOPE_ID, named(VM_AUTH)).inject()
+    private val vmAuth: AuthVM by getKoin().getScope(VM_AUTH_SCOPE_ID).inject()
 
     private lateinit var mutableLiveData: MutableLiveData<ViewPagerSlice.Action>
 
@@ -81,6 +81,7 @@ class AuthController() : BaseController() {
     private lateinit var registration: () -> Unit
     private lateinit var usersPagerAdapter: UsersPagerAdapter
     private lateinit var viewPagerSlice: ViewPagerSlice
+    private lateinit var stateSlice: StateSliceLogin
 
     constructor(login: (User) -> Unit, registration: () -> Unit) : this() {
         this.login = login
@@ -97,6 +98,8 @@ class AuthController() : BaseController() {
     }
 
     override fun initViewSlices(window: Window) {
+        this.stateSlice = StateSliceLogin()
+
         viewPagerSlice.init(lifecycle, window)
         stateSlice.init(lifecycle, window)
     }
@@ -119,6 +122,7 @@ class AuthController() : BaseController() {
         }
         AuthVM.State.ShowLoading -> stateSlice.showLoading()
         AuthVM.State.ShowError -> stateSlice.showError()
+        is AuthVM.State.LoginSuccess -> login(state.user)
         AuthVM.State.LoginError -> {
             UiUtils.toast(this, "Login error. Try again")
             stateSlice.showContent()
@@ -127,7 +131,7 @@ class AuthController() : BaseController() {
     }
 
     private fun onActionChanged(action: ViewPagerSlice.Action) = when (action) {
-        is ViewPagerSlice.Action.UserClicked -> login(action.user)
+        is ViewPagerSlice.Action.UserClicked -> vmAuth.login(action.user)
         ViewPagerSlice.Action.Idle -> Unit
     }
 

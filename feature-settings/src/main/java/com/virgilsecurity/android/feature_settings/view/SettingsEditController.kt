@@ -91,7 +91,12 @@ class SettingsEditController() : BaseController() {
         this.logout = logout
     }
 
-    override fun init(containerView: View) {}
+    override fun init(containerView: View) {
+        this.mldToolbarSlice = MutableLiveData()
+        this.mldHeaderSlice = MutableLiveData()
+        this.mldFooterSlice = MutableLiveData()
+        this.mldBottomSheetSlice = MutableLiveData()
+    }
 
     override fun initViewSlices(window: Window) {
         this.toolbarSlice = ToolbarSliceSettingsEdit(mldToolbarSlice)

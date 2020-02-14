@@ -48,6 +48,7 @@ import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.di.CommonDiConst
 import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice
@@ -76,7 +77,7 @@ class ContactsController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_contacts
 
-    private val viewModel: ContactsVM by currentScope.viewModel(this)
+    private val viewModel: ContactsVM by currentScopeViewModel()
     private val diffCallback: DiffCallback<ChannelMeta>
             by inject(named(CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META))
     private val userProperties: UserProperties by inject()

@@ -104,6 +104,7 @@ class AuthActivity(
         }
         AuthVM.State.ShowLoading -> Unit
         AuthVM.State.ShowContent -> Unit
+        is AuthVM.State.LoginSuccess -> Unit
         AuthVM.State.LoginError -> Unit
         AuthVM.State.ShowError -> {
             AuthController(::login, ::registration).run {

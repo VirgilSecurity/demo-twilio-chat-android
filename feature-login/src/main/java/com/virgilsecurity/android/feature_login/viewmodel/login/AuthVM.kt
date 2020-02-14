@@ -55,6 +55,7 @@ abstract class AuthVM : ViewModel() {
 
     sealed class State {
         data class UsersLoaded(val users: List<User>) : State()
+        data class LoginSuccess(val user: User) : State()
         object LoginError : State()
         object ShowNoUsers : State()
         object ShowLoading : State()
@@ -66,5 +67,5 @@ abstract class AuthVM : ViewModel() {
 
     abstract fun users()
 
-    abstract fun login(identity: String)
+    abstract fun login(user: User)
 }

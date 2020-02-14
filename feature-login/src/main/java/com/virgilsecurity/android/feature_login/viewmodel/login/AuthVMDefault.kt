@@ -35,6 +35,8 @@ package com.virgilsecurity.android.feature_login.viewmodel.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.virgilsecurity.android.base.data.model.User
+import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
 
 /**
@@ -53,7 +55,8 @@ import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo
  */
 class AuthVMDefault(
         private val state: MediatorLiveData<State>,
-        private val loadUsersDo: LoadUsersDo
+        private val loadUsersDo: LoadUsersDo,
+        private val userProperties: UserProperties
 ) : AuthVM() {
 
     init {
@@ -71,8 +74,10 @@ class AuthVMDefault(
         loadUsersDo.execute()
     }
 
-    override fun login(identity: String) {
+    override fun login(user: User) {
         state.value = State.ShowLoading
+        userProperties.currentUser = user
+        state.value = State.LoginSuccess(user)
     }
 
     private fun onLoadUsersResult(result: LoadUsersDo.Result?) {
