@@ -121,11 +121,12 @@ class SmackRx {
                 {
                     chatManager.addIncomingListener { from, message, chat ->
                         try {
+                            val sender = from.toString().split('@')[0]
                             val channelId =
-                                    channelIdGenerator.generatedChannelId(from.toString(),
+                                    channelIdGenerator.generatedChannelId(sender,
                                                                           currentIdentity)
                             val channelMeta = ChannelMeta(channelId,
-                                                          from.toString(),
+                                                          sender,
                                                           currentIdentity)
 
                             if (message.stanzaId == null)
@@ -133,7 +134,7 @@ class SmackRx {
 
                             val messageMeta = MessageMeta(message.stanzaId,
                                                           message.body,
-                                                          from.toString(),
+                                                          sender,
                                                           channelId,
                                                           false)
                             it.onNext(Pair(channelMeta, messageMeta))
@@ -149,13 +150,14 @@ class SmackRx {
             chatManager: ChatManager,
             body: String,
             interlocutor: String,
+            xmppHost: String,
             currentIdentity: String,
             channelIdGenerator: ChannelIdGenerator
     ): Single<MessageMeta> = Single.create {
         try {
             val channelId = channelIdGenerator.generatedChannelId(interlocutor,
                                                                   currentIdentity)
-            val jid = JidCreate.entityBareFrom(interlocutor)
+            val jid = JidCreate.entityBareFrom("$interlocutor@$xmppHost")
             val chat = chatManager.chatWith(jid)
             val stanza = Message()
             stanza.setStanzaId()

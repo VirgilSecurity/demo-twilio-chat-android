@@ -39,6 +39,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 
 /**
  * . _  _
@@ -68,4 +69,7 @@ interface ChannelsQao {
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelsMeta(channelsInfo: List<ChannelMeta>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE) fun insertChannelMeta(channelInfo: ChannelMeta)
+
+    @Query("SELECT * FROM ChannelMeta WHERE responder LIKE :identity")
+    fun getChannel(identity: String): Maybe<ChannelMeta>
 }

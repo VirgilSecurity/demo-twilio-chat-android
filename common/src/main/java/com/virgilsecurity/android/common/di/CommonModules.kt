@@ -64,10 +64,7 @@ import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGeneratorDefault
 import com.virgilsecurity.android.common.data.remote.messages.MessagesRemoteDS
 import com.virgilsecurity.android.common.data.remote.virgil.VirgilRemoteDS
-import com.virgilsecurity.android.common.data.repository.ChannelsRepository
-import com.virgilsecurity.android.common.data.repository.ChannelsRepositoryDefault
-import com.virgilsecurity.android.common.data.repository.UsersRepository
-import com.virgilsecurity.android.common.data.repository.UsersRepositoryDefault
+import com.virgilsecurity.android.common.data.repository.*
 import com.virgilsecurity.android.common.di.CommonDiConst.DIVIDER_DRAWABLE
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_CHANNEL_META
 import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
@@ -171,6 +168,7 @@ val messagesModule: Module = module {
     single { MessagesRemoteDS(get(), get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
+    single { MessagesRepositoryDefault(get(), get()) as MessagesRepository }
     single(named(KEY_DIFF_CALLBACK_MESSAGE_META)) { DiffCallback<MessageMeta>() }
 }
 

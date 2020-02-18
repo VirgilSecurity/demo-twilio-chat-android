@@ -34,6 +34,7 @@
 package com.virgilsecurity.android.feature_contacts.domain.addContact
 
 import com.virgilsecurity.android.base.data.model.ChannelMeta
+import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
 import com.virgilsecurity.android.common.data.exception.AddingUserThatExistsException
 import com.virgilsecurity.android.common.data.exception.EmptyCardsException
@@ -59,14 +60,33 @@ class AddContactsDoDefault(
         private val contactsRepository: ContactsRepository
 ) : BaseDo<AddContactDo.Result>(), AddContactDo {
 
+    private lateinit var interlocutor: String
+
     override fun execute(interlocutor: String) =
+            contactsRepository.getContact(interlocutor)
+                    .doOnComplete {
+                        this@AddContactsDoDefault.interlocutor = interlocutor
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(::successGetContact, ::error, ::noContactFound)
+                    .track()
+
+    private fun addContact(interlocutor: String) =
             contactsRepository.addContact(interlocutor)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
+                    .subscribe(::successAddContact, ::error)
                     .track()
 
-    private fun success(channel: ChannelMeta) {
+    private fun successGetContact(channel: ChannelMeta) {
+        throw AddingUserThatExistsException(interlocutor)
+    }
+
+    private fun noContactFound() {
+        addContact(interlocutor)
+    }
+
+    private fun successAddContact(channel: ChannelMeta) {
         liveData.value = AddContactDo.Result.OnSuccess(channel)
     }
 

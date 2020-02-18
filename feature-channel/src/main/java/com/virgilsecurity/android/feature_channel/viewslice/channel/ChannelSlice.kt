@@ -31,17 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
+package com.virgilsecurity.android.feature_channel.viewslice.channel
 
-import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.MessageMeta
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
+import com.virgilsecurity.android.base.viewslice.BaseViewSlice
 import com.virgilsecurity.android.feature_channel.R
-import com.virgilsecurity.android.feature_channel.domain.ShowMessagePreviewDoDefault
-import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
 
 /**
  * . _  _
@@ -55,38 +55,40 @@ import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
  */
 
 /**
- * MessageItemMe
+ * ChannelSliceDefault
  */
-class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Action>,
-                    private val userProperties: UserProperties,
-                    private val virgilHelper: VirgilHelper,
-                    override val layoutResourceId: Int = R.layout.item_message_me
-) : DelegateAdapterItemDefault<MessageMeta>() {
+class ChannelSlice(
+        private val action: MutableLiveData<Action>,
+        private val adapter: DelegateAdapter<MessageMeta>,
+        private val layoutManager: RecyclerView.LayoutManager
+) : BaseViewSlice() {
 
-    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
-            with(viewHolder.containerView) {
-                val text = if (item.threadId == ShowMessagePreviewDoDefault.PREVIEW_CHANNEL_SID)
-                    item.body!!
-                else
-                    virgilHelper.decrypt(item.body!!)
+    private lateinit var rvMessages: RecyclerView
 
-                findViewById<TextView>(R.id.tvMessage).text = text
+    override fun setupViews() {
+        with(window) {
+            rvMessages = findViewById(R.id.rvMessages)
 
-                setOnClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                }
+            rvMessages.adapter = adapter
+            rvMessages.layoutManager = layoutManager
+        }
+    }
 
-                setOnLongClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                    true
-                }
-            }
+    fun getAction(): LiveData<Action> = action
 
-    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
+    fun showMessages(messages: List<MessageMeta>) {
+        adapter.swapData(messages)
+        layoutManager.scrollToPosition(adapter.itemCount - 1)
+    }
 
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageMeta).sender == userProperties.currentUser!!.identity &&
-            (items[position] as MessageMeta).isNotInDevelopment()
+    fun addMessage(message: MessageMeta)  {
+        adapter.addItemToEnd(message)
+        rvMessages.scrollToPosition(adapter.itemCount - 1)
+    }
+
+    sealed class Action {
+        data class MessageClicked(val message: MessageMeta) : Action()
+        data class MessageLongClicked(val message: MessageMeta) : Action()
+        object Idle : Action()
+    }
 }

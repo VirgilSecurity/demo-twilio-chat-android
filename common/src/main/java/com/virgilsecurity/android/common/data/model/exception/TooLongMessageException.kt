@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.data.model.exception
+package com.virgilsecurity.android.common.data.model.exception
 
 /**
  * . _  _

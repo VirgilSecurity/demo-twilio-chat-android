@@ -31,12 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.data.repository
+package com.virgilsecurity.android.feature_contacts.domain.list
 
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import com.virgilsecurity.android.base.domain.BaseDo
+import com.virgilsecurity.android.common.data.repository.MessagesRepository
+import com.virgilsecurity.android.feature_contacts.domain.list.GetMessageMetasDo
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -44,17 +47,30 @@ import io.reactivex.Flowable
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * MessagesRepository
+ * GetChannelsDoDefault
  */
-interface MessagesRepository {
+class GetMessageMetasDoDefault(
+        private val messageRepository: MessagesRepository
+) : BaseDo<GetMessageMetasDo.Result>(), GetMessageMetasDo {
 
-    fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>>
+    override fun execute() =
+            messageRepository.observeChatMessages()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
 
-    fun sendMessage(channelMeta: ChannelMeta, body: String): Completable
+    private fun success(pair: Pair<ChannelMeta, MessageMeta>) {
+        liveData.value = GetMessageMetasDo.Result.OnNext(pair)
+    }
+
+    private fun error(throwable: Throwable) {
+        liveData.value = GetMessageMetasDo.Result.OnError(throwable)
+    }
 }

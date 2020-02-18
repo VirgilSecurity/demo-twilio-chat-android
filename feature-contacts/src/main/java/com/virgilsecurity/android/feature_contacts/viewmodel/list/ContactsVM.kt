@@ -55,6 +55,7 @@ abstract class ContactsVM : ViewModel() {
 
     sealed class State {
         data class ContactsLoaded(val contacts: List<ChannelMeta>) : State()
+        data class ContactAdded(val contact: ChannelMeta) : State()
         object ShowEmpty : State()
         object ShowLoading : State()
         object ShowContent : State()

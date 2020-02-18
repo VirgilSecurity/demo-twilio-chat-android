@@ -39,7 +39,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.virgilsecurity.android.base.data.api.MessagesApi
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
@@ -55,10 +54,10 @@ import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
-import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemInDevelopment
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemMe
-import com.virgilsecurity.android.feature_channel.viewslice.list.adapter.MessageItemYou
+import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemInDevelopment
+import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemMe
+import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemYou
 import com.virgilsecurity.android.feature_channel.viewslice.state.StateSliceChannel
 import com.virgilsecurity.android.feature_channel.viewslice.toolbar.ToolbarSliceChannel
 import org.koin.core.inject

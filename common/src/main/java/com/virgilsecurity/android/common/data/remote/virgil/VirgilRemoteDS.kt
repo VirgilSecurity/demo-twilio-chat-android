@@ -57,5 +57,5 @@ class VirgilRemoteDS(
 ) : VirgilApi {
 
     override fun card(identity: String): Single<Card> =
-            virgilHelper.searchCards(identity).map { it.first() }
+            virgilHelper.searchCards(identity).map { it.first() } // TODO check if result is empty
 }

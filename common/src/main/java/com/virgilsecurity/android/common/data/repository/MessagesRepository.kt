@@ -31,16 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.data.local.channels
+package com.virgilsecurity.android.common.data.repository
 
-import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
-import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.base.data.model.MessageMeta
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
 
 /**
  * . _  _
@@ -48,31 +44,19 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/27/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsLocalDS
+ * MessagesRepository
  */
-class ChannelsLocalDS(
-        private val channelsQao: ChannelsQao,
-        private val userProperties: UserProperties
-) : ChannelsDao {
+interface MessagesRepository {
 
-    override fun getUserChannels(): Flowable<List<ChannelMeta>> =
-            channelsQao.userChannels(userProperties.currentUser!!.identity)
+    fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>>
 
-    override fun addChannels(channels: List<ChannelMeta>): Completable =
-            Completable.fromCallable { channelsQao.insertChannelsMeta(channels) }
+    fun sendMessage(channelMeta: ChannelMeta, body: String): Completable
 
-    override fun addChannel(channel: ChannelMeta): Completable =
-            Completable.fromCallable { channelsQao.insertChannelMeta(channel) }
-
-    override fun getChannel(identity: String): Maybe<ChannelMeta> =
-            channelsQao.getChannel(identity)
-
-//    override fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelMeta>> =
-//            channelsQao.user(yourIdentity, responderIdentity)
+    fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>>
 }

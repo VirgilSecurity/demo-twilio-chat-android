@@ -151,6 +151,7 @@ class ContactsController() : BaseController() {
 
     private fun onStateChanged(state: ContactsVM.State): Unit = when (state) {
         is ContactsVM.State.ContactsLoaded -> contactsSlice.showContacts(state.contacts)
+        is ContactsVM.State.ContactAdded -> contactsSlice.addContact(state.contact)
         ContactsVM.State.ShowEmpty -> stateSlice.showEmpty()
         ContactsVM.State.ShowContent -> stateSlice.showContent()
         ContactsVM.State.ShowLoading -> stateSlice.showLoading()

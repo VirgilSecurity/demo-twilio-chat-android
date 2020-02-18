@@ -36,8 +36,8 @@ package com.virgilsecurity.android.feature_channel.domain
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
-import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepositoryDefault
+import com.virgilsecurity.android.common.data.model.exception.TooLongMessageException
+import com.virgilsecurity.android.common.data.repository.MessagesRepositoryDefault
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

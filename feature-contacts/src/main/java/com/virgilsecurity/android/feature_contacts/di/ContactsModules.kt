@@ -41,6 +41,8 @@ import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactD
 import com.virgilsecurity.android.feature_contacts.domain.addContact.AddContactsDoDefault
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDo
 import com.virgilsecurity.android.feature_contacts.domain.list.GetContactsDoDefault
+import com.virgilsecurity.android.feature_contacts.domain.list.GetMessageMetasDo
+import com.virgilsecurity.android.feature_contacts.domain.list.GetMessageMetasDoDefault
 import com.virgilsecurity.android.feature_contacts.view.AddContactController
 import com.virgilsecurity.android.feature_contacts.view.ContactsController
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM
@@ -71,9 +73,10 @@ val contactsModule: Module = module {
     single { ContactsRepositoryDefault(get(), get(), get()) as ContactsRepository }
 
     scope(named<ContactsController>()) {
+        scoped { GetMessageMetasDoDefault(get()) as GetMessageMetasDo }
         scoped { GetContactsDoDefault(get()) as GetContactsDo }
         scoped { MediatorLiveData<ContactsVM.State>() }
-        viewModel { ContactsVMDefault(get(), get()) as ContactsVM }
+        viewModel { ContactsVMDefault(get(), get(), get()) as ContactsVM }
     }
 }
 

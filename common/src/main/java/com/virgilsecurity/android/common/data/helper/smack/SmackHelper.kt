@@ -52,33 +52,34 @@ class SmackHelper(
         private val channelIdGenerator: ChannelIdGenerator
 ) {
 
-    private lateinit var connection: XMPPTCPConnection
+    private var connection: XMPPTCPConnection? = null
     private lateinit var chatManager: ChatManager
     private lateinit var roster: Roster
 
     fun startClient(identity: String, password: String): Completable {
-        if (!::connection.isInitialized) {
+        if (connection == null) {
             return smackRx.startClient(identity,
                                        password,
                                        XMPP_HOST,
                                        RESOURCE_ANDROID,
                                        XMPP_PORT)
                     .map { this@SmackHelper.connection = it }
-                    .flatMap { smackRx.initRoster(connection) }
+                    .flatMap { smackRx.initRoster(connection!!) }
                     .map { this@SmackHelper.roster = it }
-                    .flatMap { smackRx.initChatManager(connection) }
+                    .flatMap { smackRx.initChatManager(connection!!) }
                     .map { this@SmackHelper.chatManager = it }
-                    .flatMapCompletable { smackRx.login(connection) }
+                    .flatMapCompletable { smackRx.login(connection!!) }
         } else {
             return Completable.error(IllegalStateException("Already initialized."))
         }
     }
 
     fun stopClient(): Completable {
-        if (!::connection.isInitialized) {
+        if (connection == null) {
             return Completable.error(IllegalStateException("Not initialized yet."))
         } else {
-            return smackRx.stopClient(connection)
+            return smackRx.stopClient(connection!!)
+                    .doOnComplete { this@SmackHelper.connection = null }
         }
     }
 
@@ -91,6 +92,7 @@ class SmackHelper(
             smackRx.sendMessage(chatManager,
                                 body,
                                 interlocutor,
+                                XMPP_HOST,
                                 userProperties.currentUser!!.identity,
                                 channelIdGenerator)
 

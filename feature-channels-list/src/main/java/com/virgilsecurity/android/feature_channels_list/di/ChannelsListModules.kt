@@ -37,6 +37,8 @@ import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDo
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDoDefault
+import com.virgilsecurity.android.feature_channels_list.domain.list.GetMessageMetasDo
+import com.virgilsecurity.android.feature_channels_list.domain.list.GetMessageMetasDoDefault
 import com.virgilsecurity.android.feature_channels_list.view.ChannelsListController
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVMDefault
@@ -59,7 +61,8 @@ import org.koin.core.qualifier.named
  * ThreadsListModules
  */
 val channelsListModule: Module = moduleWithScope(named<ChannelsListController>()) {
+    scoped { GetMessageMetasDoDefault(get()) as GetMessageMetasDo }
     scoped { GetChannelsDoDefault(get()) as GetChannelsDo }
     scoped { MediatorLiveData<ChannelsVM.State>() }
-    viewModel { ChannelsVMDefault(get(), get()) as ChannelsVM }
+    viewModel { ChannelsVMDefault(get(), get(), get()) as ChannelsVM }
 }

@@ -35,6 +35,7 @@ package com.virgilsecurity.android.feature_contacts.data.repository
 
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -55,6 +56,8 @@ import io.reactivex.Single
 interface ContactsRepository {
 
     fun contacts(): Flowable<List<ChannelMeta>>
+
+    fun getContact(interlocutor: String): Maybe<ChannelMeta>
 
     fun addContact(interlocutor: String): Single<ChannelMeta>
 }

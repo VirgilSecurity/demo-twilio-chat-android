@@ -67,19 +67,17 @@ class GetChannelsDoDefault(
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error, ::ifEmpty)
+                    .subscribe(::success, ::error)
                     .track()
 
     private fun success(users: List<ChannelMeta>) {
-        liveData.value = GetChannelsDo.Result.OnSuccess(users)
+        if (!atLeastOneItemPresent)
+            liveData.value = GetChannelsDo.Result.OnEmpty
+        else
+            liveData.value = GetChannelsDo.Result.OnSuccess(users)
     }
 
     private fun error(throwable: Throwable) {
         liveData.value = GetChannelsDo.Result.OnError(throwable)
-    }
-
-    private fun ifEmpty() {
-        if (!atLeastOneItemPresent)
-            liveData.value = GetChannelsDo.Result.OnEmpty
     }
 }

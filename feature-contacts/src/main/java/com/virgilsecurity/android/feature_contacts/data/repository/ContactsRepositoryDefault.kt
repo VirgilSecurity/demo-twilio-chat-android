@@ -36,9 +36,9 @@ package com.virgilsecurity.android.feature_contacts.data.repository
 import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -61,22 +61,17 @@ class ContactsRepositoryDefault(
         private val channelIdGenerator: ChannelIdGenerator
 ) : ContactsRepository {
 
-    override fun addContact(interlocutor: String): Single<ChannelMeta> =
-            Single.create {
-                try {
-                    val currentUserIdentity = userProperties.currentUser!!.identity
-                    val channelId = channelIdGenerator.generatedChannelId(currentUserIdentity,
-                                                                          interlocutor)
-                    val channelMeta = ChannelMeta(channelId, currentUserIdentity, interlocutor)
+    override fun addContact(interlocutor: String): Single<ChannelMeta> {
+        val currentUserIdentity = userProperties.currentUser!!.identity
+        val channelId = channelIdGenerator.generatedChannelId(currentUserIdentity,
+                                                              interlocutor)
+        val channelMeta = ChannelMeta(channelId, currentUserIdentity, interlocutor)
 
-                    contactsDao.addChannel(channelMeta)
+        return contactsDao.addChannel(channelMeta).toSingle { channelMeta }
+    }
 
-                    it.onSuccess(channelMeta)
-                } catch (throwable: Throwable) {
-                    it.onError(throwable)
-                }
-            }
-
+    override fun getContact(interlocutor: String): Maybe<ChannelMeta> =
+            contactsDao.getChannel(interlocutor)
 
 //    override fun addContact(interlocutor: String): Single<ChannelMeta> =
 //            contactsDao.user(userProperties.currentUser!!.identity, interlocutor)

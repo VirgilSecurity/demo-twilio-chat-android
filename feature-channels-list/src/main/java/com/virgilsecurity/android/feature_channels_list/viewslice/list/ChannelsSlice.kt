@@ -85,7 +85,7 @@ class ChannelsSlice(
 
     fun getAction(): LiveData<Action> = actionLiveData
 
-    fun showChannels(channels: List<ChannelMeta>) = adapter.addItems(channels)
+    fun showChannels(channels: List<ChannelMeta>) = adapter.swapData(channels)
 
     fun addChannel(channel: ChannelMeta) = adapter.addItem(channel)
 

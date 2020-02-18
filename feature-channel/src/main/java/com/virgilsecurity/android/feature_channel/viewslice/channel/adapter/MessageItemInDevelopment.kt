@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
+package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault

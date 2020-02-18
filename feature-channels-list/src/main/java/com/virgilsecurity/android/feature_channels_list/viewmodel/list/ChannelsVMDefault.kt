@@ -36,6 +36,7 @@ package com.virgilsecurity.android.feature_channels_list.viewmodel.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsDo
+import com.virgilsecurity.android.feature_channels_list.domain.list.GetMessageMetasDo
 
 /**
  * . _  _
@@ -53,22 +54,29 @@ import com.virgilsecurity.android.feature_channels_list.domain.list.GetChannelsD
  */
 class ChannelsVMDefault(
         private val state: MediatorLiveData<State>,
-        private val getChannelsDo: GetChannelsDo
+        private val getChannelsDo: GetChannelsDo,
+        private val getMessageMetasDo: GetMessageMetasDo
 ) : ChannelsVM() {
 
     init {
         state.addSource(getChannelsDo.getLiveData(), ::onLoadContactsResult)
+        state.addSource(getMessageMetasDo.getLiveData(), ::onLoadMessageMetasResult)
     }
 
     override fun getState(): LiveData<State> = state
 
     override fun channels() {
         state.value = State.ShowLoading
+
         getChannelsDo.execute()
+
+        // Loads meta info from received message as MessageMeta and ChannelMeta
+        getMessageMetasDo.execute()
     }
 
     override fun onCleared() {
         getChannelsDo.cleanUp()
+        getMessageMetasDo.cleanUp()
     }
 
     private fun onLoadContactsResult(result: GetChannelsDo.Result?) {
@@ -82,6 +90,15 @@ class ChannelsVMDefault(
             }
             is GetChannelsDo.Result.OnError -> state.value = State.ShowError
             GetChannelsDo.Result.OnEmpty -> state.value = State.ShowEmpty
+        }
+    }
+
+    private fun onLoadMessageMetasResult(result: GetMessageMetasDo.Result?) {
+        when (result) {
+            is GetMessageMetasDo.Result.OnNext -> {
+                state.value = State.ChannelAdded(result.pair.first)
+            }
+            is GetMessageMetasDo.Result.OnError -> state.value = State.ShowError
         }
     }
 }

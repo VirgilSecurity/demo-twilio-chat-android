@@ -55,6 +55,7 @@ abstract class ChannelsVM : ViewModel() {
 
     sealed class State {
         data class ChannelsLoaded(val channels: List<ChannelMeta>) : State()
+        data class ChannelAdded(val channel: ChannelMeta) : State()
         object ShowEmpty : State()
         object ShowLoading : State()
         object ShowContent : State()

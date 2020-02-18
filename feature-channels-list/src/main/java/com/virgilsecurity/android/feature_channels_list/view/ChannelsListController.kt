@@ -146,6 +146,7 @@ class ChannelsListController() : BaseController() {
 
     private fun onStateChanged(state: ChannelsVM.State): Unit = when (state) {
         is ChannelsVM.State.ChannelsLoaded -> channelsSlice.showChannels(state.channels)
+        is ChannelsVM.State.ChannelAdded -> channelsSlice.addChannel(state.channel)
         ChannelsVM.State.ShowEmpty -> stateSlice.showEmpty()
         ChannelsVM.State.ShowContent -> stateSlice.showContent()
         ChannelsVM.State.ShowLoading -> stateSlice.showLoading()

@@ -36,7 +36,7 @@ package com.virgilsecurity.android.feature_channel.domain
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.feature_channel.data.repository.MessagesRepository
+import com.virgilsecurity.android.common.data.repository.MessagesRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -68,19 +68,17 @@ class GetMessagesDoDefault(
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error, ::ifEmpty)
+                    .subscribe(::success, ::error)
                     .track()
 
     private fun success(messages: List<MessageMeta>) {
-        liveData.value = GetMessagesDo.Result.OnSuccess(messages)
+        if (!atLeastOneItemPresent)
+            liveData.value = GetMessagesDo.Result.OnEmpty
+        else
+            liveData.value = GetMessagesDo.Result.OnSuccess(messages)
     }
 
     private fun error(throwable: Throwable) {
         liveData.value = GetMessagesDo.Result.OnError(throwable)
-    }
-
-    private fun ifEmpty() {
-        if (!atLeastOneItemPresent)
-            liveData.value = GetMessagesDo.Result.OnEmpty
     }
 }

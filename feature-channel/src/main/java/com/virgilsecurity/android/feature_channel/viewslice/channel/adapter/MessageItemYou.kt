@@ -31,17 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.data.repository
+package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
-import com.virgilsecurity.android.base.data.api.MessagesApi
-import com.virgilsecurity.android.base.data.dao.MessagesDao
-import com.virgilsecurity.android.base.data.model.ChannelMeta
+import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.MessageMeta
-import com.virgilsecurity.android.feature_channel.data.model.exception.TooLongMessageException
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.schedulers.Schedulers
-import java.nio.charset.Charset
+import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
+import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.feature_channel.R
+import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
 
 /**
  * . _  _
@@ -55,29 +54,33 @@ import java.nio.charset.Charset
  */
 
 /**
- * MessagesRepositoryDefault
+ * MessageItemMe
  */
-class MessagesRepositoryDefault(
-        private val messagesDao: MessagesDao,
-        private val messagesApi: MessagesApi
-) : MessagesRepository {
+class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Action>,
+                     private val userProperties: UserProperties,
+                     private val virgilHelper: VirgilHelper,
+                     override val layoutResourceId: Int = R.layout.item_message_you
+) : DelegateAdapterItemDefault<MessageMeta>() {
 
-    private val debounceCache = mutableListOf<MessageMeta>()
+    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
+            with(viewHolder.containerView) {
+                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
 
-    override fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>> =
-            messagesDao.messages(channelMeta)
+                setOnClickListener {
+                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
+                    actionLiveData.value = ChannelSlice.Action.Idle
+                }
 
-    override fun sendMessage(channelMeta: ChannelMeta, body: String): Completable =
-            if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
-                Completable.error { TooLongMessageException() }
-            else
-                messagesApi.sendMessage(channelMeta, body)
-                        .flatMapCompletable {
-                            messagesDao.addMessage(it)
-                                    .subscribeOn(Schedulers.io())
-                        }
+                setOnLongClickListener {
+                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
+                    actionLiveData.value = ChannelSlice.Action.Idle
+                    true
+                }
+            }
 
-    companion object {
-        const val MAX_MESSAGE_BODY_SIZE = 32000 // 32Kb
-    }
+    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
+
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            (items[position] as MessageMeta).sender != userProperties.currentUser!!.identity &&
+            (items[position] as MessageMeta).isNotInDevelopment()
 }

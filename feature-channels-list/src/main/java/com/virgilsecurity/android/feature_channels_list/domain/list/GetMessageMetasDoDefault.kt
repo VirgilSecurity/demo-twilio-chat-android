@@ -31,16 +31,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.viewslice.list.adapter
+package com.virgilsecurity.android.feature_channels_list.domain.list
 
-import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
+import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
-import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
-import com.virgilsecurity.android.feature_channel.R
-import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
+import com.virgilsecurity.android.base.domain.BaseDo
+import com.virgilsecurity.android.common.data.repository.ChannelsRepository
+import com.virgilsecurity.android.common.data.repository.MessagesRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * . _  _
@@ -48,39 +47,30 @@ import com.virgilsecurity.android.feature_channel.viewslice.list.ChannelSlice
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    8/9/18
+ * ....|  _/    8/8/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * MessageItemMe
+ * GetChannelsDoDefault
  */
-class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Action>,
-                     private val userProperties: UserProperties,
-                     private val virgilHelper: VirgilHelper,
-                     override val layoutResourceId: Int = R.layout.item_message_you
-) : DelegateAdapterItemDefault<MessageMeta>() {
+class GetMessageMetasDoDefault(
+        private val messageRepository: MessagesRepository
+) : BaseDo<GetMessageMetasDo.Result>(), GetMessageMetasDo {
 
-    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
-            with(viewHolder.containerView) {
-                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
+    override fun execute() =
+            messageRepository.observeChatMessages()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::success, ::error)
+                    .track()
 
-                setOnClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                }
+    private fun success(pair: Pair<ChannelMeta, MessageMeta>) {
+            liveData.value = GetMessageMetasDo.Result.OnNext(pair)
+    }
 
-                setOnLongClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                    true
-                }
-            }
-
-    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
-
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageMeta).sender != userProperties.currentUser!!.identity &&
-            (items[position] as MessageMeta).isNotInDevelopment()
+    private fun error(throwable: Throwable) {
+        liveData.value = GetMessageMetasDo.Result.OnError(throwable)
+    }
 }

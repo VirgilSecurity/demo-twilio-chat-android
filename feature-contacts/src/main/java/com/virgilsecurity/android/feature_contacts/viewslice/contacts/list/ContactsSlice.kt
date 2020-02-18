@@ -85,7 +85,7 @@ class ContactsSlice(
 
     fun getAction(): LiveData<Action> = actionLiveData
 
-    fun showContacts(contacts: List<ChannelMeta>) = adapter.addItems(contacts)
+    fun showContacts(contacts: List<ChannelMeta>) = adapter.swapData(contacts)
 
     fun addContact(contact: ChannelMeta) = adapter.addItem(contact)
 

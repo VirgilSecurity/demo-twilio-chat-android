@@ -37,6 +37,7 @@ import androidx.lifecycle.LiveData
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -61,5 +62,5 @@ interface ChannelsDao {
 
     fun addChannel(channel: ChannelMeta): Completable
 
-//    fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelMeta>>
+    fun getChannel(identity: String): Maybe<ChannelMeta>
 }

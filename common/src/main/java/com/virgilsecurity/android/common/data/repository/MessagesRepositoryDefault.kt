@@ -31,16 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.common.data.local.channels
+package com.virgilsecurity.android.common.data.repository
 
-import androidx.lifecycle.LiveData
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
+import com.virgilsecurity.android.base.data.api.MessagesApi
+import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
-import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.common.data.model.exception.TooLongMessageException
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import java.nio.charset.Charset
 
 /**
  * . _  _
@@ -48,31 +49,39 @@ import io.reactivex.Single
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/27/18
+ * ....|  _/    8/9/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * ChannelsLocalDS
+ * MessagesRepositoryDefault
  */
-class ChannelsLocalDS(
-        private val channelsQao: ChannelsQao,
-        private val userProperties: UserProperties
-) : ChannelsDao {
+class MessagesRepositoryDefault(
+        private val messagesDao: MessagesDao,
+        private val messagesApi: MessagesApi
+) : MessagesRepository {
 
-    override fun getUserChannels(): Flowable<List<ChannelMeta>> =
-            channelsQao.userChannels(userProperties.currentUser!!.identity)
+    override fun messages(channelMeta: ChannelMeta): Flowable<List<MessageMeta>> =
+            messagesDao.messages(channelMeta)
 
-    override fun addChannels(channels: List<ChannelMeta>): Completable =
-            Completable.fromCallable { channelsQao.insertChannelsMeta(channels) }
+    override fun sendMessage(channelMeta: ChannelMeta, body: String): Completable =
+            if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
+                Completable.error { TooLongMessageException() }
+            else
+                messagesApi.sendMessage(channelMeta, body)
+                        .flatMapCompletable {
+                            messagesDao.addMessage(it)
+                                    .subscribeOn(Schedulers.io())
+                        }
 
-    override fun addChannel(channel: ChannelMeta): Completable =
-            Completable.fromCallable { channelsQao.insertChannelMeta(channel) }
+    override fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
+            messagesApi.observeChatMessages()
+                    .flatMap {
+                        messagesDao.addMessage(it.second).andThen(Flowable.just(it))
+                    }
 
-    override fun getChannel(identity: String): Maybe<ChannelMeta> =
-            channelsQao.getChannel(identity)
-
-//    override fun user(yourIdentity: String, responderIdentity: String): Single<List<ChannelMeta>> =
-//            channelsQao.user(yourIdentity, responderIdentity)
+    companion object {
+        const val MAX_MESSAGE_BODY_SIZE = 32000 // 32Kb
+    }
 }
