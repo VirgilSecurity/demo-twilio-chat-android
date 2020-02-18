@@ -184,9 +184,10 @@ class ChannelController() : BaseController() {
         ChannelVM.State.ShowError -> stateSlice.showError()
         is ChannelVM.State.MessageSent -> Unit
         is ChannelVM.State.MessagePreviewAdded -> {
+            // TODO add message preview without blinking (msgs update right after preview is shown)
             etMessage.text.clear()
-            channelSlice.addMessage(state.message)
-            stateSlice.showContent()
+//            channelSlice.addMessage(state.message)
+//            stateSlice.showContent()
         }
         ChannelVM.State.MessageCopied -> UiUtils.toast(this, "Message copied")
         ChannelVM.State.MessageIsTooLong -> UiUtils.toast(this, "Message is too long")

@@ -61,23 +61,29 @@ class ShowMessagePreviewDoDefault(
         private val userProperties: UserProperties
 ) : BaseDo<ShowMessagePreviewDo.Result>(), ShowMessagePreviewDo {
 
-    override fun execute(body: String) =
-            (if (body.toByteArray(Charset.forName("UTF-8")).size >
-                 MessagesRepositoryDefault.MAX_MESSAGE_BODY_SIZE)
-                Single.error { TooLongMessageException() }
-            else
-                Single.just<MessageMeta>(
-                    MessageMeta(
-                        PREVIEW_SID,
-                        body,
-                        userProperties.currentUser!!.identity,
-                        PREVIEW_CHANNEL_SID,
-                        false // TODO change when have attachments
+    override fun execute(body: String) {
+        val single =
+                if (body.toByteArray(Charset.forName("UTF-8")).size >
+                    MessagesRepositoryDefault.MAX_MESSAGE_BODY_SIZE) {
+                    Single.error { TooLongMessageException() }
+                } else {
+                    val sender = userProperties.currentUser!!.identity
+                    Single.just<MessageMeta>(
+                        MessageMeta(
+                            PREVIEW_SID,
+                            body,
+                            sender,
+                            PREVIEW_CHANNEL_SID,
+                            false // TODO change when have attachments
+                        )
                     )
-                )).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::success, ::error)
-                    .track()
+                }
+
+        single.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::success, ::error)
+                .track()
+    }
 
     private fun success(message: MessageMeta) {
         liveData.value = ShowMessagePreviewDo.Result.OnSuccess(message)
