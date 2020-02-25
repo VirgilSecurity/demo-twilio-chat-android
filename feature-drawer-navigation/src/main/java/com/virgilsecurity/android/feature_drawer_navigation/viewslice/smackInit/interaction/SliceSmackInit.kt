@@ -60,10 +60,12 @@ class SliceSmackInit(
 ) : BaseViewSlice() {
 
     private lateinit var btnRetry: TextView
+    private lateinit var btnLogout: TextView
 
     override fun setupViews() {
         with(window) {
             this@SliceSmackInit.btnRetry = findViewById(R.id.btnRetry)
+            this@SliceSmackInit.btnLogout = findViewById(R.id.btnLogout)
         }
     }
 
@@ -77,12 +79,18 @@ class SliceSmackInit(
             actionLiveData.value = Action.RetryClicked
             actionLiveData.value = Action.Idle
         }
+
+        btnLogout.setOnClickListener {
+            actionLiveData.value = Action.LogoutClicked
+            actionLiveData.value = Action.Idle
+        }
     }
 
     fun getAction(): LiveData<Action> = actionLiveData
 
     sealed class Action {
         object RetryClicked : Action()
+        object LogoutClicked : Action()
         object Idle : Action()
     }
 }

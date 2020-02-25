@@ -42,6 +42,8 @@ import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDoDe
 import com.virgilsecurity.android.feature_drawer_navigation.view.SmackInitController
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVMDefault
+import com.virgilsecurity.android.feature_settings.domain.LogoutDo
+import com.virgilsecurity.android.feature_settings.domain.LogoutDoDefault
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -64,7 +66,8 @@ import org.koin.core.qualifier.named
 val smackInitModule: Module = moduleWithScope(named<SmackInitController>()) {
     scoped { InitSmackInteractorDefault(get(), get(), get()) as InitSmackInteractor }
     scoped { InitSmackDoDefault(get()) as InitSmackDo }
+    scoped { LogoutDoDefault(get(), get()) as LogoutDo }
     scoped { MediatorLiveData<InitSmackVM.State>() }
-    viewModel { InitSmackVMDefault(get(), get()) as InitSmackVM }
+    viewModel { InitSmackVMDefault(get(), get(), get()) as InitSmackVM }
 //    viewModel { InitSmackVMDefault() as InitSmackVM }
 }

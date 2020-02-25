@@ -36,6 +36,7 @@ package com.virgilsecurity.android.common.data.helper.smack
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.common.data.helper.fuel.apiSuffix
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -97,7 +98,7 @@ class SmackHelper(
                                 channelIdGenerator)
 
     companion object {
-        private const val XMPP_HOST = "xmpp-stg.virgilsecurity.com"
+        private const val XMPP_HOST = "xmpp$apiSuffix.virgilsecurity.com"
         private const val XMPP_PORT = 5222
         private const val RESOURCE_ANDROID = "Android"
     }
