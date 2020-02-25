@@ -31,13 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.smackInit.state
 
 import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
@@ -63,7 +62,7 @@ import java.util.concurrent.TimeUnit
  */
 
 /**
- * StateSliceTwilioInit
+ * StateSliceSmackInit
  */
 class StateSliceSmackInit : BaseViewSlice() {
 

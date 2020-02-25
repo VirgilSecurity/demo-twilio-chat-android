@@ -51,7 +51,7 @@ import org.jivesoftware.smack.chat2.ChatManager
  */
 
 /**
- * TwilioApi
+ * SmackApi
  */
 interface MessagesApi {
 

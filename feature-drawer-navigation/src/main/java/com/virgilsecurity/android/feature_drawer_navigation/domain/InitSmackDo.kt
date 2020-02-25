@@ -48,7 +48,7 @@ import com.virgilsecurity.android.base.domain.Do
  */
 
 /**
- * InitTwilioDo
+ * InitSmackDo
  */
 interface InitSmackDo : Do<InitSmackDo.Result> {
 

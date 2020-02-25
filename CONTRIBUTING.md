@@ -1,4 +1,4 @@
-## How to contribute to this Virgil Demo Twilio Android
+## How to contribute to this Virgil Demo Android
 
 #### **Did you find a bug?**
 

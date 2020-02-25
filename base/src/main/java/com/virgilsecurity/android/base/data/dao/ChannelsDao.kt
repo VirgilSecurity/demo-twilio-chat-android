@@ -52,7 +52,7 @@ import io.reactivex.Single
  */
 
 /**
- * TwilioApi
+ * SmackApi
  */
 interface ChannelsDao {
 

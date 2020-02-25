@@ -42,8 +42,8 @@ import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.common.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction.SliceSmackInit
-import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.state.StateSliceSmackInit
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.smackInit.interaction.SliceSmackInit
+import com.virgilsecurity.android.feature_drawer_navigation.viewslice.smackInit.state.StateSliceSmackInit
 
 /**
  * . _  _
@@ -57,7 +57,7 @@ import com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit
  */
 
 /**
- * TwilioInitController
+ * SmackInitController
  */
 class SmackInitController() : BaseController() {
 

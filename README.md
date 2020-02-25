@@ -20,7 +20,6 @@ At this point you are ready to build and run the application on Android Emulator
 
 To build this sample were used next third-party frameworks
 
-* [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
 * [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-java-android) - encrypting, decrypting messages and passwordless authentication.
 * And some popular libraries: Fuel, RxKotlin/RxAndroid, Koin, Gson.
 

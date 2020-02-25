@@ -54,14 +54,6 @@
         android:bottom="80dp">
         <bitmap
             android:gravity="bottom|center_horizontal"
-            android:src="@drawable/twilio_splash" />
-    </item>
-
-    <item
-        android:left="110dp"
-        android:bottom="80dp">
-        <bitmap
-            android:gravity="bottom|center_horizontal"
             android:src="@drawable/virgil_splash" />
     </item>
 

@@ -52,7 +52,7 @@ import io.reactivex.schedulers.Schedulers
  */
 
 /**
- * InitTwilioDoDefault
+ * InitSmackDoDefault
  */
 class InitSmackDoDefault(
         private val initSmackInteractor: InitSmackInteractor

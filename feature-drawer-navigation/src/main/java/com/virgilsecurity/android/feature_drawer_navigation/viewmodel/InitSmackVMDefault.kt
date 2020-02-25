@@ -35,7 +35,6 @@ package com.virgilsecurity.android.feature_drawer_navigation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
 
@@ -59,7 +58,7 @@ class InitSmackVMDefault(
 ) : InitSmackVM() {
 
     init {
-        state.addSource(initSmackDo.getLiveData(), ::onInitTwilioResult)
+        state.addSource(initSmackDo.getLiveData(), ::onInitSmackResult)
     }
 
     override fun onCleared() = initSmackDo.cleanUp()
@@ -71,7 +70,7 @@ class InitSmackVMDefault(
         initSmackDo.execute(user)
     }
 
-    private fun onInitTwilioResult(result: InitSmackDo.Result?) {
+    private fun onInitSmackResult(result: InitSmackDo.Result?) {
         when (result) {
             is InitSmackDo.Result.OnSuccess -> {
                     state.value = State.InitSuccess
