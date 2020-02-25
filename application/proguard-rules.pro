@@ -1,4 +1,2 @@
 -keep class com.virgilsecurity.** { *; }
 -keepclassmembers class com.virgilsecurity.** { *; }
--keep class com.twilio.** { *; }
--keepclassmembers class com.twilio.** { *; }

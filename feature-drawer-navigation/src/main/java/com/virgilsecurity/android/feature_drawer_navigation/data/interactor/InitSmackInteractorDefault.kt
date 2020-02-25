@@ -53,7 +53,7 @@ import io.reactivex.Single
  */
 
 /**
- * InitTwilioInteractorDefault
+ * InitSmackInteractorDefault
  */
 class InitSmackInteractorDefault(
         private val smackHelper: SmackHelper,

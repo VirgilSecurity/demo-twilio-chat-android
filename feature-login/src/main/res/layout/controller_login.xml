@@ -138,23 +138,12 @@
 
     <ImageView
         android:id="@+id/ivPoweredBy2"
-        android:layout_width="50dp"
-        android:layout_height="15dp"
-        android:layout_marginBottom="30dp"
-        android:src="@drawable/ic_twilio_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivPoweredBy3"
-        app:layout_constraintStart_toEndOf="@id/ivPoweredBy1" />
-
-    <ImageView
-        android:id="@+id/ivPoweredBy3"
         android:layout_width="40dp"
         android:layout_height="25dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginBottom="25dp"
         android:src="@drawable/ic_virgil_logo"
-        app:layout_constraintBottom_toBottomOf="@id/ivPoweredBy2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivPoweredBy2"
-        app:layout_constraintTop_toTopOf="@id/ivPoweredBy2" />
+        app:layout_constraintStart_toEndOf="@id/ivPoweredBy1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

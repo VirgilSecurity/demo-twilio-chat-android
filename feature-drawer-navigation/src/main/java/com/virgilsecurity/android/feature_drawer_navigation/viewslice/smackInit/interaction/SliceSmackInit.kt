@@ -31,9 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_drawer_navigation.viewslice.twilioInit.interaction // TODO rename package to smackInit
+package com.virgilsecurity.android.feature_drawer_navigation.viewslice.smackInit.interaction // TODO rename package to smackInit
 
-import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
@@ -54,7 +53,7 @@ import com.virgilsecurity.android.feature_drawer_navigation.R
  */
 
 /**
- * TwilioInitSliceDefault
+ * SmackInitSliceDefault
  */
 class SliceSmackInit(
         private val actionLiveData: MutableLiveData<Action>

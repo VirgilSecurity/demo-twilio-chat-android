@@ -51,7 +51,7 @@ import kotlinx.android.parcel.Parcelize
  */
 
 /**
- * Message that contains main info about. Summarizes Virgil and Twilio properties of User.
+ * Message that contains main info about. Summarizes Virgil and Smack properties of User.
  */
 @Entity
 @Parcelize

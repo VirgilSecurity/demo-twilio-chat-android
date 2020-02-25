@@ -48,7 +48,7 @@ import io.reactivex.Completable
  */
 
 /**
- * InitTwilioInteractor
+ * InitSmackInteractor
  */
 interface InitSmackInteractor {
 

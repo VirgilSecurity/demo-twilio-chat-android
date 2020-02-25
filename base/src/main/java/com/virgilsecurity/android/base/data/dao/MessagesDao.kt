@@ -51,7 +51,7 @@ import io.reactivex.Single
  */
 
 /**
- * TwilioApi
+ * MessagesApi
  */
 interface MessagesDao {
 
