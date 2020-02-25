@@ -115,7 +115,7 @@ class SmackInitController() : BaseController() {
 
     private fun onStateChanged(state: InitSmackVM.State) = when (state) {
         InitSmackVM.State.InitSuccess -> initSuccess()
-        InitSmackVM.State.LogoutPressed -> logout()
+        InitSmackVM.State.LogoutClicked -> logout()
         InitSmackVM.State.ShowLoading -> stateSlice.showLoading()
         InitSmackVM.State.ShowContent -> stateSlice.showContent()
         InitSmackVM.State.ShowError -> stateSlice.showError()

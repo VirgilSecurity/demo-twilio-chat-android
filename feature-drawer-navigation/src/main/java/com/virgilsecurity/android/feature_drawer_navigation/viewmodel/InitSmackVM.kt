@@ -55,7 +55,7 @@ abstract class InitSmackVM : ViewModel(){
 
     sealed class State {
         object InitSuccess : State()
-        object LogoutPressed: State()
+        object LogoutClicked: State()
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()

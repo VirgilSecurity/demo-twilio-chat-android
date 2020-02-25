@@ -61,7 +61,7 @@ class InitSmackVMDefault(
 
     init {
         state.addSource(initSmackDo.getLiveData(), ::onInitSmackResult)
-        state.addSource(logoutDo.getLiveData(), ::onLogoutPressed)
+        state.addSource(logoutDo.getLiveData(), ::onLogoutClicked)
     }
 
     override fun onCleared() = initSmackDo.cleanUp()
@@ -87,8 +87,8 @@ class InitSmackVMDefault(
         }
     }
 
-    private fun onLogoutPressed(result: LogoutDo.Result?) {
-        state.value = State.LogoutPressed
+    private fun onLogoutClicked(result: LogoutDo.Result?) {
+        state.value = State.LogoutClicked
         state.value = State.Idle
     }
 }
