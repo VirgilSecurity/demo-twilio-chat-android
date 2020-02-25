@@ -41,6 +41,7 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -64,7 +65,10 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
 
     override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
             with(viewHolder.containerView) {
-                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
+                val json = ConvertionUtils.base64ToString(item.body!!)
+                val map = ConvertionUtils.deserializeMapFromJson(json)
+                val text = map["ciphertext"]
+                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(text!!)
 
                 setOnClickListener {
                     actionLiveData.value = ChannelSlice.Action.MessageClicked(item)

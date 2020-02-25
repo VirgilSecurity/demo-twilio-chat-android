@@ -129,8 +129,7 @@ class SmackRx {
                                                           sender,
                                                           currentIdentity)
 
-                            if (message.stanzaId == null)
-                                throw IllegalStateException("stanzaId is null")
+                            message.setStanzaId()
 
                             val messageMeta = MessageMeta(message.stanzaId,
                                                           message.body,
