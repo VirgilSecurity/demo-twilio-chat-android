@@ -37,6 +37,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
+import com.virgilsecurity.android.feature_settings.domain.LogoutDo
 
 /**
  * . _  _
@@ -54,11 +55,13 @@ import com.virgilsecurity.android.feature_drawer_navigation.domain.InitSmackDo
  */
 class InitSmackVMDefault(
         private val state: MediatorLiveData<State>,
-        private val initSmackDo: InitSmackDo
+        private val initSmackDo: InitSmackDo,
+        private val logoutDo: LogoutDo
 ) : InitSmackVM() {
 
     init {
         state.addSource(initSmackDo.getLiveData(), ::onInitSmackResult)
+        state.addSource(logoutDo.getLiveData(), ::onLogoutPressed)
     }
 
     override fun onCleared() = initSmackDo.cleanUp()
@@ -70,13 +73,22 @@ class InitSmackVMDefault(
         initSmackDo.execute(user)
     }
 
+    override fun logout() {
+        logoutDo.execute()
+    }
+
     private fun onInitSmackResult(result: InitSmackDo.Result?) {
         when (result) {
             is InitSmackDo.Result.OnSuccess -> {
-                    state.value = State.InitSuccess
-                    state.value = State.ShowContent
+                state.value = State.InitSuccess
+                state.value = State.ShowContent
             }
             is InitSmackDo.Result.OnError -> state.value = State.ShowError
         }
+    }
+
+    private fun onLogoutPressed(result: LogoutDo.Result?) {
+        state.value = State.LogoutPressed
+        state.value = State.Idle
     }
 }

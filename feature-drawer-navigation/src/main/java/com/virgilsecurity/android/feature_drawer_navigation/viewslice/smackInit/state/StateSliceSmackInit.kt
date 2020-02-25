@@ -74,7 +74,6 @@ class StateSliceSmackInit : BaseViewSlice() {
     private lateinit var clContentRoot: ConstraintLayout
     private lateinit var ivLoading: VectorMasterView
     private lateinit var tvInitializing: TextView
-    private lateinit var tvTryAgain: TextView
 
     override fun setupViews() {
         with(window) {
@@ -82,7 +81,6 @@ class StateSliceSmackInit : BaseViewSlice() {
             this@StateSliceSmackInit.clContentRoot = findViewById(R.id.clContentRoot)
             this@StateSliceSmackInit.ivLoading = findViewById(R.id.ivLoading)
             this@StateSliceSmackInit.tvInitializing = findViewById(R.id.tvInitializing)
-            this@StateSliceSmackInit.tvTryAgain = findViewById(R.id.tvTryAgain)
         }
     }
 
@@ -107,7 +105,6 @@ class StateSliceSmackInit : BaseViewSlice() {
 
     fun showError() {
         debounceSubject.onNext(ERROR)
-        showFadingError()
     }
 
     private fun show(state: Int) {
@@ -132,32 +129,11 @@ class StateSliceSmackInit : BaseViewSlice() {
         }
     }
 
-    private fun showFadingError() {
-        if (tvTryAgain.visibility == View.INVISIBLE) {
-            tvTryAgain.visibility = View.VISIBLE
-            val alphaAnimation = AlphaAnimation(tvTryAgain.alpha, 0.0f)
-            alphaAnimation.duration = ERROR_FADE_OUT_DURATION
-            alphaAnimation.startOffset = ERROR_START_OFFSET
-            alphaAnimation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationRepeat(animation: Animation?) {}
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    tvTryAgain.visibility = View.INVISIBLE
-                }
-
-                override fun onAnimationStart(animation: Animation?) {}
-            })
-            tvTryAgain.startAnimation(alphaAnimation)
-        }
-    }
-
     companion object {
         const val CONTENT = 0
         const val LOADING = 1
         const val ERROR = 2
 
-        const val ERROR_FADE_OUT_DURATION = 500L
-        const val ERROR_START_OFFSET = 1500L
         const val DEBOUNCE_INTERVAL = 200L
     }
 }

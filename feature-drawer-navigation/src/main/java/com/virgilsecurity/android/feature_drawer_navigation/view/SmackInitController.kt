@@ -67,13 +67,19 @@ class SmackInitController() : BaseController() {
 
     private lateinit var user: User
     private lateinit var initSuccess: () -> Unit
+    private lateinit var logout: () -> Unit
     private lateinit var stateSlice: StateSliceSmackInit
     private lateinit var mldSliceSmackInit: MutableLiveData<SliceSmackInit.Action>
     private lateinit var sliceSmackInit: SliceSmackInit
 
-    constructor(user: User, initSuccess: () -> Unit) : this() {
+    constructor(
+            user: User,
+            initSuccess: () -> Unit,
+            logout: () -> Unit
+    ) : this() {
         this.user = user
         this.initSuccess = initSuccess
+        this.logout = logout
     }
 
     override fun init(containerView: View) {
@@ -93,6 +99,7 @@ class SmackInitController() : BaseController() {
 
     private fun onActionChanged(action: SliceSmackInit.Action) = when (action) {
         SliceSmackInit.Action.RetryClicked -> viewModel.initChatClient(user)
+        SliceSmackInit.Action.LogoutClicked -> viewModel.logout()
         SliceSmackInit.Action.Idle -> Unit
     }
 
@@ -108,9 +115,11 @@ class SmackInitController() : BaseController() {
 
     private fun onStateChanged(state: InitSmackVM.State) = when (state) {
         InitSmackVM.State.InitSuccess -> initSuccess()
+        InitSmackVM.State.LogoutPressed -> logout()
         InitSmackVM.State.ShowLoading -> stateSlice.showLoading()
         InitSmackVM.State.ShowContent -> stateSlice.showContent()
         InitSmackVM.State.ShowError -> stateSlice.showError()
+        InitSmackVM.State.Idle -> Unit
     }
 
     override fun handleBack(): Boolean {

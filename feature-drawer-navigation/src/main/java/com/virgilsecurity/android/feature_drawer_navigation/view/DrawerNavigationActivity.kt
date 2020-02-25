@@ -174,12 +174,7 @@ class DrawerNavigationActivity( // TODO search for all synthetic and remove it
                                                   SettingsEditController.KEY_EDIT_SETTINGS_CONTROLLER)
                                },
                                {
-                                   screenRouter.getScreenIntent(this, ScreenChat.Login).run {
-                                       startActivity(this)
-                                       overridePendingTransition(R.anim.animation_slide_from_start_activity,
-                                                                 R.anim.animation_slide_to_end_activity)
-                                       finish()
-                                   }
+                                   logout()
                                },
                                {
                                    pushController(AboutController(),
@@ -245,15 +240,25 @@ class DrawerNavigationActivity( // TODO search for all synthetic and remove it
                        ChannelController.KEY_CHANNEL_CONTROLLER)
     }
 
+    private fun logout() {
+        screenRouter.getScreenIntent(this, ScreenChat.Login).run {
+            startActivity(this)
+            overridePendingTransition(R.anim.animation_slide_from_start_activity,
+                    R.anim.animation_slide_to_end_activity)
+            finish()
+        }
+    }
+
     private fun initRouter() {
         if (routerRoot.hasNoRootController())
             routerRoot.setRoot(
                 RouterTransaction
-                        .with(SmackInitController(user)
-                              {
-                                  onActionChanged(SliceDrawer.Action.ChannelsListClicked,
-                                                  HorizontalChangeHandler())
-                              })
+                        .with(SmackInitController(user, {
+                            onActionChanged(SliceDrawer.Action.ChannelsListClicked,
+                                    HorizontalChangeHandler())
+                            },
+                                { logout() })
+                        )
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
                         .tag(ChannelsListController.KEY_CHANNELS_LIST_CONTROLLER)

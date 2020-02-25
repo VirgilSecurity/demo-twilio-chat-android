@@ -55,12 +55,16 @@ abstract class InitSmackVM : ViewModel(){
 
     sealed class State {
         object InitSuccess : State()
+        object LogoutPressed: State()
         object ShowLoading : State()
         object ShowContent : State()
         object ShowError : State()
+        object Idle : State()
     }
 
     abstract fun getState() : LiveData<State>
 
     abstract fun initChatClient(user: User)
+
+    abstract fun logout()
 }
