@@ -51,7 +51,7 @@ import io.reactivex.Single
  */
 
 /**
- * MessagesApi
+ * SmackApi
  */
 interface MessagesDao {
 
