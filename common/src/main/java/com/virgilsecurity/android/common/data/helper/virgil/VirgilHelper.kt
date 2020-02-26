@@ -102,24 +102,27 @@ class VirgilHelper(private val cardManager: CardManager,
     fun deletePrivateKey(identity: String) = privateKeyStorage.delete(identity)
 
     fun decrypt(text: String): String {
-        val cipherData = ConvertionUtils.base64ToBytes(text)
-
         return try {
+            val cipherData = ConvertionUtils.base64ToBytes(text)
+
             val decryptedData = virgilCrypto.decrypt(cipherData,
                                                      privateKeyStorage.load(
                                                          userProperties.currentUser!!.identity)
                                                              .left as VirgilPrivateKey)
             ConvertionUtils.toString(decryptedData)
-        } catch (e: CryptoException) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            "Message encrypted"
+            "**Could not decrypt this message**"
         }
 
     }
 
     fun encrypt(data: String, publicKeys: List<VirgilPublicKey>): String {
+        val privateKey = privateKeyStorage.load(userProperties.currentUser!!.identity)
+                .left as VirgilPrivateKey
+
         val toEncrypt = ConvertionUtils.toBytes(data)
-        return ConvertionUtils.toBase64String(virgilCrypto.encrypt(toEncrypt, publicKeys))
+        return ConvertionUtils.toBase64String(virgilCrypto.authEncrypt(toEncrypt, privateKey, publicKeys))
     }
 
     fun parseCard(rawSignedModel: RawSignedModel) = Card.parse(cardCrypto, rawSignedModel)

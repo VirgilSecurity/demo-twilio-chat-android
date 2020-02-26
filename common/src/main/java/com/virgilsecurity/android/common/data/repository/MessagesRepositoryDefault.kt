@@ -38,6 +38,7 @@ import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.common.data.model.exception.TooLongMessageException
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
@@ -68,12 +69,19 @@ class MessagesRepositoryDefault(
     override fun sendMessage(channelMeta: ChannelMeta, body: String): Completable =
             if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
                 Completable.error { TooLongMessageException() }
-            else
-                messagesApi.sendMessage(channelMeta, body)
+            else {
+                val time = System.currentTimeMillis()
+                val data = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
+                        "date" to time,
+                        "ciphertext" to body
+                )))
+
+                messagesApi.sendMessage(channelMeta, data)
                         .flatMapCompletable {
                             messagesDao.addMessage(it)
                                     .subscribeOn(Schedulers.io())
                         }
+            }
 
     override fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
             messagesApi.observeChatMessages()
