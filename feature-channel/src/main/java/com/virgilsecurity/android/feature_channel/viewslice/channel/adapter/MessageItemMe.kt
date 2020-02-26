@@ -42,6 +42,7 @@ import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.domain.ShowMessagePreviewDoDefault
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -67,8 +68,15 @@ class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Act
             with(viewHolder.containerView) {
                 val text = if (item.threadId == ShowMessagePreviewDoDefault.PREVIEW_CHANNEL_SID)
                     item.body!!
-                else
-                    virgilHelper.decrypt(item.body!!)
+                else {
+                    try {
+                        val json = ConvertionUtils.base64ToString(item.body!!)
+                        val map = ConvertionUtils.deserializeMapFromJson(json)
+                        virgilHelper.decrypt(map["ciphertext"]!!)
+                    } catch(e: Exception) {
+                        "**Could not decrypt this message**"
+                    }
+                }
 
                 findViewById<TextView>(R.id.tvMessage).text = text
 
