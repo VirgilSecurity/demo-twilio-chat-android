@@ -70,7 +70,7 @@ class MessagesRepositoryDefault(
             if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
                 Completable.error { TooLongMessageException() }
             else {
-                val time = System.currentTimeMillis()
+                val time = System.currentTimeMillis() / 1000
                 val data = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
                         "date" to time,
                         "ciphertext" to body
