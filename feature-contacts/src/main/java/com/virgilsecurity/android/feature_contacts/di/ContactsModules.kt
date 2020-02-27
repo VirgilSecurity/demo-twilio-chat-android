@@ -70,7 +70,7 @@ import org.koin.dsl.module
  */
 
 val contactsModule: Module = module {
-    single { ContactsRepositoryDefault(get(), get(), get()) as ContactsRepository }
+    single { ContactsRepositoryDefault(get(), get(), get(), get()) as ContactsRepository }
 
     scope(named<ContactsController>()) {
         scoped { GetMessageMetasDoDefault(get()) as GetMessageMetasDo }

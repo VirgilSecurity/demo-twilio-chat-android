@@ -36,6 +36,8 @@ package com.virgilsecurity.android.feature_contacts.data.repository
 import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
+import com.virgilsecurity.android.common.data.exception.EmptyCardsException
+import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -58,7 +60,8 @@ import io.reactivex.Single
 class ContactsRepositoryDefault(
         private val contactsDao: ChannelsDao, // TODO In the future here will be contacts, not channels
         private val userProperties: UserProperties,
-        private val channelIdGenerator: ChannelIdGenerator
+        private val channelIdGenerator: ChannelIdGenerator,
+        private val virgilHelper: VirgilHelper
 ) : ContactsRepository {
 
     override fun addContact(interlocutor: String): Single<ChannelMeta> {
@@ -67,7 +70,12 @@ class ContactsRepositoryDefault(
                                                               interlocutor)
         val channelMeta = ChannelMeta(channelId, currentUserIdentity, interlocutor)
 
-        return contactsDao.addChannel(channelMeta).toSingle { channelMeta }
+        return virgilHelper.searchCards(interlocutor).flatMap {
+            if (it.isEmpty())
+                throw EmptyCardsException()
+            else
+                contactsDao.addChannel(channelMeta).toSingle { channelMeta }
+        }
     }
 
     override fun getContact(interlocutor: String): Maybe<ChannelMeta> =
