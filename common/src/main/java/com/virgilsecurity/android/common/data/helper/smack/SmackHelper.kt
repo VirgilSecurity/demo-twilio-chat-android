@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.common.data.helper.smack
 
+import android.util.Log
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
@@ -40,9 +41,14 @@ import com.virgilsecurity.android.common.data.helper.fuel.apiSuffix
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import org.jivesoftware.smack.ConnectionListener
+import org.jivesoftware.smack.ReconnectionListener
+import org.jivesoftware.smack.ReconnectionManager
+import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.chat2.ChatManager
 import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
+
 
 /**
  * SmackHelper
@@ -56,6 +62,7 @@ class SmackHelper(
     private var connection: XMPPTCPConnection? = null
     private lateinit var chatManager: ChatManager
     private lateinit var roster: Roster
+    private lateinit var reconnectionManager: ReconnectionManager
 
     fun startClient(identity: String, password: String): Completable {
         if (connection == null) {
@@ -64,11 +71,45 @@ class SmackHelper(
                                        XMPP_HOST,
                                        RESOURCE_ANDROID,
                                        XMPP_PORT)
-                    .map { this@SmackHelper.connection = it }
+                    .map {
+                        it.addConnectionListener(object : ConnectionListener {
+                            override fun connected(connection: XMPPConnection?) {
+                                Log.d("[SMACK]", "Connected.")
+                            }
+
+                            override fun authenticated(connection: XMPPConnection?, resumed: Boolean) {
+                                Log.d("[SMACK]", "Authenticated.")
+                            }
+
+                            override fun connectionClosedOnError(e: Exception) {
+                                Log.d("[SMACK]", "Connection closed: ${e}.")
+                            }
+
+                            override fun connectionClosed() {
+                                Log.d("[SMACK]", "Connection closed.")
+                            }
+                        })
+
+                        this@SmackHelper.connection = it
+                    }
                     .flatMap { smackRx.initRoster(connection!!) }
                     .map { this@SmackHelper.roster = it }
                     .flatMap { smackRx.initChatManager(connection!!) }
                     .map { this@SmackHelper.chatManager = it }
+                    .flatMap { smackRx.initReconnectionManager(connection!!) }
+                    .map {
+                        this@SmackHelper.reconnectionManager = it
+                        it.enableAutomaticReconnection()
+                        it.addReconnectionListener(object : ReconnectionListener {
+                            override fun reconnectingIn(seconds: Int) {
+                                Log.d("[SMACK]", "Reconnecting in: $seconds seconds.")
+                            }
+
+                            override fun reconnectionFailed(e: Exception) {
+                                Log.d("[SMACK]", "Reconnection failed: ${e}.")
+                            }
+                        })
+                    }
                     .flatMapCompletable { smackRx.login(connection!!) }
         } else {
             return Completable.error(IllegalStateException("Already initialized."))
