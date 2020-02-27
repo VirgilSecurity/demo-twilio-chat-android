@@ -68,6 +68,7 @@ class AddContactsDoDefault(
                         this@AddContactsDoDefault.interlocutor = interlocutor
                     }
                     .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(::successGetContact, ::error, ::noContactFound)
                     .track()
 
@@ -79,7 +80,7 @@ class AddContactsDoDefault(
                     .track()
 
     private fun successGetContact(channel: ChannelMeta) {
-        throw AddingUserThatExistsException(interlocutor)
+        liveData.value = AddContactDo.Result.UserAlreadyAdded
     }
 
     private fun noContactFound() {
