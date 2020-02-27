@@ -168,7 +168,7 @@ val messagesModule: Module = module {
     single { MessagesRemoteDS(get(), get()) as MessagesApi }
     single { (get() as RoomDB).messagesQao() }
     single { MessagesLocalDS(get()) as MessagesDao }
-    single { MessagesRepositoryDefault(get(), get()) as MessagesRepository }
+    single { MessagesRepositoryDefault(get(), get(), get()) as MessagesRepository }
     single(named(KEY_DIFF_CALLBACK_MESSAGE_META)) { DiffCallback<MessageMeta>() }
 }
 

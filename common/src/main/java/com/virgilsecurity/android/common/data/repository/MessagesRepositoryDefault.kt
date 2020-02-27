@@ -34,6 +34,7 @@
 package com.virgilsecurity.android.common.data.repository
 
 import com.virgilsecurity.android.base.data.api.MessagesApi
+import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
@@ -59,6 +60,7 @@ import java.nio.charset.Charset
  * MessagesRepositoryDefault
  */
 class MessagesRepositoryDefault(
+        private val channelsDao: ChannelsDao,
         private val messagesDao: MessagesDao,
         private val messagesApi: MessagesApi
 ) : MessagesRepository {
@@ -86,6 +88,11 @@ class MessagesRepositoryDefault(
     override fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
             messagesApi.observeChatMessages()
                     .flatMap {
+                        // TODO: Do this non-blocking
+                        if (channelsDao.getChannel(it.first.sid).blockingGet() == null) {
+                            channelsDao.addChannel(it.first).blockingAwait()
+                        }
+
                         messagesDao.addMessage(it.second).andThen(Flowable.just(it))
                     }
 
