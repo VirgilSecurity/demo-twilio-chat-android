@@ -41,6 +41,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.jivesoftware.smack.ConnectionConfiguration
+import org.jivesoftware.smack.ReconnectionManager
 import org.jivesoftware.smack.chat2.ChatManager
 import org.jivesoftware.smack.packet.Message
 import org.jivesoftware.smack.roster.Roster
@@ -107,6 +108,17 @@ class SmackRx {
                     val roster = Roster.getInstanceFor(connection)
 
                     it.onSuccess(roster)
+                } catch (throwable: Throwable) {
+                    it.onError(throwable)
+                }
+            }
+
+    fun initReconnectionManager(connection: XMPPTCPConnection): Single<ReconnectionManager> =
+            Single.create {
+                try {
+                    val reconnectionManager = ReconnectionManager.getInstanceFor(connection)
+
+                    it.onSuccess(reconnectionManager)
                 } catch (throwable: Throwable) {
                     it.onError(throwable)
                 }
