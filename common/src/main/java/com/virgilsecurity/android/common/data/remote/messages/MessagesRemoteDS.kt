@@ -49,6 +49,6 @@ class MessagesRemoteDS(
     override fun observeChatMessages(): Flowable<Pair<ChannelMeta, MessageMeta>> =
             smackHelper.observeChatMessages()
 
-    override fun sendMessage(channelMeta: ChannelMeta, body: String): Single<MessageMeta> =
-            smackHelper.sendMessage(channelMeta.localizedInterlocutor(userProperties), body)
+    override fun sendMessage(channelMeta: ChannelMeta, body: String, date: Long): Single<MessageMeta> =
+            smackHelper.sendMessage(channelMeta.localizedInterlocutor(userProperties), body, date)
 }

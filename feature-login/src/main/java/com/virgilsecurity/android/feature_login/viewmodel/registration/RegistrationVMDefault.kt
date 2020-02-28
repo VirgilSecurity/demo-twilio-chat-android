@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_login.viewmodel.registration
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.databinding.ObservableField
@@ -90,6 +91,8 @@ class RegistrationVMDefault(
                 state.value = State.Idle
             }
             is SignUpDo.Result.OnError -> {
+                Log.e("[SignUpDo]", result.toString())
+
                 if (result.error is AlreadyRegisteredException ||
                     result.error is FuelError && result.error.response.statusCode == 400) {
 

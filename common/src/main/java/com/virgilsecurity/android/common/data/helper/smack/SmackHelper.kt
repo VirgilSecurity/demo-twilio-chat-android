@@ -130,9 +130,10 @@ class SmackHelper(
                                         userProperties.currentUser!!.identity,
                                         channelIdGenerator)
 
-    fun sendMessage(interlocutor: String, body: String) =
+    fun sendMessage(interlocutor: String, body: String, date: Long) =
             smackRx.sendMessage(chatManager,
                                 body,
+                                date,
                                 interlocutor,
                                 XMPP_HOST,
                                 userProperties.currentUser!!.identity,

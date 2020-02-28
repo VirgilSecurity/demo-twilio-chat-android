@@ -73,12 +73,8 @@ class MessagesRepositoryDefault(
                 Completable.error { TooLongMessageException() }
             else {
                 val time = System.currentTimeMillis() / 1000
-                val data = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
-                        "date" to time,
-                        "ciphertext" to body
-                )))
 
-                messagesApi.sendMessage(channelMeta, data)
+                messagesApi.sendMessage(channelMeta, body, time)
                         .flatMapCompletable {
                             messagesDao.addMessage(it)
                                     .subscribeOn(Schedulers.io())

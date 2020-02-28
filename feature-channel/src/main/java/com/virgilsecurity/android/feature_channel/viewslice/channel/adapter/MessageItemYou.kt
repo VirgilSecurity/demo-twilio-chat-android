@@ -35,11 +35,11 @@ package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
+import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 
@@ -61,30 +61,32 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
                      private val userProperties: UserProperties,
                      private val virgilHelper: VirgilHelper,
                      override val layoutResourceId: Int = R.layout.item_message_you
-) : DelegateAdapterItemDefault<MessageMeta>() {
+) : DelegateAdapterItemDefault<ChannelItem>() {
 
-    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
-            with(viewHolder.containerView) {
-                val json = ConvertionUtils.base64ToString(item.body!!)
-                val map = ConvertionUtils.deserializeMapFromJson(json)
-                val text = map["ciphertext"]
-                findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(text!!)
+    override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {
+        val item = (item as ChannelItem.Message).message
 
-                setOnClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                }
+        with(viewHolder.containerView)
+        {
+            findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
 
-                setOnLongClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                    true
-                }
+            setOnClickListener {
+                actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
+                actionLiveData.value = ChannelSlice.Action.Idle
             }
 
-    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
+            setOnLongClickListener {
+                actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
+                actionLiveData.value = ChannelSlice.Action.Idle
+                true
+            }
+        }
+    }
 
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageMeta).sender != userProperties.currentUser!!.identity &&
-            (items[position] as MessageMeta).isNotInDevelopment()
+    override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
+
+    override fun isForViewType(items: List<*>, position: Int): Boolean {
+        val item = (items[position] as? ChannelItem.Message)?.message ?: return false
+        return item.sender != userProperties.currentUser!!.identity && item.isNotInDevelopment()
+    }
 }

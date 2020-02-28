@@ -36,6 +36,7 @@ package com.virgilsecurity.android.common.data.helper.smack
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -49,6 +50,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
 import org.jxmpp.jid.impl.JidCreate
 import java.net.InetAddress
+import java.util.*
 
 /**
  * SmackRx
@@ -143,11 +145,16 @@ class SmackRx {
 
                             message.setStanzaId()
 
+                            val json = ConvertionUtils.base64ToString(message.body!!)
+                            val map = ConvertionUtils.deserializeMapFromJson(json)
+
                             val messageMeta = MessageMeta(message.stanzaId,
-                                                          message.body,
+                                                          map["ciphertext"]!!,
                                                           sender,
                                                           channelId,
-                                                          false)
+                                                          false,
+                                                          map["date"]!!.toLongOrNull()!!)
+
                             it.onNext(Pair(channelMeta, messageMeta))
                             // FIXME where to place onComplete?
                         } catch (throwable: Throwable) {
@@ -160,6 +167,7 @@ class SmackRx {
     fun sendMessage(
             chatManager: ChatManager,
             body: String,
+            date: Long,
             interlocutor: String,
             xmppHost: String,
             currentIdentity: String,
@@ -172,12 +180,25 @@ class SmackRx {
             val chat = chatManager.chatWith(jid)
             val stanza = Message()
             stanza.setStanzaId()
-            stanza.body = body
+
+            stanza.body = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
+                    "date" to date,
+                    "ciphertext" to body
+            )))
+
+
             stanza.type = Message.Type.chat
             stanza.thread = channelId
             chat.send(stanza)
 
-            val messMeta = MessageMeta(stanza.stanzaId, body, currentIdentity, channelId, false)
+            val messMeta = MessageMeta(
+                    stanza.stanzaId,
+                    body,
+                    currentIdentity,
+                    channelId,
+                    false,
+                    date
+            )
 
             it.onSuccess(messMeta)
         } catch (throwable: Throwable) {

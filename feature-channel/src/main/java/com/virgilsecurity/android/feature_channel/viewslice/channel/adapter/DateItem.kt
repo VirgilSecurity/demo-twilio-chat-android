@@ -31,64 +31,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.feature_channel.viewslice.channel
+package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.RecyclerView
-import com.virgilsecurity.android.base.data.model.MessageMeta
-import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
-import com.virgilsecurity.android.base.viewslice.BaseViewSlice
+import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    8/9/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * MessageItemDate
  */
+class DateItem(
+        override val layoutResourceId: Int = R.layout.item_message_you
+) : DelegateAdapterItemDefault<ChannelItem>() {
 
-/**
- * ChannelSliceDefault
- */
-class ChannelSlice(
-        private val action: MutableLiveData<Action>,
-        private val adapter: DelegateAdapter<ChannelItem>,
-        private val layoutManager: RecyclerView.LayoutManager
-) : BaseViewSlice() {
+    override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {}
 
-    private lateinit var rvMessages: RecyclerView
+    override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
 
-    override fun setupViews() {
-        with(window) {
-            rvMessages = findViewById(R.id.rvMessages)
-
-            rvMessages.adapter = adapter
-            rvMessages.layoutManager = layoutManager
-        }
-    }
-
-    fun getAction(): LiveData<Action> = action
-
-    fun showMessages(messages: List<MessageMeta>) {
-        val items = messages.map {
-            ChannelItem.Message(it) as ChannelItem
-        } + listOf(ChannelItem.Date(1000)) // TODO: Date logic & view
-
-        adapter.swapData(items)
-        layoutManager.scrollToPosition(adapter.itemCount - 1)
-    }
-
-    sealed class Action {
-        data class MessageClicked(val message: MessageMeta) : Action()
-        data class MessageLongClicked(val message: MessageMeta) : Action()
-        object Idle : Action()
-    }
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            items[position] is ChannelItem.Date
 }
