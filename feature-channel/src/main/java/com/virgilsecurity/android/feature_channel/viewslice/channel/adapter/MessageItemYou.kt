@@ -41,7 +41,6 @@ import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
-import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -64,7 +63,7 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
 ) : DelegateAdapterItemDefault<ChannelItem>() {
 
     override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {
-        val item = (item as ChannelItem.Message).message
+        val item = (item as ChannelItem.Message).value
 
         with(viewHolder.containerView)
         {
@@ -86,7 +85,7 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
     override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean {
-        val item = (items[position] as? ChannelItem.Message)?.message ?: return false
+        val item = (items[position] as? ChannelItem.Message)?.value ?: return false
         return item.sender != userProperties.currentUser!!.identity && item.isNotInDevelopment()
     }
 }

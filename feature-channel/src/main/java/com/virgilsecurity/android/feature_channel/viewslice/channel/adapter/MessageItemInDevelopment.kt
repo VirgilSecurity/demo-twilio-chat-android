@@ -60,5 +60,5 @@ class MessageItemInDevelopment(
     override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
 
     override fun isForViewType(items: List<*>, position: Int): Boolean =
-         (items[position] as? ChannelItem.Message)?.message?.inDevelopment ?: false
+         (items[position] as? ChannelItem.Message)?.value?.inDevelopment ?: false
 }

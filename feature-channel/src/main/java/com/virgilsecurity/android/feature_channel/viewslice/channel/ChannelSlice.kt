@@ -33,16 +33,17 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.channel
 
-import androidx.lifecycle.Lifecycle
+import android.text.format.DateUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
+import com.virgilsecurity.android.feature_channel.R
+import java.util.*
+
 
 /**
  * . _  _
@@ -78,9 +79,38 @@ class ChannelSlice(
     fun getAction(): LiveData<Action> = action
 
     fun showMessages(messages: List<MessageMeta>) {
-        val items = messages.map {
-            ChannelItem.Message(it) as ChannelItem
-        } + listOf(ChannelItem.Date(1000)) // TODO: Date logic & view
+        fun sameDate(dt1: Long, dt2: Long): Boolean {
+            val cal1: Calendar = Calendar.getInstance()
+            val cal2: Calendar = Calendar.getInstance()
+            cal1.time = Date(dt1)
+            cal2.time = Date(dt2)
+
+            return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                    cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+        }
+
+        val formatDate = { date: Long ->
+            DateUtils.getRelativeTimeSpanString(
+                    date,
+                    System.currentTimeMillis(),
+                    DateUtils.DAY_IN_MILLIS
+            ).toString()
+        }
+
+        var prevMessageDate: Long = 0
+        // add dates
+        val items = messages.fold(listOf()) { acc: List<ChannelItem>, messageMeta: MessageMeta ->
+            val messageDate = messageMeta.date * 1000
+
+            val date = if (sameDate(messageDate, prevMessageDate))
+                listOf<ChannelItem>()
+            else
+                listOf(ChannelItem.Date(formatDate(messageDate)))
+
+            prevMessageDate = messageDate
+
+            acc + date + listOf(ChannelItem.Message(messageMeta))
+        } // TODO: Date logic & view
 
         adapter.swapData(items)
         layoutManager.scrollToPosition(adapter.itemCount - 1)

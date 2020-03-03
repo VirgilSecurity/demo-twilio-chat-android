@@ -33,18 +33,26 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
+import android.text.format.DateUtils
+import android.widget.TextView
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
+import java.util.*
 
 /**
  * MessageItemDate
  */
 class DateItem(
-        override val layoutResourceId: Int = R.layout.item_message_you
+        override val layoutResourceId: Int = R.layout.item_date
 ) : DelegateAdapterItemDefault<ChannelItem>() {
 
-    override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {}
+    override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {
+        val date = (item as ChannelItem.Date).value!!
+        with(viewHolder.containerView) {
+            findViewById<TextView>(R.id.tvDate).text = date
+        }
+    }
 
     override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
 

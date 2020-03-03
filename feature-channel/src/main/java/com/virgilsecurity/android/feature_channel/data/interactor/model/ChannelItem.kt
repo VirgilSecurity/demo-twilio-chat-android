@@ -1,15 +1,14 @@
 package com.virgilsecurity.android.feature_channel.data.interactor.model
 
-import android.os.Parcelable
 import com.virgilsecurity.android.base.data.model.MessageMeta
 
 sealed class ChannelItem : Comparable<ChannelItem> {
-    class Message(val message: MessageMeta): ChannelItem()
-    class Date(val value: Long): ChannelItem()
+    class Message(val value: MessageMeta): ChannelItem()
+    class Date(val value: String): ChannelItem()
 
     override fun compareTo(other: ChannelItem): Int {
         if (this is Message && other is Message) {
-            return this.message.sid.compareTo(other.message.sid)
+            return this.value.sid.compareTo(other.value.sid)
         }
 
         if (this is Date && other is Date) {
@@ -24,7 +23,7 @@ sealed class ChannelItem : Comparable<ChannelItem> {
         if (javaClass != other?.javaClass) return false
 
         if (this is Message && other is Message) {
-            return this.message == other.message
+            return this.value == other.value
         }
 
         if (this is Date && other is Date) {
@@ -36,7 +35,7 @@ sealed class ChannelItem : Comparable<ChannelItem> {
 
     override fun hashCode(): Int {
         if (this is Message) {
-            return this.message.hashCode()
+            return this.value.hashCode()
         }
 
         if (this is Date) {
