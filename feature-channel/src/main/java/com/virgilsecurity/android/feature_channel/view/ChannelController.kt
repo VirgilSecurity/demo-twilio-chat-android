@@ -53,8 +53,10 @@ import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESS
 import com.virgilsecurity.android.common.util.UiUtils
 import com.virgilsecurity.android.common.util.currentScope
 import com.virgilsecurity.android.feature_channel.R
+import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.DateItem
 import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemInDevelopment
 import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemMe
 import com.virgilsecurity.android.feature_channel.viewslice.channel.adapter.MessageItemYou
@@ -81,7 +83,7 @@ class ChannelController() : BaseController() {
 
     override val layoutResourceId: Int = R.layout.controller_channel
 
-    private val diffCallback: DiffCallback<MessageMeta> by inject(named(
+    private val diffCallback: DiffCallback<ChannelItem> by inject(named(
         KEY_DIFF_CALLBACK_MESSAGE_META))
     private val userProperties: UserProperties by inject()
     private val virgilHelper: VirgilHelper by inject()
@@ -92,7 +94,7 @@ class ChannelController() : BaseController() {
     private lateinit var mldToolbarSlice: MutableLiveData<ToolbarSliceChannel.Action>
     private lateinit var toolbarSlice: ToolbarSliceChannel
     private lateinit var mldChannelSlice: MutableLiveData<ChannelSlice.Action>
-    private lateinit var adapter: DelegateAdapter<MessageMeta>
+    private lateinit var adapter: DelegateAdapter<ChannelItem>
     private lateinit var channelSlice: ChannelSlice
     private lateinit var stateSlice: StateSliceChannel
 
@@ -121,15 +123,18 @@ class ChannelController() : BaseController() {
         this.toolbarSlice = ToolbarSliceChannel(mldToolbarSlice)
         this.mldChannelSlice = MutableLiveData()
         val messageMe = MessageItemMe(mldChannelSlice, userProperties, virgilHelper)
-                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
+                as DelegateAdapterItem<BaseViewHolder<ChannelItem>, ChannelItem>
         val messageYou = MessageItemYou(mldChannelSlice, userProperties, virgilHelper)
-                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
+                as DelegateAdapterItem<BaseViewHolder<ChannelItem>, ChannelItem>
         val messageInDevelopment = MessageItemInDevelopment()
-                as DelegateAdapterItem<BaseViewHolder<MessageMeta>, MessageMeta>
-        this.adapter = DelegateAdapter.Builder<MessageMeta>()
+                as DelegateAdapterItem<BaseViewHolder<ChannelItem>, ChannelItem>
+        val dateItem = DateItem()
+                as DelegateAdapterItem<BaseViewHolder<ChannelItem>, ChannelItem>
+        this.adapter = DelegateAdapter.Builder<ChannelItem>()
                 .add(messageMe)
                 .add(messageYou)
                 .add(messageInDevelopment)
+                .add(dateItem)
                 .diffCallback(diffCallback)
                 .build()
         val layoutManager = LinearLayoutManager(activity)

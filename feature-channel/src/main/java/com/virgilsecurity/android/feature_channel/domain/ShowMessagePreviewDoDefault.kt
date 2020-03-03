@@ -55,7 +55,7 @@ import java.nio.charset.Charset
  */
 
 /**
- * SendMessageDoDefault
+ * ShowMessagePreviewDoDefault
  */
 class ShowMessagePreviewDoDefault(
         private val userProperties: UserProperties
@@ -74,7 +74,8 @@ class ShowMessagePreviewDoDefault(
                             body,
                             sender,
                             PREVIEW_CHANNEL_SID,
-                            false // TODO change when have attachments
+                            false,
+                                System.currentTimeMillis()// TODO change when have attachments
                         )
                     )
                 }

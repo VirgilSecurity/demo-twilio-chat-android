@@ -56,7 +56,7 @@ import com.virgilsecurity.android.common.data.local.users.UsersQao
 /**
  * RoomDB
  */
-@Database(entities = [User::class, ChannelMeta::class, MessageMeta::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, ChannelMeta::class, MessageMeta::class], version = 2, exportSchema = false)
 abstract class RoomDB : RoomDatabase() {
 
     abstract fun usersQao(): UsersQao

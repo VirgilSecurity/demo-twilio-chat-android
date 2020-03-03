@@ -35,14 +35,13 @@ package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
+import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.domain.ShowMessagePreviewDoDefault
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
-import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -62,39 +61,41 @@ class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Act
                     private val userProperties: UserProperties,
                     private val virgilHelper: VirgilHelper,
                     override val layoutResourceId: Int = R.layout.item_message_me
-) : DelegateAdapterItemDefault<MessageMeta>() {
+) : DelegateAdapterItemDefault<ChannelItem>() {
 
-    override fun onBind(item: MessageMeta, viewHolder: KViewHolder<MessageMeta>) =
-            with(viewHolder.containerView) {
-                val text = if (item.threadId == ShowMessagePreviewDoDefault.PREVIEW_CHANNEL_SID)
-                    item.body!!
-                else {
-                    try {
-                        val json = ConvertionUtils.base64ToString(item.body!!)
-                        val map = ConvertionUtils.deserializeMapFromJson(json)
-                        virgilHelper.decrypt(map["ciphertext"]!!)
-                    } catch(e: Exception) {
-                        "**Could not decrypt this message**"
-                    }
-                }
+    override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {
+        val item = (item as ChannelItem.Message).value
 
-                findViewById<TextView>(R.id.tvMessage).text = text
-
-                setOnClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                }
-
-                setOnLongClickListener {
-                    actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                    actionLiveData.value = ChannelSlice.Action.Idle
-                    true
+        with(viewHolder.containerView) {
+            val text = if (item.threadId == ShowMessagePreviewDoDefault.PREVIEW_CHANNEL_SID)
+                item.body!!
+            else {
+                try {
+                    virgilHelper.decrypt(item.body!!)
+                } catch (e: Exception) {
+                    "**Could not decrypt this message**"
                 }
             }
 
-    override fun onRecycled(holder: KViewHolder<MessageMeta>) {}
+            findViewById<TextView>(R.id.tvMessage).text = text
 
-    override fun isForViewType(items: List<*>, position: Int): Boolean =
-            (items[position] as MessageMeta).sender == userProperties.currentUser!!.identity &&
-            (items[position] as MessageMeta).isNotInDevelopment()
+            setOnClickListener {
+                actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
+                actionLiveData.value = ChannelSlice.Action.Idle
+            }
+
+            setOnLongClickListener {
+                actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
+                actionLiveData.value = ChannelSlice.Action.Idle
+                true
+            }
+        }
+    }
+
+    override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
+
+    override fun isForViewType(items: List<*>, position: Int): Boolean {
+        val item = (items[position] as? ChannelItem.Message)?.value ?: return false
+        return item.sender == userProperties.currentUser!!.identity && item.isNotInDevelopment()
+    }
 }

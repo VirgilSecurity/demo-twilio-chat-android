@@ -33,59 +33,29 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
+import android.text.format.DateUtils
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
-import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
-import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import java.util.*
 
 /**
- * . _  _
- * .| || | _
- * -| || || |   Created by:
- * .| || || |-  Danylo Oliinyk
- * ..\_  || |   on
- * ....|  _/    8/9/18
- * ...-| | \    at Virgil Security
- * ....|_|-
+ * MessageItemDate
  */
-
-/**
- * MessageItemMe
- */
-class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Action>,
-                     private val userProperties: UserProperties,
-                     private val virgilHelper: VirgilHelper,
-                     override val layoutResourceId: Int = R.layout.item_message_you
+class DateItem(
+        override val layoutResourceId: Int = R.layout.item_date
 ) : DelegateAdapterItemDefault<ChannelItem>() {
 
     override fun onBind(item: ChannelItem, viewHolder: KViewHolder<ChannelItem>) {
-        val item = (item as ChannelItem.Message).value
-
-        with(viewHolder.containerView)
-        {
-            findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
-
-            setOnClickListener {
-                actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
-                actionLiveData.value = ChannelSlice.Action.Idle
-            }
-
-            setOnLongClickListener {
-                actionLiveData.value = ChannelSlice.Action.MessageLongClicked(item)
-                actionLiveData.value = ChannelSlice.Action.Idle
-                true
-            }
+        val date = (item as ChannelItem.Date).value!!
+        with(viewHolder.containerView) {
+            findViewById<TextView>(R.id.tvDate).text = date
         }
     }
 
     override fun onRecycled(holder: KViewHolder<ChannelItem>) {}
 
-    override fun isForViewType(items: List<*>, position: Int): Boolean {
-        val item = (items[position] as? ChannelItem.Message)?.value ?: return false
-        return item.sender != userProperties.currentUser!!.identity && item.isNotInDevelopment()
-    }
+    override fun isForViewType(items: List<*>, position: Int): Boolean =
+            items[position] is ChannelItem.Date
 }

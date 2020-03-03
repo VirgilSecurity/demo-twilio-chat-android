@@ -38,6 +38,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 /**
  * . _  _
@@ -69,7 +70,10 @@ class MessageMeta(
         val threadId: String,
 
         @ColumnInfo(name = KEY_IN_DEVELOPMENT)
-        val inDevelopment: Boolean
+        val inDevelopment: Boolean,
+
+        @ColumnInfo(name = KEY_DATE)
+        val date: Long
 ) : Comparable<MessageMeta>, Parcelable {
 
     override fun compareTo(other: MessageMeta): Int = this.sid.compareTo(other.sid)
@@ -105,5 +109,6 @@ class MessageMeta(
         const val KEY_SENDER = "sender"
         const val KEY_THREAD_ID = "thread_id"
         const val KEY_IN_DEVELOPMENT = "in_development"
+        const val KEY_DATE = "date"
     }
 }
