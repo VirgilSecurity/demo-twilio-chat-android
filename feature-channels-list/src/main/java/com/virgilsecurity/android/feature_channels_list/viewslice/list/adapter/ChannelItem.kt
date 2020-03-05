@@ -42,8 +42,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.UserUtils
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.UserUtils
 import com.virgilsecurity.android.feature_channels_list.R
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice
 

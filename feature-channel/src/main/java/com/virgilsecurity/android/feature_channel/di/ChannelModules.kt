@@ -37,8 +37,8 @@ import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.extension.moduleWithScope
 import com.virgilsecurity.android.feature_channel.data.interactor.CardsInteractor
 import com.virgilsecurity.android.feature_channel.data.interactor.CardsInteractorDefault
-import com.virgilsecurity.android.common.data.repository.MessagesRepository
-import com.virgilsecurity.android.common.data.repository.MessagesRepositoryDefault
+import com.virgilsecurity.android.bcommon.data.repository.MessagesRepository
+import com.virgilsecurity.android.bcommon.data.repository.MessagesRepositoryDefault
 import com.virgilsecurity.android.feature_channel.domain.*
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM

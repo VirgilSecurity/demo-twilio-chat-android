@@ -35,7 +35,7 @@ package com.virgilsecurity.android.feature_settings.domain
 
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
+import com.virgilsecurity.android.bcommon.data.helper.smack.SmackHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

@@ -46,9 +46,9 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBinding
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.currentScopeViewModel
-import com.virgilsecurity.android.common.view.LinkMovementMethodNoSelection
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.currentScopeViewModel
+import com.virgilsecurity.android.bcommon.view.LinkMovementMethodNoSelection
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.databinding.ControllerRegisterBinding
 import com.virgilsecurity.android.feature_login.viewmodel.registration.RegistrationVM

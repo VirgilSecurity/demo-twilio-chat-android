@@ -36,7 +36,7 @@ package com.virgilsecurity.android.virgilmessenger
 import android.app.Application
 import android.os.StrictMode
 import authActivityModule
-import com.virgilsecurity.android.common.di.*
+import com.virgilsecurity.android.bcommon.di.*
 import com.virgilsecurity.android.feature_channel.di.channelModule
 import com.virgilsecurity.android.feature_channels_list.di.channelsListModule
 import com.virgilsecurity.android.feature_contacts.di.addContactModule

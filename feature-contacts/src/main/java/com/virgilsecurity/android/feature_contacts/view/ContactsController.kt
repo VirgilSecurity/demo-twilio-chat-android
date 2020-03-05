@@ -46,9 +46,9 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.common.di.CommonDiConst
-import com.virgilsecurity.android.common.util.currentScope
-import com.virgilsecurity.android.common.util.currentScopeViewModel
+import com.virgilsecurity.android.bcommon.di.CommonDiConst
+import com.virgilsecurity.android.bcommon.util.currentScope
+import com.virgilsecurity.android.bcommon.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.viewmodel.list.ContactsVM
 import com.virgilsecurity.android.feature_contacts.viewslice.contacts.list.ContactsSlice

@@ -36,8 +36,8 @@ package com.virgilsecurity.android.feature_contacts.domain.addContact
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.exception.AddingUserThatExistsException
-import com.virgilsecurity.android.common.data.exception.EmptyCardsException
+import com.virgilsecurity.android.bcommon.data.exception.AddingUserThatExistsException
+import com.virgilsecurity.android.bcommon.data.exception.EmptyCardsException
 import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

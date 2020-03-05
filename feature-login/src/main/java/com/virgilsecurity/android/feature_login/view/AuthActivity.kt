@@ -46,9 +46,9 @@ import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.base.view.activity.BActivityController
-import com.virgilsecurity.android.common.util.DoubleBack
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.view.ScreenChat
+import com.virgilsecurity.android.bcommon.util.DoubleBack
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.view.ScreenChat
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import kotlinx.android.synthetic.main.activity_login.*

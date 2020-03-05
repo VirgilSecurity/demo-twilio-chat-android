@@ -39,8 +39,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 import android.graphics.Point
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.view.Toolbar
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.view.Toolbar
 import com.virgilsecurity.android.feature_settings.R
 
 /**

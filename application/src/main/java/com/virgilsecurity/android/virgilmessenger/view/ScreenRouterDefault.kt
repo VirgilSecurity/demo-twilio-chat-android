@@ -38,7 +38,7 @@ import android.content.Intent
 import android.os.Parcelable
 import com.virgilsecurity.android.base.view.Screen
 import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.common.view.ScreenChat
+import com.virgilsecurity.android.bcommon.view.ScreenChat
 import com.virgilsecurity.android.feature_drawer_navigation.view.DrawerNavigationActivity
 import com.virgilsecurity.android.feature_login.view.AuthActivity
 

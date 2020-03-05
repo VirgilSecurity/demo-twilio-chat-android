@@ -43,9 +43,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.util.ImageStorage
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.UserUtils
+import com.virgilsecurity.android.bcommon.util.ImageStorage
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.UserUtils
 import com.virgilsecurity.android.feature_settings.R
 import de.hdodenhof.circleimageview.CircleImageView
 
