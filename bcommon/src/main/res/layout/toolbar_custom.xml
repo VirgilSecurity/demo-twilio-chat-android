@@ -84,7 +84,7 @@
             android:textColor="@color/snow"
             android:textSize="20sp"
             android:visibility="visible"
-            tools:text="Messenger" />
+            tools:text="Virgil" />
 
         <TextView
             android:id="@+id/tvSubTitle"

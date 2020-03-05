@@ -15,7 +15,7 @@ def versionMinor = 0
 def versionPatch = 1
 
 static def getApkName(BuildType buildType) {
-    def APP_NAME = "Virgil Messenger "
+    def APP_NAME = "Virgil "
     switch (buildType) {
         case BuildType.DEBUG:
             return APP_NAME + BuildType.DEBUG.name()
@@ -63,14 +63,14 @@ android {
                     versionMinor + "." +
                     versionPatch
 
-            applicationName = "Virgil Messenger Debug"
+            applicationName = "Virgil Debug"
         } else {
             apkName = getApkName(BuildType.RELEASE) + " v" +
                     versionMajor + "." +
                     versionMinor + "." +
                     versionPatch
 
-            applicationName = "Virgil Messenger"
+            applicationName = "Virgil"
         }
 
         resValue "string", "app_name", applicationName
