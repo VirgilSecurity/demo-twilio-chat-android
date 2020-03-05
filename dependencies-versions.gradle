@@ -83,7 +83,7 @@ ext.versions = [
         'googleServices'        : '4.3.3',
 
         // Crashlytics
-        'crashlytics'           : '1.25.4',
+        'crashlytics'           : '1.28.0',
         'crashlyticsSdk'        : '2.10.1',
         'firebaseCore'          : '17.2.2',
 
