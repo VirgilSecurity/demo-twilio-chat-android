@@ -36,8 +36,8 @@ package com.virgilsecurity.android.feature_channels_list.domain.list
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.repository.ChannelsRepository
-import com.virgilsecurity.android.common.data.repository.MessagesRepository
+import com.virgilsecurity.android.bcommon.data.repository.ChannelsRepository
+import com.virgilsecurity.android.bcommon.data.repository.MessagesRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

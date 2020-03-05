@@ -35,8 +35,8 @@ import LoginDiConst.VM_AUTH
 import androidx.lifecycle.MediatorLiveData
 import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.extension.moduleWithScope
-import com.virgilsecurity.android.common.data.remote.auth.AuthRemote
-import com.virgilsecurity.android.common.util.DoubleBack
+import com.virgilsecurity.android.bcommon.data.remote.auth.AuthRemote
+import com.virgilsecurity.android.bcommon.util.DoubleBack
 import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractor
 import com.virgilsecurity.android.feature_login.data.interactor.AuthInteractorDefault
 import com.virgilsecurity.android.feature_login.domain.login.LoadUsersDo

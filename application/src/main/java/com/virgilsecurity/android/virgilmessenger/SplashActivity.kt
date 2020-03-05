@@ -39,7 +39,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.common.view.ScreenChat
+import com.virgilsecurity.android.bcommon.view.ScreenChat
 import org.koin.android.ext.android.inject
 
 

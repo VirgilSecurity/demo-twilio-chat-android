@@ -36,7 +36,7 @@ package com.virgilsecurity.android.feature_contacts.domain.list
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.repository.MessagesRepository
+import com.virgilsecurity.android.bcommon.data.repository.MessagesRepository
 import com.virgilsecurity.android.feature_contacts.domain.list.GetMessageMetasDo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

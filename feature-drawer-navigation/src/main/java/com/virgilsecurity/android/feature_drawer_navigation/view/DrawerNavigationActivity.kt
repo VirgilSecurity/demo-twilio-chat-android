@@ -48,8 +48,8 @@ import com.virgilsecurity.android.base.extension.hasNoRootController
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.ScreenRouter
 import com.virgilsecurity.android.base.view.activity.BActivityControllerSlices
-import com.virgilsecurity.android.common.util.ImageStorage
-import com.virgilsecurity.android.common.view.ScreenChat
+import com.virgilsecurity.android.bcommon.util.ImageStorage
+import com.virgilsecurity.android.bcommon.view.ScreenChat
 import com.virgilsecurity.android.feature_channel.view.ChannelController
 import com.virgilsecurity.android.feature_channels_list.view.ChannelsListController
 import com.virgilsecurity.android.feature_contacts.view.AddContactController

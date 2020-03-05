@@ -37,7 +37,7 @@ import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice

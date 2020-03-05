@@ -36,8 +36,8 @@ package com.virgilsecurity.android.feature_drawer_navigation.data.interactor
 import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.common.data.helper.smack.SmackHelper
-import com.virgilsecurity.android.common.util.AuthUtils
+import com.virgilsecurity.android.bcommon.data.helper.smack.SmackHelper
+import com.virgilsecurity.android.bcommon.util.AuthUtils
 import io.reactivex.Completable
 import io.reactivex.Single
 

@@ -43,7 +43,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.sdsmdg.harjot.vectormaster.VectorMasterView
 import com.virgilsecurity.android.base.viewslice.BaseViewSlice
-import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.UiUtils
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

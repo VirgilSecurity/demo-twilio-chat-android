@@ -45,9 +45,9 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BControllerBinding
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.currentScope
-import com.virgilsecurity.android.common.util.currentScopeViewModel
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.currentScope
+import com.virgilsecurity.android.bcommon.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_contacts.R
 import com.virgilsecurity.android.feature_contacts.databinding.ControllerAddContactBinding
 import com.virgilsecurity.android.feature_contacts.viewmodel.addContact.AddContactVM

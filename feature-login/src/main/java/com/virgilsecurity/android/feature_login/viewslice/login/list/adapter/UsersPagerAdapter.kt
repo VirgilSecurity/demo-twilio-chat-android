@@ -43,10 +43,10 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.inflate
-import com.virgilsecurity.android.common.util.ImageStorage
-import com.virgilsecurity.android.common.util.ImageStorageLocal
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.UserUtils
+import com.virgilsecurity.android.bcommon.util.ImageStorage
+import com.virgilsecurity.android.bcommon.util.ImageStorageLocal
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.UserUtils
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice
 import java.util.*

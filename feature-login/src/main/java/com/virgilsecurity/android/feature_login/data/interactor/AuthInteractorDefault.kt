@@ -37,8 +37,8 @@ import com.virgilsecurity.android.base.data.api.AuthApi
 import com.virgilsecurity.android.base.data.model.SignUpResponse
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
-import com.virgilsecurity.android.common.data.repository.UsersRepository
+import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.data.repository.UsersRepository
 import com.virgilsecurity.android.feature_login.data.exception.AlreadyRegisteredException
 import io.reactivex.Single
 

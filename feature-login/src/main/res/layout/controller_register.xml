@@ -144,7 +144,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnNext" />
 
-        <com.virgilsecurity.android.common.view.TextViewNoUnderline
+        <com.virgilsecurity.android.bcommon.view.TextViewNoUnderline
             android:id="@+id/tvPolicy2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPolicy1" />
 
-        <com.virgilsecurity.android.common.view.TextViewNoUnderline
+        <com.virgilsecurity.android.bcommon.view.TextViewNoUnderline
             android:id="@+id/tvPolicy4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

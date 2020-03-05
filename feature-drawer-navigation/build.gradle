@@ -38,7 +38,7 @@ apply from: '../config-android.gradle'
 // Inner dependencies
 dependencies {
     implementation project(":base")
-    implementation project(":common")
+    implementation project(':bcommon')
     api project(":feature-contacts")
     api project(":feature-channels-list")
     api project(":feature-channel")

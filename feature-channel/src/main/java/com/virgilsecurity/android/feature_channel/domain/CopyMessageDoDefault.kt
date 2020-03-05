@@ -37,7 +37,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.virgilsecurity.android.base.domain.BaseDo
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 

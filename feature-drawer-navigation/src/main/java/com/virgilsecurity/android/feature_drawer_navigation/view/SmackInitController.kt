@@ -39,7 +39,7 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.common.util.currentScopeViewModel
+import com.virgilsecurity.android.bcommon.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_drawer_navigation.R
 import com.virgilsecurity.android.feature_drawer_navigation.viewmodel.InitSmackVM
 import com.virgilsecurity.android.feature_drawer_navigation.viewslice.smackInit.interaction.SliceSmackInit

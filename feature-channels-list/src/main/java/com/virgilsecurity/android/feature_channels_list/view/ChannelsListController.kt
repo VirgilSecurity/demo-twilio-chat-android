@@ -46,8 +46,8 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.common.di.CommonDiConst
-import com.virgilsecurity.android.common.util.currentScopeViewModel
+import com.virgilsecurity.android.bcommon.di.CommonDiConst
+import com.virgilsecurity.android.bcommon.util.currentScopeViewModel
 import com.virgilsecurity.android.feature_channels_list.R
 import com.virgilsecurity.android.feature_channels_list.viewmodel.list.ChannelsVM
 import com.virgilsecurity.android.feature_channels_list.viewslice.list.ChannelsSlice

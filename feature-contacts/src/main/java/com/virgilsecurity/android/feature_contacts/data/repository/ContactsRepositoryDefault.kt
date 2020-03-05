@@ -36,9 +36,9 @@ package com.virgilsecurity.android.feature_contacts.data.repository
 import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
-import com.virgilsecurity.android.common.data.exception.EmptyCardsException
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
-import com.virgilsecurity.android.common.data.remote.channels.ChannelIdGenerator
+import com.virgilsecurity.android.bcommon.data.exception.EmptyCardsException
+import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single

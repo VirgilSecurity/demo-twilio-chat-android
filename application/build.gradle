@@ -27,6 +27,11 @@ static def getApkName(BuildType buildType) {
 // Android configurations
 
 android {
+    signingConfigs {
+        release {
+            // TODO: add secret stuff here
+        }
+    }
     defaultConfig {
         applicationId 'com.virgilsecurity.android.virgilmessenger'
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -34,11 +39,12 @@ android {
     }
     buildTypes {
         release {
-            debuggable false
-            minifyEnabled true
-            shrinkResources true
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             jniDebuggable false
+            signingConfig signingConfigs.release
         }
         debug {
             debuggable true
@@ -78,7 +84,7 @@ android {
 // Inner dependencies
 dependencies {
     implementation project(':base')
-    implementation project(':common')
+    implementation project(':bcommon')
     implementation project(':feature-login')
     api project(':feature-drawer-navigation')
 }

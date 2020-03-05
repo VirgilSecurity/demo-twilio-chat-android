@@ -42,8 +42,8 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.model.User
 import com.virgilsecurity.android.base.extension.observe
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.common.util.ImageStorage
-import com.virgilsecurity.android.common.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.ImageStorage
+import com.virgilsecurity.android.bcommon.util.UiUtils
 import com.virgilsecurity.android.feature_login.R
 import com.virgilsecurity.android.feature_login.viewmodel.login.AuthVM
 import com.virgilsecurity.android.feature_login.viewslice.login.list.ViewPagerSlice

@@ -48,10 +48,10 @@ import com.virgilsecurity.android.base.view.adapter.DelegateAdapter
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItem
 import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
-import com.virgilsecurity.android.common.data.helper.virgil.VirgilHelper
-import com.virgilsecurity.android.common.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
-import com.virgilsecurity.android.common.util.UiUtils
-import com.virgilsecurity.android.common.util.currentScope
+import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
+import com.virgilsecurity.android.bcommon.util.UiUtils
+import com.virgilsecurity.android.bcommon.util.currentScope
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewmodel.ChannelVM
