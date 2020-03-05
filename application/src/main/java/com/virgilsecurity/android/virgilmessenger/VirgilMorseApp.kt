@@ -97,7 +97,9 @@ class VirgilMorseApp : Application() {
             )
         }
 
-        initStrictMode()
+        if (BuildConfig.DEBUG) {
+            initStrictMode()
+        }
     }
 
     private fun KoinApplication.modules(vararg modules: Module): KoinApplication =
