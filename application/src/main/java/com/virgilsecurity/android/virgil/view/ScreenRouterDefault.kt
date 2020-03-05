@@ -31,12 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger.di
+package com.virgilsecurity.android.virgil.view
 
+import android.content.Context
+import android.content.Intent
+import android.os.Parcelable
+import com.virgilsecurity.android.base.view.Screen
 import com.virgilsecurity.android.base.view.ScreenRouter
-import com.virgilsecurity.android.virgilmessenger.view.ScreenRouterDefault
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.virgilsecurity.android.bcommon.view.ScreenChat
+import com.virgilsecurity.android.feature_drawer_navigation.view.DrawerNavigationActivity
+import com.virgilsecurity.android.feature_login.view.AuthActivity
 
 /**
  * . _  _
@@ -44,15 +48,36 @@ import org.koin.dsl.module
  * -| || || |   Created by:
  * .| || || |-  Danylo Oliinyk
  * ..\_  || |   on
- * ....|  _/    7/4/18
+ * ....|  _/    6/21/18
  * ...-| | \    at Virgil Security
  * ....|_|-
  */
 
 /**
- * AppModules
+ * ScreenRouterDefault
  */
+class ScreenRouterDefault : ScreenRouter {
 
-val appModule: Module = module {
-    single { ScreenRouterDefault() as ScreenRouter }
+    override fun getScreenIntent(context: Context,
+                                 screen: Screen): Intent? {
+        val screenClass = getScreenClass(screen)
+        return if (screenClass == null) null else Intent(context, screenClass)
+    }
+
+    override fun getScreenIntent(context: Context,
+                                 screen: Screen,
+                                 key: String,
+                                 value: Parcelable): Intent? {
+        val screenClass = getScreenClass(screen)
+
+        return if (screenClass == null) null else Intent(context, screenClass).apply {
+            putExtra(key, value)
+        }
+    }
+
+    private fun getScreenClass(screen: Screen) = when (screen) {
+        ScreenChat.Login -> AuthActivity::class.java
+        ScreenChat.DrawerNavigation -> DrawerNavigationActivity::class.java
+        else -> null
+    }
 }
