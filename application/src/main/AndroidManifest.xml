@@ -33,10 +33,10 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.virgilsecurity.android.virgilmessenger">
+    package="com.virgilsecurity.android.virgil">
 
     <application
-        android:name="com.virgilsecurity.android.virgilmessenger.VirgilMorseApp"
+        android:name="com.virgilsecurity.android.virgil.VirgilApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -46,7 +46,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:supportsRtl">
         <activity
-            android:name="com.virgilsecurity.android.virgilmessenger.SplashActivity"
+            android:name="com.virgilsecurity.android.virgil.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>

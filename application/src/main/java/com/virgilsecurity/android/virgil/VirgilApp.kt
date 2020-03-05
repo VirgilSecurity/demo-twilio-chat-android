@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.virgilsecurity.android.virgilmessenger
+package com.virgilsecurity.android.virgil
 
 import android.app.Application
 import android.os.StrictMode
@@ -44,7 +44,7 @@ import com.virgilsecurity.android.feature_contacts.di.contactsModule
 import com.virgilsecurity.android.feature_drawer_navigation.di.smackInitModule
 import com.virgilsecurity.android.feature_settings.di.settingsEditModule
 import com.virgilsecurity.android.feature_settings.di.settingsModule
-import com.virgilsecurity.android.virgilmessenger.di.appModule
+import com.virgilsecurity.android.virgil.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -62,13 +62,13 @@ import registrationControllerModule
  * ....|_|-
  */
 
-class VirgilMorseApp : Application() {
+class VirgilApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
-            androidContext(this@VirgilMorseApp)
+            androidContext(this@VirgilApp)
             modules(
                 // Base modules
                 utilsModule, networkModule, virgilModule, smackModule, paramsModule,
