@@ -10,7 +10,7 @@ buildscript {
         apply from: 'dependencies-versions.gradle'
         apply from: 'dependencies-all.gradle'
 
-        classpath deps.build.gradle
+        classpath "com.android.tools.build:gradle:3.6.1"
         classpath deps.build.kotlinGradlePlugin
 
         classpath deps.google.googleServices
