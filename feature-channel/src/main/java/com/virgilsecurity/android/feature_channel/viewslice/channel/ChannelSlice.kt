@@ -100,7 +100,7 @@ class ChannelSlice(
         var prevMessageDate: Long = 0
         // add dates
         val items = messages.fold(listOf()) { acc: List<ChannelItem>, messageMeta: MessageMeta ->
-            val messageDate = messageMeta.date * 1000
+            val messageDate = messageMeta.getDateMillisSince1970()
 
             val date = if (sameDate(messageDate, prevMessageDate))
                 listOf<ChannelItem>()
