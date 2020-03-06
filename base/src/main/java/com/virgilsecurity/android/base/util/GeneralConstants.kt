@@ -55,4 +55,6 @@ object GeneralConstants {
     const val TYPE_GROUP = "group"
 
     const val EMPTY_ATTRIBUTES = "{}"
+
+    const val APPLE_TIME_OFFSET = 978307200
 }

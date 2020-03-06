@@ -37,6 +37,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import android.os.Parcelable
+import com.virgilsecurity.android.base.util.GeneralConstants.APPLE_TIME_OFFSET
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -79,6 +80,10 @@ class MessageMeta(
     override fun compareTo(other: MessageMeta): Int = this.sid.compareTo(other.sid)
 
     fun isNotInDevelopment() = !inDevelopment
+
+    fun getDateMillisSince1970(): Long {
+        return (date + APPLE_TIME_OFFSET)*1000
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

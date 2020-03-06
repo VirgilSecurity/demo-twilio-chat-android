@@ -38,6 +38,7 @@ import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.dao.MessagesDao
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.base.util.GeneralConstants.APPLE_TIME_OFFSET
 import com.virgilsecurity.android.bcommon.data.model.exception.TooLongMessageException
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import io.reactivex.Completable
@@ -72,9 +73,7 @@ class MessagesRepositoryDefault(
             if (body.toByteArray(Charset.forName("UTF-8")).size > MAX_MESSAGE_BODY_SIZE)
                 Completable.error { TooLongMessageException() }
             else {
-                val time = System.currentTimeMillis() / 1000
-
-                messagesApi.sendMessage(channelMeta, body, time)
+                messagesApi.sendMessage(channelMeta, body, getAppleDate())
                         .flatMapCompletable {
                             messagesDao.addMessage(it)
                                     .subscribeOn(Schedulers.io())
@@ -91,6 +90,10 @@ class MessagesRepositoryDefault(
 
                         messagesDao.addMessage(it.second).andThen(Flowable.just(it))
                     }
+
+    private fun getAppleDate(): Long {
+        return System.currentTimeMillis() / 1000 - APPLE_TIME_OFFSET
+    }
 
     companion object {
         const val MAX_MESSAGE_BODY_SIZE = 32000 // 32Kb
