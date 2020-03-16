@@ -112,7 +112,11 @@ class SmackHelper(
                     }
                     .flatMapCompletable { smackRx.login(connection!!) }
         } else {
-            return Completable.error(IllegalStateException("Already initialized."))
+            return if (identity != userProperties.currentUser?.identity) {
+                Completable.error(IllegalStateException("Already initialized."))
+            } else {
+                return stopClient().andThen(startClient(identity, password))
+            }
         }
     }
 
