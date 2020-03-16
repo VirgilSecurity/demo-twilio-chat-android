@@ -50,6 +50,7 @@ import com.virgilsecurity.android.base.view.adapter.DiffCallback
 import com.virgilsecurity.android.base.view.controller.BaseController
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.bcommon.di.CommonDiConst.KEY_DIFF_CALLBACK_MESSAGE_META
+import com.virgilsecurity.android.bcommon.util.JsonUtils
 import com.virgilsecurity.android.bcommon.util.UiUtils
 import com.virgilsecurity.android.bcommon.util.currentScope
 import com.virgilsecurity.android.feature_channel.R
@@ -114,7 +115,15 @@ class ChannelController() : BaseController() {
             ivSend.setOnClickListener {
                 if (etMessage.text.isNotBlank()) {
                     viewModel.showMessagePreview(etMessage.text.toString()) // To improve user experience
-                    viewModel.sendMessage(etMessage.text.toString(), channel)
+
+                    val map = mapOf(
+                            "type" to "text",
+                            "payload" to mapOf(
+                                    "body" to etMessage.text.toString()
+                            )
+                    )
+
+                    viewModel.sendMessage(JsonUtils.mapToString(map), channel)
                 }
             }
         }

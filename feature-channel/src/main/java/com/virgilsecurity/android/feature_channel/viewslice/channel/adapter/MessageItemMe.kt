@@ -38,10 +38,13 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.util.JsonUtils
+import com.virgilsecurity.android.bcommon.util.MessageUtils
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.domain.ShowMessagePreviewDoDefault
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
+import com.virgilsecurity.sdk.utils.ConvertionUtils
 
 /**
  * . _  _
@@ -70,11 +73,7 @@ class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Act
             val text = if (item.threadId == ShowMessagePreviewDoDefault.PREVIEW_CHANNEL_SID)
                 item.body!!
             else {
-                try {
-                    virgilHelper.decrypt(item.body!!)
-                } catch (e: Exception) {
-                    "**Could not decrypt this message**"
-                }
+                MessageUtils.getMessageText(item, virgilHelper)
             }
 
             findViewById<TextView>(R.id.tvMessage).text = text

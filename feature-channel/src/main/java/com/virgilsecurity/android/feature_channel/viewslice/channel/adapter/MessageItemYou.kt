@@ -38,6 +38,8 @@ import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.view.adapter.DelegateAdapterItemDefault
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
+import com.virgilsecurity.android.bcommon.util.JsonUtils
+import com.virgilsecurity.android.bcommon.util.MessageUtils
 import com.virgilsecurity.android.feature_channel.R
 import com.virgilsecurity.android.feature_channel.data.interactor.model.ChannelItem
 import com.virgilsecurity.android.feature_channel.viewslice.channel.ChannelSlice
@@ -67,7 +69,8 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
 
         with(viewHolder.containerView)
         {
-            findViewById<TextView>(R.id.tvMessage).text = virgilHelper.decrypt(item.body!!)
+            val text = MessageUtils.getMessageText(item, virgilHelper)
+            findViewById<TextView>(R.id.tvMessage).text = text
 
             setOnClickListener {
                 actionLiveData.value = ChannelSlice.Action.MessageClicked(item)

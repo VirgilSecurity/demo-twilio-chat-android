@@ -57,4 +57,6 @@ object GeneralConstants {
     const val EMPTY_ATTRIBUTES = "{}"
 
     const val APPLE_TIME_OFFSET = 978307200
+
+    const val MESSAGE_VERSION = "v2"
 }

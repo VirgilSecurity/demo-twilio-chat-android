@@ -36,7 +36,9 @@ package com.virgilsecurity.android.bcommon.data.helper.smack
 import com.google.gson.reflect.TypeToken
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
+import com.virgilsecurity.android.base.util.GeneralConstants.MESSAGE_VERSION
 import com.virgilsecurity.android.bcommon.data.remote.channels.ChannelIdGenerator
+import com.virgilsecurity.android.bcommon.util.JsonUtils
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
@@ -147,17 +149,15 @@ class SmackRx {
 
                             val json = ConvertionUtils.base64ToString(message.body!!)
 
-                            val map = ConvertionUtils.getGson().fromJson<Map<String, Any?>>(
-                                    json,
-                                    object : TypeToken<Map<String, Any?>?>() {}.type
-                            )
+                            val map = JsonUtils.stringToMap(json)
 
                             val messageMeta = MessageMeta(message.stanzaId,
-                                                          map["ciphertext"]!! as String,
-                                                          sender,
-                                                          channelId,
-                                                          false,
-                                    (map["date"]!! as Double).toLong())
+                                    map["ciphertext"]!! as String,
+                                    sender,
+                                    channelId,
+                                    false,
+                                    (map["date"]!! as Double).toLong(),
+                                    map["codableVersion"] as? String ?: "v1")
 
                             it.onNext(Pair(channelMeta, messageMeta))
                             // FIXME where to place onComplete?
@@ -187,7 +187,8 @@ class SmackRx {
 
             stanza.body = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
                     "date" to date,
-                    "ciphertext" to body
+                    "ciphertext" to body,
+                    "codableVersion" to MESSAGE_VERSION
             )))
 
 
@@ -201,7 +202,8 @@ class SmackRx {
                     currentIdentity,
                     channelId,
                     false,
-                    date
+                    date,
+                    MESSAGE_VERSION
             )
 
             it.onSuccess(messMeta)
