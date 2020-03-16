@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.bcommon.data.helper.smack
 
+import com.google.gson.reflect.TypeToken
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.bcommon.data.remote.channels.ChannelIdGenerator
@@ -50,7 +51,6 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
 import org.jxmpp.jid.impl.JidCreate
 import java.net.InetAddress
-import java.util.*
 
 /**
  * SmackRx
@@ -146,14 +146,18 @@ class SmackRx {
                             message.setStanzaId()
 
                             val json = ConvertionUtils.base64ToString(message.body!!)
-                            val map = ConvertionUtils.deserializeMapFromJson(json)
+
+                            val map = ConvertionUtils.getGson().fromJson<Map<String, Any?>>(
+                                    json,
+                                    object : TypeToken<Map<String, Any?>?>() {}.type
+                            )
 
                             val messageMeta = MessageMeta(message.stanzaId,
-                                                          map["ciphertext"]!!,
+                                                          map["ciphertext"]!! as String,
                                                           sender,
                                                           channelId,
                                                           false,
-                                                          map["date"]!!.toLongOrNull()!!)
+                                    (map["date"]!! as Double).toLong())
 
                             it.onNext(Pair(channelMeta, messageMeta))
                             // FIXME where to place onComplete?
