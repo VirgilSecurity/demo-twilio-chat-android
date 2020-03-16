@@ -36,6 +36,7 @@ package com.virgilsecurity.android.feature_channel.domain
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.data.properties.UserProperties
 import com.virgilsecurity.android.base.domain.BaseDo
+import com.virgilsecurity.android.base.util.GeneralConstants.MESSAGE_VERSION
 import com.virgilsecurity.android.bcommon.data.model.exception.TooLongMessageException
 import com.virgilsecurity.android.bcommon.data.repository.MessagesRepositoryDefault
 import io.reactivex.Single
@@ -75,7 +76,8 @@ class ShowMessagePreviewDoDefault(
                             sender,
                             PREVIEW_CHANNEL_SID,
                             false,
-                                System.currentTimeMillis()// TODO change when have attachments
+                                System.currentTimeMillis(),// TODO change when have attachments
+                                MESSAGE_VERSION
                         )
                     )
                 }
