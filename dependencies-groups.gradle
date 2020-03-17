@@ -61,6 +61,10 @@ ext {
         implementation deps.rx.android
     }
 
+    fcm = Group {
+        implementation deps.fcm.firebaseMessaging
+    }
+
     architectureComponents = Group {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
@@ -80,6 +84,7 @@ ext {
 
     smack = Group {
         implementation deps.smack.smackExt
+        implementation deps.smack.smackExp
         implementation deps.smack.smackTcp
     }
 

@@ -41,6 +41,7 @@ import com.virgilsecurity.android.bcommon.data.helper.fuel.apiSuffix
 import com.virgilsecurity.android.bcommon.data.remote.channels.ChannelIdGenerator
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.ReconnectionListener
 import org.jivesoftware.smack.ReconnectionManager
@@ -48,6 +49,7 @@ import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.chat2.ChatManager
 import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
+import org.jivesoftware.smackx.push_notifications.PushNotificationsManager
 
 
 /**
@@ -63,6 +65,7 @@ class SmackHelper(
     private lateinit var chatManager: ChatManager
     private lateinit var roster: Roster
     private lateinit var reconnectionManager: ReconnectionManager
+    private lateinit var pushNotificationsManager: PushNotificationsManager
 
     fun startClient(identity: String, password: String): Completable {
         if (connection == null) {
@@ -115,7 +118,9 @@ class SmackHelper(
             return if (identity != userProperties.currentUser?.identity) {
                 Completable.error(IllegalStateException("Already initialized."))
             } else {
-                return stopClient().andThen(startClient(identity, password))
+                stopClient().andThen {
+                    Completable.error(IllegalStateException("Already initialized"))
+                }
             }
         }
     }

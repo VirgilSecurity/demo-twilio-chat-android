@@ -33,10 +33,15 @@
 
 package com.virgilsecurity.android.bcommon.data.helper.smack
 
-import com.google.gson.reflect.TypeToken
+import android.provider.Settings.Secure.ANDROID_ID
+import android.provider.Settings.Secure.getString
+import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
 import com.virgilsecurity.android.base.data.model.ChannelMeta
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.base.util.GeneralConstants.MESSAGE_VERSION
+import com.virgilsecurity.android.base.util.GeneralConstants.PUSHES_NODE
+import com.virgilsecurity.android.base.util.GeneralConstants.SMACK_PUSH_HOST
 import com.virgilsecurity.android.bcommon.data.remote.channels.ChannelIdGenerator
 import com.virgilsecurity.android.bcommon.util.JsonUtils
 import com.virgilsecurity.sdk.utils.ConvertionUtils
@@ -51,8 +56,12 @@ import org.jivesoftware.smack.packet.Message
 import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
+import org.jivesoftware.smackx.push_notifications.PushNotificationsManager
 import org.jxmpp.jid.impl.JidCreate
 import java.net.InetAddress
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
+import org.jivesoftware.smack.packet.Presence
 
 /**
  * SmackRx
@@ -89,7 +98,41 @@ class SmackRx {
                 try {
                     val abstractConnection = connection.connect()
                     abstractConnection.login()
-                    it.onComplete()
+
+                    // init push notifications
+                    val pushNotificationsManager = PushNotificationsManager.getInstanceFor(connection)
+
+                    val pushSupport = pushNotificationsManager.isSupported
+                    Log.d("[SMACK]", "Push notifications support: $pushSupport.")
+                    if (pushSupport) {
+                        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener { task ->
+                            if (!task.isSuccessful) {
+                                Log.w("[FIREBASE]", "getInstanceId failed", task.exception)
+                                it.onError(task.exception!!)
+                                return@OnCompleteListener
+                            }
+
+                            // Get new Instance ID token
+                            val token = task.result?.token ?: return@OnCompleteListener
+
+                            val res = pushNotificationsManager.enable(
+                                    JidCreate.bareFrom(SMACK_PUSH_HOST),
+                                    PUSHES_NODE,
+                                    hashMapOf(
+                                            "device_id" to token,
+                                            "service" to "fcm",
+                                            "mutable_content" to "true",
+                                            "topic" to "com.virgilsecurity.android.virgil"
+                                    )
+                            )
+
+                            Log.d("[SMACK]", "Enabled push notifications: $res")
+
+                            connection.sendStanza(Presence(Presence.Type.available))
+
+                            it.onComplete()
+                        })
+                    }
                 } catch (throwable: Throwable) {
                     it.onError(throwable)
                 }
