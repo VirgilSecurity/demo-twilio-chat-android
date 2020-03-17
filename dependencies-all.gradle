@@ -6,6 +6,7 @@ ext.deps = [
                 'gradle'            : "com.android.tools.build:gradle:$versions.gradle",
                 'kotlinGradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
                 'googleServices'    : "com.google.gms:google-services:$versions.googleServices",
+                'crashlyticsGradle' : "com.google.firebase:firebase-crashlytics-gradle:$versions.crashlyticsGradle"
         ],
 
         // MAIN
@@ -50,6 +51,7 @@ ext.deps = [
 
         'smack'             : [
                 'smackExt': "org.igniterealtime.smack:smack-android-extensions:$versions.smack",
+                'smackExp': "org.igniterealtime.smack:smack-experimental:$versions.smack",
                 'smackTcp': "org.igniterealtime.smack:smack-tcp:$versions.smack",
         ],
 
@@ -74,9 +76,12 @@ ext.deps = [
         'vectormaster'      : "com.sdsmdg.harjot:vectormaster:$versions.vectormaster",
 
         'firebase'          : [
-                'firebaseCore'  : "com.google.firebase:firebase-core:$versions.firebaseCore",
-                'crashlyticsSdk': "com.crashlytics.sdk.android:crashlytics:$versions.crashlyticsSdk",
-                'crashlytics'   : "io.fabric.tools:gradle:$versions.crashlytics", // Move to firebase crashlytics https://firebase.google.com/products/crashlytics
+                'firebaseCore'      : "com.google.firebase:firebase-core:$versions.firebaseCore",
+                'crashlyticsSdk'    : "com.google.firebase:firebase-crashlytics:$versions.crashlyticsSdk",
+        ],
+
+        'fcm'               : [
+                'firebaseMessaging' : "com.google.firebase:firebase-messaging:$versions.firebaseMessaging"
         ],
 
         'google'            : [

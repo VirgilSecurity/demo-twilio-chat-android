@@ -3,7 +3,6 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
@@ -12,9 +11,9 @@ buildscript {
 
         classpath "com.android.tools.build:gradle:3.6.1"
         classpath deps.build.kotlinGradlePlugin
+        classpath deps.build.crashlyticsGradle
 
         classpath deps.google.googleServices
-        classpath deps.firebase.crashlytics
     }
 }
 

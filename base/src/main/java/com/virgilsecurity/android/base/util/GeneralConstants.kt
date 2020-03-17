@@ -59,4 +59,7 @@ object GeneralConstants {
     const val APPLE_TIME_OFFSET = 978307200
 
     const val MESSAGE_VERSION = "v2"
+
+    const val PUSHES_NODE = "node"
+    const val SMACK_PUSH_HOST = "push-notifications-proxy"
 }

@@ -54,4 +54,5 @@ dependencies {
     vectormaster()
     smack()
     architectureComponents()
+    fcm()
 }

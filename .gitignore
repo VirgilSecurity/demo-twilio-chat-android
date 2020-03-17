@@ -55,6 +55,8 @@ captures/
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+google-services-debug.json
+google-services-prod.json
 
 # Freeline
 freeline.py
