@@ -8,16 +8,19 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.virgilsecurity.android.base.data.dao.ChannelsDao
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.bcommon.util.JsonUtils
 import com.virgilsecurity.android.bcommon.util.MessageUtils
+import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepository
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class NotificationGenie : FirebaseMessagingService(), KoinComponent {
     private val virgilHelper: VirgilHelper by inject()
+    private val contactsRepository: ContactsRepository by inject()
 
     private val channelId = "channel_id"
     private var notificationId = 0
@@ -34,6 +37,16 @@ class NotificationGenie : FirebaseMessagingService(), KoinComponent {
                 MessageUtils.mapToMessage(map, "", "", ""),
                 virgilHelper
         )
+
+        val sender = remoteMessage.data["title"] as String
+
+        /* TODO: Add new user on notification
+        try {
+            val res = contactsRepository.addContact(sender).blockingGet()
+            Log.d(TAG, "Added new channel: ${res.sid}")
+        } catch(e: Exception) {
+            Log.d(TAG, "Failed adding new channel: $e")
+        }*/
 
         sendNotification(remoteMessage.data["title"], plaintext)
         Log.d(TAG, "From: " + remoteMessage.from)
@@ -76,6 +89,6 @@ class NotificationGenie : FirebaseMessagingService(), KoinComponent {
     }
 
     companion object {
-        private const val TAG = "Firebase_MSG"
+        private const val TAG = "PUSH_GENIE"
     }
 }
