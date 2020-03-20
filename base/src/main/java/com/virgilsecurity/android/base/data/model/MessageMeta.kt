@@ -76,8 +76,8 @@ class MessageMeta(
         @ColumnInfo(name = KEY_DATE)
         val date: Long,
 
-        @ColumnInfo(name = KEY_CODABLE_VERSION)
-        val codableVersion: String
+        @ColumnInfo(name = KEY_VERSION)
+        val version: String
 ) : Comparable<MessageMeta>, Parcelable {
 
     override fun compareTo(other: MessageMeta): Int = this.sid.compareTo(other.sid)
@@ -118,6 +118,6 @@ class MessageMeta(
         const val KEY_THREAD_ID = "thread_id"
         const val KEY_IN_DEVELOPMENT = "in_development"
         const val KEY_DATE = "date"
-        const val KEY_CODABLE_VERSION = "codable_version"
+        const val KEY_VERSION = "codable_version"
     }
 }

@@ -61,6 +61,8 @@ import org.jxmpp.jid.impl.JidCreate
 import java.net.InetAddress
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
+import com.virgilsecurity.android.bcommon.data.helper.fuel.apiSuffix
+import com.virgilsecurity.common.util.toHexString
 import org.jivesoftware.smack.packet.Presence
 
 /**
@@ -116,19 +118,15 @@ class SmackRx {
                             val token = task.result?.token ?: return@OnCompleteListener
 
                             val res = pushNotificationsManager.enable(
-                                    JidCreate.bareFrom(SMACK_PUSH_HOST),
+                                    JidCreate.from(SMACK_PUSH_HOST),
                                     PUSHES_NODE,
                                     hashMapOf(
                                             "device_id" to token,
-                                            "service" to "fcm",
-                                            "mutable_content" to "true",
-                                            "topic" to "com.virgilsecurity.android.virgil"
+                                            "service" to "fcm"
                                     )
                             )
 
                             Log.d("[SMACK]", "Enabled push notifications: $res")
-
-                            connection.sendStanza(Presence(Presence.Type.available))
 
                             it.onComplete()
                         })
@@ -200,7 +198,7 @@ class SmackRx {
                                     channelId,
                                     false,
                                     (map["date"]!! as Double).toLong(),
-                                    map["codableVersion"] as? String ?: "v1")
+                                    map["version"] as? String ?: "v1")
 
                             it.onNext(Pair(channelMeta, messageMeta))
                             // FIXME where to place onComplete?
@@ -231,7 +229,7 @@ class SmackRx {
             stanza.body = ConvertionUtils.toBase64String(ConvertionUtils.serializeToJson(mapOf(
                     "date" to date,
                     "ciphertext" to body,
-                    "codableVersion" to MESSAGE_VERSION
+                    "version" to MESSAGE_VERSION
             )))
 
 
