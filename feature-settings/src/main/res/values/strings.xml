@@ -47,8 +47,10 @@
     <string name="delete">Delete</string>
     <string name="about_text">\tVirgil is a simple and secure messaging app which uses the frontier encryption technologies so that no-one can access your messages. It is a perfect solution for those who care about their privacy.\n\n\tFeatures:\nText and audio messages - Chat with you friends, colleagues and family in any convenient way.\n\nPhotos - Share your visual experience with others\nSimple - Minimalist user-friendly and intuitive design\nReliable - Requires as little internet data as possible\nEnd-to-end encryption - The messenger hides your chats from any other curious eyes by using the asymmetric cryptography methods\n(Passwordless - Don\'t spend your time trying to remember your password)</string>
     <string name="versions_text">
-        Version 3.0.0 :\n
+        Version 1.0.0 :\n
         \t- App is released
+        Version 1.0.4 :\n
+        \t- Push notifications added
     </string>
 
 
