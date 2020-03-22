@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.virgil
 
+import AppLifecycleListener
 import android.app.Application
 import android.os.StrictMode
 import authActivityModule
@@ -49,6 +50,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import androidx.lifecycle.ProcessLifecycleOwner
 import registrationControllerModule
 
 /**
@@ -100,6 +102,8 @@ class VirgilApp : Application() {
         if (BuildConfig.DEBUG) {
             initStrictMode()
         }
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycleListener())
     }
 
     private fun KoinApplication.modules(vararg modules: Module): KoinApplication =

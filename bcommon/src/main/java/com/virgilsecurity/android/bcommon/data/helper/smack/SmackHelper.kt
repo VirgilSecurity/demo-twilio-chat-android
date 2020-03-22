@@ -47,6 +47,8 @@ import org.jivesoftware.smack.ReconnectionListener
 import org.jivesoftware.smack.ReconnectionManager
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.chat2.ChatManager
+import org.jivesoftware.smack.filter.PresenceTypeFilter.AVAILABLE
+import org.jivesoftware.smack.packet.Presence
 import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smackx.push_notifications.PushNotificationsManager
@@ -131,6 +133,24 @@ class SmackHelper(
         } else {
             return smackRx.stopClient(connection!!)
                     .doOnComplete { this@SmackHelper.connection = null }
+        }
+    }
+
+    fun setPresenceAvailable(): Completable {
+        return if (connection != null) {
+            connection!!.sendStanza(Presence(Presence.Type.available))
+            Completable.complete()
+        } else {
+            Completable.error(java.lang.IllegalStateException("Not initialized yet"))
+        }
+    }
+
+    fun setPresenceUnavailable(): Completable {
+        return if (connection != null) {
+            connection!!.sendStanza(Presence(Presence.Type.unavailable))
+            Completable.complete()
+        } else {
+            Completable.error(java.lang.IllegalStateException("Not initialized yet"))
         }
     }
 

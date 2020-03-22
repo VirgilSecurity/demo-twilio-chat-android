@@ -36,12 +36,13 @@ ext.deps = [
         ],
 
         'ac'                : [
-                'viewModel'        : "androidx.lifecycle:lifecycle-viewmodel:$versions.architectureComponents",
-                'liveData'         : "androidx.lifecycle:lifecycle-livedata:$versions.architectureComponents",
-                'lifecycleCompiler': "androidx.lifecycle:lifecycle-compiler:$versions.architectureComponents",
-                'roomRuntime'      : "androidx.room:room-runtime:$versions.room",
-                'roomCompiler'     : "androidx.room:room-compiler:$versions.room",
-                'roomRxJava2'      : "androidx.room:room-rxjava2:$versions.room",
+                'viewModel'           : "androidx.lifecycle:lifecycle-viewmodel:$versions.architectureComponents",
+                'liveData'            : "androidx.lifecycle:lifecycle-livedata:$versions.architectureComponents",
+                'lifecycleCompiler'   : "androidx.lifecycle:lifecycle-compiler:$versions.architectureComponents",
+                'lifecycleExtensions' : "androidx.lifecycle:lifecycle-extensions:$versions.architectureComponents",
+                'roomRuntime'         : "androidx.room:room-runtime:$versions.room",
+                'roomCompiler'        : "androidx.room:room-compiler:$versions.room",
+                'roomRxJava2'         : "androidx.room:room-rxjava2:$versions.room",
         ],
 
         'glide'             : [
