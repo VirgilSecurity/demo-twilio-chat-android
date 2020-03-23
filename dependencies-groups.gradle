@@ -68,6 +68,7 @@ ext {
     architectureComponents = Group {
         implementation deps.ac.viewModel
         implementation deps.ac.liveData
+        implementation deps.ac.lifecycleExtensions
         kapt deps.ac.lifecycleCompiler
     }
 
