@@ -57,6 +57,8 @@ captures/
 google-services.json
 google-services-debug.json
 google-services-prod.json
+virgil-android-secrets.zip
+virgil-android-secrets.zip.cipher
 
 # Freeline
 freeline.py

@@ -40,13 +40,12 @@ class NotificationGenie : FirebaseMessagingService(), KoinComponent {
 
         val sender = remoteMessage.data["title"] as String
 
-        /* TODO: Add new user on notification
         try {
             val res = contactsRepository.addContact(sender).blockingGet()
             Log.d(TAG, "Added new channel: ${res.sid}")
         } catch(e: Exception) {
             Log.d(TAG, "Failed adding new channel: $e")
-        }*/
+        }
 
         sendNotification(remoteMessage.data["title"], plaintext)
         Log.d(TAG, "From: " + remoteMessage.from)
