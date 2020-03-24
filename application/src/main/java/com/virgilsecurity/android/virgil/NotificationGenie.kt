@@ -2,14 +2,14 @@ package com.virgilsecurity.android.virgil
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.virgilsecurity.android.base.data.dao.ChannelsDao
-import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.android.bcommon.util.JsonUtils
 import com.virgilsecurity.android.bcommon.util.MessageUtils
@@ -17,6 +17,7 @@ import com.virgilsecurity.android.feature_contacts.data.repository.ContactsRepos
 import com.virgilsecurity.sdk.utils.ConvertionUtils
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+
 
 class NotificationGenie : FirebaseMessagingService(), KoinComponent {
     private val virgilHelper: VirgilHelper by inject()
@@ -53,15 +54,20 @@ class NotificationGenie : FirebaseMessagingService(), KoinComponent {
     }
 
     private fun sendNotification(title: String?, messageBody: String) {
+        val intent = Intent(applicationContext, SplashActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
         val builder = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.icon_big)
                 .setContentTitle(title)
                 .setContentText(messageBody)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
         val notificationManager = NotificationManagerCompat.from(this)
         if (notificationManager.getNotificationChannel(channelId) == null) {
             createNotificationChannel()
         }
+
         notificationId += 2
         notificationManager.notify(notificationId, builder.build())
     }
