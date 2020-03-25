@@ -46,10 +46,28 @@
         android:autoLink="web"
         android:background="@drawable/message_background_you"
         android:maxWidth="238dp"
-        android:padding="10dp"
+        android:minWidth="80dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingBottom="20dp"
         android:textColor="@color/illToad"
         android:textSize="@dimen/increased_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:maxWidth="238dp"
+        android:padding="5dp"
+        android:textColor="@color/illToad"
+        android:alpha="0.5"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMessage"
+        app:layout_constraintEnd_toEndOf="@+id/tvMessage"
+        tools:text="hh:mm PP" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,7 @@
 
 package com.virgilsecurity.android.feature_channel.viewslice.channel.adapter
 
+import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import com.virgilsecurity.android.base.data.properties.UserProperties
@@ -77,6 +78,7 @@ class MessageItemMe(private val actionLiveData: MutableLiveData<ChannelSlice.Act
             }
 
             findViewById<TextView>(R.id.tvMessage).text = text
+            findViewById<TextView>(R.id.tvTime).text = MessageUtils.getAMPMString(item)
 
             setOnClickListener {
                 actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
