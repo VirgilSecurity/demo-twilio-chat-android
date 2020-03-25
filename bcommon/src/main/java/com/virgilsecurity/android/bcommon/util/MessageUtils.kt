@@ -1,8 +1,12 @@
 package com.virgilsecurity.android.bcommon.util
 
+import android.content.Context
+import android.text.format.DateUtils
 import com.virgilsecurity.android.base.data.model.MessageMeta
 import com.virgilsecurity.android.bcommon.data.helper.virgil.VirgilHelper
 import com.virgilsecurity.sdk.utils.ConvertionUtils
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 
 class MessageUtils {
     companion object {
@@ -42,13 +46,17 @@ class MessageUtils {
         }
 
         fun mapToMessage(map: Map<String, Any?>, stanzaId: String, sender: String, channelId: String): MessageMeta =
-            MessageMeta(stanzaId,
-                    map["ciphertext"]!! as String,
-                    sender,
-                    channelId,
-                    false,
-                    (map["date"]!! as Double).toLong(),
-                    map["version"] as? String ?: "v1"
-            )
+                MessageMeta(stanzaId,
+                        map["ciphertext"]!! as String,
+                        sender,
+                        channelId,
+                        false,
+                        (map["date"]!! as Double).toLong(),
+                        map["version"] as? String ?: "v1"
+                )
+
+        fun getAMPMString(message: MessageMeta): String {
+            return SimpleDateFormat("h:mm a").format(message.getDateMillisSince1970())
+        }
     }
 }

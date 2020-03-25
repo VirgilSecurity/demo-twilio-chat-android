@@ -71,6 +71,7 @@ class MessageItemYou(private val actionLiveData: MutableLiveData<ChannelSlice.Ac
         {
             val text = MessageUtils.getMessageText(item, virgilHelper)
             findViewById<TextView>(R.id.tvMessage).text = text
+            findViewById<TextView>(R.id.tvTime).text = MessageUtils.getAMPMString(item)
 
             setOnClickListener {
                 actionLiveData.value = ChannelSlice.Action.MessageClicked(item)
