@@ -49,6 +49,7 @@
     <string name="versions_text">
         Version 1.0.7 :\n
         \t- Shows time in messages
+        \t- Fixes crash when receiving malformed message
         Version 1.0.6 :\n
         \t- Pressing push notification will open App
         \t- Fixed contact not added when receiving notification from non-contact
